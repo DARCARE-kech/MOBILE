@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
@@ -11,6 +12,10 @@ import { useToast } from "@/components/ui/use-toast";
 import CurrentStay from "@/components/CurrentStay";
 import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// Create a new query client for this page
+const queryClient = new QueryClient();
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -125,7 +130,11 @@ const Home: React.FC = () => {
       <div className="pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
         <ServicesList services={services} isLoading={isLoading} />
-        <RecommendationsList />
+        
+        {/* Wrap RecommendationsList with QueryClientProvider to ensure it has access to the query client */}
+        <QueryClientProvider client={queryClient}>
+          <RecommendationsList />
+        </QueryClientProvider>
       </div>
 
       <FloatingAction />
