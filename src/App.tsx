@@ -12,8 +12,8 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
 import Services from "./pages/Services";
-import ServiceDetail from "./components/services/ServiceDetail";
-import BookSpaceService from "./components/services/BookSpaceService";
+import ServiceDetail from "@/components/services/ServiceDetail";
+import BookSpaceService from "@/components/services/BookSpaceService";
 
 const queryClient = new QueryClient();
 
