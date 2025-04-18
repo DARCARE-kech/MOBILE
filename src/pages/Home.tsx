@@ -43,37 +43,6 @@ const Home: React.FC = () => {
     },
   ];
 
-  const recommendations = [
-    {
-      id: "1",
-      title: "Jardin Majorelle",
-      image: "https://images.unsplash.com/photo-1539020140153-e8c8d4592cac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      type: "Attraction",
-      rating: 4.8,
-    },
-    {
-      id: "2",
-      title: "La Mamounia",
-      image: "https://images.unsplash.com/photo-1589384267710-7a170981ca78?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      type: "Dining",
-      rating: 4.9,
-    },
-    {
-      id: "3",
-      title: "Medina Tour",
-      image: "https://images.unsplash.com/photo-1539094437705-1e048cf70c66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      type: "Experience",
-      rating: 4.7,
-    },
-    {
-      id: "4",
-      title: "Atlas Mountains",
-      image: "https://images.unsplash.com/photo-1565689478471-3174c495213f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      type: "Excursion",
-      rating: 4.9,
-    },
-  ];
-
   useEffect(() => {
     const fetchUserStay = async () => {
       if (!user) return;
@@ -145,7 +114,7 @@ const Home: React.FC = () => {
       <div className="pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
         <ServicesList services={services} />
-        <RecommendationsList recommendations={recommendations} />
+        <RecommendationsList />
       </div>
 
       <FloatingAction />
