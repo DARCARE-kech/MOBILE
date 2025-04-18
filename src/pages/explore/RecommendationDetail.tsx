@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Phone, Mail, Clock, MapPin, Star, Tag } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import BottomNavigation from "@/components/BottomNavigation";
+import { RecommendationHeader } from "@/components/explore/RecommendationHeader";
 import { RecommendationInfo } from "@/components/explore/RecommendationInfo";
+import { ContactInfoBlock } from "@/components/explore/ContactInfoBlock";
+import { TagsList } from "@/components/explore/TagsList";
 import { RecommendationMap } from "@/components/explore/RecommendationMap";
 import { RecommendationReviews } from "@/components/explore/RecommendationReviews";
 import { RecommendationReservation } from "@/components/explore/RecommendationReservation";
@@ -121,13 +123,7 @@ const RecommendationDetail = () => {
     <div className="min-h-screen bg-darcare-navy">
       <Header title={recommendation.title} onBack={() => navigate(-1)} />
       
-      <div className="relative">
-        <img
-          src={recommendation.image_url || '/placeholder.svg'}
-          alt={recommendation.title}
-          className="w-full h-64 object-cover"
-        />
-      </div>
+      <RecommendationHeader recommendation={recommendation} />
 
       <div className="p-4 pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -150,57 +146,12 @@ const RecommendationDetail = () => {
 
           <TabsContent value="info">
             <RecommendationInfo recommendation={recommendation} />
-            
-            {(recommendation.contact_phone || recommendation.email || recommendation.opening_hours) && (
-              <div className="mt-6 space-y-3">
-                <h3 className="text-lg font-serif text-darcare-gold">Contact & Hours</h3>
-                
-                {recommendation.contact_phone && (
-                  <div className="flex items-center gap-2 text-darcare-beige">
-                    <Phone size={16} className="text-darcare-gold" />
-                    <span>{recommendation.contact_phone}</span>
-                  </div>
-                )}
-                
-                {recommendation.email && (
-                  <div className="flex items-center gap-2 text-darcare-beige">
-                    <Mail size={16} className="text-darcare-gold" />
-                    <span>{recommendation.email}</span>
-                  </div>
-                )}
-                
-                {recommendation.opening_hours && (
-                  <div className="flex items-center gap-2 text-darcare-beige">
-                    <Clock size={16} className="text-darcare-gold" />
-                    <span>{recommendation.opening_hours}</span>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {recommendation.tags && recommendation.tags.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-lg font-serif text-darcare-gold mb-2">Features</h3>
-                <div className="flex flex-wrap gap-2">
-                  {recommendation.tags.map((tag, i) => (
-                    <Badge key={i} variant="outline" className="bg-darcare-gold/10 text-darcare-beige border-darcare-gold/20">
-                      <Tag size={12} className="mr-1" /> {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ContactInfoBlock recommendation={recommendation} />
+            <TagsList tags={recommendation.tags || []} />
           </TabsContent>
 
           <TabsContent value="map">
             <RecommendationMap recommendation={recommendation} />
-            
-            {recommendation.address && (
-              <div className="mt-4 flex items-center gap-2 text-darcare-beige p-3 border border-darcare-gold/20 rounded-lg">
-                <MapPin size={16} className="text-darcare-gold flex-shrink-0" />
-                <span>{recommendation.address}</span>
-              </div>
-            )}
           </TabsContent>
 
           <TabsContent value="reviews">
