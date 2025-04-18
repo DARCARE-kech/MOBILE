@@ -183,6 +183,7 @@ export type Database = {
           description: string | null
           estimated_duration: string | null
           id: string
+          image_url: string | null
           name: string
         }
         Insert: {
@@ -190,6 +191,7 @@ export type Database = {
           description?: string | null
           estimated_duration?: string | null
           id?: string
+          image_url?: string | null
           name: string
         }
         Update: {
@@ -197,6 +199,7 @@ export type Database = {
           description?: string | null
           estimated_duration?: string | null
           id?: string
+          image_url?: string | null
           name?: string
         }
         Relationships: []
