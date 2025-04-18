@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -14,6 +13,8 @@ import { RecommendationMap } from "@/components/explore/RecommendationMap";
 import { RecommendationReviews } from "@/components/explore/RecommendationReviews";
 import { RecommendationReservation } from "@/components/explore/RecommendationReservation";
 import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
+import { RecommendationDetailSkeleton } from "@/components/explore/RecommendationDetailSkeleton";
+import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
 import type { Recommendation } from "@/types/recommendation";
 
 const RecommendationDetail = () => {
@@ -22,7 +23,7 @@ const RecommendationDetail = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("info");
 
-  const { data: recommendation, isLoading, error } = useQuery({
+  const { data: recommendation, isLoading, error, refetch } = useQuery({
     queryKey: ['recommendation', id],
     queryFn: async () => {
       const [recommendationResponse, favoriteResponse] = await Promise.all([
@@ -84,42 +85,19 @@ const RecommendationDetail = () => {
     retryDelay: 500
   });
 
+  const handleBack = () => navigate(-1);
+
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-darcare-navy">
-        <RecommendationDetailHeader title="Loading..." onBack={() => navigate(-1)} />
-        <div className="animate-pulse p-4 space-y-4">
-          <div className="h-64 bg-darcare-gold/20 rounded-xl" />
-          <div className="h-8 w-2/3 bg-darcare-gold/20 rounded" />
-          <div className="h-4 w-1/3 bg-darcare-gold/20 rounded" />
-        </div>
-        <BottomNavigation activeTab="explore" />
-      </div>
-    );
+    return <RecommendationDetailSkeleton onBack={handleBack} />;
   }
 
   if (error || !recommendation) {
-    return (
-      <div className="min-h-screen bg-darcare-navy">
-        <RecommendationDetailHeader title="Not Found" onBack={() => navigate(-1)} />
-        <div className="p-4 text-center text-darcare-beige">
-          <p className="mb-4">Recommendation not found</p>
-          <Button
-            variant="outline"
-            className="border-darcare-gold text-darcare-gold hover:bg-darcare-gold/10"
-            onClick={() => navigate('/explore')}
-          >
-            Return to Explore
-          </Button>
-        </div>
-        <BottomNavigation activeTab="explore" />
-      </div>
-    );
+    return <RecommendationDetailError onBack={handleBack} onRetry={refetch} />;
   }
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <RecommendationDetailHeader title={recommendation.title} onBack={() => navigate(-1)} />
+      <RecommendationDetailHeader title={recommendation.title} onBack={handleBack} />
       
       <RecommendationHeader recommendation={recommendation} />
 
