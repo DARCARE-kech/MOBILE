@@ -6,5 +6,9 @@ export interface Recommendation {
   category: string | null;
   description: string | null;
   location: string | null;
+  latitude: number | null;
+  longitude: number | null;
   rating?: number;
+  review_count?: number;
+  is_favorite?: boolean;
 }

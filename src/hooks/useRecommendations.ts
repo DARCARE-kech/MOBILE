@@ -1,11 +1,14 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Recommendation } from "@/types/recommendation";
 
 export function useRecommendations() {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ['recommendations'],
+    queryKey: ['recommendations', user?.id],
     queryFn: async () => {
       const { data: recs, error: recsError } = await supabase
         .from('recommendations')
@@ -15,15 +18,33 @@ export function useRecommendations() {
       if (recsError) throw recsError;
 
       // Fetch ratings for all recommendations
-      const recommendationsWithRatings = await Promise.all(
+      const recommendationsWithExtras = await Promise.all(
         recs.map(async (rec) => {
-          const { data: rating } = await supabase
-            .rpc('get_recommendation_avg_rating', { rec_id: rec.id });
-          return { ...rec, rating };
+          const [{ data: rating }, { data: reviews }, { data: favorites }] = await Promise.all([
+            supabase.rpc('get_recommendation_avg_rating', { rec_id: rec.id }),
+            supabase
+              .from('reviews')
+              .select('id')
+              .eq('recommendation_id', rec.id)
+              .count(),
+            user ? supabase
+              .from('favorites')
+              .select('id')
+              .eq('user_id', user.id)
+              .eq('recommendation_id', rec.id)
+              .maybeSingle() : Promise.resolve({ data: null })
+          ]);
+
+          return { 
+            ...rec, 
+            rating, 
+            review_count: reviews?.count || 0,
+            is_favorite: !!favorites
+          };
         })
       );
 
-      return recommendationsWithRatings;
+      return recommendationsWithExtras;
     },
   });
 }

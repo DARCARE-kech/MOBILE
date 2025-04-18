@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { Info, MapPin, Star } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
@@ -10,70 +11,113 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { RatingStars } from "./RatingStars";
+import { cn } from "@/lib/utils";
 import { getFallbackImage } from "@/utils/imageUtils";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "./ui/use-toast";
 import type { Recommendation } from "@/types/recommendation";
 
 interface RecommendationCardProps {
   item: Recommendation;
-  index: number;
 }
 
-export const RecommendationCard = ({ item, index }: RecommendationCardProps) => {
+export const RecommendationCard = ({ item }: RecommendationCardProps) => {
   const [imageError, setImageError] = useState(false);
-  const fallbackImage = getFallbackImage(item.title, index);
+  const [isFavorite, setIsFavorite] = useState(item.is_favorite || false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const fallbackImage = getFallbackImage(item.title, 0);
   const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
+
+  const toggleFavorite = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save favorites",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      if (isFavorite) {
+        await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('recommendation_id', item.id);
+      } else {
+        await supabase
+          .from('favorites')
+          .insert({ user_id: user.id, recommendation_id: item.id });
+      }
+      setIsFavorite(!isFavorite);
+      toast({
+        title: isFavorite ? "Removed from favorites" : "Added to favorites",
+        description: `${item.title} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not update favorites",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Dialog>
-      <div className="mx-2 rounded-xl overflow-hidden flex-shrink-0 group bg-darcare-navy border border-darcare-gold/10">
+      <div className="w-[280px] rounded-xl overflow-hidden flex-shrink-0 group bg-darcare-navy border border-darcare-gold/10">
         <div className="relative">
           <AspectRatio ratio={16/9}>
             <img 
               src={imageSource}
               alt={item.title} 
-              className="w-full h-full object-cover transition-opacity duration-300"
+              className="w-full h-full object-cover"
               onError={() => setImageError(true)}
               loading="lazy"
             />
           </AspectRatio>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <button className="absolute bottom-2 right-2 p-1.5 bg-darcare-gold/90 text-darcare-navy rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                <Info size={16} />
-              </button>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80 bg-darcare-navy border-darcare-gold/20">
-              <div className="space-y-2">
-                <p className="text-darcare-white">{item.description || `Explore the beautiful ${item.title}`}</p>
-                <div className="flex items-center gap-2 text-darcare-beige">
-                  <MapPin size={14} />
-                  <span className="text-sm">{item.location || 'Marrakech, Morocco'}</span>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-          <div className="absolute top-2 right-2 bg-darcare-gold/90 text-darcare-navy rounded-full py-0.5 px-2 text-xs font-medium flex items-center gap-1">
-            {item.rating && item.rating > 0 ? (
-              <div className="flex items-center gap-1">
-                <Star size={12} className="fill-current" />
-                <span>{item.rating.toFixed(1)}</span>
-              </div>
-            ) : (
-              <span>New</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "absolute top-2 right-2 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy",
+              isFavorite && "text-darcare-gold"
             )}
-          </div>
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleFavorite();
+            }}
+          >
+            <Heart
+              size={18}
+              className={cn(isFavorite && "fill-current")}
+            />
+          </Button>
         </div>
-        <div className="p-3 bg-card">
-          <h3 className="font-medium text-darcare-white">{item.title}</h3>
-          <p className="text-xs text-darcare-beige/70">{item.category || 'Attraction'}</p>
-          <div className="flex gap-1 mt-2">
-            <RatingStars rating={item.rating || 0} />
+        <div className="p-3 space-y-2">
+          <h3 className="font-medium text-darcare-white line-clamp-1">{item.title}</h3>
+          {item.category && (
+            <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
+              {item.category}
+            </Badge>
+          )}
+          <div className="flex items-center justify-between text-sm">
+            {item.location && (
+              <div className="flex items-center gap-1 text-darcare-beige">
+                <MapPin size={14} />
+                <span>{item.location}</span>
+              </div>
+            )}
+            {item.rating && item.rating > 0 && (
+              <span className="text-darcare-gold">
+                ★ {item.rating.toFixed(1)}
+                {item.review_count ? ` • ${item.review_count} reviews` : ''}
+              </span>
+            )}
           </div>
         </div>
         <DialogTrigger asChild>

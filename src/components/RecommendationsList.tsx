@@ -1,14 +1,8 @@
 
-import { ChevronRight } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRecommendations } from "@/hooks/useRecommendations";
 import { RecommendationCard } from "./RecommendationCard";
+import { ChevronRight } from "lucide-react";
 
 const RecommendationsList = () => {
   const { data: recommendations, isLoading } = useRecommendations();
@@ -44,17 +38,13 @@ const RecommendationsList = () => {
         </button>
       </div>
 
-      <Carousel className="w-full">
-        <CarouselContent className="px-4">
-          {recommendations?.map((item, index) => (
-            <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
-              <RecommendationCard item={item} index={index} />
-            </CarouselItem>
+      <ScrollArea className="w-full">
+        <div className="flex gap-4 pb-4">
+          {recommendations?.map((item) => (
+            <RecommendationCard key={item.id} item={item} />
           ))}
-        </CarouselContent>
-        <CarouselPrevious className="hidden md:flex -left-12 text-darcare-gold hover:text-darcare-gold hover:bg-darcare-gold/10" />
-        <CarouselNext className="hidden md:flex -right-12 text-darcare-gold hover:text-darcare-gold hover:bg-darcare-gold/10" />
-      </Carousel>
+        </div>
+      </ScrollArea>
     </div>
   );
 };
