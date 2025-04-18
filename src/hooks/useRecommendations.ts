@@ -34,13 +34,14 @@ export function useRecommendations() {
               .maybeSingle() : Promise.resolve({ data: null })
           ]);
 
+          // Create a new object with all recommendation properties plus our additional ones
           return { 
             ...rec, 
             rating, 
             review_count: reviewsResponse.count || 0,
             is_favorite: !!favorites,
-            // Handle is_reservable even if it doesn't exist in the database
-            is_reservable: rec.is_reservable !== undefined ? rec.is_reservable : false
+            // Safely add is_reservable to all recommendations with a default value
+            is_reservable: false // Set a default value if it doesn't exist in the database
           } as Recommendation;
         })
       );
