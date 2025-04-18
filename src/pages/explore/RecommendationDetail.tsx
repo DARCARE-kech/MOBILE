@@ -37,12 +37,18 @@ const RecommendationDetail = () => {
 
       if (error) throw error;
       
+      // Calculate average rating
+      const avgRating = data.reviews?.length 
+        ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
+        : 0;
+
       // Make sure all required properties are present
       return {
         ...data,
         is_reservable: data.is_reservable ?? false,
-        rating: data.rating ?? 0,
-        is_favorite: false // Default value, will be updated if user has favorited
+        rating: Number(avgRating.toFixed(1)),
+        review_count: data.reviews?.length || 0,
+        is_favorite: false, // Default value, will be updated if user has favorited
       } as Recommendation;
     },
   });

@@ -24,7 +24,7 @@ export function useRecommendationsQuery({
         .select(`
           *,
           reviews (rating),
-          favorites!inner (user_id)
+          favorites!left (user_id)
         `);
 
       if (searchQuery) {
@@ -51,6 +51,8 @@ export function useRecommendationsQuery({
         return {
           ...item,
           rating: Number(avgRating.toFixed(1)),
+          review_count: item.reviews?.length || 0,
+          is_reservable: item.is_reservable || false,
           is_favorite: item.favorites?.length > 0
         } as Recommendation;
       });
