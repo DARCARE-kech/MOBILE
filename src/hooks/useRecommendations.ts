@@ -38,7 +38,8 @@ export function useRecommendations() {
             ...rec, 
             rating, 
             review_count: reviewsResponse.count || 0,
-            is_favorite: !!favorites
+            is_favorite: !!favorites,
+            is_reservable: rec.is_reservable || false
           };
         })
       );

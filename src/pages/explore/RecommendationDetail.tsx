@@ -29,7 +29,7 @@ const RecommendationDetail = () => {
             comment,
             created_at,
             user_id,
-            user_profiles (full_name, avatar_url)
+            user_profiles:user_id (full_name, avatar_url)
           )
         `)
         .eq('id', id)
@@ -42,6 +42,15 @@ const RecommendationDetail = () => {
         ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
         : 0;
 
+      // Map user_profiles property for each review to match our type
+      const reviewsWithProfiles = data.reviews?.map(review => ({
+        ...review,
+        user_profiles: review.user_profiles || {
+          full_name: "Anonymous",
+          avatar_url: null
+        }
+      }));
+
       // Make sure all required properties are present
       return {
         ...data,
@@ -49,6 +58,7 @@ const RecommendationDetail = () => {
         rating: Number(avgRating.toFixed(1)),
         review_count: data.reviews?.length || 0,
         is_favorite: false, // Default value, will be updated if user has favorited
+        reviews: reviewsWithProfiles
       } as Recommendation;
     },
   });

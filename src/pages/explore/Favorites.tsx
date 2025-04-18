@@ -29,11 +29,21 @@ const FavoritesPage = () => {
 
       if (error) throw error;
 
-      return data.map((fav) => ({
-        ...fav.recommendations,
-        is_favorite: true,
-        is_reservable: fav.recommendations.is_reservable || false
-      })) as Recommendation[];
+      return data.map((fav) => {
+        // Calculate average rating
+        const reviews = fav.recommendations.reviews || [];
+        const avgRating = reviews.length 
+          ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length 
+          : 0;
+          
+        return {
+          ...fav.recommendations,
+          is_favorite: true,
+          is_reservable: fav.recommendations.is_reservable || false,
+          rating: Number(avgRating.toFixed(1)),
+          review_count: reviews.length
+        } as Recommendation;
+      });
     },
     enabled: !!user
   });
