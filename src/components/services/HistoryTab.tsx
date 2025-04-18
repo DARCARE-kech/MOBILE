@@ -43,27 +43,46 @@ interface ServiceRequest {
   image_url: string | null;
   created_at: string | null;
   services: Service | null;
-  staff_assignments: StaffAssignment[];
-  service_ratings: ServiceRating[];
+  staff_assignments: StaffAssignment[] | null;
+  service_ratings: ServiceRating[] | null;
 }
 
 const HistoryTab: React.FC = () => {
   const { data: history, isLoading, error, refetch } = useQuery({
     queryKey: ['service-history'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch service requests with completed or cancelled status
+      const { data: historyData, error: historyError } = await supabase
         .from('service_requests')
         .select(`
           *,
-          services(*),
-          staff_assignments(*),
-          service_ratings(*)
+          services(*)
         `)
         .in('status', ['completed', 'cancelled'])
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data as ServiceRequest[];
+      if (historyError) throw historyError;
+      
+      // For each request, fetch staff assignments and ratings separately
+      const enhancedHistory = await Promise.all((historyData || []).map(async (record) => {
+        const { data: staffData } = await supabase
+          .from('staff_assignments')
+          .select('*')
+          .eq('request_id', record.id);
+          
+        const { data: ratingsData } = await supabase
+          .from('service_ratings')
+          .select('*')
+          .eq('request_id', record.id);
+        
+        return {
+          ...record,
+          staff_assignments: staffData || [],
+          service_ratings: ratingsData || []
+        };
+      }));
+      
+      return enhancedHistory as ServiceRequest[];
     }
   });
 
@@ -131,7 +150,7 @@ const HistoryTab: React.FC = () => {
                 {record.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {new Date(record.preferred_time || '').toLocaleString()}
+                {record.preferred_time ? new Date(record.preferred_time).toLocaleString() : 'Time not specified'}
               </p>
               {record.staff_assignments && record.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">

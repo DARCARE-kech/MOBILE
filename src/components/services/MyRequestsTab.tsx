@@ -32,25 +32,39 @@ interface ServiceRequest {
   image_url: string | null;
   created_at: string | null;
   services: Service | null;
-  staff_assignments: StaffAssignment[];
+  staff_assignments: StaffAssignment[] | null;
 }
 
 const MyRequestsTab: React.FC = () => {
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['my-service-requests'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch service requests with pending status
+      const { data: requestsData, error: requestsError } = await supabase
         .from('service_requests')
         .select(`
           *,
-          services(*),
-          staff_assignments(*)
+          services(*)
         `)
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data as ServiceRequest[];
+      if (requestsError) throw requestsError;
+      
+      // For each request, fetch staff assignments separately
+      const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
+        const { data: staffData } = await supabase
+          .from('staff_assignments')
+          .select('*')
+          .eq('request_id', request.id);
+          
+        return {
+          ...request,
+          staff_assignments: staffData || []
+        };
+      }));
+      
+      return enhancedRequests as ServiceRequest[];
     }
   });
 
@@ -92,7 +106,7 @@ const MyRequestsTab: React.FC = () => {
                 {request.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {new Date(request.preferred_time || '').toLocaleString()}
+                {request.preferred_time ? new Date(request.preferred_time).toLocaleString() : 'Time not specified'}
               </p>
               {request.staff_assignments && request.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">
