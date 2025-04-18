@@ -10,6 +10,7 @@ import Onboarding from "./pages/Onboarding";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => {
               <Route path="/onboarding" element={<Onboarding onComplete={completeOnboarding} />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/notifications" element={<Notifications />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
