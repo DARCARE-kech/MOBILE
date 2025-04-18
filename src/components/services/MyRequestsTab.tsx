@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
+import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
 
 interface StaffAssignment {
   id: string;
@@ -52,26 +53,17 @@ const MyRequestsTab: React.FC = () => {
       
       if (requestsError) throw requestsError;
       
-      // For each request, fetch staff assignments separately using RPC or raw SQL
+      // For each request, fetch staff assignments separately using RPC
       const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
-        // Using raw SQL query instead of .from('staff_assignments')
-        const { data: staffData, error: staffError } = await supabase
-          .rpc('get_staff_assignments_for_request', { 
-            request_id_param: request.id 
-          })
-          .select('*');
-          
-        if (staffError) {
-          console.error('Error fetching staff assignments:', staffError);
-        }
+        const staffAssignments = await getStaffAssignmentsForRequest(request.id);
         
         return {
           ...request,
-          staff_assignments: staffData || []
+          staff_assignments: staffAssignments
         };
       }));
       
-      return enhancedRequests as unknown as ServiceRequest[];
+      return enhancedRequests as ServiceRequest[];
     }
   });
 
@@ -121,15 +113,7 @@ const MyRequestsTab: React.FC = () => {
                 </p>
               )}
             </div>
-            <Badge 
-              className={
-                request.status === 'active' 
-                  ? 'bg-emerald-600'
-                  : 'bg-amber-600'
-              }
-            >
-              {request.status === 'active' ? 'Active' : 'Pending'}
-            </Badge>
+            <StatusBadge status={request.status || 'pending'} />
           </div>
         </Card>
       ))}

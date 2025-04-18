@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/badge";
 
 // Expand the type definition to include all possible status values
 interface StatusBadgeProps {
-  status: "pending" | "active" | "completed" | "cancelled" | string;
+  status: "pending" | "active" | "completed" | "cancelled" | string | null;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  // Normalize the status to lowercase to handle case inconsistencies
-  const normalizedStatus = status?.toLowerCase() || "pending";
+  // Normalize the status to lowercase to handle case inconsistencies, and handle null
+  const normalizedStatus = (status || "pending").toLowerCase();
   
   const statusMap = {
     pending: {

@@ -20,31 +20,41 @@ export interface ServiceRating {
 }
 
 // Get staff assignments for a specific request
-export const getStaffAssignmentsForRequest = async (requestId: string) => {
-  const { data, error } = await supabase
-    .from('staff_assignments')
-    .select('*')
-    .eq('request_id', requestId);
+export const getStaffAssignmentsForRequest = async (requestId: string): Promise<StaffAssignment[]> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('get_staff_assignments_for_request', { 
+        request_id_param: requestId 
+      });
     
-  if (error) {
-    console.error('Error in getStaffAssignmentsForRequest:', error);
+    if (error) {
+      console.error('Error in getStaffAssignmentsForRequest:', error);
+      return [];
+    }
+    
+    return data as StaffAssignment[];
+  } catch (err) {
+    console.error('Caught error in getStaffAssignmentsForRequest:', err);
     return [];
   }
-  
-  return data as StaffAssignment[];
 };
 
 // Get service ratings for a specific request
-export const getServiceRatingsForRequest = async (requestId: string) => {
-  const { data, error } = await supabase
-    .from('service_ratings')
-    .select('*')
-    .eq('request_id', requestId);
+export const getServiceRatingsForRequest = async (requestId: string): Promise<ServiceRating[]> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('get_service_ratings_for_request', { 
+        request_id_param: requestId 
+      });
     
-  if (error) {
-    console.error('Error in getServiceRatingsForRequest:', error);
+    if (error) {
+      console.error('Error in getServiceRatingsForRequest:', error);
+      return [];
+    }
+    
+    return data as ServiceRating[];
+  } catch (err) {
+    console.error('Caught error in getServiceRatingsForRequest:', err);
     return [];
   }
-  
-  return data as ServiceRating[];
 };

@@ -7,14 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Loader2, Star } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-
-interface StaffAssignment {
-  id: string;
-  request_id: string;
-  staff_id: string | null;
-  staff_name: string | null;
-  assigned_at: string;
-}
+import { getStaffAssignmentsForRequest, getServiceRatingsForRequest } from '@/integrations/supabase/rpc';
+import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
 
 interface Service {
   id: string;
@@ -22,15 +16,6 @@ interface Service {
   description: string | null;
   category: string | null;
   estimated_duration: string | null;
-}
-
-interface ServiceRating {
-  id: string;
-  request_id: string;
-  user_id: string | null;
-  rating: number;
-  comment: string | null;
-  created_at: string | null;
 }
 
 interface ServiceRequest {
@@ -63,38 +48,22 @@ const HistoryTab: React.FC = () => {
       
       if (historyError) throw historyError;
       
-      // For each request, fetch staff assignments and ratings separately using RPC
+      // For each request, fetch staff assignments and ratings separately using our helper functions
       const enhancedHistory = await Promise.all((historyData || []).map(async (record) => {
-        // Using rpc for staff assignments
-        const { data: staffData, error: staffError } = await supabase
-          .rpc('get_staff_assignments_for_request', { 
-            request_id_param: record.id 
-          })
-          .select('*');
-          
-        if (staffError) {
-          console.error('Error fetching staff assignments:', staffError);
-        }
+        // Fetch staff assignments using our helper
+        const staffAssignments = await getStaffAssignmentsForRequest(record.id);
         
-        // Using rpc for service ratings
-        const { data: ratingsData, error: ratingsError } = await supabase
-          .rpc('get_service_ratings_for_request', { 
-            request_id_param: record.id 
-          })
-          .select('*');
-          
-        if (ratingsError) {
-          console.error('Error fetching ratings:', ratingsError);
-        }
+        // Fetch service ratings using our helper
+        const serviceRatings = await getServiceRatingsForRequest(record.id);
         
         return {
           ...record,
-          staff_assignments: staffData || [],
-          service_ratings: ratingsData || []
+          staff_assignments: staffAssignments,
+          service_ratings: serviceRatings
         };
       }));
       
-      return enhancedHistory as unknown as ServiceRequest[];
+      return enhancedHistory as ServiceRequest[];
     }
   });
 
@@ -170,15 +139,7 @@ const HistoryTab: React.FC = () => {
                 </p>
               )}
             </div>
-            <Badge 
-              className={
-                record.status === 'completed' 
-                  ? 'bg-emerald-600'
-                  : 'bg-red-600'
-              }
-            >
-              {record.status === 'completed' ? 'Completed' : 'Cancelled'}
-            </Badge>
+            <StatusBadge status={record.status || 'completed'} />
           </div>
 
           {record.status === 'completed' && 
