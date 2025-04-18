@@ -1,7 +1,8 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Calendar, Star, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import DrawerMenu from "@/components/DrawerMenu";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -11,16 +12,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState("home");
+  const [currentStay, setCurrentStay] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const handleLogout = () => {
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
-    });
-    navigate("/auth");
-  };
+  const { user } = useAuth();
 
   const services = [
     {
@@ -77,9 +72,66 @@ const Home: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchUserStay = async () => {
+      if (!user) return;
+
+      try {
+        const { data: currentStayData, error: currentStayError } = await supabase
+          .from('stays')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('status', 'current')
+          .single();
+
+        if (currentStayError && currentStayError.code !== 'PGRST116') {
+          throw currentStayError;
+        }
+
+        if (currentStayData) {
+          setCurrentStay(currentStayData);
+          return;
+        }
+
+        const { data: upcomingStayData, error: upcomingStayError } = await supabase
+          .from('stays')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('status', 'upcoming')
+          .order('check_in', { ascending: true })
+          .limit(1)
+          .single();
+
+        if (upcomingStayError && upcomingStayError.code !== 'PGRST116') {
+          throw upcomingStayError;
+        }
+
+        if (upcomingStayData) {
+          setCurrentStay(upcomingStayData);
+        }
+      } catch (error) {
+        console.error('Error fetching stay:', error);
+        toast({
+          title: "Error",
+          description: "Unable to fetch stay information",
+          variant: "destructive"
+        });
+      }
+    };
+
+    fetchUserStay();
+  }, [user]);
+
+  const handleLogout = () => {
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen bg-darcare-navy">
-      {/* Header */}
       <header className="p-4 flex justify-between items-center border-b border-darcare-gold/20">
         <DrawerMenu onLogout={handleLogout} />
         <Logo size="sm" color="gold" />
@@ -88,29 +140,36 @@ const Home: React.FC = () => {
         </div>
       </header>
 
-      {/* Content */}
       <div className="pb-24 overflow-auto">
-        {/* Stay Card */}
         <div className="p-4">
-          <div className="luxury-card">
-            <div className="flex justify-between items-start mb-3">
-              <h2 className="font-serif text-darcare-gold text-xl">Villa Amira</h2>
-              <div className="flex items-center gap-1 text-sm bg-darcare-gold/10 rounded-full px-3 py-1 text-darcare-gold">
-                <Calendar size={14} />
-                <span>7 nights</span>
+          {currentStay ? (
+            <div className="luxury-card">
+              <div className="flex justify-between items-start mb-3">
+                <h2 className="font-serif text-darcare-gold text-xl">{currentStay.villa_number}</h2>
+                <div className="flex items-center gap-1 text-sm bg-darcare-gold/10 rounded-full px-3 py-1 text-darcare-gold">
+                  <Calendar size={14} />
+                  <span>
+                    {currentStay.status === 'current' 
+                      ? 'Currently Staying' 
+                      : 'Upcoming Stay'}
+                  </span>
+                </div>
+              </div>
+              <p className="text-darcare-beige/80 text-sm mb-2">{currentStay.city}</p>
+              <div className="flex justify-between text-sm text-darcare-white">
+                <span>{`${new Date(currentStay.check_in).toLocaleDateString()} - ${new Date(currentStay.check_out).toLocaleDateString()}`}</span>
+                <button className="text-darcare-gold flex items-center gap-1">
+                  View Details <ChevronRight size={16} />
+                </button>
               </div>
             </div>
-            <p className="text-darcare-beige/80 text-sm mb-2">Palmeraie, Marrakech</p>
-            <div className="flex justify-between text-sm text-darcare-white">
-              <span>Apr 20 - Apr 27, 2025</span>
-              <button className="text-darcare-gold flex items-center gap-1">
-                View Details <ChevronRight size={16} />
-              </button>
+          ) : (
+            <div className="luxury-card text-center text-darcare-beige/70">
+              <p>You have no stays registered yet. Please contact administration or make a booking.</p>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Your Services */}
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="section-title">Your Services</h2>
@@ -138,7 +197,6 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Marrakech Highlights */}
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="section-title">Marrakech Highlights</h2>
@@ -167,10 +225,8 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Floating Action Button */}
       <FloatingAction />
 
-      {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onChangeTab={setActiveTab} />
     </div>
   );
