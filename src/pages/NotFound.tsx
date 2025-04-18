@@ -1,8 +1,12 @@
-import { useLocation } from "react-router-dom";
+
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Logo from "@/components/Logo";
+import { ArrowLeft } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error(
@@ -12,14 +16,21 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
-      </div>
+    <div className="min-h-screen bg-darcare-navy flex flex-col items-center justify-center p-6 text-center">
+      <Logo size="md" color="gold" />
+      
+      <h1 className="font-serif text-4xl text-darcare-gold mt-8 mb-4">Page Not Found</h1>
+      <p className="text-darcare-beige/80 mb-8 max-w-md">
+        We couldn't find the page you were looking for. Please check the URL or return to home.
+      </p>
+      
+      <button 
+        onClick={() => navigate("/")}
+        className="button-primary mt-4"
+      >
+        <ArrowLeft size={18} className="mr-2" />
+        Return to Home
+      </button>
     </div>
   );
 };
