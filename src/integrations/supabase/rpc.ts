@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 // Define RPC functions types here
@@ -57,6 +56,62 @@ export const getServiceRatingsForRequest = async (requestId: string): Promise<Se
     return data as ServiceRating[];
   } catch (err) {
     console.error('Caught error in getServiceRatingsForRequest:', err);
+    return [];
+  }
+};
+
+// New interfaces for spaces and shop products
+export interface Space {
+  id: string;
+  name: string;
+  description: string | null;
+  capacity: number | null;
+  image_url: string | null;
+  rules: string | null;
+  created_at: string | null;
+}
+
+export interface ShopProduct {
+  id: string;
+  name: string;
+  price: number;
+  description: string | null;
+  image_url: string | null;
+  created_at: string | null;
+}
+
+// Get all available spaces
+export const getAvailableSpaces = async (): Promise<Space[]> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('get_available_spaces');
+    
+    if (error) {
+      console.error('Error in getAvailableSpaces:', error);
+      return [];
+    }
+    
+    return data as Space[];
+  } catch (err) {
+    console.error('Caught error in getAvailableSpaces:', err);
+    return [];
+  }
+};
+
+// Get all shop products
+export const getShopProducts = async (): Promise<ShopProduct[]> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('get_shop_products');
+    
+    if (error) {
+      console.error('Error in getShopProducts:', error);
+      return [];
+    }
+    
+    return data as ShopProduct[];
+  } catch (err) {
+    console.error('Caught error in getShopProducts:', err);
     return [];
   }
 };

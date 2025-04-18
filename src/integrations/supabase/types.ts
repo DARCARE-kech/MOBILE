@@ -239,6 +239,63 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_products: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      spaces: {
+        Row: {
+          capacity: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          rules: string | null
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          rules?: string | null
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          rules?: string | null
+        }
+        Relationships: []
+      }
       staff_assignments: {
         Row: {
           assigned_at: string | null
@@ -343,9 +400,32 @@ export type Database = {
         Args: { lat1: number; lon1: number; lat2: number; lon2: number }
         Returns: number
       }
+      get_available_spaces: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          capacity: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          rules: string | null
+        }[]
+      }
       get_recommendation_avg_rating: {
         Args: { rec_id: string }
         Returns: number
+      }
+      get_shop_products: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+        }[]
       }
     }
     Enums: {
