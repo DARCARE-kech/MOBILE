@@ -25,6 +25,17 @@ const RecommendationDetail = () => {
   const [activeTab, setActiveTab] = useState("info");
 
   console.log("RecommendationDetail - Received ID:", id);
+  
+  // Define handleBack function before it's used
+  const handleBack = () => navigate(-1);
+
+  // Redirect if no ID is present
+  useEffect(() => {
+    if (!id) {
+      console.error("No ID in URL params, redirecting back");
+      navigate(-1);
+    }
+  }, [id, navigate]);
 
   const { data: recommendation, isLoading, error, refetch } = useQuery({
     queryKey: ['recommendation', id],
@@ -47,8 +58,7 @@ const RecommendationDetail = () => {
                 rating,
                 comment,
                 created_at,
-                user_id,
-                user_profiles:profiles(full_name, avatar_url)
+                user_id
               )
             `)
             .eq('id', id)
@@ -80,14 +90,6 @@ const RecommendationDetail = () => {
           ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
           : 0;
 
-        const reviewsWithProfiles = data.reviews?.map(review => ({
-          ...review,
-          user_profiles: review.user_profiles || {
-            full_name: "Anonymous",
-            avatar_url: null
-          }
-        }));
-
         return {
           ...data,
           is_reservable: data.is_reservable || false,
@@ -95,7 +97,13 @@ const RecommendationDetail = () => {
           rating: Number(avgRating.toFixed(1)),
           review_count: data.reviews?.length || 0,
           is_favorite: !!favoriteResponse.data,
-          reviews: reviewsWithProfiles
+          reviews: data.reviews?.map(review => ({
+            ...review,
+            user_profiles: {
+              full_name: "Anonymous",
+              avatar_url: null
+            }
+          }))
         } as Recommendation;
       } catch (err) {
         console.error("Error in recommendation query function:", err);
@@ -106,18 +114,9 @@ const RecommendationDetail = () => {
     enabled: !!id
   });
 
-  useEffect(() => {
-    if (!id) {
-      console.error("No ID in URL params, redirecting back");
-      navigate(-1);
-    }
-  }, [id, navigate]);
-
   if (!id) {
     return <RecommendationDetailSkeleton onBack={handleBack} />;
   }
-
-  const handleBack = () => navigate(-1);
 
   if (isLoading) {
     return <RecommendationDetailSkeleton onBack={handleBack} />;
