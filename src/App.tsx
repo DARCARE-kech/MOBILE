@@ -18,6 +18,8 @@ import Profile from "./pages/Profile";
 import ServiceDetail from "@/components/services/ServiceDetail";
 import BookSpaceService from "@/pages/services/BookSpaceService";
 import SpacesListPage from "@/pages/services/SpacesListPage";
+import RecommendationDetail from "./pages/explore/RecommendationDetail";
+import FavoritesPage from "./pages/explore/Favorites";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +74,8 @@ const App = () => {
               <Route path="/explore" element={<Explore />} />
               <Route path="/chatbot" element={<Chatbot />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
+              <Route path="/explore/favorites" element={<FavoritesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
