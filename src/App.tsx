@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
 import Services from "./pages/Services";
+import ServiceDetail from "./components/services/ServiceDetail";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/:id" element={<ServiceDetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

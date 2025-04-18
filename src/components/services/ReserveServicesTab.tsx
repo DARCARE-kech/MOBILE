@@ -6,7 +6,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, DoorOpen, ShoppingBag } from 'lucide-react';
+import IconButton from './IconButton';
 
 const ReserveServicesTab: React.FC = () => {
   const navigate = useNavigate();
@@ -64,16 +65,72 @@ const ReserveServicesTab: React.FC = () => {
               <span className="text-darcare-beige/70">
                 {service.estimated_duration}
               </span>
-              <Button 
+              <IconButton 
+                icon={<svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>}
+                variant="primary"
                 onClick={() => navigate(`/services/${service.id}`)}
-                className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-              >
-                Book Service
-              </Button>
+              />
             </div>
           </div>
         </Card>
       ))}
+      
+      {/* Special cards for Book Space and Shop */}
+      <Card 
+        className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden"
+      >
+        <AspectRatio ratio={16/9}>
+          <img 
+            src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=80&w=1770&ixlib=rb-4.0.3"
+            alt="Book a Space" 
+            className="w-full h-full object-cover"
+          />
+        </AspectRatio>
+        <div className="p-4">
+          <h2 className="text-darcare-white text-lg font-semibold mb-2">
+            Book a Space
+          </h2>
+          <p className="text-darcare-beige mb-4">
+            Reserve our exclusive facilities including the pool, padel court, and fitness center.
+          </p>
+          <div className="flex items-center justify-end">
+            <IconButton 
+              icon={<DoorOpen className="w-5 h-5" />}
+              variant="primary"
+              onClick={() => navigate(`/services/book-space`)}
+            />
+          </div>
+        </div>
+      </Card>
+      
+      <Card 
+        className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden"
+      >
+        <AspectRatio ratio={16/9}>
+          <img 
+            src="https://images.unsplash.com/photo-1580913428735-bd3c269d6a82?auto=format&fit=crop&q=80&w=1770&ixlib=rb-4.0.3"
+            alt="Shop" 
+            className="w-full h-full object-cover"
+          />
+        </AspectRatio>
+        <div className="p-4">
+          <h2 className="text-darcare-white text-lg font-semibold mb-2">
+            Shop
+          </h2>
+          <p className="text-darcare-beige mb-4">
+            Browse our exclusive selection of luxury items, local delicacies, and essentials.
+          </p>
+          <div className="flex items-center justify-end">
+            <IconButton 
+              icon={<ShoppingBag className="w-5 h-5" />}
+              variant="primary"
+              onClick={() => navigate(`/services/shop`)}
+            />
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
