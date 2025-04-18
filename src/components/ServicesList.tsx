@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ChevronRight, User, AlertTriangle, Plus } from "lucide-react";
+import { ChevronRight, User, AlertTriangle, Plus, Loader2 } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
 import {
   Dialog,
@@ -26,9 +26,29 @@ interface Service {
 
 interface ServicesListProps {
   services: Service[];
+  isLoading?: boolean;
 }
 
-const ServicesList: React.FC<ServicesListProps> = ({ services }) => {
+const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = false }) => {
+  if (isLoading) {
+    return (
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="section-title">Your Services</h2>
+          <Button variant="ghost" className="text-darcare-gold text-sm flex items-center gap-1" disabled>
+            Request Service <Plus size={16} />
+          </Button>
+        </div>
+        
+        <div className="luxury-card p-8 flex flex-col items-center justify-center text-center">
+          <Loader2 className="text-darcare-gold mb-3 h-8 w-8 animate-spin" />
+          <h3 className="text-darcare-white font-medium mb-2">Loading Services</h3>
+          <p className="text-darcare-beige/70 text-sm">Please wait while we fetch your services...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!services || services.length === 0) {
     return (
       <div className="p-4">

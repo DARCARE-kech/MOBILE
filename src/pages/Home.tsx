@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
@@ -15,83 +16,119 @@ import RecommendationsList from "@/components/RecommendationsList";
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState("home");
   const [currentStay, setCurrentStay] = useState<any>(null);
+  const [services, setServices] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const services = [
-    {
-      id: "1",
-      title: "Breakfast Service",
-      status: "active" as const,
-      time: "8:00 AM",
-      staff: "Amina",
-    },
-    {
-      id: "2",
-      title: "Pool Cleaning",
-      status: "completed" as const,
-      time: "Yesterday",
-      staff: "Mohammed",
-    },
-    {
-      id: "3",
-      title: "Spa Treatment",
-      status: "pending" as const,
-      time: "Today, 4:00 PM",
-      staff: "Yasmine",
-    },
-  ];
-
   useEffect(() => {
-    const fetchUserStay = async () => {
-      if (!user) return;
+    if (!user) return;
 
+    const linkDemoData = async () => {
       try {
-        const { data: currentStayData, error: currentStayError } = await supabase
-          .from('stays')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('status', 'current')
-          .single();
+        // Call the function to link demo data to the current user
+        const { data, error } = await supabase.rpc('link_demo_data_to_user', {
+          user_uuid: user.id
+        });
 
-        if (currentStayError && currentStayError.code !== 'PGRST116') {
-          throw currentStayError;
+        if (error) {
+          console.error('Error linking demo data:', error);
+        } else {
+          console.log('Demo data linked successfully:', data);
         }
 
-        if (currentStayData) {
-          setCurrentStay(currentStayData);
-          return;
-        }
-
-        const { data: upcomingStayData, error: upcomingStayError } = await supabase
-          .from('stays')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('status', 'upcoming')
-          .order('check_in', { ascending: true })
-          .limit(1)
-          .single();
-
-        if (upcomingStayError && upcomingStayError.code !== 'PGRST116') {
-          throw upcomingStayError;
-        }
-
-        if (upcomingStayData) {
-          setCurrentStay(upcomingStayData);
-        }
+        // Now fetch the user's data
+        await fetchUserData();
       } catch (error) {
-        console.error('Error fetching stay:', error);
+        console.error('Error in linkDemoData:', error);
         toast({
           title: "Error",
-          description: "Unable to fetch stay information",
+          description: "Unable to link demo data",
           variant: "destructive"
         });
       }
     };
 
-    fetchUserStay();
-  }, [user]);
+    const fetchUserData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch user's stay data
+        const { data: currentStayData, error: currentStayError } = await supabase
+          .from('stays')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('status', 'current')
+          .maybeSingle();
+
+        if (currentStayError) {
+          throw currentStayError;
+        }
+
+        if (currentStayData) {
+          setCurrentStay(currentStayData);
+        } else {
+          // If no current stay, check for upcoming stay
+          const { data: upcomingStayData, error: upcomingStayError } = await supabase
+            .from('stays')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('status', 'upcoming')
+            .order('check_in', { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+          if (upcomingStayError) {
+            throw upcomingStayError;
+          }
+
+          if (upcomingStayData) {
+            setCurrentStay(upcomingStayData);
+          }
+        }
+
+        // Fetch user's services
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('service_requests')
+          .select(`
+            id,
+            status,
+            preferred_time,
+            services (
+              name,
+              category
+            )
+          `)
+          .eq('user_id', user.id)
+          .order('preferred_time', { ascending: false });
+
+        if (servicesError) {
+          throw servicesError;
+        }
+
+        const formattedServices = servicesData.map(service => ({
+          id: service.id,
+          title: service.services?.name || 'Unknown Service',
+          status: service.status || 'pending',
+          time: service.preferred_time ? new Date(service.preferred_time).toLocaleString() : 'Unscheduled',
+          staff: "Assigned Staff" // This would ideally come from the database
+        }));
+
+        setServices(formattedServices);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toast({
+          title: "Error",
+          description: "Unable to fetch your data",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    linkDemoData();
+  }, [user, toast]);
 
   const handleLogout = () => {
     toast({
@@ -113,7 +150,7 @@ const Home: React.FC = () => {
 
       <div className="pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
-        <ServicesList services={services} />
+        <ServicesList services={services} isLoading={isLoading} />
         <RecommendationsList />
       </div>
 
