@@ -8,6 +8,45 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Star } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
+interface StaffAssignment {
+  id: string;
+  request_id: string;
+  staff_id: string | null;
+  staff_name: string | null;
+  assigned_at: string;
+}
+
+interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  estimated_duration: string | null;
+}
+
+interface ServiceRating {
+  id: string;
+  request_id: string;
+  user_id: string | null;
+  rating: number;
+  comment: string | null;
+  created_at: string | null;
+}
+
+interface ServiceRequest {
+  id: string;
+  user_id: string | null;
+  service_id: string | null;
+  preferred_time: string | null;
+  status: string | null;
+  note: string | null;
+  image_url: string | null;
+  created_at: string | null;
+  services: Service | null;
+  staff_assignments: StaffAssignment[];
+  service_ratings: ServiceRating[];
+}
+
 const HistoryTab: React.FC = () => {
   const { data: history, isLoading, error, refetch } = useQuery({
     queryKey: ['service-history'],
@@ -24,7 +63,7 @@ const HistoryTab: React.FC = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as ServiceRequest[];
     }
   });
 
@@ -92,7 +131,7 @@ const HistoryTab: React.FC = () => {
                 {record.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {new Date(record.preferred_time).toLocaleString()}
+                {new Date(record.preferred_time || '').toLocaleString()}
               </p>
               {record.staff_assignments && record.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">

@@ -6,6 +6,35 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
 
+interface StaffAssignment {
+  id: string;
+  request_id: string;
+  staff_id: string | null;
+  staff_name: string | null;
+  assigned_at: string;
+}
+
+interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  estimated_duration: string | null;
+}
+
+interface ServiceRequest {
+  id: string;
+  user_id: string | null;
+  service_id: string | null;
+  preferred_time: string | null;
+  status: string | null;
+  note: string | null;
+  image_url: string | null;
+  created_at: string | null;
+  services: Service | null;
+  staff_assignments: StaffAssignment[];
+}
+
 const MyRequestsTab: React.FC = () => {
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['my-service-requests'],
@@ -21,7 +50,7 @@ const MyRequestsTab: React.FC = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as ServiceRequest[];
     }
   });
 
@@ -63,7 +92,7 @@ const MyRequestsTab: React.FC = () => {
                 {request.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {new Date(request.preferred_time).toLocaleString()}
+                {new Date(request.preferred_time || '').toLocaleString()}
               </p>
               {request.staff_assignments && request.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">
