@@ -68,7 +68,7 @@ const RecommendationDetail = () => {
       // Map user_profiles property for each review to match our type
       const reviewsWithProfiles = data.reviews?.map(review => ({
         ...review,
-        user_profiles: review.profiles || {
+        user_profiles: review.user_profiles || {
           full_name: "Anonymous",
           avatar_url: null
         }
