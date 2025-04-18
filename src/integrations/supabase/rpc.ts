@@ -22,7 +22,7 @@ export interface ServiceRating {
 // Get staff assignments for a specific request
 export const getStaffAssignmentsForRequest = async (requestId: string): Promise<StaffAssignment[]> => {
   try {
-    // Use a direct query instead of an rpc call since the RPC function doesn't seem to be properly configured
+    // Use a direct query instead of an rpc call since the database doesn't match the types.ts file
     const { data, error } = await supabase
       .from('staff_assignments')
       .select('*')
@@ -43,7 +43,7 @@ export const getStaffAssignmentsForRequest = async (requestId: string): Promise<
 // Get service ratings for a specific request
 export const getServiceRatingsForRequest = async (requestId: string): Promise<ServiceRating[]> => {
   try {
-    // Use a direct query instead of an rpc call since the RPC function doesn't seem to be properly configured
+    // Use a direct query instead of an rpc call since the database doesn't match the types.ts file
     const { data, error } = await supabase
       .from('service_ratings')
       .select('*')

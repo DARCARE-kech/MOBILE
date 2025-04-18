@@ -136,6 +136,41 @@ export type Database = {
           },
         ]
       }
+      service_ratings: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          rating: number
+          request_id: string
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating: number
+          request_id: string
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating?: number
+          request_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_ratings_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_requests: {
         Row: {
           created_at: string | null
@@ -203,6 +238,38 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      staff_assignments: {
+        Row: {
+          assigned_at: string | null
+          id: string
+          request_id: string
+          staff_id: string | null
+          staff_name: string | null
+        }
+        Insert: {
+          assigned_at?: string | null
+          id?: string
+          request_id: string
+          staff_id?: string | null
+          staff_name?: string | null
+        }
+        Update: {
+          assigned_at?: string | null
+          id?: string
+          request_id?: string
+          staff_id?: string | null
+          staff_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_assignments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stays: {
         Row: {
