@@ -171,7 +171,7 @@ const TransportService = () => {
       <ServiceHeader title="Transport Service" showWeather />
       
       <ServiceBanner 
-        imageUrl={service?.image_url || getFallbackImage('/placeholder.svg')} 
+        imageUrl={service?.image_url || getFallbackImage("Transport Service", 0)} 
         altText="Transport Service" 
       />
       
