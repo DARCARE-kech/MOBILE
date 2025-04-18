@@ -91,7 +91,12 @@ const RecommendationsList = () => {
       <ScrollArea className="w-full">
         <div className="flex gap-4 pb-4">
           {recommendations?.map((item, index) => (
-            <RecommendationCard key={item.id} item={item} index={index} getFallbackImage={getFallbackImage} />
+            <RecommendationCard 
+              key={item.id} 
+              item={item} 
+              index={index} 
+              getFallbackImage={getFallbackImage} 
+            />
           ))}
         </div>
       </ScrollArea>
@@ -99,7 +104,7 @@ const RecommendationsList = () => {
   );
 };
 
-// Extracted card component for better organization
+// Extracted card component with improved image handling
 const RecommendationCard = ({ 
   item, 
   index, 
@@ -123,7 +128,7 @@ const RecommendationCard = ({
             <img 
               src={imageSource}
               alt={item.title} 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-opacity duration-300"
               onError={() => setImageError(true)}
               loading="lazy"
             />
