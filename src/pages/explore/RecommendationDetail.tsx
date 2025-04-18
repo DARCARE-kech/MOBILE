@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,8 +13,7 @@ import { TagsList } from "@/components/explore/TagsList";
 import { RecommendationMap } from "@/components/explore/RecommendationMap";
 import { RecommendationReviews } from "@/components/explore/RecommendationReviews";
 import { RecommendationReservation } from "@/components/explore/RecommendationReservation";
-import WeatherDisplay from "@/components/WeatherDisplay";
-import Logo from "@/components/Logo";
+import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
 import type { Recommendation } from "@/types/recommendation";
 
 const RecommendationDetail = () => {
@@ -89,7 +87,7 @@ const RecommendationDetail = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <Header title="Loading..." onBack={() => navigate(-1)} />
+        <RecommendationDetailHeader title="Loading..." onBack={() => navigate(-1)} />
         <div className="animate-pulse p-4 space-y-4">
           <div className="h-64 bg-darcare-gold/20 rounded-xl" />
           <div className="h-8 w-2/3 bg-darcare-gold/20 rounded" />
@@ -103,7 +101,7 @@ const RecommendationDetail = () => {
   if (error || !recommendation) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <Header title="Not Found" onBack={() => navigate(-1)} />
+        <RecommendationDetailHeader title="Not Found" onBack={() => navigate(-1)} />
         <div className="p-4 text-center text-darcare-beige">
           <p className="mb-4">Recommendation not found</p>
           <Button
@@ -121,7 +119,7 @@ const RecommendationDetail = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <Header title={recommendation.title} onBack={() => navigate(-1)} />
+      <RecommendationDetailHeader title={recommendation.title} onBack={() => navigate(-1)} />
       
       <RecommendationHeader recommendation={recommendation} />
 
@@ -168,57 +166,6 @@ const RecommendationDetail = () => {
       
       <BottomNavigation activeTab="explore" />
     </div>
-  );
-};
-
-const Header = ({ title, onBack }: { title: string; onBack: () => void }) => {
-  const { data: notifications } = useQuery({
-    queryKey: ['notifications', 'unread'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('is_read', false);
-      
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const hasUnreadNotifications = notifications && notifications.length > 0;
-
-  return (
-    <header className="p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
-      <div className="flex items-center gap-3">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={onBack}
-          className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 -ml-2"
-        >
-          <ChevronLeft size={24} />
-        </Button>
-        <Logo size="sm" color="gold" withText={false} />
-      </div>
-      
-      <div className="font-serif text-darcare-gold text-xl hidden md:block">
-        {title}
-      </div>
-      
-      <div className="flex items-center gap-4">
-        <WeatherDisplay />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-          onClick={() => window.location.href = '/notifications'}
-        >
-          {hasUnreadNotifications && (
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-          )}
-        </Button>
-      </div>
-    </header>
   );
 };
 
