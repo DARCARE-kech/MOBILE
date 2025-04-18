@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,67 +24,98 @@ const RecommendationDetail = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("info");
 
+  console.log("RecommendationDetail - Received ID:", id);
+
   const { data: recommendation, isLoading, error, refetch } = useQuery({
     queryKey: ['recommendation', id],
     queryFn: async () => {
-      const [recommendationResponse, favoriteResponse] = await Promise.all([
-        supabase
-          .from('recommendations')
-          .select(`
-            *,
-            reviews (
-              id,
-              rating,
-              comment,
-              created_at,
-              user_id,
-              user_profiles:profiles(full_name, avatar_url)
-            )
-          `)
-          .eq('id', id)
-          .single(),
-        
-        user ? supabase
-          .from('favorites')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('recommendation_id', id)
-          .maybeSingle() : Promise.resolve({ data: null, error: null })
-      ]);
-
-      const { data, error } = recommendationResponse;
-
-      if (error) throw error;
-      
-      if (!data) {
-        throw new Error("Recommendation not found");
+      if (!id) {
+        console.error("No recommendation ID provided");
+        throw new Error("Recommendation ID is required");
       }
       
-      const avgRating = data.reviews?.length 
-        ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
-        : 0;
+      console.log("Fetching recommendation with ID:", id);
+      
+      try {
+        const [recommendationResponse, favoriteResponse] = await Promise.all([
+          supabase
+            .from('recommendations')
+            .select(`
+              *,
+              reviews (
+                id,
+                rating,
+                comment,
+                created_at,
+                user_id,
+                user_profiles:profiles(full_name, avatar_url)
+              )
+            `)
+            .eq('id', id)
+            .single(),
+          
+          user ? supabase
+            .from('favorites')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('recommendation_id', id)
+            .maybeSingle() : Promise.resolve({ data: null, error: null })
+        ]);
 
-      const reviewsWithProfiles = data.reviews?.map(review => ({
-        ...review,
-        user_profiles: review.user_profiles || {
-          full_name: "Anonymous",
-          avatar_url: null
+        const { data, error } = recommendationResponse;
+        
+        if (error) {
+          console.error("Supabase error fetching recommendation:", error);
+          throw error;
         }
-      }));
+        
+        if (!data) {
+          console.error("No recommendation found with ID:", id);
+          throw new Error("Recommendation not found");
+        }
+        
+        console.log("Recommendation data received:", data);
+        
+        const avgRating = data.reviews?.length 
+          ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
+          : 0;
 
-      return {
-        ...data,
-        is_reservable: data.is_reservable || false,
-        tags: data.tags || [],
-        rating: Number(avgRating.toFixed(1)),
-        review_count: data.reviews?.length || 0,
-        is_favorite: !!favoriteResponse.data,
-        reviews: reviewsWithProfiles
-      } as Recommendation;
+        const reviewsWithProfiles = data.reviews?.map(review => ({
+          ...review,
+          user_profiles: review.user_profiles || {
+            full_name: "Anonymous",
+            avatar_url: null
+          }
+        }));
+
+        return {
+          ...data,
+          is_reservable: data.is_reservable || false,
+          tags: data.tags || [],
+          rating: Number(avgRating.toFixed(1)),
+          review_count: data.reviews?.length || 0,
+          is_favorite: !!favoriteResponse.data,
+          reviews: reviewsWithProfiles
+        } as Recommendation;
+      } catch (err) {
+        console.error("Error in recommendation query function:", err);
+        throw err;
+      }
     },
-    retry: 3,
-    retryDelay: 500
+    retry: 1,
+    enabled: !!id
   });
+
+  useEffect(() => {
+    if (!id) {
+      console.error("No ID in URL params, redirecting back");
+      navigate(-1);
+    }
+  }, [id, navigate]);
+
+  if (!id) {
+    return <RecommendationDetailSkeleton onBack={handleBack} />;
+  }
 
   const handleBack = () => navigate(-1);
 
@@ -92,6 +124,7 @@ const RecommendationDetail = () => {
   }
 
   if (error || !recommendation) {
+    console.error("Error or no recommendation:", error);
     return <RecommendationDetailError onBack={handleBack} onRetry={refetch} />;
   }
 
