@@ -1,11 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import Logo from "@/components/Logo";
-import DrawerMenu from "@/components/DrawerMenu";
 import BottomNavigation from "@/components/BottomNavigation";
 import FloatingAction from "@/components/FloatingAction";
 import { useToast } from "@/components/ui/use-toast";
@@ -13,12 +10,12 @@ import CurrentStay from "@/components/CurrentStay";
 import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import MainHeader from "@/components/MainHeader";
 
 // Create a new query client for this page
 const queryClient = new QueryClient();
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("home");
   const [currentStay, setCurrentStay] = useState<any>(null);
   const [services, setServices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -109,23 +106,9 @@ const Home: React.FC = () => {
     fetchUserData();
   }, [user, toast]);
 
-  const handleLogout = () => {
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
-    });
-    navigate("/auth");
-  };
-
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <header className="p-4 flex justify-between items-center border-b border-darcare-gold/20">
-        <DrawerMenu onLogout={handleLogout} />
-        <Logo size="sm" color="gold" />
-        <div className="w-10 h-10 rounded-full bg-darcare-gold/10 border border-darcare-gold/30 flex items-center justify-center text-darcare-beige">
-          <User size={20} />
-        </div>
-      </header>
+      <MainHeader />
 
       <div className="pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
@@ -138,7 +121,7 @@ const Home: React.FC = () => {
       </div>
 
       <FloatingAction />
-      <BottomNavigation activeTab={activeTab} onChangeTab={setActiveTab} />
+      <BottomNavigation activeTab="home" />
     </div>
   );
 };

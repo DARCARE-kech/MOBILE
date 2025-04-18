@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +13,9 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
 import Services from "./pages/Services";
+import Explore from "./pages/Explore";
+import Chatbot from "./pages/Chatbot";
+import Profile from "./pages/Profile";
 import ServiceDetail from "@/components/services/ServiceDetail";
 import BookSpaceService from "@/components/services/BookSpaceService";
 
@@ -64,6 +68,9 @@ const App = () => {
               <Route path="/services" element={<Services />} />
               <Route path="/services/space/:id?" element={<BookSpaceService />} />
               <Route path="/services/:id" element={<ServiceDetail />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

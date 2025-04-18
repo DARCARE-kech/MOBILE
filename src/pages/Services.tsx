@@ -4,15 +4,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReserveServicesTab from "@/components/services/ReserveServicesTab";
 import MyRequestsTab from "@/components/services/MyRequestsTab";
 import HistoryTab from "@/components/services/HistoryTab";
+import MainHeader from "@/components/MainHeader";
+import BottomNavigation from "@/components/BottomNavigation";
 
 const ServicesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("reserve");
 
   return (
     <div className="bg-darcare-navy min-h-screen">
-      <div className="p-4">
-        <h1 className="text-darcare-gold text-2xl font-serif mb-4">Services</h1>
-        
+      <MainHeader title="Services" />
+      
+      <div className="p-4 pb-24">
         <Tabs 
           value={activeTab} 
           onValueChange={setActiveTab} 
@@ -52,6 +54,8 @@ const ServicesPage: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      <BottomNavigation activeTab="services" />
     </div>
   );
 };
