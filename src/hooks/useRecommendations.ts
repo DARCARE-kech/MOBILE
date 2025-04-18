@@ -20,13 +20,12 @@ export function useRecommendations() {
       // Fetch ratings for all recommendations
       const recommendationsWithExtras = await Promise.all(
         recs.map(async (rec) => {
-          const [{ data: rating }, { data: reviews }, { data: favorites }] = await Promise.all([
+          const [{ data: rating }, reviewsResponse, { data: favorites }] = await Promise.all([
             supabase.rpc('get_recommendation_avg_rating', { rec_id: rec.id }),
             supabase
               .from('reviews')
-              .select('id')
-              .eq('recommendation_id', rec.id)
-              .count(),
+              .select('id', { count: 'exact' })
+              .eq('recommendation_id', rec.id),
             user ? supabase
               .from('favorites')
               .select('id')
@@ -38,7 +37,7 @@ export function useRecommendations() {
           return { 
             ...rec, 
             rating, 
-            review_count: reviews?.count || 0,
+            review_count: reviewsResponse.count || 0,
             is_favorite: !!favorites
           };
         })

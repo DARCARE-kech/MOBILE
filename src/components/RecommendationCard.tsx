@@ -16,6 +16,7 @@ import { getFallbackImage } from "@/utils/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "./ui/use-toast";
+import { RatingStars } from "./RatingStars";
 import type { Recommendation } from "@/types/recommendation";
 
 interface RecommendationCardProps {
