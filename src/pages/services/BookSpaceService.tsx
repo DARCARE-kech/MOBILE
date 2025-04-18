@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   CalendarClock, 
   Users,
@@ -33,6 +34,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 const BookSpaceService = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const [selectedSpace, setSelectedSpace] = useState<Space | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -40,6 +42,7 @@ const BookSpaceService = () => {
   const [isTimeOpen, setIsTimeOpen] = useState(false);
   const [peopleCount, setPeopleCount] = useState(1);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm({
     defaultValues: {
@@ -59,6 +62,15 @@ const BookSpaceService = () => {
   ];
   
   const onSubmit = async (values: any) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "You must be logged in to submit a booking",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!selectedSpace) {
       toast({
         title: "No Space Selected",
@@ -77,22 +89,48 @@ const BookSpaceService = () => {
       return;
     }
     
+    setIsSubmitting(true);
+    
     try {
       // First get the service_id for "Book Space" service
-      const { data: bookSpaceService } = await supabase
+      const { data: bookSpaceService, error: serviceError } = await supabase
         .from('services')
         .select('id')
         .ilike('name', '%space%')
         .single();
       
-      if (!bookSpaceService) {
+      if (serviceError || !bookSpaceService) {
+        console.error("Error finding Book Space service:", serviceError);
         throw new Error("Book Space service not found");
       }
       
-      const { error } = await supabase
+      // Prepare the preferred time as a Date object
+      const preferredTime = new Date(
+        values.date.getFullYear(),
+        values.date.getMonth(),
+        values.date.getDate(),
+        parseInt(selectedTime.split(':')[0]),
+        0, 0
+      );
+      
+      console.log("Submitting space booking with data:", {
+        service_id: bookSpaceService.id,
+        user_id: user.id,
+        note: JSON.stringify({
+          space_id: selectedSpace.id,
+          space_name: selectedSpace.name,
+          time: selectedTime,
+          people: peopleCount,
+          notes: values.notes
+        }),
+        preferred_time: preferredTime.toISOString(),
+      });
+      
+      const { data, error } = await supabase
         .from('service_requests')
         .insert({
           service_id: bookSpaceService.id,
+          user_id: user.id,
           note: JSON.stringify({
             space_id: selectedSpace.id,
             space_name: selectedSpace.name,
@@ -100,17 +138,16 @@ const BookSpaceService = () => {
             people: peopleCount,
             notes: values.notes
           }),
-          preferred_time: new Date(
-            values.date.getFullYear(),
-            values.date.getMonth(),
-            values.date.getDate(),
-            parseInt(selectedTime.split(':')[0]),
-            0, 0
-          ).toISOString(),
+          preferred_time: preferredTime.toISOString(),
           status: 'pending'
         });
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error submitting booking:", error);
+        throw error;
+      }
+      
+      console.log("Space booking submitted successfully:", data);
       
       toast({
         title: "Success",
@@ -120,13 +157,15 @@ const BookSpaceService = () => {
       setSheetOpen(false);
       setSelectedSpace(null);
       navigate('/services');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting booking:", error);
       toast({
         title: "Error",
-        description: "Failed to submit your booking. Please try again.",
+        description: error.message || "Failed to submit your booking. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -373,7 +412,14 @@ const BookSpaceService = () => {
                       icon={<Send className="w-5 h-5" />}
                       variant="primary"
                       size="lg"
+                      className={isSubmitting ? "opacity-70 cursor-not-allowed" : ""}
+                      disabled={isSubmitting}
                     />
+                    {isSubmitting && (
+                      <div className="absolute ml-16 flex items-center">
+                        <div className="animate-spin w-5 h-5 border-2 border-darcare-gold border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
                   </div>
                 </form>
               </Form>

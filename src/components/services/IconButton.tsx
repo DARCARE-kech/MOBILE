@@ -15,6 +15,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   size = 'md', 
   badge,
   className,
+  disabled,
   ...props 
 }) => {
   const sizeClasses = {
@@ -35,8 +36,10 @@ const IconButton: React.FC<IconButtonProps> = ({
         'rounded-full flex items-center justify-center transition-colors relative',
         sizeClasses[size],
         variantClasses[variant],
+        disabled && 'opacity-70 cursor-not-allowed',
         className
       )}
+      disabled={disabled}
       {...props}
     >
       {icon}

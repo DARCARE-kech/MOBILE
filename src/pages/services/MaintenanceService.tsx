@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Wrench, 
   CalendarClock, 
@@ -34,11 +36,13 @@ const MaintenanceService = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm({
     defaultValues: {
@@ -96,6 +100,15 @@ const MaintenanceService = () => {
   };
   
   const onSubmit = async (values: any) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "You must be logged in to submit a request",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!selectedTime) {
       toast({
         title: "Time Required",
@@ -105,28 +118,51 @@ const MaintenanceService = () => {
       return;
     }
     
+    setIsSubmitting(true);
+    
     try {
-      const { error } = await supabase
+      // Prepare the preferred time as a Date object
+      const preferredTime = new Date(
+        values.date.getFullYear(),
+        values.date.getMonth(),
+        values.date.getDate(),
+        parseInt(selectedTime.split(':')[0]),
+        0, 0
+      );
+      
+      console.log("Submitting maintenance request with data:", {
+        service_id: id,
+        user_id: user.id,
+        note: JSON.stringify({
+          ...values,
+          time: selectedTime,
+          hasImage: !!imagePreview
+        }),
+        preferred_time: preferredTime.toISOString(),
+        image_url: imagePreview,
+      });
+      
+      const { data, error } = await supabase
         .from('service_requests')
         .insert({
           service_id: id,
+          user_id: user.id,
           note: JSON.stringify({
             ...values,
             time: selectedTime,
             hasImage: !!imagePreview
           }),
-          preferred_time: new Date(
-            values.date.getFullYear(),
-            values.date.getMonth(),
-            values.date.getDate(),
-            parseInt(selectedTime.split(':')[0]),
-            0, 0
-          ).toISOString(),
+          preferred_time: preferredTime.toISOString(),
           image_url: imagePreview,
           status: 'pending'
         });
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error submitting request:", error);
+        throw error;
+      }
+      
+      console.log("Maintenance request submitted successfully:", data);
       
       toast({
         title: "Success",
@@ -134,13 +170,15 @@ const MaintenanceService = () => {
       });
       
       navigate('/services');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting request:", error);
       toast({
         title: "Error",
-        description: "Failed to submit your request. Please try again.",
+        description: error.message || "Failed to submit your request. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -165,13 +203,13 @@ const MaintenanceService = () => {
       <ServiceHeader title="Maintenance Service" />
       
       <ServiceBanner 
-        imageUrl={service.image_url || '/placeholder.svg'} 
+        imageUrl={service?.image_url || '/placeholder.svg'} 
         altText="Maintenance Service" 
       />
       
       <div className="p-4">
-        <h2 className="text-darcare-gold font-serif text-2xl mt-2 mb-1">{service.name}</h2>
-        <p className="text-darcare-beige mb-4">{service.description}</p>
+        <h2 className="text-darcare-gold font-serif text-2xl mt-2 mb-1">{service?.name}</h2>
+        <p className="text-darcare-beige mb-4">{service?.description}</p>
         
         <Card className="bg-darcare-navy border-darcare-gold/20 p-4 mb-6">
           <FormSectionTitle title="How to report a problem" icon={<Wrench className="w-5 h-5" />} />
@@ -370,7 +408,14 @@ const MaintenanceService = () => {
                 icon={<Send className="w-5 h-5" />}
                 variant="primary"
                 size="lg"
+                className={isSubmitting ? "opacity-70 cursor-not-allowed" : ""}
+                disabled={isSubmitting}
               />
+              {isSubmitting && (
+                <div className="absolute ml-16 flex items-center">
+                  <div className="animate-spin w-5 h-5 border-2 border-darcare-gold border-t-transparent rounded-full"></div>
+                </div>
+              )}
             </div>
           </form>
         </Form>

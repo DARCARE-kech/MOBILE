@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Clock, 
   CalendarClock, 
@@ -34,9 +35,11 @@ const CleaningService = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm({
     defaultValues: {
@@ -77,6 +80,15 @@ const CleaningService = () => {
   ];
   
   const onSubmit = async (values: any) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "You must be logged in to submit a request",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!selectedTime) {
       toast({
         title: "Time Required",
@@ -86,26 +98,48 @@ const CleaningService = () => {
       return;
     }
     
+    setIsSubmitting(true);
+    
     try {
-      const { error } = await supabase
+      // Prepare the preferred time as a Date object
+      const preferredTime = new Date(
+        values.date.getFullYear(),
+        values.date.getMonth(),
+        values.date.getDate(),
+        parseInt(selectedTime.split(':')[0]),
+        0, 0
+      );
+      
+      console.log("Submitting service request with data:", {
+        service_id: id,
+        user_id: user.id,
+        note: JSON.stringify({
+          ...values,
+          time: selectedTime
+        }),
+        preferred_time: preferredTime.toISOString(),
+        status: 'pending'
+      });
+      
+      const { data, error } = await supabase
         .from('service_requests')
         .insert({
           service_id: id,
+          user_id: user.id,
           note: JSON.stringify({
             ...values,
             time: selectedTime
           }),
-          preferred_time: new Date(
-            values.date.getFullYear(),
-            values.date.getMonth(),
-            values.date.getDate(),
-            parseInt(selectedTime.split(':')[0]),
-            0, 0
-          ).toISOString(),
+          preferred_time: preferredTime.toISOString(),
           status: 'pending'
         });
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error submitting request:", error);
+        throw error;
+      }
+      
+      console.log("Service request submitted successfully:", data);
       
       toast({
         title: "Success",
@@ -113,13 +147,15 @@ const CleaningService = () => {
       });
       
       navigate('/services');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting request:", error);
       toast({
         title: "Error",
-        description: "Failed to submit your request. Please try again.",
+        description: error.message || "Failed to submit your request. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -144,17 +180,17 @@ const CleaningService = () => {
       <ServiceHeader title="Cleaning Service" />
       
       <ServiceBanner 
-        imageUrl={service.image_url || '/placeholder.svg'} 
+        imageUrl={service?.image_url || '/placeholder.svg'} 
         altText="Cleaning Service" 
       />
       
       <div className="p-4">
-        <h2 className="text-darcare-gold font-serif text-2xl mt-2 mb-1">{service.name}</h2>
-        <p className="text-darcare-beige mb-4">{service.description}</p>
+        <h2 className="text-darcare-gold font-serif text-2xl mt-2 mb-1">{service?.name}</h2>
+        <p className="text-darcare-beige mb-4">{service?.description}</p>
         
         <div className="flex items-center gap-3 mb-6 text-darcare-beige">
           <Clock className="text-darcare-gold w-5 h-5" />
-          <span>{service.estimated_duration}</span>
+          <span>{service?.estimated_duration}</span>
         </div>
         
         <Form {...form}>
@@ -366,7 +402,14 @@ const CleaningService = () => {
                 icon={<Send className="w-5 h-5" />}
                 variant="primary"
                 size="lg"
+                className={isSubmitting ? "opacity-70 cursor-not-allowed" : ""}
+                disabled={isSubmitting}
               />
+              {isSubmitting && (
+                <div className="absolute ml-16 flex items-center">
+                  <div className="animate-spin w-5 h-5 border-2 border-darcare-gold border-t-transparent rounded-full"></div>
+                </div>
+              )}
             </div>
           </form>
         </Form>
