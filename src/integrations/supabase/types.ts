@@ -70,33 +70,51 @@ export type Database = {
       }
       recommendations: {
         Row: {
+          address: string | null
           category: string | null
+          contact_phone: string | null
           description: string | null
+          email: string | null
           id: string
           image_url: string | null
+          is_reservable: boolean | null
           latitude: number | null
           location: string | null
           longitude: number | null
+          opening_hours: string | null
+          tags: string[] | null
           title: string
         }
         Insert: {
+          address?: string | null
           category?: string | null
+          contact_phone?: string | null
           description?: string | null
+          email?: string | null
           id?: string
           image_url?: string | null
+          is_reservable?: boolean | null
           latitude?: number | null
           location?: string | null
           longitude?: number | null
+          opening_hours?: string | null
+          tags?: string[] | null
           title: string
         }
         Update: {
+          address?: string | null
           category?: string | null
+          contact_phone?: string | null
           description?: string | null
+          email?: string | null
           id?: string
           image_url?: string | null
+          is_reservable?: boolean | null
           latitude?: number | null
           location?: string | null
           longitude?: number | null
+          opening_hours?: string | null
+          tags?: string[] | null
           title?: string
         }
         Relationships: []

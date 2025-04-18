@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +25,6 @@ const RecommendationDetail = () => {
   const { data: recommendation, isLoading, error } = useQuery({
     queryKey: ['recommendation', id],
     queryFn: async () => {
-      // Fetch the recommendation with all its reviews and check if it's a favorite
       const [recommendationResponse, favoriteResponse] = await Promise.all([
         supabase
           .from('recommendations')
@@ -60,12 +58,10 @@ const RecommendationDetail = () => {
         throw new Error("Recommendation not found");
       }
       
-      // Calculate average rating
       const avgRating = data.reviews?.length 
         ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
         : 0;
 
-      // Map user_profiles property for each review to match our type
       const reviewsWithProfiles = data.reviews?.map(review => ({
         ...review,
         user_profiles: review.user_profiles || {
@@ -74,23 +70,20 @@ const RecommendationDetail = () => {
         }
       }));
 
-      // Make sure all required properties are present
       return {
         ...data,
         is_reservable: data.is_reservable || false,
-        tags: data.tags || [], 
+        tags: data.tags || [],
         rating: Number(avgRating.toFixed(1)),
         review_count: data.reviews?.length || 0,
         is_favorite: !!favoriteResponse.data,
         reviews: reviewsWithProfiles
       } as Recommendation;
     },
-    // Retry logic to handle transient failures
     retry: 3,
     retryDelay: 500
   });
 
-  // Handle loading state
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
@@ -105,7 +98,6 @@ const RecommendationDetail = () => {
     );
   }
 
-  // Handle error state
   if (error || !recommendation) {
     return (
       <div className="min-h-screen bg-darcare-navy">
@@ -159,7 +151,6 @@ const RecommendationDetail = () => {
           <TabsContent value="info">
             <RecommendationInfo recommendation={recommendation} />
             
-            {/* Contact information */}
             {(recommendation.contact_phone || recommendation.email || recommendation.opening_hours) && (
               <div className="mt-6 space-y-3">
                 <h3 className="text-lg font-serif text-darcare-gold">Contact & Hours</h3>
@@ -187,7 +178,6 @@ const RecommendationDetail = () => {
               </div>
             )}
             
-            {/* Tags */}
             {recommendation.tags && recommendation.tags.length > 0 && (
               <div className="mt-6">
                 <h3 className="text-lg font-serif text-darcare-gold mb-2">Features</h3>
@@ -205,7 +195,6 @@ const RecommendationDetail = () => {
           <TabsContent value="map">
             <RecommendationMap recommendation={recommendation} />
             
-            {/* Address */}
             {recommendation.address && (
               <div className="mt-4 flex items-center gap-2 text-darcare-beige p-3 border border-darcare-gold/20 rounded-lg">
                 <MapPin size={16} className="text-darcare-gold flex-shrink-0" />
@@ -231,7 +220,6 @@ const RecommendationDetail = () => {
   );
 };
 
-// Header component with back button and matching Home header style
 const Header = ({ title, onBack }: { title: string; onBack: () => void }) => {
   const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],

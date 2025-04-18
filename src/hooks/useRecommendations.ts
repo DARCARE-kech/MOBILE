@@ -12,12 +12,11 @@ export function useRecommendations() {
     queryFn: async () => {
       const { data: recs, error: recsError } = await supabase
         .from('recommendations')
-        .select('*')
+        .select('*, reviews(rating)')
         .order('title');
       
       if (recsError) throw recsError;
 
-      // Fetch ratings for all recommendations
       const recommendationsWithExtras = await Promise.all(
         recs.map(async (rec) => {
           const [{ data: rating }, reviewsResponse, { data: favorites }] = await Promise.all([
@@ -34,13 +33,11 @@ export function useRecommendations() {
               .maybeSingle() : Promise.resolve({ data: null })
           ]);
 
-          // Create a new object with all recommendation properties plus our additional ones
-          return { 
-            ...rec, 
-            rating, 
+          return {
+            ...rec,
+            rating: rating || 0,
             review_count: reviewsResponse.count || 0,
             is_favorite: !!favorites,
-            // Safely add properties with default values if they don't exist in the database
             is_reservable: rec.is_reservable || false,
             tags: rec.tags || [],
             contact_phone: rec.contact_phone || null,
