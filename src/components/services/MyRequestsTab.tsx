@@ -45,7 +45,7 @@ const MyRequestsTab: React.FC = () => {
       
       if (requestsError) throw requestsError;
       
-      // For each request, fetch staff assignments separately using RPC
+      // For each request, fetch staff assignments separately using our updated helper function
       const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
         const staffAssignments = await getStaffAssignmentsForRequest(request.id);
         
@@ -86,7 +86,7 @@ const MyRequestsTab: React.FC = () => {
 
   return (
     <div className="space-y-4 mt-4">
-      {requests.map(request => (
+      {requests?.map(request => (
         <Card 
           key={request.id} 
           className="bg-darcare-navy border border-darcare-gold/20 p-4"

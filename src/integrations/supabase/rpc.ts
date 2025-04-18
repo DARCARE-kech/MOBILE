@@ -22,10 +22,11 @@ export interface ServiceRating {
 // Get staff assignments for a specific request
 export const getStaffAssignmentsForRequest = async (requestId: string): Promise<StaffAssignment[]> => {
   try {
+    // Use a direct query instead of an rpc call since the RPC function doesn't seem to be properly configured
     const { data, error } = await supabase
-      .rpc('get_staff_assignments_for_request', { 
-        request_id_param: requestId 
-      });
+      .from('staff_assignments')
+      .select('*')
+      .eq('request_id', requestId);
     
     if (error) {
       console.error('Error in getStaffAssignmentsForRequest:', error);
@@ -42,10 +43,11 @@ export const getStaffAssignmentsForRequest = async (requestId: string): Promise<
 // Get service ratings for a specific request
 export const getServiceRatingsForRequest = async (requestId: string): Promise<ServiceRating[]> => {
   try {
+    // Use a direct query instead of an rpc call since the RPC function doesn't seem to be properly configured
     const { data, error } = await supabase
-      .rpc('get_service_ratings_for_request', { 
-        request_id_param: requestId 
-      });
+      .from('service_ratings')
+      .select('*')
+      .eq('request_id', requestId);
     
     if (error) {
       console.error('Error in getServiceRatingsForRequest:', error);

@@ -120,7 +120,7 @@ const HistoryTab: React.FC = () => {
 
   return (
     <div className="space-y-4 mt-4">
-      {history.map(record => (
+      {history?.map(record => (
         <Card 
           key={record.id} 
           className="bg-darcare-navy border border-darcare-gold/20 p-4"
