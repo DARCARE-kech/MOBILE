@@ -39,7 +39,8 @@ const FavoritesPage = () => {
         return {
           ...fav.recommendations,
           is_favorite: true,
-          is_reservable: fav.recommendations.is_reservable || false,
+          // Handle is_reservable even if it doesn't exist in the database
+          is_reservable: fav.recommendations.is_reservable !== undefined ? fav.recommendations.is_reservable : false,
           rating: Number(avgRating.toFixed(1)),
           review_count: reviews.length
         } as Recommendation;

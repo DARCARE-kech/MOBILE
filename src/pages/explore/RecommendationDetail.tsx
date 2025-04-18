@@ -54,7 +54,8 @@ const RecommendationDetail = () => {
       // Make sure all required properties are present
       return {
         ...data,
-        is_reservable: data.is_reservable ?? false,
+        // Handle is_reservable even if it doesn't exist in the database
+        is_reservable: data.is_reservable !== undefined ? data.is_reservable : false,
         rating: Number(avgRating.toFixed(1)),
         review_count: data.reviews?.length || 0,
         is_favorite: false, // Default value, will be updated if user has favorited

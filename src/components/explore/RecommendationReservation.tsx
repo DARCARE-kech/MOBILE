@@ -50,16 +50,28 @@ export const RecommendationReservation = ({ recommendation }: RecommendationRese
 
     setIsSubmitting(true);
     try {
-      // Insert directly into the reservations table instead of using RPC
+      // Use service_requests table instead of reservations
       const { error } = await supabase
-        .from('reservations')
+        .from('service_requests')
         .insert({
-          recommendation_id: recommendation.id,
+          service_id: null, // We don't have a specific service for recommendations
           user_id: user.id,
-          reservation_date: date.toISOString().split('T')[0],
-          reservation_time: time,
-          people_count: peopleCount,
-          note: note || null
+          preferred_time: new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            parseInt(time.split(':')[0]),
+            parseInt(time.split(':')[1] || "0"),
+            0
+          ).toISOString(),
+          note: JSON.stringify({
+            recommendation_id: recommendation.id,
+            time: time,
+            people_count: peopleCount,
+            note: note || null,
+            type: 'recommendation_reservation'
+          }),
+          status: 'pending'
         });
 
       if (error) throw error;
@@ -146,4 +158,3 @@ export const RecommendationReservation = ({ recommendation }: RecommendationRese
     </div>
   );
 };
-

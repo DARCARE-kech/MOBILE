@@ -52,7 +52,8 @@ export function useRecommendationsQuery({
           ...item,
           rating: Number(avgRating.toFixed(1)),
           review_count: item.reviews?.length || 0,
-          is_reservable: item.is_reservable || false,
+          // Handle is_reservable even if it doesn't exist in the database
+          is_reservable: item.is_reservable !== undefined ? item.is_reservable : false,
           is_favorite: item.favorites?.length > 0
         } as Recommendation;
       });

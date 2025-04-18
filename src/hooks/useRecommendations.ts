@@ -39,8 +39,9 @@ export function useRecommendations() {
             rating, 
             review_count: reviewsResponse.count || 0,
             is_favorite: !!favorites,
-            is_reservable: rec.is_reservable || false
-          };
+            // Handle is_reservable even if it doesn't exist in the database
+            is_reservable: rec.is_reservable !== undefined ? rec.is_reservable : false
+          } as Recommendation;
         })
       );
 
