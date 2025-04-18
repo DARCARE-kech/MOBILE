@@ -8,6 +8,11 @@ export interface Recommendation {
   latitude: number | null;
   longitude: number | null;
   image_url: string | null;
+  contact_phone: string | null;
+  email: string | null;
+  opening_hours: string | null;
+  address: string | null;
+  tags: string[] | null;
   is_reservable: boolean;
   rating?: number;
   review_count?: number;

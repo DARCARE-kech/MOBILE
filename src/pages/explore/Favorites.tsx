@@ -1,11 +1,15 @@
 
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
-import MainHeader from "@/components/MainHeader";
+import BottomNavigation from "@/components/BottomNavigation";
 import { RecommendationCard } from "@/components/explore/RecommendationCard";
+import WeatherDisplay from "@/components/WeatherDisplay";
+import Logo from "@/components/Logo";
 import type { Recommendation } from "@/types/recommendation";
 
 const FavoritesPage = () => {
@@ -39,14 +43,21 @@ const FavoritesPage = () => {
         return {
           ...fav.recommendations,
           is_favorite: true,
-          // Safely add is_reservable with a default value
-          is_reservable: false, // Set a default value since it doesn't exist in the database
+          // Safely add missing properties with default values
+          is_reservable: fav.recommendations.is_reservable || false,
+          tags: fav.recommendations.tags || [],
+          contact_phone: fav.recommendations.contact_phone || null,
+          email: fav.recommendations.email || null,
+          opening_hours: fav.recommendations.opening_hours || null,
+          address: fav.recommendations.address || null,
           rating: Number(avgRating.toFixed(1)),
           review_count: reviews.length
         } as Recommendation;
       });
     },
-    enabled: !!user
+    enabled: !!user,
+    retry: 3,
+    retryDelay: 500
   });
 
   const handleToggleFavorite = async (id: string) => {
@@ -81,7 +92,7 @@ const FavoritesPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Favorites" />
+        <Header title="Favorites" onBack={() => navigate('/explore')} />
         <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="animate-pulse">
@@ -91,13 +102,14 @@ const FavoritesPage = () => {
             </div>
           ))}
         </div>
+        <BottomNavigation activeTab="explore" />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title="Favorites" />
+      <Header title="Favorites" onBack={() => navigate('/explore')} />
       
       <div className="p-4 pb-24">
         {!user ? (
@@ -121,7 +133,61 @@ const FavoritesPage = () => {
           </div>
         )}
       </div>
+      
+      <BottomNavigation activeTab="explore" />
     </div>
+  );
+};
+
+// Header component with back button and matching Home header style
+const Header = ({ title, onBack }: { title: string; onBack: () => void }) => {
+  const { data: notifications } = useQuery({
+    queryKey: ['notifications', 'unread'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('is_read', false);
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const hasUnreadNotifications = notifications && notifications.length > 0;
+
+  return (
+    <header className="p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
+      <div className="flex items-center gap-3">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onBack}
+          className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 -ml-2"
+        >
+          <ChevronLeft size={24} />
+        </Button>
+        <Logo size="sm" color="gold" withText={false} />
+      </div>
+      
+      <div className="font-serif text-darcare-gold text-xl">
+        {title}
+      </div>
+      
+      <div className="flex items-center gap-4">
+        <WeatherDisplay />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+          onClick={() => window.location.href = '/notifications'}
+        >
+          {hasUnreadNotifications && (
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+          )}
+        </Button>
+      </div>
+    </header>
   );
 };
 

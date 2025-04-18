@@ -40,8 +40,13 @@ export function useRecommendations() {
             rating, 
             review_count: reviewsResponse.count || 0,
             is_favorite: !!favorites,
-            // Safely add is_reservable to all recommendations with a default value
-            is_reservable: false // Set a default value if it doesn't exist in the database
+            // Safely add properties with default values if they don't exist in the database
+            is_reservable: rec.is_reservable || false,
+            tags: rec.tags || [],
+            contact_phone: rec.contact_phone || null,
+            email: rec.email || null,
+            opening_hours: rec.opening_hours || null,
+            address: rec.address || null
           } as Recommendation;
         })
       );
