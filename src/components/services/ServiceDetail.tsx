@@ -9,6 +9,7 @@ import TransportService from '@/pages/services/TransportService';
 import BookSpaceService from '@/pages/services/BookSpaceService';
 import ShopService from '@/pages/services/ShopService';
 import { Loader2 } from 'lucide-react';
+import { getFallbackImage } from '@/utils/imageUtils';
 
 const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

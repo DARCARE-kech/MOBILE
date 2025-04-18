@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -30,6 +29,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
+import { getFallbackImage } from '@/utils/imageUtils';
 
 const TransportService = () => {
   const { id } = useParams<{ id: string }>();
@@ -92,7 +92,6 @@ const TransportService = () => {
     setIsSubmitting(true);
     
     try {
-      // Prepare the preferred time as a Date object
       const preferredTime = new Date(
         values.date.getFullYear(),
         values.date.getMonth(),
@@ -172,7 +171,7 @@ const TransportService = () => {
       <ServiceHeader title="Transport Service" showWeather />
       
       <ServiceBanner 
-        imageUrl={service?.image_url || '/placeholder.svg'} 
+        imageUrl={service?.image_url || getFallbackImage('/placeholder.svg')} 
         altText="Transport Service" 
       />
       

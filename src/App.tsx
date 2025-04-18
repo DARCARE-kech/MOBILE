@@ -17,7 +17,8 @@ import Explore from "./pages/Explore";
 import Chatbot from "./pages/Chatbot";
 import Profile from "./pages/Profile";
 import ServiceDetail from "@/components/services/ServiceDetail";
-import BookSpaceService from "@/components/services/BookSpaceService";
+import BookSpaceService from "@/pages/services/BookSpaceService";
+import SpacesListPage from "@/pages/services/SpacesListPage";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/spaces" element={<SpacesListPage />} />
               <Route path="/services/space/:id?" element={<BookSpaceService />} />
               <Route path="/services/:id" element={<ServiceDetail />} />
               <Route path="/explore" element={<Explore />} />

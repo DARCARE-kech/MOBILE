@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { getFallbackImage } from '@/utils/imageUtils';
 
 interface ServiceBannerProps {
   imageUrl: string;
@@ -20,6 +21,10 @@ const ServiceBanner: React.FC<ServiceBannerProps> = ({
           src={imageUrl}
           alt={altText}
           className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = getFallbackImage(altText, 0);
+          }}
         />
         {withGradient && (
           <div 

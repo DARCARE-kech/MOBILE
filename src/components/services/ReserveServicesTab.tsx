@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2, DoorOpen, ShoppingBag } from 'lucide-react';
 import IconButton from './IconButton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { getFallbackImage } from '@/utils/imageUtils';
 
 const ReserveServicesTab: React.FC = () => {
   const navigate = useNavigate();
@@ -39,21 +40,28 @@ const ReserveServicesTab: React.FC = () => {
     );
   }
 
-  // Filter out the "Book Space" service since we'll add it manually
-  const filteredServices = services.filter(service => !service.name.toLowerCase().includes('space'));
+  // Filter out both "Book Space" and "Shop" services since we'll add them manually
+  const filteredServices = services.filter(service => 
+    !service.name.toLowerCase().includes('space') && 
+    !service.name.toLowerCase().includes('shop')
+  );
 
   return (
     <div className="space-y-4 mt-4">
-      {filteredServices.map(service => (
+      {filteredServices.map((service, index) => (
         <Card 
           key={service.id} 
           className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden"
         >
           <AspectRatio ratio={16/9}>
             <img 
-              src={service.image_url || '/placeholder.svg'} 
+              src={service.image_url || getFallbackImage(service.name, index)} 
               alt={service.name} 
               className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = getFallbackImage(service.name, index);
+              }}
             />
           </AspectRatio>
           <div className="p-4">
@@ -81,13 +89,17 @@ const ReserveServicesTab: React.FC = () => {
       
       <Card 
         className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden cursor-pointer"
-        onClick={() => navigate('/services/space')}
+        onClick={() => navigate('/services/spaces')}
       >
         <AspectRatio ratio={16/9}>
           <img 
             src="https://xhsjtgezcrgyypumzkra.supabase.co/storage/v1/object/public/spaces/pool.jpg"
             alt="Book a Space" 
             className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = getFallbackImage("Book a Space", 0);
+            }}
           />
         </AspectRatio>
         <div className="p-4">
@@ -103,7 +115,7 @@ const ReserveServicesTab: React.FC = () => {
               variant="primary"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate('/services/space');
+                navigate('/services/spaces');
               }}
             />
           </div>
@@ -112,12 +124,17 @@ const ReserveServicesTab: React.FC = () => {
       
       <Card 
         className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden"
+        onClick={() => navigate('/services/shop')}
       >
         <AspectRatio ratio={16/9}>
           <img 
             src="https://images.unsplash.com/photo-1580913428735-bd3c269d6a82?auto=format&fit=crop&q=80&w=1770&ixlib=rb-4.0.3"
             alt="Shop" 
             className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = getFallbackImage("Shop", 3);
+            }}
           />
         </AspectRatio>
         <div className="p-4">
@@ -131,7 +148,10 @@ const ReserveServicesTab: React.FC = () => {
             <IconButton 
               icon={<ShoppingBag className="w-5 h-5" />}
               variant="primary"
-              onClick={() => navigate(`/services/shop`)}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('/services/shop');
+              }}
             />
           </div>
         </div>
