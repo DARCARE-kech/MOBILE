@@ -20,6 +20,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  isLoading: boolean; // Added the isLoading property
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,6 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // Added isLoading state
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -102,6 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
+    setIsLoading(true); // Set loading state to true
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -129,10 +132,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message || "Failed to create account",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
   const signIn = async (email: string, password: string) => {
+    setIsLoading(true); // Set loading state to true
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -154,10 +160,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message || "Failed to sign in",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
   const signOut = async () => {
+    setIsLoading(true); // Set loading state to true
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
@@ -170,11 +179,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Failed to sign out",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, userProfile, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ session, user, userProfile, signUp, signIn, signOut, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
