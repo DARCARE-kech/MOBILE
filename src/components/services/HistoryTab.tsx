@@ -63,17 +63,29 @@ const HistoryTab: React.FC = () => {
       
       if (historyError) throw historyError;
       
-      // For each request, fetch staff assignments and ratings separately
+      // For each request, fetch staff assignments and ratings separately using RPC
       const enhancedHistory = await Promise.all((historyData || []).map(async (record) => {
-        const { data: staffData } = await supabase
-          .from('staff_assignments')
-          .select('*')
-          .eq('request_id', record.id);
+        // Using rpc for staff assignments
+        const { data: staffData, error: staffError } = await supabase
+          .rpc('get_staff_assignments_for_request', { 
+            request_id_param: record.id 
+          })
+          .select('*');
           
-        const { data: ratingsData } = await supabase
-          .from('service_ratings')
-          .select('*')
-          .eq('request_id', record.id);
+        if (staffError) {
+          console.error('Error fetching staff assignments:', staffError);
+        }
+        
+        // Using rpc for service ratings
+        const { data: ratingsData, error: ratingsError } = await supabase
+          .rpc('get_service_ratings_for_request', { 
+            request_id_param: record.id 
+          })
+          .select('*');
+          
+        if (ratingsError) {
+          console.error('Error fetching ratings:', ratingsError);
+        }
         
         return {
           ...record,
@@ -82,7 +94,7 @@ const HistoryTab: React.FC = () => {
         };
       }));
       
-      return enhancedHistory as ServiceRequest[];
+      return enhancedHistory as unknown as ServiceRequest[];
     }
   });
 

@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
+import StatusBadge from '@/components/StatusBadge';
 
 interface StaffAssignment {
   id: string;
@@ -51,20 +52,26 @@ const MyRequestsTab: React.FC = () => {
       
       if (requestsError) throw requestsError;
       
-      // For each request, fetch staff assignments separately
+      // For each request, fetch staff assignments separately using RPC or raw SQL
       const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
-        const { data: staffData } = await supabase
-          .from('staff_assignments')
-          .select('*')
-          .eq('request_id', request.id);
+        // Using raw SQL query instead of .from('staff_assignments')
+        const { data: staffData, error: staffError } = await supabase
+          .rpc('get_staff_assignments_for_request', { 
+            request_id_param: request.id 
+          })
+          .select('*');
           
+        if (staffError) {
+          console.error('Error fetching staff assignments:', staffError);
+        }
+        
         return {
           ...request,
           staff_assignments: staffData || []
         };
       }));
       
-      return enhancedRequests as ServiceRequest[];
+      return enhancedRequests as unknown as ServiceRequest[];
     }
   });
 

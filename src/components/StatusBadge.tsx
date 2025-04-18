@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 
 // Expand the type definition to include all possible status values
 interface StatusBadgeProps {
-  status: "pending" | "active" | "completed" | string;
+  status: "pending" | "active" | "completed" | "cancelled" | string;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
@@ -23,6 +23,10 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
     completed: {
       label: "Completed",
       className: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    },
+    cancelled: {
+      label: "Cancelled",
+      className: "bg-red-500/20 text-red-300 border-red-500/30",
     },
     // Add any other known status types here
   };
