@@ -9,7 +9,161 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      recommendations: {
+        Row: {
+          category: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          location: string | null
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          title: string
+        }
+        Update: {
+          category?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      service_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          image_url: string | null
+          note: string | null
+          preferred_time: string | null
+          service_id: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          note?: string | null
+          preferred_time?: string | null
+          service_id?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          note?: string | null
+          preferred_time?: string | null
+          service_id?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          category: string | null
+          description: string | null
+          estimated_duration: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          category?: string | null
+          description?: string | null
+          estimated_duration?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          category?: string | null
+          description?: string | null
+          estimated_duration?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      stays: {
+        Row: {
+          check_in: string | null
+          check_out: string | null
+          city: string | null
+          created_at: string | null
+          guests: number | null
+          id: string
+          status: string
+          user_id: string | null
+          villa_number: string
+        }
+        Insert: {
+          check_in?: string | null
+          check_out?: string | null
+          city?: string | null
+          created_at?: string | null
+          guests?: number | null
+          id?: string
+          status: string
+          user_id?: string | null
+          villa_number: string
+        }
+        Update: {
+          check_in?: string | null
+          check_out?: string | null
+          city?: string | null
+          created_at?: string | null
+          guests?: number | null
+          id?: string
+          status?: string
+          user_id?: string | null
+          villa_number?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          language: string | null
+          role: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name: string
+          id: string
+          language?: string | null
+          role: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          language?: string | null
+          role?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

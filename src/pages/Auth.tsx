@@ -1,27 +1,21 @@
-
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
-interface AuthProps {
-  onLogin: () => void;
-}
-
-const Auth: React.FC<AuthProps> = ({ onLogin }) => {
+const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const navigate = useNavigate();
+  const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Form validation
     if (!email || !password || (!isLogin && !name)) {
       toast({
         title: "Missing fields",
@@ -31,16 +25,11 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       return;
     }
 
-    // Simulate authentication
-    // Note: This would connect to Supabase in a real implementation
-    setTimeout(() => {
-      toast({
-        title: "Success",
-        description: isLogin ? "Welcome back!" : "Account created successfully!",
-      });
-      onLogin();
-      navigate("/home");
-    }, 1000);
+    if (isLogin) {
+      await signIn(email, password);
+    } else {
+      await signUp(email, password, name);
+    }
   };
 
   return (
