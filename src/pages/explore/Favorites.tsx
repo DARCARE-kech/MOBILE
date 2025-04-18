@@ -1,13 +1,17 @@
 
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 import MainHeader from "@/components/MainHeader";
 import { RecommendationCard } from "@/components/explore/RecommendationCard";
 import type { Recommendation } from "@/types/recommendation";
 
 const FavoritesPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const { data: favorites, isLoading } = useQuery({
     queryKey: ['favorites', user?.id],
@@ -27,11 +31,41 @@ const FavoritesPage = () => {
 
       return data.map((fav) => ({
         ...fav.recommendations,
-        is_favorite: true
+        is_favorite: true,
+        is_reservable: fav.recommendations.is_reservable || false
       })) as Recommendation[];
     },
     enabled: !!user
   });
+
+  const handleToggleFavorite = async (id: string) => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to manage favorites",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await supabase
+        .from('favorites')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('recommendation_id', id);
+
+      toast({
+        title: "Removed from favorites",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not update favorites",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -69,6 +103,8 @@ const FavoritesPage = () => {
               <RecommendationCard 
                 key={item.id} 
                 item={item}
+                onToggleFavorite={handleToggleFavorite}
+                onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
               />
             ))}
           </div>

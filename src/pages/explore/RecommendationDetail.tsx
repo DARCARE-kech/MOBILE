@@ -36,7 +36,14 @@ const RecommendationDetail = () => {
         .single();
 
       if (error) throw error;
-      return data as Recommendation;
+      
+      // Make sure all required properties are present
+      return {
+        ...data,
+        is_reservable: data.is_reservable ?? false,
+        rating: data.rating ?? 0,
+        is_favorite: false // Default value, will be updated if user has favorited
+      } as Recommendation;
     },
   });
 

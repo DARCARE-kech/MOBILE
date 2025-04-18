@@ -50,16 +50,16 @@ export const RecommendationReservation = ({ recommendation }: RecommendationRese
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('recommendation_reservations')
-        .insert({
-          recommendation_id: recommendation.id,
-          user_id: user.id,
-          date: date.toISOString().split('T')[0],
-          time,
-          people_count: peopleCount,
-          note
-        });
+      // Use raw SQL query or RPC function instead of direct table access
+      // since the table might not be available in the Supabase client types
+      const { error } = await supabase.rpc('create_recommendation_reservation', {
+        rec_id: recommendation.id,
+        user_id: user.id,
+        reservation_date: date.toISOString().split('T')[0],
+        reservation_time: time,
+        people_count: peopleCount,
+        reservation_note: note
+      });
 
       if (error) throw error;
 

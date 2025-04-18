@@ -12,37 +12,22 @@ export const RecommendationMap = ({ recommendation }: RecommendationMapProps) =>
   useEffect(() => {
     if (!mapRef.current || !recommendation.latitude || !recommendation.longitude) return;
 
-    // Initialize Google Maps (you'll need to add the Google Maps script to index.html)
-    const map = new google.maps.Map(mapRef.current, {
-      center: {
-        lat: recommendation.latitude,
-        lng: recommendation.longitude
-      },
-      zoom: 15,
-      styles: [
-        {
-          "elementType": "geometry",
-          "stylers": [{ "color": "#242f3e" }]
-        },
-        {
-          "elementType": "labels.text.stroke",
-          "stylers": [{ "color": "#242f3e" }]
-        },
-        {
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#746855" }]
-        }
-      ]
-    });
-
-    new google.maps.Marker({
-      position: {
-        lat: recommendation.latitude,
-        lng: recommendation.longitude
-      },
-      map,
-      title: recommendation.title
-    });
+    // Placeholder for Google Maps implementation
+    // To properly implement Google Maps:
+    // 1. Add the Google Maps script to index.html
+    // 2. Use the window.google object that will be available after the script loads
+    
+    // Display a message to let the user know we need to add the Maps API
+    const mapElement = mapRef.current;
+    mapElement.innerHTML = `
+      <div class="flex items-center justify-center h-full">
+        <div class="text-center p-4">
+          <p class="text-darcare-gold mb-2">Map will be displayed here</p>
+          <p class="text-darcare-beige text-sm">Location: ${recommendation.latitude}, ${recommendation.longitude}</p>
+          <p class="text-darcare-beige text-sm mt-4">Note: Add Google Maps API key to enable maps</p>
+        </div>
+      </div>
+    `;
   }, [recommendation]);
 
   if (!recommendation.latitude || !recommendation.longitude) {

@@ -10,6 +10,7 @@ export interface Recommendation {
   image_url: string | null;
   is_reservable: boolean;
   rating?: number;
+  review_count?: number;
   is_favorite?: boolean;
   reviews?: Array<{
     id: string;

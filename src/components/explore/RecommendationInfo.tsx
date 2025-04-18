@@ -18,6 +18,7 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
           <div className="flex items-center gap-1 text-darcare-gold">
             <Star size={16} className="fill-current" />
             <span>{recommendation.rating.toFixed(1)}</span>
+            {recommendation.review_count ? ` (${recommendation.review_count})` : ''}
           </div>
         )}
       </div>
