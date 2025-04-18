@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
@@ -27,6 +28,7 @@ const Home: React.FC = () => {
     const linkDemoData = async () => {
       try {
         // Call the function to link demo data to the current user
+        // Fix: Type the parameter correctly as { user_uuid: string }
         const { data, error } = await supabase.rpc('link_demo_data_to_user', {
           user_uuid: user.id
         });
