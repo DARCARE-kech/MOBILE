@@ -3,11 +3,10 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, DoorOpen, ShoppingBag } from 'lucide-react';
 import IconButton from './IconButton';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 const ReserveServicesTab: React.FC = () => {
   const navigate = useNavigate();
@@ -40,9 +39,12 @@ const ReserveServicesTab: React.FC = () => {
     );
   }
 
+  // Filter out the "Book Space" service since we'll add it manually
+  const filteredServices = services.filter(service => !service.name.toLowerCase().includes('space'));
+
   return (
     <div className="space-y-4 mt-4">
-      {services.map(service => (
+      {filteredServices.map(service => (
         <Card 
           key={service.id} 
           className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden"
@@ -77,13 +79,13 @@ const ReserveServicesTab: React.FC = () => {
         </Card>
       ))}
       
-      {/* Special cards for Book Space and Shop */}
       <Card 
-        className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden"
+        className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden cursor-pointer"
+        onClick={() => navigate('/services/space')}
       >
         <AspectRatio ratio={16/9}>
           <img 
-            src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=80&w=1770&ixlib=rb-4.0.3"
+            src="https://xhsjtgezcrgyypumzkra.supabase.co/storage/v1/object/public/spaces/pool.jpg"
             alt="Book a Space" 
             className="w-full h-full object-cover"
           />
@@ -99,7 +101,10 @@ const ReserveServicesTab: React.FC = () => {
             <IconButton 
               icon={<DoorOpen className="w-5 h-5" />}
               variant="primary"
-              onClick={() => navigate(`/services/book-space`)}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('/services/space');
+              }}
             />
           </div>
         </div>

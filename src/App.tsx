@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
 import Services from "./pages/Services";
 import ServiceDetail from "./components/services/ServiceDetail";
+import BookSpaceService from "./components/services/BookSpaceService";
 
 const queryClient = new QueryClient();
 
@@ -22,13 +22,11 @@ const App = () => {
   const [isOnboarded, setIsOnboarded] = useState(false);
 
   useEffect(() => {
-    // Check if user has completed onboarding before
     const onboardingCompleted = localStorage.getItem("darcare-onboarded");
     if (onboardingCompleted === "true") {
       setIsOnboarded(true);
     }
 
-    // Simulate splash screen timing
     const timer = setTimeout(() => {
       setShowSplash(false);
     }, 2500);
@@ -64,6 +62,7 @@ const App = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/space/:id?" element={<BookSpaceService />} />
               <Route path="/services/:id" element={<ServiceDetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
