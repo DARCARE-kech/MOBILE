@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Calendar, Star, User } from "lucide-react";
+import { User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import DrawerMenu from "@/components/DrawerMenu";
 import BottomNavigation from "@/components/BottomNavigation";
 import FloatingAction from "@/components/FloatingAction";
-import StatusBadge from "@/components/StatusBadge";
 import { useToast } from "@/components/ui/use-toast";
+import CurrentStay from "@/components/CurrentStay";
+import ServicesList from "@/components/ServicesList";
+import RecommendationsList from "@/components/RecommendationsList";
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -141,92 +143,12 @@ const Home: React.FC = () => {
       </header>
 
       <div className="pb-24 overflow-auto">
-        <div className="p-4">
-          {currentStay ? (
-            <div className="luxury-card">
-              <div className="flex justify-between items-start mb-3">
-                <h2 className="font-serif text-darcare-gold text-xl">{currentStay.villa_number}</h2>
-                <div className="flex items-center gap-1 text-sm bg-darcare-gold/10 rounded-full px-3 py-1 text-darcare-gold">
-                  <Calendar size={14} />
-                  <span>
-                    {currentStay.status === 'current' 
-                      ? 'Currently Staying' 
-                      : 'Upcoming Stay'}
-                  </span>
-                </div>
-              </div>
-              <p className="text-darcare-beige/80 text-sm mb-2">{currentStay.city}</p>
-              <div className="flex justify-between text-sm text-darcare-white">
-                <span>{`${new Date(currentStay.check_in).toLocaleDateString()} - ${new Date(currentStay.check_out).toLocaleDateString()}`}</span>
-                <button className="text-darcare-gold flex items-center gap-1">
-                  View Details <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="luxury-card text-center text-darcare-beige/70">
-              <p>You have no stays registered yet. Please contact administration or make a booking.</p>
-            </div>
-          )}
-        </div>
-
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="section-title">Your Services</h2>
-            <button className="text-darcare-gold text-sm flex items-center">
-              View All <ChevronRight size={16} />
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {services.map((service) => (
-              <div key={service.id} className="luxury-card">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-medium text-darcare-white mb-1">{service.title}</h3>
-                    <p className="text-sm text-darcare-beige/70">{service.time}</p>
-                  </div>
-                  <StatusBadge status={service.status} />
-                </div>
-                <div className="mt-3 pt-3 border-t border-darcare-gold/10 flex items-center gap-2 text-sm text-darcare-beige/70">
-                  <User size={14} className="text-darcare-gold" />
-                  <span>Staff: {service.staff}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="section-title">Marrakech Highlights</h2>
-            <button className="text-darcare-gold text-sm flex items-center">
-              View All <ChevronRight size={16} />
-            </button>
-          </div>
-
-          <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4">
-            {recommendations.map((item) => (
-              <div key={item.id} className="min-w-[220px] rounded-xl overflow-hidden flex-shrink-0">
-                <div className="h-32 relative">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                  <div className="absolute top-2 right-2 bg-darcare-gold/90 text-darcare-navy rounded-full py-0.5 px-2 text-xs font-medium flex items-center gap-1">
-                    <Star size={12} fill="currentColor" />
-                    <span>{item.rating}</span>
-                  </div>
-                </div>
-                <div className="p-3 bg-card">
-                  <h3 className="font-medium text-darcare-white">{item.title}</h3>
-                  <p className="text-xs text-darcare-beige/70">{item.type}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <CurrentStay currentStay={currentStay} />
+        <ServicesList services={services} />
+        <RecommendationsList recommendations={recommendations} />
       </div>
 
       <FloatingAction />
-
       <BottomNavigation activeTab={activeTab} onChangeTab={setActiveTab} />
     </div>
   );
