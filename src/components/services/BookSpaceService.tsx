@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +12,7 @@ import { SpaceRules } from './space-booking/SpaceRules';
 import { DateTimeSelector } from './space-booking/DateTimeSelector';
 import { SpecialRequests } from './space-booking/SpecialRequests';
 import { BookingSubmitButton } from './space-booking/BookingSubmitButton';
-import { PeopleCounter } from './space-booking/PeopleCounter';
+import { PeopleCounter } from '@/components/space-booking/PeopleCounter';
 
 const BookSpaceService = () => {
   const navigate = useNavigate();

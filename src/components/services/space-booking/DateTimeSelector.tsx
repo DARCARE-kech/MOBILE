@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
-import { TimeSelector } from './TimeSelector';
+import { TimeSelector } from '@/components/space-booking/TimeSelector';
 import { UseFormReturn } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
