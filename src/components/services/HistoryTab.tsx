@@ -3,12 +3,12 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Loader2, Star } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { getStaffAssignmentsForRequest, getServiceRatingsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
+import StatusBadge from '@/components/StatusBadge';
 
 interface Service {
   id: string;

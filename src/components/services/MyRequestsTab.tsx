@@ -3,18 +3,10 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
 import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
-
-interface StaffAssignment {
-  id: string;
-  request_id: string;
-  staff_id: string | null;
-  staff_name: string | null;
-  assigned_at: string;
-}
+import type { StaffAssignment } from '@/integrations/supabase/rpc';
 
 interface Service {
   id: string;
