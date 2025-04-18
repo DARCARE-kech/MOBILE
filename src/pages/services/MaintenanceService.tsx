@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -10,7 +9,8 @@ import {
   Send, 
   ImageIcon,
   PenLine,
-  CirclePlus
+  CirclePlus,
+  Clock
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -79,15 +79,12 @@ const MaintenanceService = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     
-    // Preview the image
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result as string);
     };
     reader.readAsDataURL(file);
     
-    // In a real app, you would upload the image to Supabase Storage here
-    // For now, just simulate the upload
     setUploadingImage(true);
     setTimeout(() => {
       setUploadingImage(false);
