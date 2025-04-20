@@ -2,13 +2,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import ServiceHeader from '@/components/services/ServiceHeader';
-import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import CartItem from '@/components/shop/CartItem';
+import CartSummary from '@/components/shop/CartSummary';
+import CartEmpty from '@/components/shop/CartEmpty';
+import type { ShopCartItem } from '@/types/shop';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -43,82 +44,43 @@ const CartScreen = () => {
         .eq('order_id', order.id);
 
       if (itemsError) throw itemsError;
-      return items || [];
+      return items as ShopCartItem[] || [];
     },
     enabled: !!user
   });
 
-  const getTotal = () => {
-    if (!cartItems) return 0;
-    return cartItems.reduce((sum, item) => sum + (item.price_at_time * item.quantity), 0);
+  const handlePlaceOrder = () => {
+    toast({
+      title: "Order Submitted",
+      description: "Your items will be charged to your room.",
+    });
+    navigate('/services/shop');
   };
+
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <ServiceHeader title="Cart" showBackButton={true} />
+        <div className="p-4">
+          <CartEmpty onContinueShopping={() => navigate('/services/shop')} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <ServiceHeader 
-        title="Cart" 
-        showBackButton={true}
-      />
-      
+      <ServiceHeader title="Cart" showBackButton={true} />
       <div className="p-4">
-        {(!cartItems || cartItems.length === 0) ? (
-          <div className="text-center text-darcare-beige mt-8">
-            <p>Your cart is empty</p>
-            <Button 
-              className="mt-4 bg-darcare-gold text-darcare-navy"
-              onClick={() => navigate('/services/shop')}
-            >
-              Continue Shopping
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {cartItems.map((item) => (
-              <Card key={item.id} className="bg-darcare-navy border-darcare-gold/20 p-4">
-                <div className="flex gap-4">
-                  <div className="w-20 h-20 rounded-md overflow-hidden">
-                    <img 
-                      src={item.shop_products.image_url || '/placeholder.svg'} 
-                      alt={item.shop_products.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-darcare-white font-medium">
-                      {item.shop_products.name}
-                    </h3>
-                    <p className="text-darcare-gold mt-1">
-                      ${item.price_at_time} × {item.quantity}
-                    </p>
-                    <p className="text-darcare-beige/70 text-right mt-2">
-                      Subtotal: ${(item.price_at_time * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-            
-            <div className="mt-6 border-t border-darcare-gold/20 pt-4">
-              <div className="flex justify-between text-darcare-white font-medium">
-                <span>Total</span>
-                <span>${getTotal().toFixed(2)}</span>
-              </div>
-              
-              <Button 
-                className="w-full mt-4 bg-darcare-gold text-darcare-navy"
-                onClick={() => {
-                  toast({
-                    title: "Order Submitted",
-                    description: "Your items will be charged to your room.",
-                  });
-                  navigate('/services/shop');
-                }}
-              >
-                Place Order
-              </Button>
-            </div>
-          </div>
-        )}
+        <div className="space-y-4">
+          {cartItems.map((item) => (
+            <CartItem key={item.id} item={item} />
+          ))}
+          <CartSummary 
+            items={cartItems}
+            onPlaceOrder={handlePlaceOrder}
+          />
+        </div>
       </div>
     </div>
   );
