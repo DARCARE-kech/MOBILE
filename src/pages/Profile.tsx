@@ -13,7 +13,7 @@ const ProfilePage: React.FC = () => {
   const { profile, currentStay, isLoading, updateProfile, handleLogout } = useUserProfile();
 
   const handlePreferenceUpdate = (key: string, value: boolean | string) => {
-    updateProfile.mutate({ [key]: value });
+    updateProfile({ [key]: value });
   };
 
   if (isLoading) {
