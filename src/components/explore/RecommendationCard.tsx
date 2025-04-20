@@ -21,6 +21,9 @@ export const RecommendationCard = ({
   onSelect 
 }: RecommendationCardProps) => {
   const { t } = useTranslation();
+  const [imageError, setImageError] = useState(false);
+  const fallbackImage = getFallbackImage(item.title, 0);
+  const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
   
   return (
     <div 
@@ -30,9 +33,11 @@ export const RecommendationCard = ({
       <div className="relative">
         <AspectRatio ratio={16/9}>
           <img
-            src={item.image_url || getFallbackImage(item.title, 0)}
+            src={imageSource}
             alt={item.title}
             className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+            loading="lazy"
           />
         </AspectRatio>
         <Button
@@ -59,7 +64,7 @@ export const RecommendationCard = ({
             variant="outline" 
             className="bg-transparent text-darcare-beige border-darcare-gold/20"
           >
-            {t(`explore.categories.${(item.category || 'other').toLowerCase()}`)}
+            {item.category ? t(`explore.categories.${item.category.toLowerCase()}`) : t('explore.categories.other')}
           </Badge>
           
           {item.rating > 0 && (
