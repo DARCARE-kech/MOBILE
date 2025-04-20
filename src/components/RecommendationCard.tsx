@@ -12,6 +12,7 @@ import { useToast } from "./ui/use-toast";
 import { RatingStars } from "./RatingStars";
 import { useNavigate } from "react-router-dom";
 import type { Recommendation } from "@/types/recommendation";
+import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
 
 interface RecommendationCardProps {
   item: Recommendation;
@@ -74,6 +75,11 @@ export const RecommendationCard = ({ item, onSelect }: RecommendationCardProps) 
     }
   };
 
+  // Ensure the category is one of the valid categories
+  const displayCategory = item.category && RECOMMENDATION_CATEGORIES.includes(item.category) 
+    ? item.category 
+    : 'other';
+
   return (
     <div 
       className="w-[280px] rounded-xl overflow-hidden flex-shrink-0 group bg-darcare-navy border border-darcare-gold/10 cursor-pointer"
@@ -106,11 +112,9 @@ export const RecommendationCard = ({ item, onSelect }: RecommendationCardProps) 
       </div>
       <div className="p-3 space-y-2">
         <h3 className="font-medium text-darcare-white line-clamp-1">{item.title}</h3>
-        {item.category && (
-          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-            {item.category}
-          </Badge>
-        )}
+        <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
+          {displayCategory}
+        </Badge>
         <div className="flex items-center justify-between text-sm">
           {item.location && (
             <div className="flex items-center gap-1 text-darcare-beige">

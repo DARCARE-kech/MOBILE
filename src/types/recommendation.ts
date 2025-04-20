@@ -1,9 +1,11 @@
 
+import type { RecommendationCategory } from "@/utils/recommendationCategories";
+
 export interface Recommendation {
   id: string;
   title: string;
   description: string | null;
-  category: string | null;
+  category: RecommendationCategory | null;
   location: string | null;
   latitude: number | null;
   longitude: number | null;

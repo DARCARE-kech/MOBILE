@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Recommendation } from "@/types/recommendation";
 import { getFallbackImage } from "@/utils/imageUtils";
+import { type RecommendationCategory } from "@/utils/recommendationCategories";
 
 interface UseRecommendationsQueryProps {
   searchQuery?: string;
-  category?: string | null;
+  category?: RecommendationCategory | null;
   sortBy?: "rating" | "distance";
   onlyFavorites?: boolean;
 }

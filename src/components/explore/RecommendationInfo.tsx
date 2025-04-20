@@ -5,6 +5,7 @@ import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { ContactInfoBlock } from "./ContactInfoBlock";
 import { TagsList } from "./TagsList";
+import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
 
 interface RecommendationInfoProps {
   recommendation: Recommendation;
@@ -13,11 +14,16 @@ interface RecommendationInfoProps {
 export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) => {
   const { t } = useTranslation();
   
+  // Ensure category is one of the valid categories
+  const displayCategory = recommendation.category && RECOMMENDATION_CATEGORIES.includes(recommendation.category)
+    ? recommendation.category
+    : 'other';
+  
   return (
     <div className="space-y-4 p-4">
       <div className="flex items-center gap-2">
         <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-          {recommendation.category ? t(`explore.categories.${recommendation.category.toLowerCase()}`) : t('explore.categories.other')}
+          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
         </Badge>
         {recommendation.rating && recommendation.rating > 0 && (
           <div className="flex items-center gap-1 text-darcare-gold">
