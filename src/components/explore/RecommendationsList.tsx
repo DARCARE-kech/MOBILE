@@ -45,7 +45,7 @@ export const RecommendationsList = ({
         .select('id')
         .eq('user_id', user.id)
         .eq('recommendation_id', recommendationId)
-        .single();
+        .maybeSingle();
 
       if (existing) {
         await supabase
