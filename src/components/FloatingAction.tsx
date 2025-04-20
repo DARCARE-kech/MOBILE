@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Plus, DoorOpen, Tool, MessageSquare, PhoneCall, X } from "lucide-react";
+import { Plus, DoorOpen, Wrench, MessageSquare, PhoneCall, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface QuickAction {
@@ -24,7 +24,7 @@ const FloatingAction: React.FC = () => {
     {
       id: "service",
       label: "Request Service",
-      icon: <Tool size={20} />,
+      icon: <Wrench size={20} />,
       action: () => navigate("/services"),
     },
     {
