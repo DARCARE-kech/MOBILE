@@ -1,3 +1,5 @@
+
+// Remove is_reservable from the type definition
 export interface Recommendation {
   id: string;
   title: string;
@@ -12,7 +14,6 @@ export interface Recommendation {
   opening_hours: string | null;
   address: string | null;
   tags: string[] | null;
-  is_reservable: boolean;
   rating?: number;
   review_count?: number;
   is_favorite?: boolean;

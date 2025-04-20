@@ -166,7 +166,6 @@ export type Database = {
           email: string | null
           id: string
           image_url: string | null
-          is_reservable: boolean | null
           latitude: number | null
           location: string | null
           longitude: number | null
@@ -182,7 +181,6 @@ export type Database = {
           email?: string | null
           id?: string
           image_url?: string | null
-          is_reservable?: boolean | null
           latitude?: number | null
           location?: string | null
           longitude?: number | null
@@ -198,7 +196,6 @@ export type Database = {
           email?: string | null
           id?: string
           image_url?: string | null
-          is_reservable?: boolean | null
           latitude?: number | null
           location?: string | null
           longitude?: number | null
