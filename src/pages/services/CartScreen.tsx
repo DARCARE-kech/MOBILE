@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2, ChevronLeft, Trash2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import ServiceHeader from '@/components/services/ServiceHeader';
 import { Card } from '@/components/ui/card';
@@ -53,20 +53,12 @@ const CartScreen = () => {
     return cartItems.reduce((sum, item) => sum + (item.price_at_time * item.quantity), 0);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-darcare-navy">
-        <ServiceHeader title="Cart" onBack={() => navigate('/services/shop')} />
-        <div className="flex justify-center items-center h-[80vh]">
-          <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <ServiceHeader title="Cart" onBack={() => navigate('/services/shop')} />
+      <ServiceHeader 
+        title="Cart" 
+        showBackButton={true}
+      />
       
       <div className="p-4">
         {(!cartItems || cartItems.length === 0) ? (
@@ -80,33 +72,31 @@ const CartScreen = () => {
             </Button>
           </div>
         ) : (
-          <>
-            <div className="space-y-4">
-              {cartItems.map((item) => (
-                <Card key={item.id} className="bg-darcare-navy border-darcare-gold/20 p-4">
-                  <div className="flex gap-4">
-                    <div className="w-20 h-20 rounded-md overflow-hidden">
-                      <img 
-                        src={item.shop_products.image_url || '/placeholder.svg'} 
-                        alt={item.shop_products.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-darcare-white font-medium">
-                        {item.shop_products.name}
-                      </h3>
-                      <p className="text-darcare-gold mt-1">
-                        ${item.price_at_time} × {item.quantity}
-                      </p>
-                      <p className="text-darcare-beige/70 text-right mt-2">
-                        Subtotal: ${(item.price_at_time * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
+          <div className="space-y-4">
+            {cartItems.map((item) => (
+              <Card key={item.id} className="bg-darcare-navy border-darcare-gold/20 p-4">
+                <div className="flex gap-4">
+                  <div className="w-20 h-20 rounded-md overflow-hidden">
+                    <img 
+                      src={item.shop_products.image_url || '/placeholder.svg'} 
+                      alt={item.shop_products.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                </Card>
-              ))}
-            </div>
+                  <div className="flex-1">
+                    <h3 className="text-darcare-white font-medium">
+                      {item.shop_products.name}
+                    </h3>
+                    <p className="text-darcare-gold mt-1">
+                      ${item.price_at_time} × {item.quantity}
+                    </p>
+                    <p className="text-darcare-beige/70 text-right mt-2">
+                      Subtotal: ${(item.price_at_time * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            ))}
             
             <div className="mt-6 border-t border-darcare-gold/20 pt-4">
               <div className="flex justify-between text-darcare-white font-medium">
@@ -127,7 +117,7 @@ const CartScreen = () => {
                 Place Order
               </Button>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
