@@ -67,7 +67,9 @@ export const useRequestMutations = (requestId: string) => {
   });
 
   return {
-    submitRating: submitRatingMutation.mutate,
+    // Wrap the mutation function to match the expected signature
+    submitRating: (rating: number, comment: string) => 
+      submitRatingMutation.mutate({ rating, comment }),
     isSubmittingRating: submitRatingMutation.isPending,
     cancelRequest: cancelRequestMutation.mutate,
     isCancelling: cancelRequestMutation.isPending
