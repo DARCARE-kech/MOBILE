@@ -10,9 +10,10 @@ import { useNavigate } from "react-router-dom";
 interface MainHeaderProps {
   title?: string;
   onBack?: () => void;
+  children?: React.ReactNode;
 }
 
-const MainHeader = ({ title, onBack }: MainHeaderProps) => {
+const MainHeader = ({ title, onBack, children }: MainHeaderProps) => {
   const navigate = useNavigate();
   const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],
@@ -49,18 +50,24 @@ const MainHeader = ({ title, onBack }: MainHeaderProps) => {
         )}
       </div>
       <div className="flex items-center gap-4">
-        <WeatherDisplay />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-          onClick={() => navigate('/notifications')}
-        >
-          <Bell size={20} />
-          {hasUnreadNotifications && (
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-darcare-gold rounded-full" />
-          )}
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <>
+            <WeatherDisplay />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+              onClick={() => navigate('/notifications')}
+            >
+              <Bell size={20} />
+              {hasUnreadNotifications && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-darcare-gold rounded-full" />
+              )}
+            </Button>
+          </>
+        )}
       </div>
     </header>
   );

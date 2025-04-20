@@ -43,27 +43,27 @@ const ChatbotPage: React.FC = () => {
     <div className="min-h-screen bg-darcare-navy flex flex-col">
       <MainHeader 
         title="Chatbot"
-        rightComponent={
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/chat-history')}
-              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            >
-              <Clock className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/contact-admin')}
-              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            >
-              <Mail className="h-5 w-5" />
-            </Button>
-          </div>
-        }
-      />
+        onBack={() => navigate("/home")}
+      >
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/chat-history')}
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+          >
+            <Clock className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/contact-admin')}
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+          >
+            <Mail className="h-5 w-5" />
+          </Button>
+        </div>
+      </MainHeader>
       
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
         <div className="space-y-4">

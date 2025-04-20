@@ -41,9 +41,17 @@ export const useChat = (sessionId?: string) => {
 
   const createSession = useMutation({
     mutationFn: async (title: string) => {
+      const { data: userData } = await supabase.auth.getUser();
+      const user_id = userData.user?.id;
+      
+      if (!user_id) throw new Error("User not authenticated");
+      
       const { data, error } = await supabase
         .from('chat_sessions')
-        .insert([{ title }])
+        .insert({
+          title,
+          user_id
+        })
         .select()
         .single();
 
@@ -65,6 +73,11 @@ export const useChat = (sessionId?: string) => {
 
   const sendMessage = useMutation({
     mutationFn: async ({ content, sender }: { content: string; sender: 'user' | 'bot' }) => {
+      const { data: userData } = await supabase.auth.getUser();
+      const user_id = userData.user?.id;
+      
+      if (!user_id) throw new Error("User not authenticated");
+      
       if (!currentSessionId) {
         const session = await createSession.mutateAsync('New Conversation');
         setCurrentSessionId(session.id);
@@ -72,11 +85,12 @@ export const useChat = (sessionId?: string) => {
 
       const { data, error } = await supabase
         .from('chat_messages')
-        .insert([{
+        .insert({
           session_id: currentSessionId,
           content,
           sender,
-        }])
+          user_id
+        })
         .select()
         .single();
 

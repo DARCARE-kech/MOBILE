@@ -11,7 +11,12 @@ export const useAdminContact = () => {
     mutationFn: async ({ subject, message, image_url }: Omit<AdminMessage, 'id' | 'user_id' | 'status' | 'created_at'>) => {
       const { data, error } = await supabase
         .from('admin_messages')
-        .insert([{ subject, message, image_url }])
+        .insert({
+          subject,
+          message,
+          image_url,
+          user_id: (await supabase.auth.getUser()).data.user?.id
+        })
         .select()
         .single();
 
