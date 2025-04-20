@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -46,8 +45,15 @@ const ChangePassword: React.FC = () => {
     setIsSubmitting(true);
     try {
       // First verify the current password by signing in
+      const userResponse = await supabase.auth.getUser();
+      const userEmail = userResponse.data.user?.email;
+      
+      if (!userEmail) {
+        throw new Error("Unable to get current user email");
+      }
+      
       const { error: verifyError } = await supabase.auth.signInWithPassword({
-        email: supabase.auth.getUser().then(({ data }) => data.user?.email || ""),
+        email: userEmail,
         password: data.currentPassword,
       });
 

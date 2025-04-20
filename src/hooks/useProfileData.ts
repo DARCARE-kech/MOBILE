@@ -14,6 +14,8 @@ export interface UserProfile {
   terms_accepted_at: string | null;
   phone_number: string | null;
   whatsapp_number: string | null;
+  role?: string;
+  created_at?: string;
 }
 
 export const useProfileData = (userId: string | undefined) => {
