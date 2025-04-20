@@ -10,6 +10,7 @@ import RequestDetailsContent from "@/components/services/RequestDetailsContent";
 import RequestNotFound from "@/components/services/RequestNotFound";
 import { useServiceRequest } from "@/hooks/useServiceRequest";
 import { useRequestMutations } from "@/hooks/useRequestMutations";
+import BottomNavigation from "@/components/BottomNavigation";
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,6 +31,7 @@ const RequestDetailPage = () => {
         <div className="flex justify-center items-center h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
@@ -39,6 +41,7 @@ const RequestDetailPage = () => {
       <div className="bg-darcare-navy min-h-screen">
         <MainHeader title="Request Details" onBack={() => navigate(-1)} />
         <RequestNotFound />
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
@@ -59,10 +62,10 @@ const RequestDetailPage = () => {
     : null;
   
   return (
-    <div className="bg-darcare-navy min-h-screen pb-20">
+    <div className="bg-darcare-navy min-h-screen pb-24">
       <MainHeader title="Request Details" onBack={() => navigate(-1)} />
       
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 pt-16">
         <div className="luxury-card">
           <RequestDetailHeader
             serviceName={request.services?.name || ''}
@@ -100,6 +103,8 @@ const RequestDetailPage = () => {
           </div>
         )}
       </div>
+      
+      <BottomNavigation activeTab="services" />
     </div>
   );
 };

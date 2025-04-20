@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAdminContact } from '@/hooks/useAdminContact';
+import BottomNavigation from '@/components/BottomNavigation';
 
 interface FormData {
   subject: string;
@@ -27,7 +28,7 @@ const ContactAdmin: React.FC = () => {
     <div className="min-h-screen bg-darcare-navy">
       <MainHeader title="Contact Admin" onBack={() => navigate('/chatbot')} />
       
-      <div className="p-4">
+      <div className="p-4 pt-16 pb-24">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Input
@@ -60,6 +61,8 @@ const ContactAdmin: React.FC = () => {
           </Button>
         </form>
       </div>
+      
+      <BottomNavigation activeTab="chatbot" />
     </div>
   );
 };

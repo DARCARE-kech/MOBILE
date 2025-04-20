@@ -8,6 +8,7 @@ import { useChat } from '@/hooks/useChat';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const ChatHistory: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const ChatHistory: React.FC = () => {
       <MainHeader title="Chat History" onBack={() => navigate('/chatbot')} />
       
       <ScrollArea className="flex-1 p-4 pb-24">
-        <div className="space-y-4">
+        <div className="space-y-4 pt-16">
           {sessions?.map((session) => (
             <div
               key={session.id}
@@ -102,6 +103,8 @@ const ChatHistory: React.FC = () => {
           ))}
         </div>
       </ScrollArea>
+      
+      <BottomNavigation activeTab="chatbot" />
     </div>
   );
 };

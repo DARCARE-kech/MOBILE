@@ -6,8 +6,9 @@ import { Card } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import ServiceHeader from '@/components/services/ServiceHeader';
 import { getFallbackImage } from '@/utils/imageUtils';
+import MainHeader from '@/components/MainHeader';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const SpacesListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -27,10 +28,11 @@ const SpacesListPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="bg-darcare-navy min-h-screen">
-        <ServiceHeader title="Book a Space" />
-        <div className="flex justify-center items-center h-64">
+        <MainHeader title="Book a Space" onBack={() => navigate('/services')} />
+        <div className="flex justify-center items-center h-64 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
@@ -38,19 +40,20 @@ const SpacesListPage: React.FC = () => {
   if (error || !spaces) {
     return (
       <div className="bg-darcare-navy min-h-screen">
-        <ServiceHeader title="Book a Space" />
-        <div className="p-4 text-destructive">
+        <MainHeader title="Book a Space" onBack={() => navigate('/services')} />
+        <div className="p-4 text-destructive pt-16">
           Error loading spaces. Please try again later.
         </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
 
   return (
-    <div className="bg-darcare-navy min-h-screen pb-20">
-      <ServiceHeader title="Book a Space" />
+    <div className="bg-darcare-navy min-h-screen pb-24">
+      <MainHeader title="Book a Space" onBack={() => navigate('/services')} />
       
-      <div className="p-4">
+      <div className="p-4 pt-16">
         <div className="mb-4">
           <h2 className="text-darcare-gold font-serif text-xl">Available Spaces</h2>
           <p className="text-darcare-beige/70">Select a space to reserve</p>
@@ -89,6 +92,8 @@ const SpacesListPage: React.FC = () => {
           ))}
         </div>
       </div>
+      
+      <BottomNavigation activeTab="services" />
     </div>
   );
 };

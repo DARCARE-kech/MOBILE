@@ -10,6 +10,8 @@ import BookSpaceService from '@/pages/services/BookSpaceService';
 import ShopService from '@/pages/services/ShopService';
 import { Loader2 } from 'lucide-react';
 import { getFallbackImage } from '@/utils/imageUtils';
+import MainHeader from '@/components/MainHeader';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,17 +33,31 @@ const ServiceDetail: React.FC = () => {
   });
   
   if (id === 'book-space') {
-    return <BookSpaceService />;
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title="Book a Space" onBack={() => navigate('/services')} />
+        <BookSpaceService />
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
   }
   
   if (id === 'shop') {
-    return <ShopService />;
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title="Shop" onBack={() => navigate('/services')} />
+        <ShopService />
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
   }
   
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen bg-darcare-navy">
+        <MainHeader title="Loading..." onBack={() => navigate('/services')} />
         <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
@@ -55,11 +71,29 @@ const ServiceDetail: React.FC = () => {
   const serviceNameLower = service.name.toLowerCase();
   
   if (serviceNameLower.includes('cleaning')) {
-    return <CleaningService />;
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <CleaningService />
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
   } else if (serviceNameLower.includes('maintenance')) {
-    return <MaintenanceService />;
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <MaintenanceService />
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
   } else if (serviceNameLower.includes('transport')) {
-    return <TransportService />;
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <TransportService />
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
   } else {
     // Default generic service view
     navigate('/services');

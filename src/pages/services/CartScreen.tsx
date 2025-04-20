@@ -3,7 +3,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
-import ServiceHeader from '@/components/services/ServiceHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import CartItem from '@/components/shop/CartItem';
@@ -11,6 +10,8 @@ import CartSummary from '@/components/shop/CartSummary';
 import CartEmpty from '@/components/shop/CartEmpty';
 import type { ShopCartItem } from '@/types/shop';
 import { Loader2 } from 'lucide-react';
+import MainHeader from '@/components/MainHeader';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -63,10 +64,11 @@ const CartScreen = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <ServiceHeader title="Cart" showBackButton={true} />
-        <div className="flex justify-center items-center h-72">
+        <MainHeader title="Cart" onBack={() => navigate('/services/shop')} />
+        <div className="flex justify-center items-center h-72 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
@@ -74,10 +76,11 @@ const CartScreen = () => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <ServiceHeader title="Cart" showBackButton={true} />
-        <div className="p-4">
+        <MainHeader title="Cart" onBack={() => navigate('/services/shop')} />
+        <div className="p-4 pt-16 pb-24">
           <CartEmpty onContinueShopping={() => navigate('/services/shop')} />
         </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
@@ -92,8 +95,8 @@ const CartScreen = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <ServiceHeader title="Cart" showBackButton={true} />
-      <div className="p-4">
+      <MainHeader title="Cart" onBack={() => navigate('/services/shop')} />
+      <div className="p-4 pt-16 pb-24">
         <div className="space-y-4">
           {cartItems.map((item) => (
             <CartItem key={item.id} item={item} />
@@ -104,6 +107,7 @@ const CartScreen = () => {
           />
         </div>
       </div>
+      <BottomNavigation activeTab="services" />
     </div>
   );
 };

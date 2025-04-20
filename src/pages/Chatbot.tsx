@@ -8,6 +8,7 @@ import Message from '@/components/chat/Message';
 import MessageInput from '@/components/chat/MessageInput';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useChat } from '@/hooks/useChat';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const ChatbotPage: React.FC = () => {
         </div>
       </MainHeader>
       
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+      <ScrollArea className="flex-1 p-4 pb-20" ref={scrollRef}>
         <div className="space-y-4">
           {messages?.map((message) => (
             <Message key={message.id} message={message} />
@@ -77,6 +78,8 @@ const ChatbotPage: React.FC = () => {
         onSend={handleSend}
         disabled={sendMessage.isPending}
       />
+      
+      <BottomNavigation activeTab="chatbot" />
     </div>
   );
 };
