@@ -1,6 +1,5 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,7 +19,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  isLoading: boolean; // Added the isLoading property
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,8 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Added isLoading state
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -104,7 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -124,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       
       // Navigate to home (profile will be created by the trigger)
-      navigate("/home");
+      // Note: We're not using navigate here anymore
     } catch (error: any) {
       console.error("Error signing up:", error);
       toast({
@@ -133,12 +131,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false); // Set loading state to false
+      setIsLoading(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -152,7 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Successfully signed in",
       });
       
-      navigate("/home");
+      // Note: We're not using navigate here anymore
     } catch (error: any) {
       console.error("Error signing in:", error);
       toast({
@@ -161,17 +159,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false); // Set loading state to false
+      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
-      navigate("/auth");
+      // Note: We're not using navigate here anymore
     } catch (error: any) {
       console.error("Error signing out:", error);
       toast({
@@ -180,7 +178,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false); // Set loading state to false
+      setIsLoading(false);
     }
   };
 
