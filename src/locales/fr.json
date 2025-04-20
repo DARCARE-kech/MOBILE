@@ -1,0 +1,97 @@
+
+{
+  "common": {
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "loading": "Chargement...",
+    "search": "Rechercher",
+    "logout": "Déconnexion",
+    "error": "Une erreur est survenue",
+    "notFound": "Non trouvé"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "services": "Services",
+    "explore": "Explorer",
+    "chatbot": "Assistant",
+    "profile": "Profil",
+    "notifications": "Notifications"
+  },
+  "home": {
+    "welcomeBack": "Bienvenue",
+    "yourStay": "Votre Séjour",
+    "currentWeather": "Météo Actuelle",
+    "upcomingServices": "Services à Venir",
+    "exploreDestination": "Explorer la Destination",
+    "viewAll": "Voir Tout"
+  },
+  "services": {
+    "reserve": "Réserver",
+    "requests": "Mes Demandes",
+    "history": "Historique",
+    "book": "Réserver",
+    "request": "Demander",
+    "spaces": "Espaces",
+    "cleaning": "Nettoyage",
+    "maintenance": "Maintenance",
+    "transport": "Transport",
+    "shop": "Boutique",
+    "details": "Détails du Service",
+    "preferredTime": "Heure Préférée",
+    "specialRequests": "Demandes Spéciales",
+    "requestService": "Demander un Service",
+    "viewDetails": "Voir les Détails",
+    "status": {
+      "pending": "En Attente",
+      "approved": "Approuvé",
+      "in_progress": "En Cours",
+      "completed": "Terminé",
+      "cancelled": "Annulé"
+    }
+  },
+  "explore": {
+    "searchPlaceholder": "Rechercher des lieux et expériences...",
+    "filters": "Filtres",
+    "categories": "Catégories",
+    "distance": "Distance",
+    "rating": "Évaluation",
+    "features": "Caractéristiques",
+    "reviews": "Avis",
+    "location": "Emplacement",
+    "contactInfo": "Coordonnées",
+    "makeReservation": "Faire une Réservation"
+  },
+  "chatbot": {
+    "newChat": "Nouvelle Conversation",
+    "chatHistory": "Historique",
+    "typeMessage": "Tapez votre message...",
+    "contactAdmin": "Contacter l'Admin",
+    "subject": "Sujet",
+    "message": "Message",
+    "sendMessage": "Envoyer le Message"
+  },
+  "profile": {
+    "preferences": "Préférences",
+    "darkMode": "Mode Sombre",
+    "language": "Langue",
+    "privacySecurity": "Confidentialité & Sécurité",
+    "helpSupport": "Aide & Support",
+    "about": "À Propos",
+    "editProfile": "Modifier le Profil",
+    "personalInfo": "Informations Personnelles",
+    "fullName": "Nom Complet",
+    "email": "Email",
+    "stayDetails": "Détails du Séjour",
+    "villa": "Villa",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "guests": "Invités"
+  },
+  "languages": {
+    "en": "Anglais",
+    "fr": "Français",
+    "ar": "Arabe"
+  }
+}

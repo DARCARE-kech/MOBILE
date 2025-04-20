@@ -1,0 +1,97 @@
+
+{
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "search": "Search",
+    "logout": "Logout",
+    "error": "An error occurred",
+    "notFound": "Not found"
+  },
+  "navigation": {
+    "home": "Home",
+    "services": "Services",
+    "explore": "Explore",
+    "chatbot": "Chatbot",
+    "profile": "Profile",
+    "notifications": "Notifications"
+  },
+  "home": {
+    "welcomeBack": "Welcome back",
+    "yourStay": "Your Stay",
+    "currentWeather": "Current Weather",
+    "upcomingServices": "Upcoming Services",
+    "exploreDestination": "Explore Destination",
+    "viewAll": "View All"
+  },
+  "services": {
+    "reserve": "Reserve",
+    "requests": "My Requests",
+    "history": "History",
+    "book": "Book",
+    "request": "Request",
+    "spaces": "Spaces",
+    "cleaning": "Cleaning",
+    "maintenance": "Maintenance",
+    "transport": "Transport",
+    "shop": "Shop",
+    "details": "Service Details",
+    "preferredTime": "Preferred Time",
+    "specialRequests": "Special Requests",
+    "requestService": "Request Service",
+    "viewDetails": "View Details",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "explore": {
+    "searchPlaceholder": "Search places & experiences...",
+    "filters": "Filters",
+    "categories": "Categories",
+    "distance": "Distance",
+    "rating": "Rating",
+    "features": "Features",
+    "reviews": "Reviews",
+    "location": "Location",
+    "contactInfo": "Contact Information",
+    "makeReservation": "Make Reservation"
+  },
+  "chatbot": {
+    "newChat": "New Chat",
+    "chatHistory": "Chat History",
+    "typeMessage": "Type your message...",
+    "contactAdmin": "Contact Admin",
+    "subject": "Subject",
+    "message": "Message",
+    "sendMessage": "Send Message"
+  },
+  "profile": {
+    "preferences": "Preferences",
+    "darkMode": "Dark Mode",
+    "language": "Language",
+    "privacySecurity": "Privacy & Security",
+    "helpSupport": "Help & Support",
+    "about": "About",
+    "editProfile": "Edit Profile",
+    "personalInfo": "Personal Information",
+    "fullName": "Full Name",
+    "email": "Email",
+    "stayDetails": "Stay Details",
+    "villa": "Villa",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "French",
+    "ar": "Arabic"
+  }
+}

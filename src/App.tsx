@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import SplashScreen from "./pages/SplashScreen";
 import Onboarding from "./pages/Onboarding";
 import Auth from "./pages/Auth";
@@ -30,6 +30,7 @@ import EditProfile from "./pages/profile/EditProfile";
 import PrivacySecurityPage from "./pages/profile/PrivacySecurityPage";
 import HelpSupportPage from "./pages/profile/HelpSupportPage";
 import AboutPage from "./pages/profile/AboutPage";
+import "./i18n";
 
 const queryClient = new QueryClient();
 
@@ -57,49 +58,51 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  !isOnboarded ? (
-                    <Onboarding onComplete={completeOnboarding} />
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                }
-              />
-              <Route path="/onboarding" element={<Onboarding onComplete={completeOnboarding} />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/services/spaces" element={<SpacesListPage />} />
-              <Route path="/services/space/:id?" element={<BookSpaceService />} />
-              <Route path="/services/:id" element={<ServiceDetail />} />
-              <Route path="/services/requests/:id" element={<RequestDetailPage />} />
-              <Route path="/explore" element={<Explore />} />
-              <Route path="/chatbot" element={<Chatbot />} />
-              <Route path="/chat-history" element={<ChatHistory />} />
-              <Route path="/contact-admin" element={<ContactAdmin />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile/edit" element={<EditProfile />} />
-              <Route path="/profile/privacy" element={<PrivacySecurityPage />} />
-              <Route path="/profile/help" element={<HelpSupportPage />} />
-              <Route path="/profile/about" element={<AboutPage />} />
-              <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
-              <Route path="/explore/favorites" element={<FavoritesPage />} />
-              <Route path="/stays/details" element={<StayDetailsPage />} />
-              <Route path="/services/shop/cart" element={<CartScreen />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    !isOnboarded ? (
+                      <Onboarding onComplete={completeOnboarding} />
+                    ) : (
+                      <Navigate to="/auth" replace />
+                    )
+                  }
+                />
+                <Route path="/onboarding" element={<Onboarding onComplete={completeOnboarding} />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/services/spaces" element={<SpacesListPage />} />
+                <Route path="/services/space/:id?" element={<BookSpaceService />} />
+                <Route path="/services/:id" element={<ServiceDetail />} />
+                <Route path="/services/requests/:id" element={<RequestDetailPage />} />
+                <Route path="/explore" element={<Explore />} />
+                <Route path="/chatbot" element={<Chatbot />} />
+                <Route path="/chat-history" element={<ChatHistory />} />
+                <Route path="/contact-admin" element={<ContactAdmin />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile/edit" element={<EditProfile />} />
+                <Route path="/profile/privacy" element={<PrivacySecurityPage />} />
+                <Route path="/profile/help" element={<HelpSupportPage />} />
+                <Route path="/profile/about" element={<AboutPage />} />
+                <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
+                <Route path="/explore/favorites" element={<FavoritesPage />} />
+                <Route path="/stays/details" element={<StayDetailsPage />} />
+                <Route path="/services/shop/cart" element={<CartScreen />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </LanguageProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

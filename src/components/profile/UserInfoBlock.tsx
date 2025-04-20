@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { UserRound, Calendar, Edit } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface UserInfoBlockProps {
   fullName: string;
@@ -26,6 +27,8 @@ export const UserInfoBlock = ({
   onViewStay,
   onEditProfile
 }: UserInfoBlockProps) => {
+  const { t } = useTranslation();
+  
   return (
     <Card className="p-6 bg-darcare-navy/50 border-darcare-gold/20">
       <div className="flex items-center gap-4">
@@ -45,6 +48,7 @@ export const UserInfoBlock = ({
                   size="icon" 
                   className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
                   onClick={onViewStay}
+                  aria-label={t('profile.stayDetails')}
                 >
                   <Calendar className="h-4 w-4" />
                 </Button>
@@ -55,6 +59,7 @@ export const UserInfoBlock = ({
                   size="icon" 
                   className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
                   onClick={onEditProfile}
+                  aria-label={t('profile.editProfile')}
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -64,7 +69,7 @@ export const UserInfoBlock = ({
           <p className="text-darcare-beige/70">{email}</p>
           {villaNumber && (
             <p className="text-sm text-darcare-beige mt-1">
-              Villa {villaNumber}
+              {t('profile.villa')} {villaNumber}
               {checkIn && checkOut && (
                 <span className="block text-darcare-beige/50">
                   {format(new Date(checkIn), 'MMM d')} - {format(new Date(checkOut), 'MMM d, yyyy')}

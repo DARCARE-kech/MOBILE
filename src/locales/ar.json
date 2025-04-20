@@ -1,0 +1,97 @@
+
+{
+  "common": {
+    "back": "عودة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "loading": "جاري التحميل...",
+    "search": "بحث",
+    "logout": "تسجيل الخروج",
+    "error": "حدث خطأ ما",
+    "notFound": "غير موجود"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "services": "الخدمات",
+    "explore": "استكشاف",
+    "chatbot": "المساعد",
+    "profile": "الملف الشخصي",
+    "notifications": "الإشعارات"
+  },
+  "home": {
+    "welcomeBack": "مرحبًا بعودتك",
+    "yourStay": "إقامتك",
+    "currentWeather": "الطقس الحالي",
+    "upcomingServices": "الخدمات القادمة",
+    "exploreDestination": "استكشاف الوجهة",
+    "viewAll": "عرض الكل"
+  },
+  "services": {
+    "reserve": "حجز",
+    "requests": "طلباتي",
+    "history": "التاريخ",
+    "book": "حجز",
+    "request": "طلب",
+    "spaces": "المساحات",
+    "cleaning": "تنظيف",
+    "maintenance": "صيانة",
+    "transport": "نقل",
+    "shop": "متجر",
+    "details": "تفاصيل الخدمة",
+    "preferredTime": "الوقت المفضل",
+    "specialRequests": "طلبات خاصة",
+    "requestService": "طلب خدمة",
+    "viewDetails": "عرض التفاصيل",
+    "status": {
+      "pending": "قيد الانتظار",
+      "approved": "تمت الموافقة",
+      "in_progress": "قيد التنفيذ",
+      "completed": "مكتمل",
+      "cancelled": "ملغى"
+    }
+  },
+  "explore": {
+    "searchPlaceholder": "البحث عن أماكن وتجارب...",
+    "filters": "المرشحات",
+    "categories": "الفئات",
+    "distance": "المسافة",
+    "rating": "التقييم",
+    "features": "الميزات",
+    "reviews": "المراجعات",
+    "location": "الموقع",
+    "contactInfo": "معلومات الاتصال",
+    "makeReservation": "إجراء حجز"
+  },
+  "chatbot": {
+    "newChat": "محادثة جديدة",
+    "chatHistory": "سجل المحادثات",
+    "typeMessage": "اكتب رسالتك...",
+    "contactAdmin": "اتصل بالمسؤول",
+    "subject": "الموضوع",
+    "message": "الرسالة",
+    "sendMessage": "إرسال الرسالة"
+  },
+  "profile": {
+    "preferences": "التفضيلات",
+    "darkMode": "الوضع الداكن",
+    "language": "اللغة",
+    "privacySecurity": "الخصوصية والأمان",
+    "helpSupport": "المساعدة والدعم",
+    "about": "حول",
+    "editProfile": "تعديل الملف الشخصي",
+    "personalInfo": "المعلومات الشخصية",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "stayDetails": "تفاصيل الإقامة",
+    "villa": "فيلا",
+    "checkIn": "تسجيل الوصول",
+    "checkOut": "تسجيل المغادرة",
+    "guests": "الضيوف"
+  },
+  "languages": {
+    "en": "الإنجليزية",
+    "fr": "الفرنسية",
+    "ar": "العربية"
+  }
+}

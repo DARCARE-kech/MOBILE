@@ -9,10 +9,12 @@ import { UserInfoBlock } from '@/components/profile/UserInfoBlock';
 import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ProfilePage: React.FC = () => {
   const { profile, currentStay, isLoading, updateProfile, handleLogout } = useUserProfile();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handlePreferenceUpdate = (key: string, value: boolean | string) => {
     updateProfile({ [key]: value });
@@ -34,7 +36,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader showDrawer title="Profile" />
+      <MainHeader showDrawer title={t('navigation.profile')} />
       
       <div className="pt-16 pb-24">
         <div className="p-4 space-y-6">
@@ -52,7 +54,7 @@ const ProfilePage: React.FC = () => {
 
           {/* Preferences Section */}
           <div className="luxury-card">
-            <h3 className="text-lg font-serif text-darcare-gold mb-4">Preferences</h3>
+            <h3 className="text-lg font-serif text-darcare-gold mb-4">{t('profile.preferences')}</h3>
             <PreferencesSection
               darkMode={profile?.dark_mode || false}
               language={profile?.language || 'en'}
@@ -68,7 +70,7 @@ const ProfilePage: React.FC = () => {
             >
               <div className="flex items-center gap-3">
                 <Shield className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">Privacy & Security</span>
+                <span className="text-darcare-beige">{t('profile.privacySecurity')}</span>
               </div>
             </div>
             <Separator className="my-2 bg-darcare-gold/10" />
@@ -78,7 +80,7 @@ const ProfilePage: React.FC = () => {
             >
               <div className="flex items-center gap-3">
                 <HelpCircle className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">Help & Support</span>
+                <span className="text-darcare-beige">{t('profile.helpSupport')}</span>
               </div>
             </div>
             <Separator className="my-2 bg-darcare-gold/10" />
@@ -88,7 +90,7 @@ const ProfilePage: React.FC = () => {
             >
               <div className="flex items-center gap-3">
                 <Info className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">About</span>
+                <span className="text-darcare-beige">{t('profile.about')}</span>
               </div>
             </div>
           </div>
@@ -99,7 +101,7 @@ const ProfilePage: React.FC = () => {
             className="w-full border border-darcare-gold/20 text-darcare-gold hover:bg-darcare-gold/10 mt-6"
             onClick={handleLogout}
           >
-            Logout
+            {t('common.logout')}
           </Button>
         </div>
       </div>
