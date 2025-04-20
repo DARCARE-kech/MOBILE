@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import SpacesListPage from "@/pages/services/SpacesListPage";
 import RecommendationDetail from "./pages/explore/RecommendationDetail";
 import FavoritesPage from "./pages/explore/Favorites";
 import StayDetailsPage from "./pages/stays/StayDetailsPage";
+import RequestDetailPage from "./pages/services/RequestDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +74,7 @@ const App = () => {
               <Route path="/services/spaces" element={<SpacesListPage />} />
               <Route path="/services/space/:id?" element={<BookSpaceService />} />
               <Route path="/services/:id" element={<ServiceDetail />} />
+              <Route path="/services/requests/:id" element={<RequestDetailPage />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/chatbot" element={<Chatbot />} />
               <Route path="/profile" element={<Profile />} />

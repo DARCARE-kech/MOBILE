@@ -3,12 +3,13 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Loader2, Star } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 import { getStaffAssignmentsForRequest, getServiceRatingsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
 import StatusBadge from '@/components/StatusBadge';
+import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { RatingStars } from '@/components/RatingStars';
 
 interface Service {
   id: string;
@@ -33,7 +34,9 @@ interface ServiceRequest {
 }
 
 const HistoryTab: React.FC = () => {
-  const { data: history, isLoading, error, refetch } = useQuery({
+  const navigate = useNavigate();
+  
+  const { data: history, isLoading, error } = useQuery({
     queryKey: ['service-history'],
     queryFn: async () => {
       // Fetch service requests with completed or cancelled status
@@ -67,31 +70,8 @@ const HistoryTab: React.FC = () => {
     }
   });
 
-  const handleRate = async (requestId: string, rating: number) => {
-    try {
-      const { error } = await supabase
-        .from('service_ratings')
-        .insert({
-          request_id: requestId,
-          user_id: (await supabase.auth.getUser()).data.user?.id,
-          rating
-        });
-
-      if (error) throw error;
-      
-      toast({
-        title: "Rating submitted",
-        description: "Thank you for your feedback",
-      });
-      
-      refetch();
-    } catch (err) {
-      toast({
-        title: "Error submitting rating",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    }
+  const handleRequestClick = (requestId: string) => {
+    navigate(`/services/requests/${requestId}`);
   };
 
   if (isLoading) {
@@ -123,7 +103,8 @@ const HistoryTab: React.FC = () => {
       {history?.map(record => (
         <Card 
           key={record.id} 
-          className="bg-darcare-navy border border-darcare-gold/20 p-4"
+          className="bg-darcare-navy border border-darcare-gold/20 p-4 cursor-pointer hover:border-darcare-gold/40 transition-colors"
+          onClick={() => handleRequestClick(record.id)}
         >
           <div className="flex justify-between items-start">
             <div>
@@ -131,7 +112,7 @@ const HistoryTab: React.FC = () => {
                 {record.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {record.preferred_time ? new Date(record.preferred_time).toLocaleString() : 'Time not specified'}
+                {record.preferred_time ? format(new Date(record.preferred_time), 'PPP p') : 'Time not specified'}
               </p>
               {record.staff_assignments && record.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">
@@ -142,17 +123,10 @@ const HistoryTab: React.FC = () => {
             <StatusBadge status={record.status || 'completed'} />
           </div>
 
-          {record.status === 'completed' && 
-           (!record.service_ratings || record.service_ratings.length === 0) && (
-            <div className="mt-3 flex justify-end">
-              <Button 
-                size="sm" 
-                className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-                onClick={() => handleRate(record.id, 5)}
-              >
-                <Star className="mr-1 h-4 w-4" />
-                Rate
-              </Button>
+          {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-darcare-gold/10 flex items-center">
+              <RatingStars rating={record.service_ratings[0].rating} />
+              <span className="text-darcare-beige/70 text-sm ml-2">Rated</span>
             </div>
           )}
         </Card>

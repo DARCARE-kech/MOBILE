@@ -7,6 +7,8 @@ import { Loader2 } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
 import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment } from '@/integrations/supabase/rpc';
+import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 
 interface Service {
   id: string;
@@ -30,6 +32,8 @@ interface ServiceRequest {
 }
 
 const MyRequestsTab: React.FC = () => {
+  const navigate = useNavigate();
+  
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['my-service-requests'],
     queryFn: async () => {
@@ -40,7 +44,7 @@ const MyRequestsTab: React.FC = () => {
           *,
           services(*)
         `)
-        .eq('status', 'pending')
+        .in('status', ['pending', 'in_progress'])
         .order('created_at', { ascending: false });
       
       if (requestsError) throw requestsError;
@@ -58,6 +62,10 @@ const MyRequestsTab: React.FC = () => {
       return enhancedRequests as ServiceRequest[];
     }
   });
+
+  const handleRequestClick = (requestId: string) => {
+    navigate(`/services/requests/${requestId}`);
+  };
 
   if (isLoading) {
     return (
@@ -89,7 +97,8 @@ const MyRequestsTab: React.FC = () => {
       {requests?.map(request => (
         <Card 
           key={request.id} 
-          className="bg-darcare-navy border border-darcare-gold/20 p-4"
+          className="bg-darcare-navy border border-darcare-gold/20 p-4 cursor-pointer hover:border-darcare-gold/40 transition-colors"
+          onClick={() => handleRequestClick(request.id)}
         >
           <div className="flex justify-between items-start">
             <div>
@@ -97,7 +106,7 @@ const MyRequestsTab: React.FC = () => {
                 {request.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {request.preferred_time ? new Date(request.preferred_time).toLocaleString() : 'Time not specified'}
+                {request.preferred_time ? format(new Date(request.preferred_time), 'PPP p') : 'Time not specified'}
               </p>
               {request.staff_assignments && request.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">
