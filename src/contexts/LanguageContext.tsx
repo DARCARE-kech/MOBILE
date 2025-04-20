@@ -46,6 +46,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
 
         if (data && data.language) {
+          console.log('Setting language from DB:', data.language);
           await i18n.changeLanguage(data.language);
           setCurrentLanguage(data.language);
         }
@@ -64,6 +65,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setIsLanguageLoading(true);
     
     try {
+      console.log('Changing language to:', lang);
       // Update language in i18n
       await i18n.changeLanguage(lang);
       setCurrentLanguage(lang);

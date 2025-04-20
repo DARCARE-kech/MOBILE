@@ -32,7 +32,7 @@ import PrivacySecurityPage from "./pages/profile/PrivacySecurityPage";
 import HelpSupportPage from "./pages/profile/HelpSupportPage";
 import AboutPage from "./pages/profile/AboutPage";
 import ChangePassword from "./pages/profile/ChangePassword";
-import "./i18n";
+import "./i18n"; // Ensure i18n is initialized before any components
 
 const queryClient = new QueryClient();
 

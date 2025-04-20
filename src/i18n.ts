@@ -11,15 +11,24 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: enTranslations,
-      fr: frTranslations,
-      ar: arTranslations
+      en: {
+        translation: enTranslations
+      },
+      fr: {
+        translation: frTranslations
+      },
+      ar: {
+        translation: arTranslations
+      }
     },
     lng: 'en', // Default language
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false // React already escapes values
-    }
+    },
+    returnNull: false,
+    returnEmptyString: false,
+    keySeparator: '.'
   });
 
 export default i18n;
