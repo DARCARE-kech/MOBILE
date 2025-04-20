@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, HelpCircle, Info, Calendar, Edit } from 'lucide-react';
+import { Shield, HelpCircle, Info, Key } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -36,7 +36,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader showDrawer title={t('navigation.profile')} />
+      <MainHeader showDrawer title={t('profile.personalInfo')} />
       
       <div className="pt-16 pb-24">
         <div className="p-4 space-y-6">
@@ -71,6 +71,16 @@ const ProfilePage: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Shield className="h-5 w-5 text-darcare-gold" />
                 <span className="text-darcare-beige">{t('profile.privacySecurity')}</span>
+              </div>
+            </div>
+            <Separator className="my-2 bg-darcare-gold/10" />
+            <div 
+              className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
+              onClick={() => navigate('/profile/change-password')}
+            >
+              <div className="flex items-center gap-3">
+                <Key className="h-5 w-5 text-darcare-gold" />
+                <span className="text-darcare-beige">{t('profile.changePassword')}</span>
               </div>
             </div>
             <Separator className="my-2 bg-darcare-gold/10" />

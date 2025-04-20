@@ -12,6 +12,8 @@ export interface UserProfile {
   notifications_enabled: boolean | null;
   terms_accepted: boolean | null;
   terms_accepted_at: string | null;
+  phone_number: string | null;
+  whatsapp_number: string | null;
 }
 
 export const useProfileData = (userId: string | undefined) => {

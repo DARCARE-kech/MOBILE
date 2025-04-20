@@ -31,6 +31,7 @@ import EditProfile from "./pages/profile/EditProfile";
 import PrivacySecurityPage from "./pages/profile/PrivacySecurityPage";
 import HelpSupportPage from "./pages/profile/HelpSupportPage";
 import AboutPage from "./pages/profile/AboutPage";
+import ChangePassword from "./pages/profile/ChangePassword";
 import "./i18n";
 
 const queryClient = new QueryClient();
@@ -92,6 +93,7 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/edit" element={<EditProfile />} />
                 <Route path="/profile/privacy" element={<PrivacySecurityPage />} />
+                <Route path="/profile/change-password" element={<ChangePassword />} />
                 <Route path="/profile/help" element={<HelpSupportPage />} />
                 <Route path="/profile/about" element={<AboutPage />} />
                 <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />

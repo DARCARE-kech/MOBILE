@@ -10,6 +10,11 @@ interface UserProfile {
   role: string;
   avatar_url: string | null;
   created_at: string;
+  phone_number?: string | null;
+  whatsapp_number?: string | null;
+  email: string | null;
+  language: string | null;
+  dark_mode: boolean | null;
 }
 
 interface AuthContextType {
