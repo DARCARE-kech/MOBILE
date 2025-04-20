@@ -2,6 +2,7 @@
 import React from "react";
 import { Home, Search, Bell, UserCircle, MessageSquare } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface BottomNavigationProps {
   activeTab?: string;
@@ -10,17 +11,18 @@ interface BottomNavigationProps {
 const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActiveTab }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   
   // Determine active tab from props or current path if not provided
   const currentPath = location.pathname.split('/')[1] || 'home';
   const activeTab = propActiveTab || currentPath;
 
   const tabs = [
-    { id: "services", label: "Services", icon: <Bell size={20} />, path: "/services" },
-    { id: "explore", label: "Explore", icon: <Search size={20} />, path: "/explore" },
-    { id: "home", label: "Home", icon: <Home size={20} />, path: "/home" },
-    { id: "profile", label: "Profile", icon: <UserCircle size={20} />, path: "/profile" },
-    { id: "chatbot", label: "Chatbot", icon: <MessageSquare size={20} />, path: "/chatbot" },
+    { id: "services", label: t('navigation.services'), icon: <Bell size={20} />, path: "/services" },
+    { id: "explore", label: t('navigation.explore'), icon: <Search size={20} />, path: "/explore" },
+    { id: "home", label: t('navigation.home'), icon: <Home size={20} />, path: "/home" },
+    { id: "profile", label: t('navigation.profile'), icon: <UserCircle size={20} />, path: "/profile" },
+    { id: "chatbot", label: t('navigation.chatbot'), icon: <MessageSquare size={20} />, path: "/chatbot" },
   ];
 
   const handleTabChange = (path: string) => {

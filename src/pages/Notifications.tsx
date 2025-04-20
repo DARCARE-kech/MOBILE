@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Bell, ChevronLeft, Star, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const getNotificationIcon = (category: string) => {
   switch (category) {
@@ -27,6 +28,8 @@ const formatDate = (date: string) => {
 
 const Notifications = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: async () => {
@@ -78,7 +81,7 @@ const Notifications = () => {
           >
             <ChevronLeft size={24} />
           </Button>
-          <h1 className="font-serif text-xl text-darcare-gold">Notifications</h1>
+          <h1 className="font-serif text-xl text-darcare-gold">{t('navigation.notifications')}</h1>
         </div>
         
         <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-darcare-gold/10 text-darcare-beige">
@@ -89,7 +92,7 @@ const Notifications = () => {
       <div className="p-4 space-y-6 pb-24">
         {isLoading ? (
           <div className="text-center text-darcare-beige py-8">
-            Loading notifications...
+            {t('common.loading')}
           </div>
         ) : Object.entries(groupedNotifications).length > 0 ? (
           Object.entries(groupedNotifications).map(([date, items]) => (
@@ -130,7 +133,7 @@ const Notifications = () => {
           ))
         ) : (
           <div className="text-center text-darcare-beige py-8">
-            No notifications yet
+            {t('notifications.noNotifications')}
           </div>
         )}
       </div>

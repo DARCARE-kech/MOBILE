@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Plus, DoorOpen, Wrench, MessageSquare, PhoneCall, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface QuickAction {
   id: string;
@@ -13,29 +14,30 @@ interface QuickAction {
 const FloatingAction: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const quickActions: QuickAction[] = [
     {
       id: "space",
-      label: "Book Space",
+      label: t('services.bookSpace'),
       icon: <DoorOpen size={20} />,
       action: () => navigate("/services/spaces"),
     },
     {
       id: "service",
-      label: "Request Service",
+      label: t('services.requestService'),
       icon: <Wrench size={20} />,
       action: () => navigate("/services"),
     },
     {
       id: "chatbot",
-      label: "Ask Chatbot",
+      label: t('chatbot.askChatbot'),
       icon: <MessageSquare size={20} />,
       action: () => navigate("/chatbot"),
     },
     {
       id: "contact",
-      label: "Contact Admin",
+      label: t('chatbot.contactAdmin'),
       icon: <PhoneCall size={20} />,
       action: () => navigate("/contact-admin"),
     },

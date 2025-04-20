@@ -9,18 +9,21 @@ import {
 } from "@/components/ui/sheet";
 import { Menu, Home, FileText, Compass, Settings, LogOut, UserCircle } from "lucide-react";
 import Logo from "./Logo";
+import { useTranslation } from "react-i18next";
 
 interface DrawerMenuProps {
   onLogout: () => void;
 }
 
 const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
+  const { t } = useTranslation();
+  
   const menuItems = [
-    { icon: <Home size={20} />, label: "Home", path: "/home" },
-    { icon: <FileText size={20} />, label: "Requests", path: "/requests" },
-    { icon: <Compass size={20} />, label: "Recommendations", path: "/recommendations" },
-    { icon: <UserCircle size={20} />, label: "Profile", path: "/profile" },
-    { icon: <Settings size={20} />, label: "Settings", path: "/settings" },
+    { icon: <Home size={20} />, label: t('navigation.home'), path: "/home" },
+    { icon: <FileText size={20} />, label: t('services.requests'), path: "/requests" },
+    { icon: <Compass size={20} />, label: t('explore.recommendations'), path: "/recommendations" },
+    { icon: <UserCircle size={20} />, label: t('navigation.profile'), path: "/profile" },
+    { icon: <Settings size={20} />, label: t('common.settings'), path: "/settings" },
   ];
 
   return (
@@ -64,7 +67,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
           className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 rounded-lg transition-colors w-full mt-auto"
         >
           <span className="text-darcare-gold"><LogOut size={20} /></span>
-          <span>Log Out</span>
+          <span>{t('common.logout')}</span>
         </button>
       </SheetContent>
     </Sheet>

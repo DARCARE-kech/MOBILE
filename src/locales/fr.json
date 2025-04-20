@@ -11,7 +11,10 @@
     "error": "Une erreur est survenue",
     "notFound": "Non trouvé",
     "update": "Mettre à jour",
-    "optional": "Optionnel"
+    "optional": "Optionnel",
+    "settings": "Paramètres",
+    "unknownService": "Service Inconnu",
+    "fetchDataError": "Impossible de récupérer vos données"
   },
   "navigation": {
     "home": "Accueil",
@@ -45,6 +48,9 @@
     "specialRequests": "Demandes Spéciales",
     "requestService": "Demander un Service",
     "viewDetails": "Voir les Détails",
+    "bookSpace": "Réserver un Espace",
+    "unscheduled": "Non Programmé",
+    "unassigned": "Non Assigné",
     "status": {
       "pending": "En Attente",
       "approved": "Approuvé",
@@ -63,7 +69,8 @@
     "reviews": "Avis",
     "location": "Emplacement",
     "contactInfo": "Coordonnées",
-    "makeReservation": "Faire une Réservation"
+    "makeReservation": "Faire une Réservation",
+    "recommendations": "Recommandations"
   },
   "chatbot": {
     "newChat": "Nouvelle Conversation",
@@ -72,7 +79,10 @@
     "contactAdmin": "Contacter l'Admin",
     "subject": "Sujet",
     "message": "Message",
-    "sendMessage": "Envoyer le Message"
+    "sendMessage": "Envoyer le Message",
+    "askChatbot": "Demander à l'Assistant",
+    "startConversation": "Commencez une conversation avec l'assistant IA",
+    "aiResponse": "Je suis votre concierge IA. Comment puis-je vous aider aujourd'hui?"
   },
   "profile": {
     "preferences": "Préférences",
@@ -118,6 +128,9 @@
     "passwordUpdated": "Mot de Passe Mis à Jour",
     "passwordUpdatedMessage": "Votre mot de passe a été mis à jour avec succès",
     "passwordChangeFailedMessage": "Échec de la mise à jour de votre mot de passe"
+  },
+  "notifications": {
+    "noNotifications": "Pas de notifications pour le moment"
   },
   "languages": {
     "en": "Anglais",

@@ -11,7 +11,10 @@
     "error": "An error occurred",
     "notFound": "Not found",
     "update": "Update",
-    "optional": "Optional"
+    "optional": "Optional",
+    "settings": "Settings",
+    "unknownService": "Unknown Service",
+    "fetchDataError": "Unable to fetch your data"
   },
   "navigation": {
     "home": "Home",
@@ -45,6 +48,9 @@
     "specialRequests": "Special Requests",
     "requestService": "Request Service",
     "viewDetails": "View Details",
+    "bookSpace": "Book Space",
+    "unscheduled": "Unscheduled",
+    "unassigned": "Unassigned",
     "status": {
       "pending": "Pending",
       "approved": "Approved",
@@ -63,7 +69,8 @@
     "reviews": "Reviews",
     "location": "Location",
     "contactInfo": "Contact Information",
-    "makeReservation": "Make Reservation"
+    "makeReservation": "Make Reservation",
+    "recommendations": "Recommendations"
   },
   "chatbot": {
     "newChat": "New Chat",
@@ -72,7 +79,10 @@
     "contactAdmin": "Contact Admin",
     "subject": "Subject",
     "message": "Message",
-    "sendMessage": "Send Message"
+    "sendMessage": "Send Message",
+    "askChatbot": "Ask Chatbot",
+    "startConversation": "Start a conversation with the AI assistant",
+    "aiResponse": "I'm your AI concierge. How can I assist you today?"
   },
   "profile": {
     "preferences": "Preferences",
@@ -118,6 +128,9 @@
     "passwordUpdated": "Password Updated",
     "passwordUpdatedMessage": "Your password has been updated successfully",
     "passwordChangeFailedMessage": "Failed to update your password"
+  },
+  "notifications": {
+    "noNotifications": "No notifications yet"
   },
   "languages": {
     "en": "English",

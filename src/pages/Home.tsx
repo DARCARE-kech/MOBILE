@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +11,7 @@ import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainHeader from "@/components/MainHeader";
+import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) return;
@@ -83,20 +86,20 @@ const Home: React.FC = () => {
 
         const formattedServices = requestsData.map(request => ({
           id: request.id,
-          title: request.services?.name || 'Unknown Service',
+          title: request.services?.name || t('common.unknownService'),
           status: request.status || 'pending',
-          time: request.preferred_time ? new Date(request.preferred_time).toLocaleString() : 'Unscheduled',
+          time: request.preferred_time ? new Date(request.preferred_time).toLocaleString() : t('services.unscheduled'),
           staff: request.staff_assignments && request.staff_assignments[0]
             ? request.staff_assignments[0].staff_name
-            : 'Unassigned'
+            : t('services.unassigned')
         }));
 
         setServices(formattedServices);
       } catch (error) {
         console.error('Error fetching data:', error);
         toast({
-          title: "Error",
-          description: "Unable to fetch your data",
+          title: t('common.error'),
+          description: t('common.fetchDataError'),
           variant: "destructive"
         });
       } finally {
@@ -105,7 +108,7 @@ const Home: React.FC = () => {
     };
 
     fetchUserData();
-  }, [user, toast]);
+  }, [user, toast, t]);
 
   return (
     <div className="min-h-screen bg-darcare-navy">

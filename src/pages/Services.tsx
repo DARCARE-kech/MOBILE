@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReserveServicesTab from "@/components/services/ReserveServicesTab";
@@ -5,13 +6,15 @@ import MyRequestsTab from "@/components/services/MyRequestsTab";
 import HistoryTab from "@/components/services/HistoryTab";
 import MainHeader from "@/components/MainHeader";
 import BottomNavigation from "@/components/BottomNavigation";
+import { useTranslation } from "react-i18next";
 
 const ServicesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("reserve");
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader showDrawer title="Services" />
+      <MainHeader showDrawer title={t('navigation.services')} />
       <div className="pt-16 pb-24">
         <Tabs 
           value={activeTab} 
@@ -23,19 +26,19 @@ const ServicesPage: React.FC = () => {
               value="reserve" 
               className="text-darcare-beige data-[state=active]:bg-darcare-gold data-[state=active]:text-darcare-navy"
             >
-              Reserve
+              {t('services.reserve')}
             </TabsTrigger>
             <TabsTrigger 
               value="requests" 
               className="text-darcare-beige data-[state=active]:bg-darcare-gold data-[state=active]:text-darcare-navy"
             >
-              My Requests
+              {t('services.requests')}
             </TabsTrigger>
             <TabsTrigger 
               value="history" 
               className="text-darcare-beige data-[state=active]:bg-darcare-gold data-[state=active]:text-darcare-navy"
             >
-              History
+              {t('services.history')}
             </TabsTrigger>
           </TabsList>
           

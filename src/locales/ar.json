@@ -11,7 +11,10 @@
     "error": "حدث خطأ ما",
     "notFound": "غير موجود",
     "update": "تحديث",
-    "optional": "اختياري"
+    "optional": "اختياري",
+    "settings": "الإعدادات",
+    "unknownService": "خدمة غير معروفة",
+    "fetchDataError": "تعذر جلب بياناتك"
   },
   "navigation": {
     "home": "الرئيسية",
@@ -45,6 +48,9 @@
     "specialRequests": "طلبات خاصة",
     "requestService": "طلب خدمة",
     "viewDetails": "عرض التفاصيل",
+    "bookSpace": "حجز مساحة",
+    "unscheduled": "غير مجدول",
+    "unassigned": "غير معين",
     "status": {
       "pending": "قيد الانتظار",
       "approved": "تمت الموافقة",
@@ -63,7 +69,8 @@
     "reviews": "المراجعات",
     "location": "الموقع",
     "contactInfo": "معلومات الاتصال",
-    "makeReservation": "إجراء حجز"
+    "makeReservation": "إجراء حجز",
+    "recommendations": "التوصيات"
   },
   "chatbot": {
     "newChat": "محادثة جديدة",
@@ -72,7 +79,10 @@
     "contactAdmin": "اتصل بالمسؤول",
     "subject": "الموضوع",
     "message": "الرسالة",
-    "sendMessage": "إرسال الرسالة"
+    "sendMessage": "إرسال الرسالة",
+    "askChatbot": "اسأل المساعد",
+    "startConversation": "ابدأ محادثة مع المساعد الذكي",
+    "aiResponse": "أنا المساعد الشخصي. كيف يمكنني مساعدتك اليوم؟"
   },
   "profile": {
     "preferences": "التفضيلات",
@@ -118,6 +128,9 @@
     "passwordUpdated": "تم تحديث كلمة المرور",
     "passwordUpdatedMessage": "تم تحديث كلمة المرور الخاصة بك بنجاح",
     "passwordChangeFailedMessage": "فشل تحديث كلمة المرور الخاصة بك"
+  },
+  "notifications": {
+    "noNotifications": "لا توجد إشعارات حتى الآن"
   },
   "languages": {
     "en": "الإنجليزية",

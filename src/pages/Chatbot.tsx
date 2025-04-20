@@ -9,6 +9,7 @@ import MessageInput from '@/components/chat/MessageInput';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useChat } from '@/hooks/useChat';
 import BottomNavigation from '@/components/BottomNavigation';
+import { useTranslation } from 'react-i18next';
 
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const ChatbotPage: React.FC = () => {
   const sessionId = searchParams.get('session');
   const { messages, sendMessage, currentSessionId, setCurrentSessionId } = useChat(sessionId || undefined);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (sessionId) {
@@ -34,7 +36,7 @@ const ChatbotPage: React.FC = () => {
     // Simulate bot response
     setTimeout(() => {
       sendMessage.mutate({ 
-        content: "I'm your AI concierge. How can I assist you today?", 
+        content: t('chatbot.aiResponse'), 
         sender: 'bot' 
       });
     }, 1000);
@@ -43,7 +45,7 @@ const ChatbotPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-darcare-navy flex flex-col">
       <MainHeader 
-        title="Chatbot"
+        title={t('navigation.chatbot')}
         onBack={() => navigate("/home")}
       >
         <div className="flex items-center gap-2">
@@ -74,7 +76,7 @@ const ChatbotPage: React.FC = () => {
           {(!messages || messages.length === 0) && (
             <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
               <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-              <p>Start a conversation with the AI assistant</p>
+              <p>{t('chatbot.startConversation')}</p>
             </div>
           )}
         </div>

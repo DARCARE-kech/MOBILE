@@ -1,14 +1,6 @@
 
-import { Button } from "@/components/ui/button";
-import { Heart, SlidersHorizontal } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslation } from "react-i18next";
 
 interface FiltersBarProps {
   selectedCategory: string | null;
@@ -23,52 +15,59 @@ export const FiltersBar = ({
   sortBy,
   onSortChange,
 }: FiltersBarProps) => {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   
+  const categories = [
+    { id: "restaurant", label: "Restaurants" },
+    { id: "activity", label: "Activities" },
+    { id: "wellness", label: "Wellness" },
+    { id: "shopping", label: "Shopping" },
+  ];
+
   return (
-    <div className="flex items-center gap-2 mt-4">
-      <Select
-        value={selectedCategory || "all"}
-        onValueChange={(value) => onCategoryChange(value === "all" ? null : value)}
-      >
-        <SelectTrigger className="w-[130px] bg-darcare-navy/50 border-darcare-gold/10 text-darcare-beige">
-          <SelectValue placeholder="Category" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All</SelectItem>
-          <SelectItem value="restaurant">Restaurants</SelectItem>
-          <SelectItem value="spa">Spa & Wellness</SelectItem>
-          <SelectItem value="activity">Activities</SelectItem>
-          <SelectItem value="excursion">Excursions</SelectItem>
-        </SelectContent>
-      </Select>
+    <div className="mt-4 space-y-4">
+      <div>
+        <h3 className="text-sm text-darcare-beige/60 mb-2">{t('explore.categories')}</h3>
+        <div className="flex flex-wrap gap-2">
+          {categories.map(category => (
+            <button
+              key={category.id}
+              onClick={() => onCategoryChange(selectedCategory === category.id ? null : category.id)}
+              className={`px-3 py-1 rounded-full text-sm ${
+                selectedCategory === category.id
+                  ? "bg-darcare-gold text-darcare-navy"
+                  : "bg-darcare-navy/50 text-darcare-beige border border-darcare-gold/20"
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <Select value={sortBy} onValueChange={(value: "rating" | "distance") => onSortChange(value)}>
-        <SelectTrigger className="w-[130px] bg-darcare-navy/50 border-darcare-gold/10 text-darcare-beige">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="rating">Top Rated</SelectItem>
-          <SelectItem value="distance">Nearest</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="ml-auto border-darcare-gold/10 text-darcare-gold hover:text-darcare-gold hover:bg-darcare-gold/10"
-        onClick={() => navigate("/explore/favorites")}
-      >
-        <Heart size={18} />
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="border-darcare-gold/10 text-darcare-gold hover:text-darcare-gold hover:bg-darcare-gold/10"
-      >
-        <SlidersHorizontal size={18} />
-      </Button>
+      <div>
+        <h3 className="text-sm text-darcare-beige/60 mb-2">{t('explore.filters')}</h3>
+        <Tabs 
+          value={sortBy} 
+          onValueChange={(v) => onSortChange(v as "rating" | "distance")}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-2 h-8 bg-darcare-navy/50 border border-darcare-gold/20">
+            <TabsTrigger 
+              value="rating" 
+              className="text-xs text-darcare-beige data-[state=active]:bg-darcare-gold/20 data-[state=active]:text-darcare-gold"
+            >
+              {t('explore.rating')}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="distance" 
+              className="text-xs text-darcare-beige data-[state=active]:bg-darcare-gold/20 data-[state=active]:text-darcare-gold"
+            >
+              {t('explore.distance')}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
     </div>
   );
 };
