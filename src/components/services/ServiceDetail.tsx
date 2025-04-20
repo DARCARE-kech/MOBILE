@@ -12,10 +12,12 @@ import { Loader2 } from 'lucide-react';
 import { getFallbackImage } from '@/utils/imageUtils';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
+import { useTranslation } from 'react-i18next';
 
 const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const { data: service, isLoading, error } = useQuery({
     queryKey: ['service', id],
@@ -35,7 +37,7 @@ const ServiceDetail: React.FC = () => {
   if (id === 'book-space') {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Book a Space" onBack={() => navigate('/services')} />
+        <MainHeader title={t('services.bookSpace')} onBack={() => navigate('/services')} />
         <BookSpaceService />
         <BottomNavigation activeTab="services" />
       </div>
@@ -45,7 +47,7 @@ const ServiceDetail: React.FC = () => {
   if (id === 'shop') {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Shop" onBack={() => navigate('/services')} />
+        <MainHeader title={t('services.shop')} onBack={() => navigate('/services')} />
         <ShopService />
         <BottomNavigation activeTab="services" />
       </div>
@@ -55,7 +57,7 @@ const ServiceDetail: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen bg-darcare-navy">
-        <MainHeader title="Loading..." onBack={() => navigate('/services')} />
+        <MainHeader title={t('common.loading')} onBack={() => navigate('/services')} />
         <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         <BottomNavigation activeTab="services" />
       </div>

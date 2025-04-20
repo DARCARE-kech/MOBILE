@@ -14,7 +14,9 @@
     "optional": "Optional",
     "settings": "Settings",
     "unknownService": "Unknown Service",
-    "fetchDataError": "Unable to fetch your data"
+    "fetchDataError": "Unable to fetch your data",
+    "signInRequired": "Sign in required",
+    "errorLoadingServices": "Error loading services. Please try again later."
   },
   "navigation": {
     "home": "Home",
@@ -49,6 +51,8 @@
     "requestService": "Request Service",
     "viewDetails": "View Details",
     "bookSpace": "Book Space",
+    "bookSpaceDescription": "Reserve our exclusive facilities including the pool, padel court, and fitness center.",
+    "shopDescription": "Browse our exclusive selection of luxury items, local delicacies, and essentials.",
     "unscheduled": "Unscheduled",
     "unassigned": "Unassigned",
     "status": {
@@ -70,7 +74,21 @@
     "location": "Location",
     "contactInfo": "Contact Information",
     "makeReservation": "Make Reservation",
-    "recommendations": "Recommendations"
+    "recommendations": "Recommendations",
+    "sortBy": "Sort by",
+    "noRecommendationsFound": "No recommendations found",
+    "addedToFavorites": "Added to favorites",
+    "removedFromFavorites": "Removed from favorites",
+    "signInToSaveFavorites": "Please sign in to save favorites",
+    "couldNotUpdateFavorites": "Could not update favorites",
+    "categories": {
+      "restaurant": "Restaurant",
+      "attraction": "Attraction",
+      "shopping": "Shopping",
+      "activities": "Activities",
+      "events": "Events",
+      "other": "Other"
+    }
   },
   "chatbot": {
     "newChat": "New Chat",

@@ -1,6 +1,16 @@
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 
 interface FiltersBarProps {
   selectedCategory: string | null;
@@ -13,61 +23,75 @@ export const FiltersBar = ({
   selectedCategory,
   onCategoryChange,
   sortBy,
-  onSortChange,
+  onSortChange
 }: FiltersBarProps) => {
+  const [showFilters, setShowFilters] = useState(false);
   const { t } = useTranslation();
   
   const categories = [
-    { id: "restaurant", label: "Restaurants" },
-    { id: "activity", label: "Activities" },
-    { id: "wellness", label: "Wellness" },
-    { id: "shopping", label: "Shopping" },
+    { id: 'restaurant', label: t('explore.categories.restaurant') },
+    { id: 'attraction', label: t('explore.categories.attraction') },
+    { id: 'shopping', label: t('explore.categories.shopping') },
+    { id: 'activities', label: t('explore.categories.activities') },
+    { id: 'events', label: t('explore.categories.events') },
   ];
 
   return (
-    <div className="mt-4 space-y-4">
-      <div>
-        <h3 className="text-sm text-darcare-beige/60 mb-2">{t('explore.categories')}</h3>
-        <div className="flex flex-wrap gap-2">
-          {categories.map(category => (
-            <button
-              key={category.id}
-              onClick={() => onCategoryChange(selectedCategory === category.id ? null : category.id)}
-              className={`px-3 py-1 rounded-full text-sm ${
-                selectedCategory === category.id
-                  ? "bg-darcare-gold text-darcare-navy"
-                  : "bg-darcare-navy/50 text-darcare-beige border border-darcare-gold/20"
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Button
+          variant="ghost"
+          onClick={() => setShowFilters(!showFilters)}
+          className="text-darcare-beige hover:text-darcare-gold px-0"
+        >
+          <Filter className="h-4 w-4 mr-2" />
+          {t('explore.filters')}
+        </Button>
+        
+        <div className="flex items-center">
+          <span className="text-darcare-beige/50 text-sm mr-2">{t('explore.sortBy')}:</span>
+          <Select
+            value={sortBy}
+            onValueChange={(value) => onSortChange(value as "rating" | "distance")}
+          >
+            <SelectTrigger className="w-[120px] bg-transparent border-darcare-gold/20 text-darcare-beige">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-darcare-navy border-darcare-gold/20">
+              <SelectItem value="rating" className="text-darcare-beige hover:text-darcare-gold">
+                {t('explore.rating')}
+              </SelectItem>
+              <SelectItem value="distance" className="text-darcare-beige hover:text-darcare-gold">
+                {t('explore.distance')}
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
-
-      <div>
-        <h3 className="text-sm text-darcare-beige/60 mb-2">{t('explore.filters')}</h3>
-        <Tabs 
-          value={sortBy} 
-          onValueChange={(v) => onSortChange(v as "rating" | "distance")}
-          className="w-full"
-        >
-          <TabsList className="grid w-full grid-cols-2 h-8 bg-darcare-navy/50 border border-darcare-gold/20">
-            <TabsTrigger 
-              value="rating" 
-              className="text-xs text-darcare-beige data-[state=active]:bg-darcare-gold/20 data-[state=active]:text-darcare-gold"
-            >
-              {t('explore.rating')}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="distance" 
-              className="text-xs text-darcare-beige data-[state=active]:bg-darcare-gold/20 data-[state=active]:text-darcare-gold"
-            >
-              {t('explore.distance')}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      
+      {showFilters && (
+        <div className="pt-3 border-t border-darcare-gold/20">
+          <h3 className="text-darcare-beige mb-2">{t('explore.categories')}</h3>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <Badge
+                key={category.id}
+                variant="outline"
+                className={`cursor-pointer border-darcare-gold/30 hover:border-darcare-gold transition-colors ${
+                  selectedCategory === category.id 
+                    ? 'bg-darcare-gold/20 text-darcare-gold' 
+                    : 'bg-transparent text-darcare-beige'
+                }`}
+                onClick={() => onCategoryChange(
+                  selectedCategory === category.id ? null : category.id
+                )}
+              >
+                {category.label}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment } from '@/integrations/supabase/rpc';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface Service {
   id: string;
@@ -33,6 +34,7 @@ interface ServiceRequest {
 
 const MyRequestsTab: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['my-service-requests'],
@@ -78,7 +80,7 @@ const MyRequestsTab: React.FC = () => {
   if (error || !requests) {
     return (
       <div className="p-4 text-destructive">
-        Error loading requests. Please try again.
+        {t('common.error')} {t('common.fetchDataError')}
       </div>
     );
   }
@@ -86,8 +88,8 @@ const MyRequestsTab: React.FC = () => {
   if (requests.length === 0) {
     return (
       <div className="p-6 text-center text-darcare-beige/80">
-        <p>You don't have any active service requests.</p>
-        <p className="mt-2">Switch to the Reserve tab to request a service.</p>
+        <p>{t('services.noActiveRequests')}</p>
+        <p className="mt-2">{t('services.switchToReserveTab')}</p>
       </div>
     );
   }
@@ -106,11 +108,11 @@ const MyRequestsTab: React.FC = () => {
                 {request.services?.name}
               </h3>
               <p className="text-darcare-beige/70 text-sm mt-1">
-                {request.preferred_time ? format(new Date(request.preferred_time), 'PPP p') : 'Time not specified'}
+                {request.preferred_time ? format(new Date(request.preferred_time), 'PPP p') : t('services.unscheduled')}
               </p>
               {request.staff_assignments && request.staff_assignments.length > 0 && (
                 <p className="text-darcare-beige text-sm mt-2">
-                  Staff: {request.staff_assignments[0].staff_name || 'Assigned'}
+                  {t('services.staff')}: {request.staff_assignments[0].staff_name || t('services.assigned')}
                 </p>
               )}
             </div>

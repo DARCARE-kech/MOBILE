@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { RecommendationCard } from "./RecommendationCard";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface RecommendationsListProps {
   searchQuery: string;
@@ -20,6 +21,7 @@ export const RecommendationsList = ({
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const { data: recommendations, isLoading } = useRecommendationsQuery({
     searchQuery,
@@ -30,8 +32,8 @@ export const RecommendationsList = ({
   const handleToggleFavorite = async (recommendationId: string) => {
     if (!user) {
       toast({
-        title: "Sign in required",
-        description: "Please sign in to save favorites",
+        title: t('common.signInRequired'),
+        description: t('explore.signInToSaveFavorites'),
         variant: "destructive",
       });
       return;
@@ -57,12 +59,12 @@ export const RecommendationsList = ({
       }
 
       toast({
-        title: existing ? "Removed from favorites" : "Added to favorites",
+        title: existing ? t('explore.removedFromFavorites') : t('explore.addedToFavorites'),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Could not update favorites",
+        title: t('common.error'),
+        description: t('explore.couldNotUpdateFavorites'),
         variant: "destructive",
       });
     }
@@ -70,7 +72,7 @@ export const RecommendationsList = ({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="animate-pulse">
             <div className="bg-darcare-gold/20 rounded-xl h-48" />
@@ -84,14 +86,14 @@ export const RecommendationsList = ({
 
   if (!recommendations?.length) {
     return (
-      <div className="text-center py-8 text-darcare-beige">
-        No recommendations found
+      <div className="text-center py-8 text-darcare-beige p-4">
+        {t('explore.noRecommendationsFound')}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       {recommendations.map((item) => (
         <RecommendationCard
           key={item.id}

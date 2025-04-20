@@ -6,6 +6,7 @@ import { RecommendationsList } from "@/components/explore/RecommendationsList";
 import { SearchBar } from "@/components/explore/SearchBar";
 import { FiltersBar } from "@/components/explore/FiltersBar";
 import { useTranslation } from "react-i18next";
+import FloatingAction from "@/components/FloatingAction";
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +38,7 @@ const ExplorePage = () => {
         />
       </div>
       
+      <FloatingAction />
       <BottomNavigation activeTab="explore" />
     </div>
   );

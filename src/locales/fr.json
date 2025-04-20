@@ -14,7 +14,9 @@
     "optional": "Optionnel",
     "settings": "Paramètres",
     "unknownService": "Service Inconnu",
-    "fetchDataError": "Impossible de récupérer vos données"
+    "fetchDataError": "Impossible de récupérer vos données",
+    "signInRequired": "Connexion requise",
+    "errorLoadingServices": "Erreur lors du chargement des services. Veuillez réessayer plus tard."
   },
   "navigation": {
     "home": "Accueil",
@@ -49,6 +51,8 @@
     "requestService": "Demander un Service",
     "viewDetails": "Voir les Détails",
     "bookSpace": "Réserver un Espace",
+    "bookSpaceDescription": "Réservez nos installations exclusives, notamment la piscine, le court de padel et la salle de fitness.",
+    "shopDescription": "Parcourez notre sélection exclusive d'articles de luxe, de spécialités locales et de produits essentiels.",
     "unscheduled": "Non Programmé",
     "unassigned": "Non Assigné",
     "status": {
@@ -70,7 +74,21 @@
     "location": "Emplacement",
     "contactInfo": "Coordonnées",
     "makeReservation": "Faire une Réservation",
-    "recommendations": "Recommandations"
+    "recommendations": "Recommandations",
+    "sortBy": "Trier par",
+    "noRecommendationsFound": "Aucune recommandation trouvée",
+    "addedToFavorites": "Ajouté aux favoris",
+    "removedFromFavorites": "Retiré des favoris",
+    "signInToSaveFavorites": "Veuillez vous connecter pour sauvegarder des favoris",
+    "couldNotUpdateFavorites": "Impossible de mettre à jour les favoris",
+    "categories": {
+      "restaurant": "Restaurant",
+      "attraction": "Attraction",
+      "shopping": "Shopping",
+      "activities": "Activités",
+      "events": "Événements",
+      "other": "Autre"
+    }
   },
   "chatbot": {
     "newChat": "Nouvelle Conversation",

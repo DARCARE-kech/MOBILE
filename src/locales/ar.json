@@ -14,7 +14,9 @@
     "optional": "اختياري",
     "settings": "الإعدادات",
     "unknownService": "خدمة غير معروفة",
-    "fetchDataError": "تعذر جلب بياناتك"
+    "fetchDataError": "تعذر جلب بياناتك",
+    "signInRequired": "تسجيل الدخول مطلوب",
+    "errorLoadingServices": "خطأ في تحميل الخدمات. يرجى المحاولة مرة أخرى لاحقاً."
   },
   "navigation": {
     "home": "الرئيسية",
@@ -49,6 +51,8 @@
     "requestService": "طلب خدمة",
     "viewDetails": "عرض التفاصيل",
     "bookSpace": "حجز مساحة",
+    "bookSpaceDescription": "احجز مرافقنا الحصرية بما في ذلك المسبح وملعب البادل وصالة اللياقة البدنية.",
+    "shopDescription": "تصفح مجموعتنا الحصرية من العناصر الفاخرة والأطعمة المحلية والضروريات.",
     "unscheduled": "غير مجدول",
     "unassigned": "غير معين",
     "status": {
@@ -70,7 +74,21 @@
     "location": "الموقع",
     "contactInfo": "معلومات الاتصال",
     "makeReservation": "إجراء حجز",
-    "recommendations": "التوصيات"
+    "recommendations": "التوصيات",
+    "sortBy": "ترتيب حسب",
+    "noRecommendationsFound": "لم يتم العثور على توصيات",
+    "addedToFavorites": "تمت الإضافة إلى المفضلة",
+    "removedFromFavorites": "تمت الإزالة من المفضلة",
+    "signInToSaveFavorites": "الرجاء تسجيل الدخول لحفظ المفضلة",
+    "couldNotUpdateFavorites": "تعذر تحديث المفضلة",
+    "categories": {
+      "restaurant": "مطعم",
+      "attraction": "وجهة سياحية",
+      "shopping": "تسوق",
+      "activities": "أنشطة",
+      "events": "فعاليات",
+      "other": "أخرى"
+    }
   },
   "chatbot": {
     "newChat": "محادثة جديدة",

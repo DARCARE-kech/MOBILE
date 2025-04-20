@@ -1,11 +1,13 @@
 
-import { Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Badge } from "@/components/ui/badge";
-import { getFallbackImage } from "@/utils/imageUtils";
-import { RatingStars } from "@/components/RatingStars";
-import type { Recommendation } from "@/types/recommendation";
+import { useState } from 'react';
+import { Heart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Badge } from '@/components/ui/badge';
+import { getFallbackImage } from '@/utils/imageUtils';
+import { RatingStars } from '@/components/RatingStars';
+import { useTranslation } from 'react-i18next';
+import type { Recommendation } from '@/types/recommendation';
 
 interface RecommendationCardProps {
   item: Recommendation;
@@ -18,6 +20,8 @@ export const RecommendationCard = ({
   onToggleFavorite,
   onSelect 
 }: RecommendationCardProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div 
       className="bg-darcare-navy border border-darcare-gold/10 rounded-xl overflow-hidden cursor-pointer group"
@@ -55,7 +59,7 @@ export const RecommendationCard = ({
             variant="outline" 
             className="bg-transparent text-darcare-beige border-darcare-gold/20"
           >
-            {item.category}
+            {t(`explore.categories.${item.category?.toLowerCase() || 'other'}`)}
           </Badge>
           
           {item.rating > 0 && (

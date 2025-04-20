@@ -31,4 +31,13 @@ i18n
     keySeparator: '.'
   });
 
+// Add debugging for i18n
+i18n.on('initialized', () => {
+  console.log('i18n initialized with language:', i18n.language);
+});
+
+i18n.on('languageChanged', (lng) => {
+  console.log('Language changed to:', lng);
+});
+
 export default i18n;

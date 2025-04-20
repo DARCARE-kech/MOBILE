@@ -8,9 +8,11 @@ import { Loader2, DoorOpen, ShoppingBag } from 'lucide-react';
 import IconButton from './IconButton';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { getFallbackImage } from '@/utils/imageUtils';
+import { useTranslation } from 'react-i18next';
 
 const ReserveServicesTab: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: services, isLoading, error } = useQuery({
     queryKey: ['services'],
@@ -35,7 +37,7 @@ const ReserveServicesTab: React.FC = () => {
   if (error || !services) {
     return (
       <div className="p-4 text-destructive">
-        Error loading services. Please try again later.
+        {t('common.errorLoadingServices')}
       </div>
     );
   }
@@ -81,6 +83,7 @@ const ReserveServicesTab: React.FC = () => {
                 </svg>}
                 variant="primary"
                 onClick={() => navigate(`/services/${service.id}`)}
+                aria-label={t('services.viewDetails')}
               />
             </div>
           </div>
@@ -94,20 +97,20 @@ const ReserveServicesTab: React.FC = () => {
         <AspectRatio ratio={16/9}>
           <img 
             src="https://xhsjtgezcrgyypumzkra.supabase.co/storage/v1/object/public/spaces/pool.jpg"
-            alt="Book a Space" 
+            alt={t('services.bookSpace')}
             className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = getFallbackImage("Book a Space", 0);
+              target.src = getFallbackImage(t('services.bookSpace'), 0);
             }}
           />
         </AspectRatio>
         <div className="p-4">
           <h2 className="text-darcare-white text-lg font-semibold mb-2">
-            Book a Space
+            {t('services.bookSpace')}
           </h2>
           <p className="text-darcare-beige mb-4">
-            Reserve our exclusive facilities including the pool, padel court, and fitness center.
+            {t('services.bookSpaceDescription')}
           </p>
           <div className="flex items-center justify-end">
             <IconButton 
@@ -117,6 +120,7 @@ const ReserveServicesTab: React.FC = () => {
                 e.stopPropagation();
                 navigate('/services/spaces');
               }}
+              aria-label={t('services.bookSpace')}
             />
           </div>
         </div>
@@ -129,20 +133,20 @@ const ReserveServicesTab: React.FC = () => {
         <AspectRatio ratio={16/9}>
           <img 
             src="https://images.unsplash.com/photo-1580913428735-bd3c269d6a82?auto=format&fit=crop&q=80&w=1770&ixlib=rb-4.0.3"
-            alt="Shop" 
+            alt={t('services.shop')}
             className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = getFallbackImage("Shop", 3);
+              target.src = getFallbackImage(t('services.shop'), 3);
             }}
           />
         </AspectRatio>
         <div className="p-4">
           <h2 className="text-darcare-white text-lg font-semibold mb-2">
-            Shop
+            {t('services.shop')}
           </h2>
           <p className="text-darcare-beige mb-4">
-            Browse our exclusive selection of luxury items, local delicacies, and essentials.
+            {t('services.shopDescription')}
           </p>
           <div className="flex items-center justify-end">
             <IconButton 
@@ -152,6 +156,7 @@ const ReserveServicesTab: React.FC = () => {
                 e.stopPropagation();
                 navigate('/services/shop');
               }}
+              aria-label={t('services.shop')}
             />
           </div>
         </div>

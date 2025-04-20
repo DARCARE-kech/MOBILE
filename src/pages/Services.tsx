@@ -7,6 +7,7 @@ import HistoryTab from "@/components/services/HistoryTab";
 import MainHeader from "@/components/MainHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
+import FloatingAction from "@/components/FloatingAction";
 
 const ServicesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("reserve");
@@ -55,6 +56,7 @@ const ServicesPage: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
+      <FloatingAction />
       <BottomNavigation activeTab="services" />
     </div>
   );
