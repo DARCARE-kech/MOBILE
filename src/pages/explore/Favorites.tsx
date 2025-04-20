@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
@@ -34,25 +33,25 @@ const FavoritesPage = () => {
       if (error) throw error;
 
       return data.map((fav) => {
-        // Calculate average rating
         const reviews = fav.recommendations.reviews || [];
         const avgRating = reviews.length 
           ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length 
           : 0;
           
-        return {
+        const recommendation: Recommendation = {
           ...fav.recommendations,
           is_favorite: true,
-          // Safely add missing properties with default values
-          is_reservable: fav.recommendations.is_reservable || false,
           tags: fav.recommendations.tags || [],
           contact_phone: fav.recommendations.contact_phone || null,
           email: fav.recommendations.email || null,
           opening_hours: fav.recommendations.opening_hours || null,
           address: fav.recommendations.address || null,
           rating: Number(avgRating.toFixed(1)),
-          review_count: reviews.length
-        } as Recommendation;
+          review_count: reviews.length,
+          reviews: []
+        };
+        
+        return recommendation;
       });
     },
     enabled: !!user,
@@ -139,7 +138,6 @@ const FavoritesPage = () => {
   );
 };
 
-// Header component with back button and matching Home header style
 const Header = ({ title, onBack }: { title: string; onBack: () => void }) => {
   const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],

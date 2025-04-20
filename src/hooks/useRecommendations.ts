@@ -33,18 +33,22 @@ export function useRecommendations() {
               .maybeSingle() : Promise.resolve({ data: null })
           ]);
 
-          return {
+          // Create a properly formed recommendation object
+          const recommendationWithExtras: Recommendation = {
             ...rec,
             rating: rating || 0,
             review_count: reviewsResponse.count || 0,
             is_favorite: !!favorites,
-            is_reservable: rec.is_reservable || false,
             tags: rec.tags || [],
             contact_phone: rec.contact_phone || null,
             email: rec.email || null,
             opening_hours: rec.opening_hours || null,
-            address: rec.address || null
-          } as Recommendation;
+            address: rec.address || null,
+            // Add a properly structured empty reviews array
+            reviews: []
+          };
+
+          return recommendationWithExtras;
         })
       );
 

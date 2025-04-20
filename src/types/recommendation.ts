@@ -1,5 +1,4 @@
 
-// Remove is_reservable from the type definition
 export interface Recommendation {
   id: string;
   title: string;

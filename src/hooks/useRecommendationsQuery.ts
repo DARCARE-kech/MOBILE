@@ -52,20 +52,23 @@ export function useRecommendationsQuery({
         // Ensure image_url has a value
         const imageUrl = item.image_url || getFallbackImage(item.title, 0);
 
-        return {
+        // Create a properly structured recommendation object
+        const recommendation: Recommendation = {
           ...item,
           rating: Number(avgRating.toFixed(1)),
           review_count: item.reviews?.length || 0,
           image_url: imageUrl,
-          // Safely add missing properties with default values
-          is_reservable: item.is_reservable || false,
           tags: item.tags || [],
           contact_phone: item.contact_phone || null,
           email: item.email || null,
           opening_hours: item.opening_hours || null,
           address: item.address || null,
-          is_favorite: item.favorites?.length > 0
-        } as Recommendation;
+          is_favorite: item.favorites?.length > 0,
+          // Add an empty, properly structured reviews array
+          reviews: []
+        };
+
+        return recommendation;
       });
 
       if (sortBy === "rating") {
