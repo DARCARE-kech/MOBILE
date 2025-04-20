@@ -1,17 +1,20 @@
 
-import React from "react";
-import { Menu, Bell, CloudSun } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Bell, ChevronLeft } from "lucide-react";
+import Logo from "./Logo";
+import WeatherDisplay from "./WeatherDisplay";
+import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import DrawerMenu from "./DrawerMenu";
+import { useNavigate } from "react-router-dom";
 
-const MainHeader: React.FC<{ title?: string }> = ({ title }) => {
+interface MainHeaderProps {
+  title?: string;
+  onBack?: () => void;
+}
+
+const MainHeader = ({ title, onBack }: MainHeaderProps) => {
   const navigate = useNavigate();
-  
-  // Query to check for unread notifications
-  const { data: unreadNotifications } = useQuery({
+  const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -24,40 +27,40 @@ const MainHeader: React.FC<{ title?: string }> = ({ title }) => {
     },
   });
 
-  const hasUnreadNotifications = unreadNotifications && unreadNotifications.length > 0;
+  const hasUnreadNotifications = notifications && notifications.length > 0;
 
   return (
     <header className="p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
-      <Sheet>
-        <SheetTrigger asChild>
-          <button className="w-10 h-10 flex items-center justify-center text-darcare-beige hover:text-darcare-gold">
-            <Menu size={24} />
-          </button>
-        </SheetTrigger>
-        <SheetContent side="left" className="bg-darcare-navy border-r border-darcare-gold/20 w-72">
-          <DrawerMenu onLogout={() => navigate('/auth')} />
-        </SheetContent>
-      </Sheet>
-
-      <div className="font-serif text-darcare-gold text-xl">
-        {title || "DarCare"}
+      <div className="flex items-center gap-3">
+        {onBack && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onBack}
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 -ml-2"
+          >
+            <ChevronLeft size={24} />
+          </Button>
+        )}
+        {title ? (
+          <h1 className="font-serif text-darcare-gold text-xl">{title}</h1>
+        ) : (
+          <Logo size="sm" color="gold" />
+        )}
       </div>
-      
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-darcare-gold/10 text-darcare-beige">
-          <CloudSun size={18} className="text-darcare-gold" />
-          <span className="text-sm">24°C</span>
-        </div>
-        
-        <button
+        <WeatherDisplay />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
           onClick={() => navigate('/notifications')}
-          className="w-10 h-10 rounded-full relative flex items-center justify-center text-darcare-beige hover:text-darcare-gold"
         >
           <Bell size={20} />
           {hasUnreadNotifications && (
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-darcare-gold rounded-full" />
           )}
-        </button>
+        </Button>
       </div>
     </header>
   );

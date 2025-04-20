@@ -3,10 +3,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRecommendations } from "@/hooks/useRecommendations";
 import { RecommendationCard } from "./RecommendationCard";
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const RecommendationsList = () => {
   const { data: recommendations, isLoading } = useRecommendations();
-
+  const navigate = useNavigate();
+  
   if (isLoading) {
     return (
       <div className="p-4 space-y-4">
@@ -33,7 +35,10 @@ const RecommendationsList = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-serif text-darcare-gold">Marrakech Highlights</h2>
-        <button className="text-darcare-gold text-sm flex items-center">
+        <button 
+          className="text-darcare-gold text-sm flex items-center"
+          onClick={() => navigate('/explore')}
+        >
           View All <ChevronRight size={16} />
         </button>
       </div>
@@ -41,7 +46,11 @@ const RecommendationsList = () => {
       <ScrollArea className="w-full">
         <div className="flex gap-4 pb-4">
           {recommendations?.map((item) => (
-            <RecommendationCard key={item.id} item={item} />
+            <RecommendationCard 
+              key={item.id} 
+              item={item} 
+              onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
+            />
           ))}
         </div>
       </ScrollArea>
