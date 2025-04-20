@@ -11,7 +11,7 @@ export const useUserProfile = () => {
   
   const { data: profile, isLoading: isProfileLoading } = useProfileData(user?.id);
   const { data: currentStay, isLoading: isStayLoading } = useCurrentStay(user?.id);
-  const updateProfileMutation = useProfileMutations(user?.id);
+  const { mutate: updateProfile } = useProfileMutations(user?.id);
 
   const handleLogout = async () => {
     try {
@@ -26,7 +26,7 @@ export const useUserProfile = () => {
     profile,
     currentStay,
     isLoading: isProfileLoading || isStayLoading,
-    updateProfile: updateProfileMutation.mutate,
+    updateProfile,
     handleLogout,
   };
 };

@@ -8,7 +8,7 @@ export const useProfileMutations = (userId: string | undefined) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const mutation = useMutation({
+  return useMutation({
     mutationFn: async (updates: Partial<UserProfile>) => {
       if (!userId) throw new Error('No user logged in');
       const { error } = await supabase
@@ -33,6 +33,4 @@ export const useProfileMutations = (userId: string | undefined) => {
       });
     },
   });
-
-  return mutation;
 };

@@ -1,179 +1,110 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import MainHeader from "@/components/MainHeader";
-import BottomNavigation from "@/components/BottomNavigation";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, Mail, Phone, User, Home, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { Tables } from "@/integrations/supabase/types";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { MapPin, CalendarDays, Users, Building, Clock } from 'lucide-react';
+import MainHeader from '@/components/MainHeader';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
-const StayDetailsPage = () => {
-  const { id } = useParams();
+const StayDetailsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  
-  const { data: stay, isLoading, error } = useQuery({
-    queryKey: ['stay', id],
-    queryFn: async () => {
-      if (!id) throw new Error("Stay ID is required");
-      
-      const { data, error } = await supabase
-        .from('stays')
-        .select('*')
-        .eq('id', id)
-        .single();
-      
-      if (error) throw error;
-      return data as Tables<"stays">;
-    },
-    enabled: !!id && !!user
-  });
-
-  const handleBack = () => navigate(-1);
+  const { currentStay, isLoading } = useUserProfile();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Stay Details" onBack={handleBack} />
-        <div className="p-4 space-y-4">
-          <Skeleton className="h-40 w-full bg-darcare-gold/20 rounded-xl" />
-          <Skeleton className="h-8 w-2/3 bg-darcare-gold/20 rounded" />
-          <Skeleton className="h-6 w-1/2 bg-darcare-gold/20 rounded" />
-          <Skeleton className="h-24 w-full bg-darcare-gold/20 rounded-xl" />
-        </div>
-        <BottomNavigation activeTab="home" />
-      </div>
-    );
+    return <div className="min-h-screen bg-darcare-navy flex items-center justify-center">
+      <div className="animate-pulse">Loading stay details...</div>
+    </div>;
   }
 
-  if (error || !stay) {
+  if (!currentStay) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Stay Details" onBack={handleBack} />
-        <div className="p-4 flex flex-col items-center justify-center h-[50vh] text-center">
-          <AlertTriangle className="h-12 w-12 text-darcare-gold mb-4" />
-          <h2 className="text-xl font-serif text-darcare-gold mb-2">Stay Not Found</h2>
-          <p className="text-darcare-beige mb-6">We couldn't find the stay information you're looking for.</p>
+        <MainHeader title="Stay Details" onBack={() => navigate('/profile')} />
+        <div className="pt-20 pb-24 px-4 flex flex-col items-center justify-center">
+          <div className="text-darcare-beige text-center">
+            <h3 className="text-xl font-serif text-darcare-gold mb-2">No Active Stay</h3>
+            <p>You don't have any active stay information.</p>
+          </div>
           <Button 
-            onClick={handleBack}
-            className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            className="mt-6 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            onClick={() => navigate('/profile')}
           >
-            Back to Home
+            Back to Profile
           </Button>
         </div>
-        <BottomNavigation activeTab="home" />
       </div>
     );
   }
 
-  const checkIn = new Date(stay.check_in || "");
-  const checkOut = new Date(stay.check_out || "");
-  const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+  const checkInDate = new Date(currentStay.check_in);
+  const checkOutDate = new Date(currentStay.check_out);
+  const stayDuration = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 3600 * 24));
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title="Stay Details" onBack={handleBack} />
+      <MainHeader title="Stay Details" onBack={() => navigate('/profile')} />
       
-      <div className="p-4 pb-24 space-y-4">
-        <div className="luxury-card">
-          <div className="flex justify-between items-start mb-4">
-            <h2 className="font-serif text-darcare-gold text-2xl">{stay.villa_number}</h2>
-            <div className="flex items-center gap-1 text-sm bg-darcare-gold/10 rounded-full px-3 py-1 text-darcare-gold">
-              <Calendar size={14} />
-              <span>
-                {stay.status === 'current' 
-                  ? 'Currently Staying' 
-                  : 'Upcoming Stay'}
-              </span>
-            </div>
-          </div>
+      <div className="pt-20 pb-24 px-4">
+        <Card className="p-6 bg-darcare-navy/50 border-darcare-gold/20 mb-6">
+          <h2 className="text-2xl font-serif text-darcare-gold mb-4">Villa {currentStay.villa_number}</h2>
           
-          <div className="space-y-6">
-            <div>
-              <p className="text-darcare-beige/80 text-sm mb-2">{stay.city}</p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm text-darcare-beige/70">Check-in</p>
-                  <p className="text-darcare-white">{checkIn.toLocaleDateString(undefined, { 
-                    year: 'numeric',
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-darcare-beige/70">Check-out</p>
-                  <p className="text-darcare-white">{checkOut.toLocaleDateString(undefined, { 
-                    year: 'numeric',
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}</p>
-                </div>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <MapPin className="h-5 w-5 text-darcare-gold" />
+              <span className="text-darcare-beige">Marrakech, Morocco</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Building className="h-5 w-5 text-darcare-gold" />
+              <span className="text-darcare-beige">Premium Suite</span>
+            </div>
+            
+            <Separator className="my-3 bg-darcare-gold/10" />
+            
+            <div className="flex items-center gap-3">
+              <CalendarDays className="h-5 w-5 text-darcare-gold" />
+              <div className="text-darcare-beige">
+                <div>{format(checkInDate, 'MMMM d, yyyy')} - {format(checkOutDate, 'MMMM d, yyyy')}</div>
+                <div className="text-darcare-beige/60 text-sm">Check-in: 2:00 PM | Check-out: 12:00 PM</div>
               </div>
             </div>
             
-            <div className="pt-4 border-t border-darcare-gold/10">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex gap-2 items-center">
-                  <Calendar className="text-darcare-gold h-5 w-5" />
-                  <div>
-                    <p className="text-sm text-darcare-beige/70">Duration</p>
-                    <p className="text-darcare-white">{nights} nights</p>
-                  </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <User className="text-darcare-gold h-5 w-5" />
-                  <div>
-                    <p className="text-sm text-darcare-beige/70">Guests</p>
-                    <p className="text-darcare-white">{stay.guests || "Not specified"}</p>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-3">
+              <Clock className="h-5 w-5 text-darcare-gold" />
+              <span className="text-darcare-beige">{stayDuration} nights</span>
             </div>
             
-            <div className="pt-4 border-t border-darcare-gold/10">
-              <h3 className="text-darcare-gold mb-2">Contact Information</h3>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2">
-                  <Home className="text-darcare-gold h-5 w-5 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-darcare-beige/70">Property</p>
-                    <p className="text-darcare-white">Villa {stay.villa_number}, {stay.city}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Phone className="text-darcare-gold h-5 w-5 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-darcare-beige/70">Resort Phone</p>
-                    <p className="text-darcare-white">+212 555-234-567</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Mail className="text-darcare-gold h-5 w-5 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-darcare-beige/70">Resort Email</p>
-                    <p className="text-darcare-white">reception@darcare.com</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="pt-4 border-t border-darcare-gold/10">
-              <Button 
-                className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-                onClick={() => navigate('/services')}
-              >
-                Request Services
-              </Button>
+            <div className="flex items-center gap-3">
+              <Users className="h-5 w-5 text-darcare-gold" />
+              <span className="text-darcare-beige">2 Guests</span>
             </div>
           </div>
+        </Card>
+        
+        <Card className="p-6 bg-darcare-navy/50 border-darcare-gold/20">
+          <h3 className="text-lg font-serif text-darcare-gold mb-3">Amenities</h3>
+          <ul className="space-y-2 text-darcare-beige">
+            <li>• Private Pool</li>
+            <li>• 24/7 Concierge</li>
+            <li>• Daily Housekeeping</li>
+            <li>• Complimentary Breakfast</li>
+            <li>• High-Speed WiFi</li>
+            <li>• Premium Entertainment System</li>
+          </ul>
+        </Card>
+        
+        <div className="mt-6">
+          <Button 
+            className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            onClick={() => navigate('/services')}
+          >
+            Request Services
+          </Button>
         </div>
       </div>
-      
-      <BottomNavigation activeTab="home" />
     </div>
   );
 };

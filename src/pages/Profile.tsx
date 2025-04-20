@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, HelpCircle, Info } from 'lucide-react';
+import { Shield, HelpCircle, Info, Calendar, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -8,12 +8,24 @@ import MainHeader from '@/components/MainHeader';
 import { UserInfoBlock } from '@/components/profile/UserInfoBlock';
 import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage: React.FC = () => {
   const { profile, currentStay, isLoading, updateProfile, handleLogout } = useUserProfile();
+  const navigate = useNavigate();
 
   const handlePreferenceUpdate = (key: string, value: boolean | string) => {
     updateProfile({ [key]: value });
+  };
+
+  const handleViewStayDetails = () => {
+    if (currentStay) {
+      navigate(`/stays/details`);
+    }
+  };
+
+  const handleEditProfile = () => {
+    navigate('/profile/edit');
   };
 
   if (isLoading) {
@@ -34,6 +46,8 @@ const ProfilePage: React.FC = () => {
             villaNumber={currentStay?.villa_number}
             checkIn={currentStay?.check_in}
             checkOut={currentStay?.check_out}
+            onViewStay={handleViewStayDetails}
+            onEditProfile={handleEditProfile}
           />
 
           {/* Preferences Section */}
@@ -42,33 +56,47 @@ const ProfilePage: React.FC = () => {
             <PreferencesSection
               darkMode={profile?.dark_mode || false}
               language={profile?.language || 'en'}
-              notificationsEnabled={profile?.notifications_enabled || false}
               onUpdatePreference={handlePreferenceUpdate}
             />
           </div>
 
           {/* Links Section */}
           <div className="luxury-card">
-            <div className="flex items-center gap-3 py-2">
-              <Shield className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">Privacy & Security</span>
+            <div 
+              className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
+              onClick={() => navigate('/profile/privacy')}
+            >
+              <div className="flex items-center gap-3">
+                <Shield className="h-5 w-5 text-darcare-gold" />
+                <span className="text-darcare-beige">Privacy & Security</span>
+              </div>
             </div>
             <Separator className="my-2 bg-darcare-gold/10" />
-            <div className="flex items-center gap-3 py-2">
-              <HelpCircle className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">Help & Support</span>
+            <div 
+              className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
+              onClick={() => navigate('/profile/help')}
+            >
+              <div className="flex items-center gap-3">
+                <HelpCircle className="h-5 w-5 text-darcare-gold" />
+                <span className="text-darcare-beige">Help & Support</span>
+              </div>
             </div>
             <Separator className="my-2 bg-darcare-gold/10" />
-            <div className="flex items-center gap-3 py-2">
-              <Info className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">About</span>
+            <div 
+              className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
+              onClick={() => navigate('/profile/about')}
+            >
+              <div className="flex items-center gap-3">
+                <Info className="h-5 w-5 text-darcare-gold" />
+                <span className="text-darcare-beige">About</span>
+              </div>
             </div>
           </div>
 
           {/* Logout Button */}
           <Button
             variant="ghost"
-            className="w-full border border-darcare-gold/20 text-darcare-gold hover:bg-darcare-gold/10"
+            className="w-full border border-darcare-gold/20 text-darcare-gold hover:bg-darcare-gold/10 mt-6"
             onClick={handleLogout}
           >
             Logout

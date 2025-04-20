@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,10 @@ import RequestDetailPage from "./pages/services/RequestDetailPage";
 import CartScreen from "./pages/services/CartScreen";
 import ChatHistory from "./pages/ChatHistory";
 import ContactAdmin from "./pages/ContactAdmin";
+import EditProfile from "./pages/profile/EditProfile";
+import PrivacySecurityPage from "./pages/profile/PrivacySecurityPage";
+import HelpSupportPage from "./pages/profile/HelpSupportPage";
+import AboutPage from "./pages/profile/AboutPage";
 
 const queryClient = new QueryClient();
 
@@ -82,9 +87,13 @@ const App = () => {
               <Route path="/chat-history" element={<ChatHistory />} />
               <Route path="/contact-admin" element={<ContactAdmin />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<EditProfile />} />
+              <Route path="/profile/privacy" element={<PrivacySecurityPage />} />
+              <Route path="/profile/help" element={<HelpSupportPage />} />
+              <Route path="/profile/about" element={<AboutPage />} />
               <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
               <Route path="/explore/favorites" element={<FavoritesPage />} />
-              <Route path="/stays/:id" element={<StayDetailsPage />} />
+              <Route path="/stays/details" element={<StayDetailsPage />} />
               <Route path="/services/shop/cart" element={<CartScreen />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

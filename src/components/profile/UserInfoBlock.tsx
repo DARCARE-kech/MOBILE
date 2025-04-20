@@ -1,8 +1,9 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { UserRound } from "lucide-react";
+import { UserRound, Calendar, Edit } from "lucide-react";
 
 interface UserInfoBlockProps {
   fullName: string;
@@ -11,6 +12,8 @@ interface UserInfoBlockProps {
   villaNumber?: string;
   checkIn?: string;
   checkOut?: string;
+  onViewStay?: () => void;
+  onEditProfile?: () => void;
 }
 
 export const UserInfoBlock = ({ 
@@ -19,7 +22,9 @@ export const UserInfoBlock = ({
   avatarUrl,
   villaNumber,
   checkIn,
-  checkOut 
+  checkOut,
+  onViewStay,
+  onEditProfile
 }: UserInfoBlockProps) => {
   return (
     <Card className="p-6 bg-darcare-navy/50 border-darcare-gold/20">
@@ -31,7 +36,31 @@ export const UserInfoBlock = ({
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
+            <div className="flex gap-2">
+              {villaNumber && checkIn && checkOut && onViewStay && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
+                  onClick={onViewStay}
+                >
+                  <Calendar className="h-4 w-4" />
+                </Button>
+              )}
+              {onEditProfile && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
+                  onClick={onEditProfile}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
           <p className="text-darcare-beige/70">{email}</p>
           {villaNumber && (
             <p className="text-sm text-darcare-beige mt-1">
