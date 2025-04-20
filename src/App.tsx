@@ -23,6 +23,8 @@ import FavoritesPage from "./pages/explore/Favorites";
 import StayDetailsPage from "./pages/stays/StayDetailsPage";
 import RequestDetailPage from "./pages/services/RequestDetailPage";
 import CartScreen from "./pages/services/CartScreen";
+import ChatHistory from "./pages/ChatHistory";
+import ContactAdmin from "./pages/ContactAdmin";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +79,8 @@ const App = () => {
               <Route path="/services/requests/:id" element={<RequestDetailPage />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/chat-history" element={<ChatHistory />} />
+              <Route path="/contact-admin" element={<ContactAdmin />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
               <Route path="/explore/favorites" element={<FavoritesPage />} />
