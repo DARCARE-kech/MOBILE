@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +12,6 @@ import { ContactInfoBlock } from "@/components/explore/ContactInfoBlock";
 import { TagsList } from "@/components/explore/TagsList";
 import { RecommendationMap } from "@/components/explore/RecommendationMap";
 import { RecommendationReviews } from "@/components/explore/RecommendationReviews";
-import { RecommendationReservation } from "@/components/explore/RecommendationReservation";
 import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
 import { RecommendationDetailSkeleton } from "@/components/explore/RecommendationDetailSkeleton";
 import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
@@ -24,9 +23,6 @@ const RecommendationDetail = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("info");
 
-  console.log("RecommendationDetail - Received ID:", id);
-  
-  // Define handleBack function before it's used
   const handleBack = () => navigate(-1);
 
   // Redirect if no ID is present
@@ -44,8 +40,6 @@ const RecommendationDetail = () => {
         console.error("No recommendation ID provided");
         throw new Error("Recommendation ID is required");
       }
-      
-      console.log("Fetching recommendation with ID:", id);
       
       try {
         const [recommendationResponse, favoriteResponse] = await Promise.all([
@@ -84,15 +78,12 @@ const RecommendationDetail = () => {
           throw new Error("Recommendation not found");
         }
         
-        console.log("Recommendation data received:", data);
-        
         const avgRating = data.reviews?.length 
           ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
           : 0;
 
         return {
           ...data,
-          is_reservable: data.is_reservable || false,
           tags: data.tags || [],
           rating: Number(avgRating.toFixed(1)),
           review_count: data.reviews?.length || 0,
@@ -135,7 +126,7 @@ const RecommendationDetail = () => {
 
       <div className="p-4 pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4 bg-darcare-navy border border-darcare-gold/20">
+          <TabsList className="grid w-full grid-cols-3 bg-darcare-navy border border-darcare-gold/20">
             <TabsTrigger value="info" className="text-darcare-beige data-[state=active]:text-darcare-gold">
               Info
             </TabsTrigger>
@@ -145,11 +136,6 @@ const RecommendationDetail = () => {
             <TabsTrigger value="reviews" className="text-darcare-beige data-[state=active]:text-darcare-gold">
               Reviews
             </TabsTrigger>
-            {recommendation.is_reservable && (
-              <TabsTrigger value="reserve" className="text-darcare-beige data-[state=active]:text-darcare-gold">
-                Reserve
-              </TabsTrigger>
-            )}
           </TabsList>
 
           <TabsContent value="info">
@@ -165,12 +151,6 @@ const RecommendationDetail = () => {
           <TabsContent value="reviews">
             <RecommendationReviews recommendation={recommendation} />
           </TabsContent>
-
-          {recommendation.is_reservable && (
-            <TabsContent value="reserve">
-              <RecommendationReservation recommendation={recommendation} />
-            </TabsContent>
-          )}
         </Tabs>
       </div>
       
