@@ -8,14 +8,21 @@ interface CartItemProps {
 }
 
 const CartItem = ({ item }: CartItemProps) => {
+  // Handle image error fallback
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.target as HTMLImageElement;
+    target.src = '/placeholder.svg';
+  };
+
   return (
     <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
       <div className="flex gap-4">
-        <div className="w-20 h-20 rounded-md overflow-hidden">
+        <div className="w-20 h-20 rounded-md overflow-hidden bg-darcare-beige/10">
           <img 
             src={item.shop_products.image_url || '/placeholder.svg'} 
             alt={item.shop_products.name}
             className="w-full h-full object-cover"
+            onError={handleImageError}
           />
         </div>
         <div className="flex-1">

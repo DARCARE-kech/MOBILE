@@ -12,6 +12,12 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+  // Handle image error fallback
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.target as HTMLImageElement;
+    target.src = '/placeholder.svg';
+  };
+
   return (
     <Card className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden">
       <AspectRatio ratio={4/3}>
@@ -19,6 +25,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
           src={product.image_url || '/placeholder.svg'} 
           alt={product.name} 
           className="w-full h-full object-cover"
+          onError={handleImageError}
         />
       </AspectRatio>
       <CardContent className="p-4">

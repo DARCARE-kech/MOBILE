@@ -11,7 +11,7 @@ interface ProductsGridProps {
 }
 
 const ProductsGrid = ({ onAddToCart }: ProductsGridProps) => {
-  const { data: products, isLoading } = useQuery({
+  const { data: products, isLoading, error } = useQuery({
     queryKey: ['shop-products'],
     queryFn: getShopProducts
   });
@@ -24,9 +24,17 @@ const ProductsGrid = ({ onAddToCart }: ProductsGridProps) => {
     );
   }
 
+  if (error || !products || products.length === 0) {
+    return (
+      <div className="text-center py-10 text-darcare-beige">
+        <p>No products available at the moment.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {products?.map((product) => (
+      {products.map((product) => (
         <ProductCard
           key={product.id}
           product={product}
