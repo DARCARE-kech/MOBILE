@@ -1,5 +1,5 @@
 
-import { Bell, ChevronLeft } from "lucide-react";
+import { Menu, ChevronLeft, Bell } from "lucide-react";
 import Logo from "./Logo";
 import WeatherDisplay from "./WeatherDisplay";
 import { Button } from "./ui/button";
@@ -10,10 +10,16 @@ import { useNavigate } from "react-router-dom";
 interface MainHeaderProps {
   title?: string;
   onBack?: () => void;
+  showDrawer?: boolean;
   children?: React.ReactNode;
 }
 
-const MainHeader = ({ title, onBack, children }: MainHeaderProps) => {
+const MainHeader = ({ 
+  title, 
+  onBack, 
+  showDrawer = false,
+  children 
+}: MainHeaderProps) => {
   const navigate = useNavigate();
   const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],
@@ -31,9 +37,18 @@ const MainHeader = ({ title, onBack, children }: MainHeaderProps) => {
   const hasUnreadNotifications = notifications && notifications.length > 0;
 
   return (
-    <header className="p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
+    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
       <div className="flex items-center gap-3">
-        {onBack && (
+        {showDrawer ? (
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => navigate('/drawer')}
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 -ml-2"
+          >
+            <Menu size={24} />
+          </Button>
+        ) : onBack && (
           <Button 
             variant="ghost" 
             size="icon" 

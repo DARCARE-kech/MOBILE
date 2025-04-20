@@ -109,17 +109,14 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader />
-
-      <div className="pb-24 overflow-auto">
+      <MainHeader showDrawer />
+      <div className="pt-16 pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
         <ServicesList services={services} isLoading={isLoading} />
-        
         <QueryClientProvider client={queryClient}>
           <RecommendationsList />
         </QueryClientProvider>
       </div>
-
       <FloatingAction />
       <BottomNavigation activeTab="home" />
     </div>

@@ -28,8 +28,8 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-darcare-navy border-t border-darcare-gold/20 py-3 px-4 z-50">
-      <div className="flex justify-between items-center">
+    <nav className="fixed bottom-0 left-0 right-0 bg-darcare-navy border-t border-darcare-gold/20 py-3 px-4 z-50">
+      <div className="flex justify-between items-center max-w-screen-xl mx-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -45,7 +45,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
           </button>
         ))}
       </div>
-    </div>
+    </nav>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import MainHeader from "@/components/MainHeader";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -13,17 +12,19 @@ const ExplorePage = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title="Explore" />
+      <MainHeader showDrawer title="Explore" />
       
-      <div className="p-4 pb-24 space-y-4">
-        <div className="luxury-card">
-          <SearchBar onSearch={setSearchQuery} />
-          <FiltersBar 
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-          />
+      <div className="pt-16 pb-24 space-y-4">
+        <div className="p-4">
+          <div className="luxury-card">
+            <SearchBar onSearch={setSearchQuery} />
+            <FiltersBar 
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+            />
+          </div>
         </div>
         
         <RecommendationsList 
