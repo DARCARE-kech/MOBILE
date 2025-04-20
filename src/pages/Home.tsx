@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +11,6 @@ import RecommendationsList from "@/components/RecommendationsList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainHeader from "@/components/MainHeader";
 
-// Create a new query client for this page
 const queryClient = new QueryClient();
 
 const Home: React.FC = () => {
@@ -29,7 +27,6 @@ const Home: React.FC = () => {
     const fetchUserData = async () => {
       setIsLoading(true);
       try {
-        // Fetch user's stay data
         const { data: currentStayData, error: currentStayError } = await supabase
           .from('stays')
           .select('*')
@@ -44,7 +41,6 @@ const Home: React.FC = () => {
         if (currentStayData) {
           setCurrentStay(currentStayData);
         } else {
-          // If no current stay, check for upcoming stay
           const { data: upcomingStayData, error: upcomingStayError } = await supabase
             .from('stays')
             .select('*')
@@ -63,8 +59,7 @@ const Home: React.FC = () => {
           }
         }
 
-        // Fetch user's services
-        const { data: servicesData, error: servicesError } = await supabase
+        const { data: requestsData, error: requestsError } = await supabase
           .from('service_requests')
           .select(`
             id,
@@ -73,21 +68,27 @@ const Home: React.FC = () => {
             services (
               name,
               category
+            ),
+            staff_assignments (
+              staff_name
             )
           `)
-          .eq('user_id', user.id)
-          .order('preferred_time', { ascending: false });
+          .in('status', ['pending', 'in_progress'])
+          .order('created_at', { ascending: false })
+          .limit(3);
 
-        if (servicesError) {
-          throw servicesError;
+        if (requestsError) {
+          throw requestsError;
         }
 
-        const formattedServices = servicesData.map(service => ({
-          id: service.id,
-          title: service.services?.name || 'Unknown Service',
-          status: service.status || 'pending',
-          time: service.preferred_time ? new Date(service.preferred_time).toLocaleString() : 'Unscheduled',
-          staff: "Assigned Staff" // This would ideally come from the database
+        const formattedServices = requestsData.map(request => ({
+          id: request.id,
+          title: request.services?.name || 'Unknown Service',
+          status: request.status || 'pending',
+          time: request.preferred_time ? new Date(request.preferred_time).toLocaleString() : 'Unscheduled',
+          staff: request.staff_assignments && request.staff_assignments[0]
+            ? request.staff_assignments[0].staff_name
+            : 'Unassigned'
         }));
 
         setServices(formattedServices);
@@ -114,7 +115,6 @@ const Home: React.FC = () => {
         <CurrentStay currentStay={currentStay} />
         <ServicesList services={services} isLoading={isLoading} />
         
-        {/* Wrap RecommendationsList with QueryClientProvider to ensure it has access to the query client */}
         <QueryClientProvider client={queryClient}>
           <RecommendationsList />
         </QueryClientProvider>

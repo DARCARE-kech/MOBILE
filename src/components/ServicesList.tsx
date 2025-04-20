@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ChevronRight, User, AlertTriangle, Plus, Loader2 } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
@@ -92,7 +91,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           <div 
             key={service.id}
             className="luxury-card hover:border-darcare-gold/30 transition-colors duration-200 cursor-pointer"
-            onClick={() => navigate(`/services/${service.id}`)}
+            onClick={() => navigate(`/services/requests/${service.id}`)}
           >
             <div className="flex justify-between items-start">
               <div>
@@ -102,23 +101,10 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
               <StatusBadge status={service.status} />
             </div>
             <div className="mt-3 pt-3 border-t border-darcare-gold/10">
-              <HoverCard>
-                <HoverCardTrigger className="flex items-center gap-2 text-sm text-darcare-beige/70">
-                  <User size={14} className="text-darcare-gold" />
-                  <span>Staff: {service.staff}</span>
-                </HoverCardTrigger>
-                <HoverCardContent className="w-80 bg-darcare-navy border-darcare-gold/20">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-darcare-gold/10 border border-darcare-gold/30 flex items-center justify-center">
-                      <User className="text-darcare-gold h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-darcare-white font-medium">{service.staff}</h4>
-                      <p className="text-sm text-darcare-beige/70">Service Staff</p>
-                    </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
+              <div className="flex items-center gap-2 text-sm text-darcare-beige/70">
+                <User size={14} className="text-darcare-gold" />
+                <span>Staff: {service.staff}</span>
+              </div>
             </div>
           </div>
         ))}
