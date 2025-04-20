@@ -28,7 +28,8 @@ i18n
     },
     returnNull: false,
     returnEmptyString: false,
-    keySeparator: '.'
+    keySeparator: '.',
+    debug: process.env.NODE_ENV === 'development'
   });
 
 // Add debugging for i18n
@@ -38,6 +39,15 @@ i18n.on('initialized', () => {
 
 i18n.on('languageChanged', (lng) => {
   console.log('Language changed to:', lng);
+  
+  // Add RTL handling for Arabic
+  if (lng === 'ar') {
+    document.documentElement.dir = 'rtl';
+    document.documentElement.lang = 'ar';
+  } else {
+    document.documentElement.dir = 'ltr';
+    document.documentElement.lang = lng;
+  }
 });
 
 export default i18n;

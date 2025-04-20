@@ -59,7 +59,7 @@ export const RecommendationCard = ({
             variant="outline" 
             className="bg-transparent text-darcare-beige border-darcare-gold/20"
           >
-            {t(`explore.categories.${item.category?.toLowerCase() || 'other'}`)}
+            {t(`explore.categories.${(item.category || 'other').toLowerCase()}`)}
           </Badge>
           
           {item.rating > 0 && (

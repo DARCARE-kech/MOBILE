@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface RequestDetailsContentProps {
   note: string | null;
@@ -18,6 +19,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   imageUrl,
   staffAssignments
 }) => {
+  const { t } = useTranslation();
   const hasStaffAssigned = staffAssignments && staffAssignments.length > 0;
 
   return (
@@ -25,31 +27,31 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* Staff assigned */}
       {hasStaffAssigned && (
         <div className="mt-4 pt-4 border-t border-darcare-gold/10">
-          <h3 className="text-darcare-white font-medium mb-2">Assigned Staff</h3>
-          <p className="text-darcare-beige">{staffAssignments[0].staff_name || 'Assigned'}</p>
+          <h3 className="text-darcare-white font-medium mb-2">{t('services.assignedStaff')}</h3>
+          <p className="text-darcare-beige">{staffAssignments[0].staff_name || t('services.assigned')}</p>
         </div>
       )}
       
       {/* Notes section */}
       {(note || parsedNote) && (
         <div className="mt-4 pt-4 border-t border-darcare-gold/10">
-          <h3 className="text-darcare-white font-medium mb-2">Request Details</h3>
+          <h3 className="text-darcare-white font-medium mb-2">{t('services.requestDetails')}</h3>
           
           {/* If note is JSON, display structured data */}
           {parsedNote && (
             <div className="space-y-2 text-darcare-beige/80">
               {parsedNote.cleaningType && (
-                <p>Cleaning Type: <span className="text-darcare-beige">{parsedNote.cleaningType}</span></p>
+                <p>{t('services.cleaningType')}: <span className="text-darcare-beige">{parsedNote.cleaningType}</span></p>
               )}
               {parsedNote.frequency && (
-                <p>Frequency: <span className="text-darcare-beige">{parsedNote.frequency}</span></p>
+                <p>{t('services.frequency')}: <span className="text-darcare-beige">{parsedNote.frequency}</span></p>
               )}
               {parsedNote.rooms && parsedNote.rooms.length > 0 && (
-                <p>Selected Rooms: <span className="text-darcare-beige">{parsedNote.rooms.join(', ')}</span></p>
+                <p>{t('services.selectedRooms')}: <span className="text-darcare-beige">{parsedNote.rooms.join(', ')}</span></p>
               )}
               {parsedNote.notes && (
                 <div>
-                  <p className="mb-1">Additional Notes:</p>
+                  <p className="mb-1">{t('services.additionalNotes')}:</p>
                   <p className="text-darcare-beige bg-darcare-navy/40 p-2 rounded-md">{parsedNote.notes}</p>
                 </div>
               )}
@@ -66,11 +68,11 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* Image preview if available */}
       {imageUrl && (
         <div className="mt-4 pt-4 border-t border-darcare-gold/10">
-          <h3 className="text-darcare-white font-medium mb-2">Image</h3>
+          <h3 className="text-darcare-white font-medium mb-2">{t('common.image')}</h3>
           <div className="rounded-md overflow-hidden">
             <img 
               src={imageUrl} 
-              alt="Request attachment" 
+              alt={t('services.requestAttachment')} 
               className="w-full h-auto object-cover"
             />
           </div>

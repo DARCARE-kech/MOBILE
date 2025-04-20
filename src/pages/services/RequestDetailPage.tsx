@@ -11,10 +11,12 @@ import RequestNotFound from "@/components/services/RequestNotFound";
 import { useServiceRequest } from "@/hooks/useServiceRequest";
 import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
+import { useTranslation } from "react-i18next";
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const { data: request, isLoading } = useServiceRequest(id);
   const { 
@@ -27,7 +29,7 @@ const RequestDetailPage = () => {
   if (isLoading) {
     return (
       <div className="bg-darcare-navy min-h-screen">
-        <MainHeader title="Request Details" onBack={() => navigate(-1)} />
+        <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
         <div className="flex justify-center items-center h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
@@ -39,7 +41,7 @@ const RequestDetailPage = () => {
   if (!request) {
     return (
       <div className="bg-darcare-navy min-h-screen">
-        <MainHeader title="Request Details" onBack={() => navigate(-1)} />
+        <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
         <RequestNotFound />
         <BottomNavigation activeTab="services" />
       </div>
@@ -63,7 +65,7 @@ const RequestDetailPage = () => {
   
   return (
     <div className="bg-darcare-navy min-h-screen pb-24">
-      <MainHeader title="Request Details" onBack={() => navigate(-1)} />
+      <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
       
       <div className="p-4 space-y-6 pt-16">
         <div className="luxury-card">
@@ -94,7 +96,7 @@ const RequestDetailPage = () => {
         
         {isCompleted && (
           <div className="luxury-card">
-            <h3 className="text-darcare-gold font-serif text-lg mb-4">Service Rating</h3>
+            <h3 className="text-darcare-gold font-serif text-lg mb-4">{t('services.serviceRating')}</h3>
             <RequestRating
               onSubmit={submitRating}
               isSubmitting={isSubmittingRating}

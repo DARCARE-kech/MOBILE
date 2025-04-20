@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useTranslation } from 'react-i18next';
 
 interface RequestActionsProps {
   onEdit: () => void;
@@ -23,6 +24,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({
   isSubmitting = false 
 }) => {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleCancelRequest = () => {
     onCancel();
@@ -37,7 +39,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({
         disabled={isSubmitting}
       >
         <PenLine className="mr-2 h-4 w-4" />
-        Modify
+        {t('common.modify')}
       </Button>
       
       <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
@@ -48,14 +50,14 @@ const RequestActions: React.FC<RequestActionsProps> = ({
           disabled={isSubmitting}
         >
           <X className="mr-2 h-4 w-4" />
-          Cancel
+          {t('common.cancel')}
         </Button>
         
         <DialogContent className="bg-darcare-navy border-darcare-gold/20">
           <DialogHeader>
-            <DialogTitle className="text-darcare-gold">Cancel Service Request</DialogTitle>
+            <DialogTitle className="text-darcare-gold">{t('services.cancelRequest')}</DialogTitle>
             <DialogDescription className="text-darcare-beige/80">
-              Are you sure you want to cancel this service request? This action cannot be undone.
+              {t('services.cancelRequestConfirmation')}
             </DialogDescription>
           </DialogHeader>
           
@@ -66,14 +68,14 @@ const RequestActions: React.FC<RequestActionsProps> = ({
               onClick={() => setIsCancelDialogOpen(false)}
               disabled={isSubmitting}
             >
-              Keep Request
+              {t('services.keepRequest')}
             </Button>
             <Button 
               className="bg-red-600 hover:bg-red-700"
               onClick={handleCancelRequest}
               disabled={isSubmitting}
             >
-              Yes, Cancel
+              {t('services.confirmCancel')}
             </Button>
           </DialogFooter>
         </DialogContent>
