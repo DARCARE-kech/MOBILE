@@ -44,9 +44,11 @@ i18n.on('languageChanged', (lng) => {
   if (lng === 'ar') {
     document.documentElement.dir = 'rtl';
     document.documentElement.lang = 'ar';
+    document.body.classList.add('rtl');
   } else {
     document.documentElement.dir = 'ltr';
     document.documentElement.lang = lng;
+    document.body.classList.remove('rtl');
   }
 });
 

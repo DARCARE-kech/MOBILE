@@ -1,19 +1,22 @@
 
 import { Phone, Mail, Clock, MapPin } from "lucide-react";
 import type { Recommendation } from "@/types/recommendation";
+import { useTranslation } from "react-i18next";
 
 interface ContactInfoBlockProps {
   recommendation: Recommendation;
 }
 
 export const ContactInfoBlock = ({ recommendation }: ContactInfoBlockProps) => {
+  const { t } = useTranslation();
+  
   if (!recommendation.contact_phone && !recommendation.email && !recommendation.opening_hours && !recommendation.address) {
     return null;
   }
 
   return (
     <div className="mt-6 space-y-3">
-      <h3 className="text-lg font-serif text-darcare-gold">Contact & Hours</h3>
+      <h3 className="text-lg font-serif text-darcare-gold">{t('explore.contactInfo')}</h3>
       
       {recommendation.contact_phone && (
         <div className="flex items-center gap-2 text-darcare-beige">

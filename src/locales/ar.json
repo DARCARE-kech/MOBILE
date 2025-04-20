@@ -74,6 +74,7 @@
     "cancelRequestConfirmation": "هل أنت متأكد من رغبتك في إلغاء طلب الخدمة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
     "keepRequest": "الاحتفاظ بالطلب",
     "confirmCancel": "نعم، إلغاء",
+    "luxuryOfferings": "العروض الفاخرة",
     "status": {
       "pending": "قيد الانتظار",
       "approved": "تمت الموافقة",
@@ -100,6 +101,8 @@
     "removedFromFavorites": "تمت الإزالة من المفضلة",
     "signInToSaveFavorites": "الرجاء تسجيل الدخول لحفظ المفضلة",
     "couldNotUpdateFavorites": "تعذر تحديث المفضلة",
+    "info": "معلومات",
+    "map": "الخريطة",
     "categories": {
       "restaurant": "مطعم",
       "attraction": "وجهة سياحية",
@@ -108,6 +111,20 @@
       "events": "فعاليات",
       "other": "أخرى"
     }
+  },
+  "shop": {
+    "cart": "عربة التسوق",
+    "continueShopping": "مواصلة التسوق",
+    "emptyCart": "عربة التسوق فارغة",
+    "orderSummary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "tax": "الضريبة",
+    "total": "الإجمالي",
+    "placeOrder": "تقديم الطلب",
+    "orderSubmitted": "تم تقديم الطلب",
+    "orderChargedToRoom": "سيتم إضافة العناصر إلى حساب غرفتك.",
+    "quantity": "الكمية",
+    "price": "السعر"
   },
   "chatbot": {
     "newChat": "محادثة جديدة",

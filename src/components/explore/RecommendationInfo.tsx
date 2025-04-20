@@ -2,17 +2,20 @@
 import { MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Recommendation } from "@/types/recommendation";
+import { useTranslation } from "react-i18next";
 
 interface RecommendationInfoProps {
   recommendation: Recommendation;
 }
 
 export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-          {recommendation.category}
+          {t(`explore.categories.${(recommendation.category || 'other').toLowerCase()}`)}
         </Badge>
         {recommendation.rating && (
           <div className="flex items-center gap-1 text-darcare-gold">

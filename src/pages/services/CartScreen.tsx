@@ -12,11 +12,13 @@ import type { ShopCartItem } from '@/types/shop';
 import { Loader2 } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
+import { useTranslation } from 'react-i18next';
 
 const CartScreen = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const { data: cartItems, isLoading } = useQuery({
     queryKey: ['cart-items'],
@@ -64,7 +66,7 @@ const CartScreen = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Cart" onBack={() => navigate('/services/shop')} />
+        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services/shop')} />
         <div className="flex justify-center items-center h-72 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
@@ -76,7 +78,7 @@ const CartScreen = () => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title="Cart" onBack={() => navigate('/services/shop')} />
+        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services/shop')} />
         <div className="p-4 pt-16 pb-24">
           <CartEmpty onContinueShopping={() => navigate('/services/shop')} />
         </div>
@@ -87,15 +89,15 @@ const CartScreen = () => {
 
   const handlePlaceOrder = () => {
     toast({
-      title: "Order Submitted",
-      description: "Your items will be charged to your room.",
+      title: t('shop.orderSubmitted'),
+      description: t('shop.orderChargedToRoom'),
     });
     navigate('/services/shop');
   };
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title="Cart" onBack={() => navigate('/services/shop')} />
+      <MainHeader title={t('shop.cart')} onBack={() => navigate('/services/shop')} />
       <div className="p-4 pt-16 pb-24">
         <div className="space-y-4">
           {cartItems.map((item) => (

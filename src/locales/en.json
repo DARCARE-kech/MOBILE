@@ -74,6 +74,7 @@
     "cancelRequestConfirmation": "Are you sure you want to cancel this service request? This action cannot be undone.",
     "keepRequest": "Keep Request",
     "confirmCancel": "Yes, Cancel",
+    "luxuryOfferings": "Luxury Offerings",
     "status": {
       "pending": "Pending",
       "approved": "Approved",
@@ -100,6 +101,8 @@
     "removedFromFavorites": "Removed from favorites",
     "signInToSaveFavorites": "Please sign in to save favorites",
     "couldNotUpdateFavorites": "Could not update favorites",
+    "info": "Info",
+    "map": "Map",
     "categories": {
       "restaurant": "Restaurant",
       "attraction": "Attraction",
@@ -108,6 +111,20 @@
       "events": "Events",
       "other": "Other"
     }
+  },
+  "shop": {
+    "cart": "Cart",
+    "continueShopping": "Continue Shopping",
+    "emptyCart": "Your cart is empty",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total",
+    "placeOrder": "Place Order",
+    "orderSubmitted": "Order Submitted",
+    "orderChargedToRoom": "Your items will be charged to your room.",
+    "quantity": "Quantity",
+    "price": "Price"
   },
   "chatbot": {
     "newChat": "New Chat",

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 // Expand the type definition to include all possible status values
 interface StatusBadgeProps {
-  status: "pending" | "active" | "completed" | "cancelled" | string | null;
+  status: "pending" | "active" | "completed" | "cancelled" | "in_progress" | string | null;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
@@ -33,12 +33,9 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
     // Add any other known status types here
   };
 
-  // Get the translated label
+  // Get the translated label based on the normalized status
   const getLabel = () => {
-    if (normalizedStatus === 'in_progress') {
-      return t('services.status.in_progress');
-    }
-    return t(`services.status.${normalizedStatus}`);
+    return t(`services.status.${normalizedStatus.replace('_', '_')}`);
   };
 
   // Fallback for unexpected status values

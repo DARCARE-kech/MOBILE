@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import { RecommendationHeader } from "@/components/explore/RecommendationHeader";
 import { RecommendationInfo } from "@/components/explore/RecommendationInfo";
@@ -14,12 +16,16 @@ import { RecommendationReviews } from "@/components/explore/RecommendationReview
 import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
 import { RecommendationDetailSkeleton } from "@/components/explore/RecommendationDetailSkeleton";
 import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
+import { useTranslation } from "react-i18next";
 import type { Recommendation } from "@/types/recommendation";
 
 const RecommendationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("info");
 
   const handleBack = () => navigate(-1);
@@ -103,6 +109,72 @@ const RecommendationDetail = () => {
     enabled: !!id
   });
 
+  // Add toggle favorite mutation
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async () => {
+      if (!user || !id) {
+        throw new Error("User must be logged in to toggle favorites");
+      }
+      
+      if (recommendation?.is_favorite) {
+        // Remove from favorites
+        const { error } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('recommendation_id', id);
+          
+        if (error) throw error;
+        return false;
+      } else {
+        // Add to favorites
+        const { error } = await supabase
+          .from('favorites')
+          .insert({
+            user_id: user.id,
+            recommendation_id: id
+          });
+          
+        if (error) throw error;
+        return true;
+      }
+    },
+    onSuccess: (isFavorite) => {
+      // Update the recommendation cache
+      if (recommendation) {
+        queryClient.setQueryData(['recommendation', id], {
+          ...recommendation,
+          is_favorite: isFavorite
+        });
+      }
+      
+      // Show toast notification
+      toast({
+        title: isFavorite ? 
+          t('explore.addedToFavorites') : 
+          t('explore.removedFromFavorites'),
+      });
+      
+      // Also invalidate any favorites list queries
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+    onError: (error) => {
+      console.error("Error toggling favorite:", error);
+      
+      toast({
+        title: user ? 
+          t('explore.couldNotUpdateFavorites') : 
+          t('explore.signInToSaveFavorites'),
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleToggleFavorite = () => {
+    toggleFavoriteMutation.mutate();
+  };
+
   if (!id) {
     return <RecommendationDetailSkeleton onBack={handleBack} />;
   }
@@ -118,21 +190,30 @@ const RecommendationDetail = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <RecommendationDetailHeader title={recommendation.title} onBack={handleBack} />
+      <RecommendationDetailHeader 
+        title={recommendation.title} 
+        onBack={handleBack}
+        isFavorite={recommendation.is_favorite || false}
+        onToggleFavorite={handleToggleFavorite}
+        recommendationId={id}
+      />
       
-      <RecommendationHeader recommendation={recommendation} />
+      <RecommendationHeader 
+        recommendation={recommendation}
+        onToggleFavorite={handleToggleFavorite}
+      />
 
       <div className="p-4 pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-3 bg-darcare-navy border border-darcare-gold/20">
             <TabsTrigger value="info" className="text-darcare-beige data-[state=active]:text-darcare-gold">
-              Info
+              {t('explore.info')}
             </TabsTrigger>
             <TabsTrigger value="map" className="text-darcare-beige data-[state=active]:text-darcare-gold">
-              Map
+              {t('explore.map')}
             </TabsTrigger>
             <TabsTrigger value="reviews" className="text-darcare-beige data-[state=active]:text-darcare-gold">
-              Reviews
+              {t('explore.reviews')}
             </TabsTrigger>
           </TabsList>
 

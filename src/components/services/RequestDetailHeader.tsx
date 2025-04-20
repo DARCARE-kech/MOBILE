@@ -40,7 +40,7 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
             <Calendar className="h-5 w-5 text-darcare-gold" />
             <div>
               <p className="text-sm text-darcare-beige/60">
-                {t('services.submittedOn', { date: format(new Date(createdAt), "PPP") })}
+                {t('services.submittedOn')} {format(new Date(createdAt), "PPP")}
               </p>
             </div>
           </div>

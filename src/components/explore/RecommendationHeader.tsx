@@ -1,13 +1,21 @@
 
-import { Star } from "lucide-react";
+import { Star, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
+import { useTranslation } from "react-i18next";
 
 interface RecommendationHeaderProps {
   recommendation: Recommendation;
+  onToggleFavorite: () => void;
 }
 
-export const RecommendationHeader = ({ recommendation }: RecommendationHeaderProps) => {
+export const RecommendationHeader = ({ 
+  recommendation, 
+  onToggleFavorite 
+}: RecommendationHeaderProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -16,11 +24,22 @@ export const RecommendationHeader = ({ recommendation }: RecommendationHeaderPro
           alt={recommendation.title}
           className="w-full h-64 object-cover"
         />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy text-darcare-gold"
+          onClick={onToggleFavorite}
+        >
+          <Heart
+            size={18}
+            className={recommendation.is_favorite ? "fill-current" : ""}
+          />
+        </Button>
       </div>
       
       <div className="flex items-center gap-2">
         <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-          {recommendation.category}
+          {t(`explore.categories.${(recommendation.category || 'other').toLowerCase()}`)}
         </Badge>
         {recommendation.rating && (
           <div className="flex items-center gap-1 text-darcare-gold">

@@ -74,6 +74,7 @@
     "cancelRequestConfirmation": "Êtes-vous sûr de vouloir annuler cette demande de service ? Cette action ne peut pas être annulée.",
     "keepRequest": "Conserver la Demande",
     "confirmCancel": "Oui, Annuler",
+    "luxuryOfferings": "Offres de Luxe",
     "status": {
       "pending": "En Attente",
       "approved": "Approuvé",
@@ -100,6 +101,8 @@
     "removedFromFavorites": "Retiré des favoris",
     "signInToSaveFavorites": "Veuillez vous connecter pour sauvegarder des favoris",
     "couldNotUpdateFavorites": "Impossible de mettre à jour les favoris",
+    "info": "Info",
+    "map": "Carte",
     "categories": {
       "restaurant": "Restaurant",
       "attraction": "Attraction",
@@ -108,6 +111,20 @@
       "events": "Événements",
       "other": "Autre"
     }
+  },
+  "shop": {
+    "cart": "Panier",
+    "continueShopping": "Continuer les Achats",
+    "emptyCart": "Votre panier est vide",
+    "orderSummary": "Résumé de la Commande",
+    "subtotal": "Sous-total",
+    "tax": "Taxe",
+    "total": "Total",
+    "placeOrder": "Passer la Commande",
+    "orderSubmitted": "Commande Soumise",
+    "orderChargedToRoom": "Vos articles seront facturés à votre chambre.",
+    "quantity": "Quantité",
+    "price": "Prix"
   },
   "chatbot": {
     "newChat": "Nouvelle Conversation",

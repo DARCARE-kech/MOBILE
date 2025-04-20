@@ -1,17 +1,28 @@
 
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Heart } from "lucide-react";
 import Logo from "@/components/Logo";
 import WeatherDisplay from "@/components/WeatherDisplay";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface RecommendationDetailHeaderProps {
   title: string;
   onBack: () => void;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  recommendationId: string;
 }
 
-export const RecommendationDetailHeader = ({ title, onBack }: RecommendationDetailHeaderProps) => {
+export const RecommendationDetailHeader = ({ 
+  title, 
+  onBack,
+  isFavorite,
+  onToggleFavorite,
+  recommendationId
+}: RecommendationDetailHeaderProps) => {
+  const { t } = useTranslation();
   const { data: notifications } = useQuery({
     queryKey: ['notifications', 'unread'],
     queryFn: async () => {
