@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { getFallbackImage } from "@/utils/imageUtils";
 
 interface RecommendationHeaderProps {
   recommendation: Recommendation;
@@ -15,14 +17,18 @@ export const RecommendationHeader = ({
   onToggleFavorite 
 }: RecommendationHeaderProps) => {
   const { t } = useTranslation();
+  const [imageError, setImageError] = useState(false);
+  const fallbackImage = getFallbackImage(recommendation.title, 0);
+  const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
   return (
     <div className="space-y-4">
       <div className="relative">
         <img
-          src={recommendation.image_url || '/placeholder.svg'}
+          src={imageSource}
           alt={recommendation.title}
           className="w-full h-64 object-cover"
+          onError={() => setImageError(true)}
         />
         <Button
           variant="ghost"
@@ -37,11 +43,11 @@ export const RecommendationHeader = ({
         </Button>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 px-4">
         <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-          {t(`explore.categories.${(recommendation.category || 'other').toLowerCase()}`)}
+          {recommendation.category ? t(`explore.categories.${recommendation.category.toLowerCase()}`) : t('explore.categories.other')}
         </Badge>
-        {recommendation.rating && (
+        {recommendation.rating && recommendation.rating > 0 && (
           <div className="flex items-center gap-1 text-darcare-gold">
             <Star size={16} className="fill-current" />
             <span>{recommendation.rating.toFixed(1)}</span>

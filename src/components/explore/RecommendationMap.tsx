@@ -1,6 +1,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Recommendation } from "@/types/recommendation";
+import { useTranslation } from "react-i18next";
 
 interface RecommendationMapProps {
   recommendation: Recommendation;
@@ -8,32 +9,88 @@ interface RecommendationMapProps {
 
 export const RecommendationMap = ({ recommendation }: RecommendationMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!mapRef.current || !recommendation.latitude || !recommendation.longitude) return;
 
-    // Placeholder for Google Maps implementation
-    // To properly implement Google Maps:
-    // 1. Add the Google Maps script to index.html
-    // 2. Use the window.google object that will be available after the script loads
-    
-    // Display a message to let the user know we need to add the Maps API
-    const mapElement = mapRef.current;
-    mapElement.innerHTML = `
-      <div class="flex items-center justify-center h-full">
-        <div class="text-center p-4">
-          <p class="text-darcare-gold mb-2">Map will be displayed here</p>
-          <p class="text-darcare-beige text-sm">Location: ${recommendation.latitude}, ${recommendation.longitude}</p>
-          <p class="text-darcare-beige text-sm mt-4">Note: Add Google Maps API key to enable maps</p>
-        </div>
-      </div>
-    `;
-  }, [recommendation]);
+    // Load Google Maps API script if it doesn't exist
+    if (!window.google || !window.google.maps) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBhXbK0z5WdN-3FH6QeHXQ6WPgQkm0QWi4&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      window.initMap = () => {
+        initializeMap();
+      };
+      document.head.appendChild(script);
+    } else {
+      initializeMap();
+    }
+
+    function initializeMap() {
+      if (!mapRef.current || !recommendation.latitude || !recommendation.longitude) return;
+      
+      const mapOptions = {
+        center: { 
+          lat: recommendation.latitude, 
+          lng: recommendation.longitude 
+        },
+        zoom: 15,
+        mapId: 'DEMO_MAP_ID',
+        styles: [
+          {
+            "elementType": "geometry",
+            "stylers": [{ "color": "#242f3e" }]
+          },
+          {
+            "elementType": "labels.text.stroke",
+            "stylers": [{ "color": "#242f3e" }]
+          },
+          {
+            "elementType": "labels.text.fill",
+            "stylers": [{ "color": "#746855" }]
+          },
+          {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [{ "color": "#17263c" }]
+          },
+          {
+            "featureType": "water",
+            "elementType": "labels.text.fill",
+            "stylers": [{ "color": "#515c6d" }]
+          },
+          {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": [{ "color": "#d59563" }]
+          }
+        ]
+      };
+
+      const map = new window.google.maps.Map(mapRef.current, mapOptions);
+
+      // Add a marker
+      new window.google.maps.Marker({
+        position: { lat: recommendation.latitude, lng: recommendation.longitude },
+        map: map,
+        title: recommendation.title
+      });
+    }
+
+    return () => {
+      // Clean up any Google Maps resources if needed
+    };
+  }, [recommendation.latitude, recommendation.longitude, recommendation.title]);
 
   if (!recommendation.latitude || !recommendation.longitude) {
     return (
-      <div className="text-darcare-beige text-center py-8">
-        Location information not available
+      <div className="text-darcare-beige text-center py-8 h-[400px] flex items-center justify-center border border-darcare-gold/20 rounded-xl">
+        <div>
+          <p className="mb-2">{t('explore.locationNotAvailable')}</p>
+          <p className="text-sm text-darcare-gold/70">{t('explore.noCoordinatesProvided')}</p>
+        </div>
       </div>
     );
   }

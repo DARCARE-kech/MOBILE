@@ -9,8 +9,6 @@ import { useToast } from "@/components/ui/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import { RecommendationHeader } from "@/components/explore/RecommendationHeader";
 import { RecommendationInfo } from "@/components/explore/RecommendationInfo";
-import { ContactInfoBlock } from "@/components/explore/ContactInfoBlock";
-import { TagsList } from "@/components/explore/TagsList";
 import { RecommendationMap } from "@/components/explore/RecommendationMap";
 import { RecommendationReviews } from "@/components/explore/RecommendationReviews";
 import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
@@ -18,6 +16,7 @@ import { RecommendationDetailSkeleton } from "@/components/explore/Recommendatio
 import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
 import { useTranslation } from "react-i18next";
 import type { Recommendation } from "@/types/recommendation";
+import { getFallbackImage } from "@/utils/imageUtils";
 
 const RecommendationDetail = () => {
   const { id } = useParams();
@@ -86,12 +85,22 @@ const RecommendationDetail = () => {
           ? data.reviews.reduce((sum, r) => sum + r.rating, 0) / data.reviews.length 
           : 0;
 
+        // Ensure image_url has a value with fallback
+        const imageUrl = data.image_url || getFallbackImage(data.title, 0);
+
         return {
           ...data,
           tags: data.tags || [],
           rating: Number(avgRating.toFixed(1)),
           review_count: data.reviews?.length || 0,
           is_favorite: !!favoriteResponse.data,
+          image_url: imageUrl,
+          // Ensure we have values for all fields
+          is_reservable: data.is_reservable || false,
+          contact_phone: data.contact_phone || null,
+          email: data.email || null,
+          opening_hours: data.opening_hours || null,
+          address: data.address || null,
           reviews: data.reviews?.map(review => ({
             ...review,
             user_profiles: {
@@ -219,8 +228,6 @@ const RecommendationDetail = () => {
 
           <TabsContent value="info">
             <RecommendationInfo recommendation={recommendation} />
-            <ContactInfoBlock recommendation={recommendation} />
-            <TagsList tags={recommendation.tags || []} />
           </TabsContent>
 
           <TabsContent value="map">

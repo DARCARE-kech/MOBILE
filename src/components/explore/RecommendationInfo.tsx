@@ -39,7 +39,7 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
       )}
 
       <p className="text-darcare-white">
-        {recommendation.description}
+        {recommendation.description || t('explore.noDescriptionAvailable')}
       </p>
       
       {/* Contact Information */}
