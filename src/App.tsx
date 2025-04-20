@@ -86,6 +86,7 @@ const App = () => {
                 <Route path="/services/space/:id?" element={<BookSpaceService />} />
                 <Route path="/services/:id" element={<ServiceDetail />} />
                 <Route path="/services/requests/:id" element={<RequestDetailPage />} />
+                <Route path="/services/cart" element={<CartScreen />} />
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/chatbot" element={<Chatbot />} />
                 <Route path="/chat-history" element={<ChatHistory />} />
@@ -99,7 +100,6 @@ const App = () => {
                 <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
                 <Route path="/explore/favorites" element={<FavoritesPage />} />
                 <Route path="/stays/details" element={<StayDetailsPage />} />
-                <Route path="/services/shop/cart" element={<CartScreen />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </TooltipProvider>
