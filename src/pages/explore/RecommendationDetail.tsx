@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,7 +24,6 @@ const RecommendationDetail = () => {
 
   const handleBack = () => navigate(-1);
 
-  // Redirect if no ID is present
   useEffect(() => {
     if (!id) {
       console.error("No ID in URL params, redirecting back");
