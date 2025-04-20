@@ -8,7 +8,7 @@ import { getFallbackImage } from '@/utils/imageUtils';
 import { RatingStars } from '@/components/RatingStars';
 import { useTranslation } from 'react-i18next';
 import type { Recommendation } from '@/types/recommendation';
-import { RECOMMENDATION_CATEGORIES } from '@/utils/recommendationCategories';
+import { RECOMMENDATION_CATEGORIES, isValidCategory } from '@/utils/recommendationCategories';
 
 interface RecommendationCardProps {
   item: Recommendation;
@@ -26,10 +26,8 @@ export const RecommendationCard = ({
   const fallbackImage = getFallbackImage(item.title, 0);
   const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
   
-  // Ensure category is one of the valid categories
-  const displayCategory = item.category && RECOMMENDATION_CATEGORIES.includes(item.category)
-    ? item.category
-    : 'other';
+  // Validate if the category is one of the allowed values
+  const displayCategory = isValidCategory(item.category) ? item.category : 'other';
   
   return (
     <div 

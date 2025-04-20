@@ -1,11 +1,10 @@
-
 import { MapPin, Star, Clock, Phone, Mail, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { ContactInfoBlock } from "./ContactInfoBlock";
 import { TagsList } from "./TagsList";
-import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
+import { isValidCategory } from "@/utils/recommendationCategories";
 
 interface RecommendationInfoProps {
   recommendation: Recommendation;
@@ -14,18 +13,16 @@ interface RecommendationInfoProps {
 export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) => {
   const { t } = useTranslation();
   
-  // Ensure category is one of the valid categories
-  const displayCategory = recommendation.category && 
-    (typeof recommendation.category === 'string') && 
-    RECOMMENDATION_CATEGORIES.includes(recommendation.category as any)
-      ? recommendation.category
-      : 'other';
+  // Use the validation function to safely check category
+  const displayCategory = isValidCategory(recommendation.category) 
+    ? recommendation.category 
+    : 'other';
   
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center gap-3">
         <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-          {t(`explore.categories.${typeof displayCategory === 'string' ? displayCategory.toLowerCase() : 'other'}`)}
+          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
         </Badge>
         {recommendation.rating && recommendation.rating > 0 && (
           <div className="flex items-center gap-1 text-darcare-gold">

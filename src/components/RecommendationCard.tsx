@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Heart, MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "./ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import type { Recommendation } from "@/types/recommendation";
-import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
+import { isValidCategory } from "@/utils/recommendationCategories";
 
 interface RecommendationCardProps {
   item: Recommendation;
@@ -79,12 +78,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
     }
   };
 
-  // Ensure the category is one of the valid categories
-  const displayCategory = item.category && 
-    (typeof item.category === 'string') && 
-    RECOMMENDATION_CATEGORIES.includes(item.category as any)
-      ? item.category
-      : 'other';
+  const displayCategory = isValidCategory(item.category) ? item.category : 'other';
 
   return (
     <div 
@@ -122,7 +116,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
           variant="outline" 
           className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif"
         >
-          {typeof displayCategory === 'string' ? displayCategory : 'other'}
+          {displayCategory}
         </Badge>
         <div className="flex items-center justify-between text-sm">
           {item.location && (

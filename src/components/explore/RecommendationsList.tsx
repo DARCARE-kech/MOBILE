@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { RecommendationCard } from "./RecommendationCard";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { isValidCategory, type RecommendationCategory } from "@/utils/recommendationCategories";
 
 interface RecommendationsListProps {
   searchQuery: string;
@@ -23,9 +24,14 @@ export const RecommendationsList = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
   
+  // Validate the category before passing it to the query
+  const validCategory = selectedCategory && isValidCategory(selectedCategory) 
+    ? selectedCategory as RecommendationCategory 
+    : null;
+
   const { data: recommendations, isLoading } = useRecommendationsQuery({
     searchQuery,
-    category: selectedCategory,
+    category: validCategory,
     sortBy
   });
 
@@ -94,7 +100,7 @@ export const RecommendationsList = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-      {recommendations.map((item) => (
+      {recommendations?.map((item) => (
         <RecommendationCard
           key={item.id}
           item={item}
