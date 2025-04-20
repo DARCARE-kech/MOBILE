@@ -22,6 +22,7 @@ import RecommendationDetail from "./pages/explore/RecommendationDetail";
 import FavoritesPage from "./pages/explore/Favorites";
 import StayDetailsPage from "./pages/stays/StayDetailsPage";
 import RequestDetailPage from "./pages/services/RequestDetailPage";
+import CartScreen from "./pages/services/CartScreen";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App = () => {
               <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
               <Route path="/explore/favorites" element={<FavoritesPage />} />
               <Route path="/stays/:id" element={<StayDetailsPage />} />
+              <Route path="/services/shop/cart" element={<CartScreen />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

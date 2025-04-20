@@ -1,17 +1,11 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { 
-  ShoppingBag, 
+  ShoppingCart,
   Plus, 
-  Minus, 
-  CircleDollarSign,
-  ChevronRight,
-  ChevronLeft,
-  Trash2,
-  CreditCard
+  Minus
 } from 'lucide-react';
 
 import ServiceHeader from '@/components/services/ServiceHeader';
@@ -83,7 +77,6 @@ const ShopService = () => {
   };
   
   const handleCheckout = () => {
-    // In a real app, this would process the payment
     toast({
       title: "Order Placed",
       description: "Your order has been placed successfully",
@@ -107,7 +100,17 @@ const ShopService = () => {
   
   return (
     <div className="bg-darcare-navy min-h-screen pb-20">
-      <ServiceHeader title="Shop" />
+      <ServiceHeader 
+        title="Shop" 
+        rightContent={
+          <IconButton
+            icon={<ShoppingCart className="w-5 h-5" />}
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/services/shop/cart')}
+          />
+        }
+      />
       
       <div className="p-4">
         <h2 className="text-darcare-gold font-serif text-2xl mb-4">Luxury Offerings</h2>
