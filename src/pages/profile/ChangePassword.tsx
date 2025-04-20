@@ -47,14 +47,14 @@ const ChangePassword: React.FC = () => {
     try {
       // First verify the current password by signing in
       const userResponse = await supabase.auth.getUser();
-      const userEmail = userResponse.data.user?.email;
+      const user = userResponse.data.user;
       
-      if (!userEmail) {
+      if (!user || !user.email) {
         throw new Error("Unable to get current user email");
       }
       
       const { error: verifyError } = await supabase.auth.signInWithPassword({
-        email: userEmail,
+        email: user.email,
         password: data.currentPassword,
       });
 
