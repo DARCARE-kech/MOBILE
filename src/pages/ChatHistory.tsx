@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { Pencil, Trash2, ChevronRight, Plus, MessageSquare } from 'lucide-react';
+import { Pencil, Trash2, ChevronRight, Plus, MessageSquare, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import MainHeader from '@/components/MainHeader';
 import { useChat } from '@/hooks/useChat';
@@ -9,12 +9,24 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import BottomNavigation from '@/components/BottomNavigation';
+import { useTranslation } from 'react-i18next';
+import { useToast } from '@/components/ui/use-toast';
 
 const ChatHistory: React.FC = () => {
   const navigate = useNavigate();
-  const { sessions, deleteSession, updateSessionTitle, createSession } = useChat();
-  const [editingId, setEditingId] = React.useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = React.useState('');
+  const { toast } = useToast(); 
+  const { t } = useTranslation();
+  const { 
+    sessions, 
+    deleteSession, 
+    updateSessionTitle, 
+    createSession,
+    isLoadingSessions 
+  } = useChat();
+  
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const handleEdit = (id: string, currentTitle: string) => {
     setEditingId(id);
@@ -22,26 +34,57 @@ const ChatHistory: React.FC = () => {
   };
 
   const handleSave = async (id: string) => {
+    if (!editingTitle.trim()) {
+      toast({
+        title: t('common.error'),
+        description: t('chat.emptyTitleError'),
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     await updateSessionTitle.mutateAsync({ id, title: editingTitle });
     setEditingId(null);
     setEditingTitle('');
   };
 
-  const handleCreateNewChat = async () => {
-    const session = await createSession.mutateAsync('New Conversation');
-    navigate(`/chatbot?session=${session.id}`);
+  const handleDelete = async (id: string) => {
+    setIsDeleting(id);
+    await deleteSession.mutateAsync(id);
+    setIsDeleting(null);
   };
+
+  const handleCreateNewChat = async () => {
+    try {
+      const session = await createSession.mutateAsync(t('chat.newConversation'));
+      navigate(`/chatbot?session=${session.id}`);
+    } catch (error) {
+      console.error('Error creating new chat session:', error);
+    }
+  };
+
+  if (isLoadingSessions) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={t('chat.history')} onBack={() => navigate('/chatbot')} />
+        <div className="flex justify-center items-center h-72 pt-16">
+          <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        </div>
+        <BottomNavigation activeTab="chatbot" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title="Chat History" onBack={() => navigate('/chatbot')} />
+      <MainHeader title={t('chat.history')} onBack={() => navigate('/chatbot')} />
       
       <ScrollArea className="flex-1 p-4 pb-24 pt-20">
         <div className="space-y-4">
           {!sessions || sessions.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
               <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-              <p>No chat history yet</p>
+              <p>{t('chat.noHistory')}</p>
             </div>
           ) : (
             sessions.map((session) => (
@@ -60,6 +103,7 @@ const ChatHistory: React.FC = () => {
                           handleSave(session.id);
                         }
                       }}
+                      autoFocus
                     />
                   ) : (
                     <>
@@ -94,10 +138,14 @@ const ChatHistory: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => deleteSession.mutate(session.id)}
+                        onClick={() => handleDelete(session.id)}
                         className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+                        disabled={isDeleting === session.id}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        {isDeleting === session.id ? 
+                          <Loader2 className="h-4 w-4 animate-spin" /> : 
+                          <Trash2 className="h-4 w-4" />
+                        }
                       </Button>
                       <Button
                         variant="ghost"

@@ -24,10 +24,12 @@ const CartScreen = () => {
     queryKey: ['cart-items'],
     queryFn: async () => {
       try {
+        if (!user?.id) return [];
+        
         const { data: order, error: orderError } = await supabase
           .from('shop_orders')
           .select('id')
-          .eq('user_id', user?.id)
+          .eq('user_id', user.id)
           .eq('status', 'cart')
           .single();
 
@@ -60,13 +62,50 @@ const CartScreen = () => {
         return [];
       }
     },
-    enabled: !!user
+    enabled: !!user?.id,
+    refetchInterval: 5000, // Refetch every 5 seconds to keep cart updated
   });
+
+  const handlePlaceOrder = async () => {
+    if (!user?.id || !cartItems || cartItems.length === 0) return;
+    
+    try {
+      // Get the current cart order ID
+      const { data: order } = await supabase
+        .from('shop_orders')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('status', 'cart')
+        .single();
+      
+      if (order) {
+        // Update the order status to 'submitted'
+        await supabase
+          .from('shop_orders')
+          .update({ status: 'submitted' })
+          .eq('id', order.id);
+      }
+      
+      toast({
+        title: t('shop.orderSubmitted'),
+        description: t('shop.orderChargedToRoom'),
+      });
+      
+      navigate('/services');
+    } catch (err) {
+      console.error('Error placing order:', err);
+      toast({
+        title: 'Error',
+        description: 'Could not place your order',
+        variant: 'destructive',
+      });
+    }
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services/shop')} />
+        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
         <div className="flex justify-center items-center h-72 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
@@ -78,26 +117,18 @@ const CartScreen = () => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services/shop')} />
+        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
         <div className="p-4 pt-16 pb-24">
-          <CartEmpty onContinueShopping={() => navigate('/services/shop')} />
+          <CartEmpty onContinueShopping={() => navigate('/services')} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
   }
 
-  const handlePlaceOrder = () => {
-    toast({
-      title: t('shop.orderSubmitted'),
-      description: t('shop.orderChargedToRoom'),
-    });
-    navigate('/services/shop');
-  };
-
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('shop.cart')} onBack={() => navigate('/services/shop')} />
+      <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
       <div className="p-4 pt-16 pb-24">
         <div className="space-y-4">
           {cartItems.map((item) => (

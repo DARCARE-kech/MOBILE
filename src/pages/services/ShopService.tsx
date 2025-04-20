@@ -19,21 +19,21 @@ const ShopService = () => {
       <MainHeader 
         title={t('services.shop')} 
         onBack={() => navigate('/services')}
-        children={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            onClick={() => navigate('/services/cart')}
-          >
-            <ShoppingCart size={20} />
-          </Button>
-        }
-      />
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+          onClick={() => navigate('/services/cart')}
+        >
+          <ShoppingCart size={20} />
+        </Button>
+      </MainHeader>
       <div className="p-4">
         <h2 className="text-darcare-gold font-serif text-2xl mb-4">{t('services.luxuryOfferings')}</h2>
         <ProductsGrid onAddToCart={addToCart} />
       </div>
+      <BottomNavigation activeTab="services" />
     </div>
   );
 };

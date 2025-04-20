@@ -1,14 +1,22 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Minus, Plus, Trash2 } from 'lucide-react';
 import { getFallbackImage } from '@/utils/imageUtils';
 import type { ShopCartItem } from '@/types/shop';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CartItemProps {
   item: ShopCartItem;
 }
 
 const CartItem = ({ item }: CartItemProps) => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   // Handle image error fallback
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
@@ -22,6 +30,55 @@ const CartItem = ({ item }: CartItemProps) => {
   // If product data is missing, use fallback image based on index or id
   const fallbackImage = item.id ? getFallbackImage(productName, 0) : '/placeholder.svg';
 
+  const updateQuantity = async (newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    try {
+      const { error } = await supabase
+        .from('shop_order_items')
+        .update({ quantity: newQuantity })
+        .eq('id', item.id);
+        
+      if (error) throw error;
+      
+      // Invalidate cart items query
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+    } catch (err) {
+      console.error('Error updating item quantity:', err);
+      toast({
+        title: 'Error',
+        description: 'Could not update quantity',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const removeItem = async () => {
+    try {
+      const { error } = await supabase
+        .from('shop_order_items')
+        .delete()
+        .eq('id', item.id);
+        
+      if (error) throw error;
+      
+      toast({
+        title: 'Item Removed',
+        description: `${productName} has been removed from your cart`,
+      });
+      
+      // Invalidate cart items query
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+    } catch (err) {
+      console.error('Error removing item:', err);
+      toast({
+        title: 'Error',
+        description: 'Could not remove item',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
       <div className="flex gap-4">
@@ -34,15 +91,47 @@ const CartItem = ({ item }: CartItemProps) => {
           />
         </div>
         <div className="flex-1">
-          <h3 className="text-darcare-white font-medium">
-            {productName}
-          </h3>
+          <div className="flex justify-between">
+            <h3 className="text-darcare-white font-medium">
+              {productName}
+            </h3>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-darcare-gold hover:text-red-500 hover:bg-red-500/10 -mt-1 -mr-1"
+              onClick={removeItem}
+            >
+              <Trash2 size={18} />
+            </Button>
+          </div>
           <p className="text-darcare-gold mt-1">
-            ${item.price_at_time} × {item.quantity}
+            ${item.price_at_time}
           </p>
-          <p className="text-darcare-beige/70 text-right mt-2">
-            Subtotal: ${(item.price_at_time * item.quantity).toFixed(2)}
-          </p>
+          <div className="flex justify-between items-center mt-2">
+            <div className="flex items-center space-x-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-7 w-7 border-darcare-gold/30 text-darcare-gold"
+                onClick={() => updateQuantity(item.quantity - 1)}
+                disabled={item.quantity <= 1}
+              >
+                <Minus size={14} />
+              </Button>
+              <span className="text-darcare-beige w-6 text-center">{item.quantity}</span>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-7 w-7 border-darcare-gold/30 text-darcare-gold"
+                onClick={() => updateQuantity(item.quantity + 1)}
+              >
+                <Plus size={14} />
+              </Button>
+            </div>
+            <p className="text-darcare-beige/70">
+              Subtotal: ${(item.price_at_time * item.quantity).toFixed(2)}
+            </p>
+          </div>
         </div>
       </div>
     </Card>
