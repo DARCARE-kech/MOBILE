@@ -10,6 +10,7 @@ import CartItem from '@/components/shop/CartItem';
 import CartSummary from '@/components/shop/CartSummary';
 import CartEmpty from '@/components/shop/CartEmpty';
 import type { ShopCartItem } from '@/types/shop';
+import { Loader2 } from 'lucide-react';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -19,43 +20,56 @@ const CartScreen = () => {
   const { data: cartItems, isLoading } = useQuery({
     queryKey: ['cart-items'],
     queryFn: async () => {
-      const { data: order, error: orderError } = await supabase
-        .from('shop_orders')
-        .select('id')
-        .eq('user_id', user?.id)
-        .eq('status', 'cart')
-        .single();
+      try {
+        const { data: order, error: orderError } = await supabase
+          .from('shop_orders')
+          .select('id')
+          .eq('user_id', user?.id)
+          .eq('status', 'cart')
+          .single();
 
-      if (orderError || !order) return [];
+        if (orderError || !order) return [];
 
-      const { data: items, error: itemsError } = await supabase
-        .from('shop_order_items')
-        .select(`
-          id,
-          quantity,
-          price_at_time,
-          shop_products (
+        const { data: items, error: itemsError } = await supabase
+          .from('shop_order_items')
+          .select(`
             id,
-            name,
-            description,
-            image_url
-          )
-        `)
-        .eq('order_id', order.id);
+            quantity,
+            price_at_time,
+            shop_products (
+              id,
+              name,
+              description,
+              image_url
+            )
+          `)
+          .eq('order_id', order.id);
 
-      if (itemsError) throw itemsError;
-      return items as ShopCartItem[] || [];
+        if (itemsError) {
+          console.error('Error fetching cart items:', itemsError);
+          return [];
+        }
+        
+        // Filter out any items with missing product data
+        return (items as ShopCartItem[] || []).filter(item => item && item.shop_products);
+      } catch (err) {
+        console.error('Error in cart data fetching:', err);
+        return [];
+      }
     },
     enabled: !!user
   });
 
-  const handlePlaceOrder = () => {
-    toast({
-      title: "Order Submitted",
-      description: "Your items will be charged to your room.",
-    });
-    navigate('/services/shop');
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <ServiceHeader title="Cart" showBackButton={true} />
+        <div className="flex justify-center items-center h-72">
+          <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        </div>
+      </div>
+    );
+  }
 
   if (!cartItems || cartItems.length === 0) {
     return (
@@ -67,6 +81,14 @@ const CartScreen = () => {
       </div>
     );
   }
+
+  const handlePlaceOrder = () => {
+    toast({
+      title: "Order Submitted",
+      description: "Your items will be charged to your room.",
+    });
+    navigate('/services/shop');
+  };
 
   return (
     <div className="min-h-screen bg-darcare-navy">
