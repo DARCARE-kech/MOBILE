@@ -12,7 +12,13 @@ interface RecommendationDetailErrorProps {
 export const RecommendationDetailError = ({ onBack, onRetry }: RecommendationDetailErrorProps) => {
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <RecommendationDetailHeader title="Not Found" onBack={onBack} />
+      <RecommendationDetailHeader 
+        title="Not Found" 
+        onBack={onBack} 
+        isFavorite={false}
+        onToggleFavorite={() => {}} // No-op function since there's no recommendation to favorite
+        recommendationId="error" // Dummy ID since we don't have a real recommendation
+      />
       <div className="p-4 flex flex-col items-center justify-center text-center text-darcare-beige h-[60vh]">
         <AlertTriangle size={48} className="text-darcare-gold mb-4" />
         <h2 className="text-xl font-serif text-darcare-gold mb-2">Recommendation Not Found</h2>
