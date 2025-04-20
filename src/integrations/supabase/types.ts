@@ -541,26 +541,41 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string | null
+          dark_mode: boolean | null
+          email: string | null
           full_name: string
           id: string
           language: string | null
+          notifications_enabled: boolean | null
           role: string
+          terms_accepted: boolean | null
+          terms_accepted_at: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string | null
+          dark_mode?: boolean | null
+          email?: string | null
           full_name: string
           id: string
           language?: string | null
+          notifications_enabled?: boolean | null
           role: string
+          terms_accepted?: boolean | null
+          terms_accepted_at?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string | null
+          dark_mode?: boolean | null
+          email?: string | null
           full_name?: string
           id?: string
           language?: string | null
+          notifications_enabled?: boolean | null
           role?: string
+          terms_accepted?: boolean | null
+          terms_accepted_at?: string | null
         }
         Relationships: []
       }
@@ -583,6 +598,15 @@ export type Database = {
           image_url: string | null
           name: string
           rules: string | null
+        }[]
+      }
+      get_current_stay: {
+        Args: { user_id: string }
+        Returns: {
+          villa_number: string
+          check_in: string
+          check_out: string
+          status: string
         }[]
       }
       get_recommendation_avg_rating: {

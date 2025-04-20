@@ -1,94 +1,95 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+ 
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --ring: 222.2 84% 4.9%;
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+ 
+  --border: 216 34% 17%;
+  --input: 216 34% 17%;
+
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --ring: 217.2 32.6% 17.5%;
+
+  --radius: 0.5rem;
+}
+
 @layer base {
-  :root {
-    --background: 260 10% 14%;
-    --foreground: 0 0% 100%;
-
-    --card: 260 10% 18%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 260 10% 14%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 47 68% 52%;
-    --primary-foreground: 0 0% 0%;
-
-    --secondary: 260 14% 96%;
-    --secondary-foreground: 260 10% 14%;
-
-    --muted: 260 10% 25%;
-    --muted-foreground: 260 5% 75%;
-
-    --accent: 260 14% 96%;
-    --accent-foreground: 260 10% 14%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 260 10% 25%;
-    --input: 260 10% 25%;
-    --ring: 47 68% 52%;
-
-    --radius: 1rem;
-  }
-
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-darcare-navy text-darcare-white font-sans;
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 }
 
 @layer components {
-  .luxury-card {
-    @apply bg-card rounded-2xl border border-darcare-gold/20 shadow-lg backdrop-blur-sm p-5;
-  }
-  
-  .section-title {
-    @apply font-serif text-2xl font-medium text-darcare-gold mb-4;
-  }
-
   .nav-icon {
-    @apply flex flex-col items-center justify-center text-darcare-beige/70 hover:text-darcare-gold transition-colors;
+    @apply flex flex-col items-center justify-center;
   }
 
   .nav-icon.active {
     @apply text-darcare-gold;
   }
 
-  .button-primary {
-    @apply bg-darcare-gold text-darcare-navy rounded-full px-6 py-3 font-medium flex items-center justify-center hover:opacity-90 transition-opacity;
-  }
-
-  .button-secondary {
-    @apply bg-transparent border border-darcare-gold/50 text-darcare-gold rounded-full px-6 py-3 font-medium flex items-center justify-center hover:bg-darcare-gold/10 transition-colors;
-  }
-
-  .input-luxury {
-    @apply rounded-full bg-muted/50 border border-darcare-gold/20 px-5 py-3 text-darcare-white placeholder:text-darcare-beige/50 focus:outline-none focus:ring-2 focus:ring-darcare-gold/50;
-  }
-  
-  .status-badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
-  }
-  
-  .status-badge-pending {
-    @apply bg-yellow-500/20 text-yellow-300;
-  }
-  
-  .status-badge-active {
-    @apply bg-green-500/20 text-green-300;
-  }
-  
-  .status-badge-completed {
-    @apply bg-blue-500/20 text-blue-300;
+  .luxury-card {
+    @apply rounded-lg border border-darcare-gold/20 bg-darcare-navy/50 p-4 backdrop-blur-sm;
   }
 }
