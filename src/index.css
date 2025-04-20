@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,6 +79,14 @@
       "rlig" 1,
       "calt" 1;
   }
+  
+  h1, h2, h3, h4 {
+    @apply font-serif text-darcare-gold;
+  }
+  
+  p {
+    @apply text-darcare-beige leading-relaxed;
+  }
 }
 
 @layer components {
@@ -90,6 +99,61 @@
   }
 
   .luxury-card {
-    @apply rounded-lg border border-darcare-gold/20 bg-darcare-navy/50 p-4 backdrop-blur-sm;
+    @apply rounded-lg border border-darcare-gold/20 bg-darcare-navy/50 p-6 backdrop-blur-sm shadow-md;
   }
+  
+  .section-title {
+    @apply font-serif text-xl text-darcare-gold mb-4;
+  }
+  
+  .text-content {
+    @apply text-darcare-beige leading-relaxed;
+  }
+  
+  .button-primary {
+    @apply bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 rounded-md px-4 py-2 transition-colors;
+  }
+  
+  .button-secondary {
+    @apply border border-darcare-gold/30 text-darcare-gold hover:bg-darcare-gold/10 rounded-md px-4 py-2 transition-colors;
+  }
+  
+  .input-field {
+    @apply bg-darcare-navy/50 border border-darcare-gold/20 rounded-md px-4 py-2 text-darcare-beige;
+  }
+  
+  .card-header {
+    @apply flex items-center justify-between pb-4 border-b border-darcare-gold/10 mb-4;
+  }
+  
+  .card-body {
+    @apply space-y-4;
+  }
+  
+  .card-footer {
+    @apply pt-4 flex justify-end border-t border-darcare-gold/10 mt-4;
+  }
+  
+  .animation-fade-in {
+    @apply animate-[fadeIn_0.3s_ease-out];
+  }
+  
+  .animation-slide-up {
+    @apply animate-[slideUp_0.3s_ease-out];
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideRight {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }

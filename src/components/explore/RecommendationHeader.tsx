@@ -23,9 +23,11 @@ export const RecommendationHeader = ({
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
   // Ensure category is one of the valid categories
-  const displayCategory = recommendation.category && RECOMMENDATION_CATEGORIES.includes(recommendation.category)
-    ? recommendation.category
-    : 'other';
+  const displayCategory = recommendation.category && 
+    (typeof recommendation.category === 'string') && 
+    RECOMMENDATION_CATEGORIES.includes(recommendation.category as any)
+      ? recommendation.category
+      : 'other';
   
   return (
     <div className="space-y-4">
@@ -39,27 +41,35 @@ export const RecommendationHeader = ({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy text-darcare-gold"
+          className="absolute top-4 right-4 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy text-darcare-gold"
           onClick={onToggleFavorite}
         >
           <Heart
-            size={18}
+            size={20}
             className={recommendation.is_favorite ? "fill-current" : ""}
           />
         </Button>
       </div>
       
-      <div className="flex items-center gap-2 px-4">
-        <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
-        </Badge>
-        {recommendation.rating && recommendation.rating > 0 && (
-          <div className="flex items-center gap-1 text-darcare-gold">
-            <Star size={16} className="fill-current" />
-            <span>{recommendation.rating.toFixed(1)}</span>
-            {recommendation.review_count ? ` (${recommendation.review_count})` : ''}
-          </div>
-        )}
+      <div className="flex flex-col gap-2 px-6">
+        <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
+        
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
+            {t(`explore.categories.${typeof displayCategory === 'string' ? displayCategory.toLowerCase() : 'other'}`)}
+          </Badge>
+          {recommendation.rating && recommendation.rating > 0 && (
+            <div className="flex items-center gap-1 text-darcare-gold">
+              <Star size={16} className="fill-current" />
+              <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
+              {recommendation.review_count ? (
+                <span className="text-darcare-beige/70 text-sm">
+                  ({recommendation.review_count})
+                </span>
+              ) : null}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ export interface Recommendation {
   id: string;
   title: string;
   description: string | null;
-  category: RecommendationCategory | null;
+  category: RecommendationCategory | string | null;
   location: string | null;
   latitude: number | null;
   longitude: number | null;

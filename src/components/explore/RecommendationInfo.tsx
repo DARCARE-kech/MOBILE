@@ -15,34 +15,40 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
   const { t } = useTranslation();
   
   // Ensure category is one of the valid categories
-  const displayCategory = recommendation.category && RECOMMENDATION_CATEGORIES.includes(recommendation.category)
-    ? recommendation.category
-    : 'other';
+  const displayCategory = recommendation.category && 
+    (typeof recommendation.category === 'string') && 
+    RECOMMENDATION_CATEGORIES.includes(recommendation.category as any)
+      ? recommendation.category
+      : 'other';
   
   return (
-    <div className="space-y-4 p-4">
-      <div className="flex items-center gap-2">
-        <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20">
-          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
+    <div className="space-y-6 p-6">
+      <div className="flex items-center gap-3">
+        <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
+          {t(`explore.categories.${typeof displayCategory === 'string' ? displayCategory.toLowerCase() : 'other'}`)}
         </Badge>
         {recommendation.rating && recommendation.rating > 0 && (
           <div className="flex items-center gap-1 text-darcare-gold">
             <Star size={16} className="fill-current" />
-            <span>{recommendation.rating.toFixed(1)}</span>
-            {recommendation.review_count ? ` (${recommendation.review_count})` : ''}
+            <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
+            {recommendation.review_count ? (
+              <span className="text-darcare-beige/70 text-sm">
+                ({recommendation.review_count})
+              </span>
+            ) : null}
           </div>
         )}
       </div>
 
       {recommendation.description && (
-        <p className="text-darcare-white mt-2">
+        <p className="text-darcare-white leading-relaxed">
           {recommendation.description}
         </p>
       )}
       
       {recommendation.location && (
-        <div className="flex items-center gap-2 text-darcare-beige mt-2">
-          <MapPin size={16} className="text-darcare-gold" />
+        <div className="flex items-center gap-2 text-darcare-beige">
+          <MapPin size={16} className="text-darcare-gold flex-shrink-0" />
           <span>{recommendation.location}</span>
         </div>
       )}
