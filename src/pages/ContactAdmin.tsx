@@ -28,7 +28,7 @@ const ContactAdmin: React.FC = () => {
     <div className="min-h-screen bg-darcare-navy">
       <MainHeader title="Contact Admin" onBack={() => navigate('/chatbot')} />
       
-      <div className="p-4 pt-16 pb-24">
+      <div className="p-4 pt-20 pb-24">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Input
