@@ -52,7 +52,7 @@ const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay }) => {
           </span>
           <button 
             className="text-darcare-gold flex items-center gap-1 hover:text-darcare-gold/80 transition-colors"
-            onClick={() => navigate(`/stays/${currentStay.id}`)}
+            onClick={() => navigate("/stays/details")}
           >
             View Details <ChevronRight size={16} />
           </button>

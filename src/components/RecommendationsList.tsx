@@ -89,16 +89,17 @@ const RecommendationsList = () => {
           View All <ChevronRight size={16} />
         </button>
       </div>
-
-      <ScrollArea className="w-full">
-        <div className="flex gap-4 pb-4">
+      {/* Horizontal scroll area with flex gap and padding */}
+      <ScrollArea type="auto" className="w-full">
+        <div className="flex gap-4 pb-4 px-1 overflow-x-auto">
           {recommendations?.map((item) => (
-            <RecommendationCard 
-              key={item.id} 
-              item={item} 
-              onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
-              onToggleFavorite={handleToggleFavorite}
-            />
+            <div key={item.id} className="min-w-[270px] max-w-xs flex-shrink-0">
+              <RecommendationCard 
+                item={item} 
+                onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
+                onToggleFavorite={handleToggleFavorite}
+              />
+            </div>
           ))}
         </div>
       </ScrollArea>
