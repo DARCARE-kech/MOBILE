@@ -35,10 +35,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
@@ -54,7 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -97,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setUserProfile(data);
+      navigate('/home');
     } catch (error) {
       console.error("Error fetching user profile:", error);
       toast({
@@ -126,6 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Success",
         description: "Account created successfully!",
       });
+      navigate('/home');
     } catch (error: any) {
       console.error("Error signing up:", error);
       toast({
@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message || "Failed to create account",
         variant: "destructive",
       });
-      throw error; // Re-throw to handle in component
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -153,6 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Welcome back!",
         description: "Successfully signed in",
       });
+      navigate('/home');
     } catch (error: any) {
       console.error("Error signing in:", error);
       toast({
@@ -160,7 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message || "Failed to sign in",
         variant: "destructive",
       });
-      throw error; // Re-throw to handle in component
+      throw error;
     } finally {
       setIsLoading(false);
     }
