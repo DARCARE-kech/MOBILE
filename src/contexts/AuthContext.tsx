@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -125,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Success",
         description: "Account created successfully!",
       });
-      navigate('/home');
+      // Let the auth state change handler handle the navigation
     } catch (error: any) {
       console.error("Error signing up:", error);
       toast({
@@ -153,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Welcome back!",
         description: "Successfully signed in",
       });
-      navigate('/home');
+      // Let the auth state change handler handle the navigation
     } catch (error: any) {
       console.error("Error signing in:", error);
       toast({
@@ -172,6 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      navigate('/auth');
     } catch (error: any) {
       console.error("Error signing out:", error);
       toast({

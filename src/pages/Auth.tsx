@@ -35,10 +35,10 @@ const Auth = () => {
     try {
       if (isLogin) {
         await signIn(email, password);
-        // No need to call navigate here (done in useAuth)
+        // Auth context will handle navigation
       } else {
         await signUp(email, password, name);
-        // No need to call navigate here (done in useAuth)
+        // Auth context will handle navigation
       }
     } catch (error) {
       // handled in context
