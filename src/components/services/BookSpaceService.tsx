@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { CalendarClock, PenLine, Send, Info } from 'lucide-react';
-// Remove ServiceHeader import, use a custom header below
 import IconButton from '@/components/services/IconButton';
 import { Form } from '@/components/ui/form';
 import { useSpaceBooking } from '@/hooks/useSpaceBooking';
@@ -15,6 +14,7 @@ import { BookingSubmitButton } from './space-booking/BookingSubmitButton';
 import { PeopleCounter } from '@/components/space-booking/PeopleCounter';
 import BottomNavigation from '@/components/BottomNavigation';
 import { ArrowLeft } from "lucide-react";
+import { getFallbackImage } from '@/utils/imageUtils';
 
 const BookSpaceService = () => {
   const navigate = useNavigate();
@@ -98,13 +98,13 @@ const BookSpaceService = () => {
         <div className="bg-darcare-navy border border-darcare-gold/20 rounded-xl overflow-hidden">
           <div className="w-full aspect-[16/9] bg-darcare-navy/80">
             <img
-              src={selectedSpace.image_url || '/placeholder.svg'}
+              src={selectedSpace.image_url || getFallbackImage(selectedSpace.name, 0)}
               alt={selectedSpace.name}
               className="w-full h-full object-cover rounded-b-none rounded-t-xl transition-all"
               style={{ minHeight: 160, maxHeight: 320 }}
-              onError={e => {
+              onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = '/placeholder.svg';
+                target.src = getFallbackImage(selectedSpace.name, 0);
               }}
             />
           </div>
@@ -155,11 +155,11 @@ const BookSpaceService = () => {
           </form>
         </Form>
       </div>
-      {/* Fixed Bottom Navigation */}
+      
+      {/* Fixed Bottom Navigation - Ensuring it's visible at all times */}
       <BottomNavigation activeTab="services" />
     </div>
   );
 };
 
 export default BookSpaceService;
-
