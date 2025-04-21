@@ -33,10 +33,33 @@ import HelpSupportPage from "./pages/profile/HelpSupportPage";
 import AboutPage from "./pages/profile/AboutPage";
 import ChangePassword from "./pages/profile/ChangePassword";
 import "./i18n"; // Ensure i18n is initialized before any components
+import { useAuth } from "@/contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Auth route that redirects to home if logged in
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
+  
+  if (user) {
+    return <Navigate to="/home" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AppRoutes = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [isOnboarded, setIsOnboarded] = useState(false);
 
@@ -58,6 +81,53 @@ const App = () => {
     setIsOnboarded(true);
   };
 
+  if (showSplash) {
+    return <SplashScreen />;
+  }
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          !isOnboarded ? (
+            <Onboarding onComplete={completeOnboarding} />
+          ) : (
+            <Navigate to="/auth" replace />
+          )
+        }
+      />
+      <Route path="/onboarding" element={<Onboarding onComplete={completeOnboarding} />} />
+      <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
+      
+      {/* Protected routes */}
+      <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+      <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+      <Route path="/services/spaces" element={<ProtectedRoute><SpacesListPage /></ProtectedRoute>} />
+      <Route path="/services/space/:id?" element={<ProtectedRoute><BookSpaceService /></ProtectedRoute>} />
+      <Route path="/services/:id" element={<ProtectedRoute><ServiceDetail /></ProtectedRoute>} />
+      <Route path="/services/requests/:id" element={<ProtectedRoute><RequestDetailPage /></ProtectedRoute>} />
+      <Route path="/services/cart" element={<ProtectedRoute><CartScreen /></ProtectedRoute>} />
+      <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+      <Route path="/chatbot" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
+      <Route path="/chat-history" element={<ProtectedRoute><ChatHistory /></ProtectedRoute>} />
+      <Route path="/contact-admin" element={<ProtectedRoute><ContactAdmin /></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/profile/edit" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+      <Route path="/profile/privacy" element={<ProtectedRoute><PrivacySecurityPage /></ProtectedRoute>} />
+      <Route path="/profile/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+      <Route path="/profile/help" element={<ProtectedRoute><HelpSupportPage /></ProtectedRoute>} />
+      <Route path="/profile/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
+      <Route path="/explore/recommendations/:id" element={<ProtectedRoute><RecommendationDetail /></ProtectedRoute>} />
+      <Route path="/explore/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+      <Route path="/stays/details" element={<ProtectedRoute><StayDetailsPage /></ProtectedRoute>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -66,42 +136,7 @@ const App = () => {
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    !isOnboarded ? (
-                      <Onboarding onComplete={completeOnboarding} />
-                    ) : (
-                      <Navigate to="/auth" replace />
-                    )
-                  }
-                />
-                <Route path="/onboarding" element={<Onboarding onComplete={completeOnboarding} />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/services/spaces" element={<SpacesListPage />} />
-                <Route path="/services/space/:id?" element={<BookSpaceService />} />
-                <Route path="/services/:id" element={<ServiceDetail />} />
-                <Route path="/services/requests/:id" element={<RequestDetailPage />} />
-                <Route path="/services/cart" element={<CartScreen />} />
-                <Route path="/explore" element={<Explore />} />
-                <Route path="/chatbot" element={<Chatbot />} />
-                <Route path="/chat-history" element={<ChatHistory />} />
-                <Route path="/contact-admin" element={<ContactAdmin />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/profile/edit" element={<EditProfile />} />
-                <Route path="/profile/privacy" element={<PrivacySecurityPage />} />
-                <Route path="/profile/change-password" element={<ChangePassword />} />
-                <Route path="/profile/help" element={<HelpSupportPage />} />
-                <Route path="/profile/about" element={<AboutPage />} />
-                <Route path="/explore/recommendations/:id" element={<RecommendationDetail />} />
-                <Route path="/explore/favorites" element={<FavoritesPage />} />
-                <Route path="/stays/details" element={<StayDetailsPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <AppRoutes />
             </TooltipProvider>
           </LanguageProvider>
         </AuthProvider>

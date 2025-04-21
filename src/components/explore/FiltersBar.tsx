@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
+import { RECOMMENDATION_CATEGORIES } from '@/utils/recommendationCategories';
 
 interface FiltersBarProps {
   selectedCategory: string | null;
@@ -27,14 +28,6 @@ export const FiltersBar = ({
 }: FiltersBarProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const { t } = useTranslation();
-  
-  const categories = [
-    { id: 'restaurant', label: t('explore.categories.restaurant') },
-    { id: 'attraction', label: t('explore.categories.attraction') },
-    { id: 'shopping', label: t('explore.categories.shopping') },
-    { id: 'activities', label: t('explore.categories.activities') },
-    { id: 'events', label: t('explore.categories.events') },
-  ];
 
   return (
     <div className="space-y-3">
@@ -73,20 +66,20 @@ export const FiltersBar = ({
         <div className="pt-3 border-t border-darcare-gold/20">
           <h3 className="text-darcare-beige mb-2">{t('explore.categories')}</h3>
           <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
+            {RECOMMENDATION_CATEGORIES.map((category) => (
               <Badge
-                key={category.id}
+                key={category}
                 variant="outline"
                 className={`cursor-pointer border-darcare-gold/30 hover:border-darcare-gold transition-colors ${
-                  selectedCategory === category.id 
+                  selectedCategory === category 
                     ? 'bg-darcare-gold/20 text-darcare-gold' 
                     : 'bg-transparent text-darcare-beige'
                 }`}
                 onClick={() => onCategoryChange(
-                  selectedCategory === category.id ? null : category.id
+                  selectedCategory === category ? null : category
                 )}
               >
-                {category.label}
+                {t(`explore.categories.${category.toLowerCase()}`)}
               </Badge>
             ))}
           </div>

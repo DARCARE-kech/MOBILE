@@ -1,11 +1,11 @@
 
 export const RECOMMENDATION_CATEGORIES = [
-  'dining',
-  'wellness',
-  'entertainment',
-  'shopping',
-  'culture',
-  'other'
+  'restaurant',
+  'spa',
+  'activity',
+  'attraction',
+  'experience',
+  'excursion'
 ] as const;
 
 export type RecommendationCategory = typeof RECOMMENDATION_CATEGORIES[number];

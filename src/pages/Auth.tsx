@@ -1,9 +1,10 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,8 +12,16 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const { signIn, signUp, isLoading } = useAuth();
+  const { signIn, signUp, isLoading, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Check if user is already logged in, redirect to home
+  useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,15 +35,21 @@ const Auth = () => {
       return;
     }
 
-    if (isLogin) {
-      await signIn(email, password);
-    } else {
-      await signUp(email, password, name);
+    try {
+      if (isLogin) {
+        await signIn(email, password);
+        navigate('/home');
+      } else {
+        await signUp(email, password, name);
+        navigate('/home');
+      }
+    } catch (error) {
+      // Error is handled in the Auth context
     }
   };
 
   return (
-    <div className="min-h-screen bg-darcare-navy flex flex-col px-6 py-12">
+    <div className="min-h-screen bg-darcare-navy flex flex-col px-6 py-12 bg-gradient-to-b from-darcare-navy to-[#1A1F2C]">
       <div className="mb-10 flex justify-center">
         <Logo color="gold" size="md" />
       </div>
@@ -50,63 +65,63 @@ const Auth = () => {
           }
         </p>
 
-        <div className="flex rounded-full overflow-hidden bg-muted/30 p-1 mb-8">
+        <div className="flex rounded-full overflow-hidden bg-muted/30 p-1 mb-8 shadow-inner">
           <button
-            className={`flex-1 py-2 rounded-full ${
-              isLogin ? "bg-darcare-gold text-darcare-navy" : "text-darcare-beige/70"
-            } transition-colors text-sm font-medium`}
+            className={`flex-1 py-2.5 rounded-full ${
+              isLogin ? "bg-darcare-gold text-darcare-navy font-medium" : "text-darcare-beige/70 hover:text-darcare-beige"
+            } transition-all duration-300 text-sm`}
             onClick={() => setIsLogin(true)}
           >
             Sign In
           </button>
           <button
-            className={`flex-1 py-2 rounded-full ${
-              !isLogin ? "bg-darcare-gold text-darcare-navy" : "text-darcare-beige/70"
-            } transition-colors text-sm font-medium`}
+            className={`flex-1 py-2.5 rounded-full ${
+              !isLogin ? "bg-darcare-gold text-darcare-navy font-medium" : "text-darcare-beige/70 hover:text-darcare-beige"
+            } transition-all duration-300 text-sm`}
             onClick={() => setIsLogin(false)}
           >
             Sign Up
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {!isLogin && (
-            <div className="relative">
-              <User size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50" />
+            <div className="relative group">
+              <User size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50 group-focus-within:text-darcare-gold transition-colors" />
               <input
                 type="text"
                 placeholder="Full Name"
-                className="input-luxury w-full pl-12"
+                className="input-luxury w-full pl-12 border-darcare-gold/30 focus:border-darcare-gold transition-all duration-300 bg-darcare-navy/50 backdrop-blur-sm"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
           )}
 
-          <div className="relative">
-            <Mail size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50" />
+          <div className="relative group">
+            <Mail size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50 group-focus-within:text-darcare-gold transition-colors" />
             <input
               type="email"
               placeholder="Email Address"
-              className="input-luxury w-full pl-12"
+              className="input-luxury w-full pl-12 border-darcare-gold/30 focus:border-darcare-gold transition-all duration-300 bg-darcare-navy/50 backdrop-blur-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className="relative">
-            <Lock size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50" />
+          <div className="relative group">
+            <Lock size={18} className="absolute left-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50 group-focus-within:text-darcare-gold transition-colors" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className="input-luxury w-full pl-12 pr-12"
+              className="input-luxury w-full pl-12 pr-12 border-darcare-gold/30 focus:border-darcare-gold transition-all duration-300 bg-darcare-navy/50 backdrop-blur-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50 hover:text-darcare-beige"
+              className="absolute right-5 top-1/2 transform -translate-y-1/2 text-darcare-beige/50 hover:text-darcare-gold transition-colors"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -114,7 +129,7 @@ const Auth = () => {
 
           {isLogin && (
             <div className="text-right">
-              <button type="button" className="text-sm text-darcare-beige/70 hover:text-darcare-gold">
+              <button type="button" className="text-sm text-darcare-beige/70 hover:text-darcare-gold transition-colors">
                 Forgot Password?
               </button>
             </div>
@@ -122,7 +137,7 @@ const Auth = () => {
 
           <button 
             type="submit" 
-            className="button-primary w-full mt-6 relative"
+            className="button-primary w-full mt-8 relative py-3 bg-gradient-to-r from-darcare-gold to-[#D4AF37] hover:from-[#D4AF37] hover:to-darcare-gold transition-all duration-300 shadow-lg"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -139,7 +154,7 @@ const Auth = () => {
           </button>
 
           {isLogin && (
-            <div className="text-center mt-4">
+            <div className="text-center mt-6">
               <p className="text-sm text-darcare-beige/70">
                 For testing, use: <span className="text-darcare-gold">ourhejji.lina@gmail.com</span> / <span className="text-darcare-gold">linalina</span>
               </p>
@@ -147,11 +162,11 @@ const Auth = () => {
           )}
         </form>
 
-        <div className="mt-8 text-center text-darcare-beige/50 text-sm">
+        <div className="mt-10 text-center text-darcare-beige/50 text-sm">
           By continuing, you agree to our 
-          <button className="text-darcare-gold ml-1 mr-1">Terms of Service</button>
+          <button className="text-darcare-gold ml-1 mr-1 hover:underline">Terms of Service</button>
           and
-          <button className="text-darcare-gold ml-1">Privacy Policy</button>
+          <button className="text-darcare-gold ml-1 hover:underline">Privacy Policy</button>
         </div>
       </div>
     </div>
