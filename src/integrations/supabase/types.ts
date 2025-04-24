@@ -411,6 +411,7 @@ export type Database = {
       }
       shop_products: {
         Row: {
+          category: string | null
           created_at: string | null
           description: string | null
           id: string
@@ -419,6 +420,7 @@ export type Database = {
           price: number
         }
         Insert: {
+          category?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
@@ -427,6 +429,7 @@ export type Database = {
           price: number
         }
         Update: {
+          category?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
@@ -613,6 +616,7 @@ export type Database = {
       get_shop_products: {
         Args: Record<PropertyKey, never>
         Returns: {
+          category: string | null
           created_at: string | null
           description: string | null
           id: string
