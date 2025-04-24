@@ -5,7 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
 import ProductCard from './ProductCard';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { ShopProduct } from '@/integrations/supabase/rpc';
 
+// Update the Product interface to match the data from Supabase
 export interface Product {
   id: string;
   name: string;
@@ -13,7 +15,7 @@ export interface Product {
   price: number;
   image_url?: string;
   category?: string;
-  in_stock: boolean;
+  in_stock?: boolean; // Make this optional since it's not in the database
 }
 
 export interface ProductsGridProps {
@@ -29,6 +31,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
 }) => {
   const { t } = useTranslation();
   
+  // Fix the type declaration for the query
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['shop-products', selectedCategory, searchQuery],
     queryFn: async () => {
@@ -46,7 +49,12 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
         const { data, error } = await query.order('name');
         
         if (error) throw error;
-        return data || [];
+        
+        // Map the database products to our Product interface
+        return (data || []).map(product => ({
+          ...product,
+          in_stock: true // Default to true since we don't have this field in the DB
+        }));
       } catch (error) {
         console.error('Error fetching products:', error);
         return [];
@@ -72,13 +80,18 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     );
   }
 
+  // Create a wrapper function to adapt between different function signatures
+  const handleAddToCart = (product: ShopProduct) => {
+    onAddToCart(product.id, 1);
+  };
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
       {products.map((product) => (
         <ProductCard
           key={product.id}
-          product={product}
-          onAddToCart={onAddToCart}
+          product={product as ShopProduct}
+          onAddToCart={handleAddToCart}
         />
       ))}
     </div>

@@ -9,6 +9,7 @@ import ShopFilters from '@/components/shop/ShopFilters';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
+import type { ShopProduct } from '@/integrations/supabase/rpc';
 
 const ShopService = () => {
   const navigate = useNavigate();
@@ -44,6 +45,15 @@ const ShopService = () => {
     return Array.from(uniqueCategories);
   }, [products]);
 
+  // Create a wrapper function to adapt between different function signatures
+  const handleAddToCart = (productId: string, quantity: number) => {
+    // Find the product by ID
+    const product = products?.find(p => p.id === productId);
+    if (product) {
+      addToCart(product as ShopProduct);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-darcare-navy pb-20">
       <MainHeader 
@@ -62,7 +72,7 @@ const ShopService = () => {
         <ProductsGrid
           selectedCategory={selectedCategory}
           searchQuery={searchQuery}
-          onAddToCart={addToCart}
+          onAddToCart={handleAddToCart}
         />
       </div>
       

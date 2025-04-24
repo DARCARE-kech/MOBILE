@@ -103,7 +103,7 @@ export const RecommendationsList = ({
       {recommendations?.map((item) => (
         <RecommendationCard
           key={item.id}
-          item={item}
+          recommendation={item}
           onToggleFavorite={handleToggleFavorite}
           onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
         />
