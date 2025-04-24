@@ -3,9 +3,6 @@ import React from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
-  createRoutesFromElements,
-  Route,
-  BrowserRouter,
 } from "react-router-dom";
 import "./index.css";
 import Home from "@/pages/Home";
@@ -80,11 +77,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <React.StrictMode>
-      <BrowserRouter>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </React.StrictMode>
   );
 }
