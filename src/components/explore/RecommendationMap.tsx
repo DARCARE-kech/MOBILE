@@ -1,6 +1,8 @@
 
 import { useEffect, useRef } from "react";
 import type { Recommendation } from "@/types/recommendation";
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { useTranslation } from "react-i18next";
 
 interface RecommendationMapProps {
@@ -14,73 +16,28 @@ export const RecommendationMap = ({ recommendation }: RecommendationMapProps) =>
   useEffect(() => {
     if (!mapRef.current || !recommendation.latitude || !recommendation.longitude) return;
 
-    // Load Google Maps API script if it doesn't exist
-    if (!window.google || !window.google.maps) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBhXbK0z5WdN-3FH6QeHXQ6WPgQkm0QWi4&callback=initMap`;
-      script.async = true;
-      script.defer = true;
-      window.initMap = () => {
-        initializeMap();
-      };
-      document.head.appendChild(script);
-    } else {
-      initializeMap();
-    }
+    // Initialize the map
+    const map = L.map(mapRef.current).setView(
+      [recommendation.latitude, recommendation.longitude],
+      15
+    );
 
-    function initializeMap() {
-      if (!mapRef.current || !recommendation.latitude || !recommendation.longitude) return;
-      
-      const mapOptions = {
-        center: { 
-          lat: recommendation.latitude, 
-          lng: recommendation.longitude 
-        },
-        zoom: 15,
-        mapId: 'DEMO_MAP_ID',
-        styles: [
-          {
-            "elementType": "geometry",
-            "stylers": [{ "color": "#242f3e" }]
-          },
-          {
-            "elementType": "labels.text.stroke",
-            "stylers": [{ "color": "#242f3e" }]
-          },
-          {
-            "elementType": "labels.text.fill",
-            "stylers": [{ "color": "#746855" }]
-          },
-          {
-            "featureType": "water",
-            "elementType": "geometry",
-            "stylers": [{ "color": "#17263c" }]
-          },
-          {
-            "featureType": "water",
-            "elementType": "labels.text.fill",
-            "stylers": [{ "color": "#515c6d" }]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text.fill",
-            "stylers": [{ "color": "#d59563" }]
-          }
-        ]
-      };
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-      const map = new window.google.maps.Map(mapRef.current, mapOptions);
+    // Add a marker at the recommendation location
+    L.marker([recommendation.latitude, recommendation.longitude])
+      .addTo(map)
+      .bindPopup(recommendation.title);
 
-      // Add a marker
-      new window.google.maps.Marker({
-        position: { lat: recommendation.latitude, lng: recommendation.longitude },
-        map: map,
-        title: recommendation.title
-      });
-    }
+    // Add zoom controls
+    map.zoomControl.setPosition('topright');
 
+    // Cleanup
     return () => {
-      // Clean up any Google Maps resources if needed
+      map.remove();
     };
   }, [recommendation.latitude, recommendation.longitude, recommendation.title]);
 

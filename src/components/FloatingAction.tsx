@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Plus, DoorOpen, Wrench, MessageSquare, PhoneCall, X } from "lucide-react";
+import { Plus, DoorOpen, Wrench, MessageCircle, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +16,13 @@ const FloatingAction: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const openWhatsApp = () => {
+    const phoneNumber = "212612345678"; // Replace with actual admin WhatsApp number
+    const message = "Hello, I need assistance with my stay at the condominium.";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   const quickActions: QuickAction[] = [
     {
       id: "space",
@@ -30,16 +37,10 @@ const FloatingAction: React.FC = () => {
       action: () => navigate("/services"),
     },
     {
-      id: "chatbot",
-      label: t('chatbot.askChatbot'),
-      icon: <MessageSquare size={20} />,
-      action: () => navigate("/chatbot"),
-    },
-    {
-      id: "contact",
-      label: t('chatbot.contactAdmin'),
-      icon: <PhoneCall size={20} />,
-      action: () => navigate("/contact-admin"),
+      id: "whatsapp",
+      label: t('common.chatWithUs'),
+      icon: <MessageCircle size={20} />,
+      action: openWhatsApp,
     },
   ];
 
