@@ -1,10 +1,10 @@
+
 import React from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import Authentication from "@/pages/Authentication";
 import Home from "@/pages/Home";
 import Explore from "@/pages/Explore";
 import Services from "@/pages/Services";
@@ -14,18 +14,12 @@ import ServiceDetail from "@/components/services/ServiceDetail";
 import SpacesListPage from "@/pages/services/SpacesListPage";
 import BookSpaceService from "@/pages/services/BookSpaceService";
 import ShopService from "@/pages/services/ShopService";
-import ServiceRequestDetail from "@/pages/ServiceRequestDetail";
-import NewServiceRequest from "@/pages/NewServiceRequest";
-import ShopCart from "@/pages/ShopCart";
+import CartScreen from "@/pages/services/CartScreen";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
-  },
-  {
-    path: "/auth",
-    element: <Authentication />,
   },
   {
     path: "/explore",
@@ -53,15 +47,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/services/cart",
-    element: <ShopCart />,
-  },
-  {
-    path: "/services/requests/:id",
-    element: <ServiceRequestDetail />,
-  },
-  {
-    path: "/services/requests/new",
-    element: <NewServiceRequest />,
+    element: <CartScreen />,
   },
   {
     path: "/notifications",
