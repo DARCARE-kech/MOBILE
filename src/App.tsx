@@ -18,6 +18,11 @@ import CartScreen from "@/pages/services/CartScreen";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Auth from "@/pages/Auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import RecommendationDetail from "@/pages/explore/RecommendationDetail";
+import Chatbot from "@/pages/Chatbot";
+import ContactAdmin from "@/pages/ContactAdmin";
+import Favorites from "@/pages/explore/Favorites";
+import RequestDetailPage from "@/pages/services/RequestDetailPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -41,12 +46,24 @@ const router = createBrowserRouter([
     element: <Explore />,
   },
   {
+    path: "/explore/recommendations/:id",
+    element: <RecommendationDetail />,
+  },
+  {
+    path: "/explore/favorites",
+    element: <Favorites />,
+  },
+  {
     path: "/services",
     element: <Services />,
   },
   {
     path: "/services/:id",
     element: <ServiceDetail />,
+  },
+  {
+    path: "/services/request/:id",
+    element: <RequestDetailPage />,
   },
   {
     path: "/services/space/:id",
@@ -75,6 +92,14 @@ const router = createBrowserRouter([
   {
     path: "/services/laundry",
     element: <ServiceDetail />,
+  },
+  {
+    path: "/chatbot",
+    element: <Chatbot />,
+  },
+  {
+    path: "/contact-admin",
+    element: <ContactAdmin />,
   },
 ]);
 

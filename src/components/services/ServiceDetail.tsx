@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -9,7 +10,6 @@ import BookSpaceService from '@/pages/services/BookSpaceService';
 import ShopService from '@/pages/services/ShopService';
 import LaundryService from '@/pages/services/LaundryService';
 import { Loader2 } from 'lucide-react';
-import { getFallbackImage } from '@/utils/imageUtils';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={t('services.bookSpace')} onBack={() => navigate('/services')} />
-        <BookSpaceService />
+        <div className="pt-16">
+          <BookSpaceService />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -75,7 +77,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
-        <LaundryService />
+        <div className="pt-16">
+          <LaundryService />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -83,7 +87,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
-        <CleaningService />
+        <div className="pt-16">
+          <CleaningService />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -91,7 +97,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
-        <MaintenanceService />
+        <div className="pt-16">
+          <MaintenanceService />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -99,7 +107,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
-        <TransportService />
+        <div className="pt-16">
+          <TransportService />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );

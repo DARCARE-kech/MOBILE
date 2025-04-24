@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import BottomNavigation from "@/components/BottomNavigation";
-import { RecommendationHeader } from "@/components/explore/RecommendationHeader";
+import { RecommendationHeader } from "@/components/RecommendationHeader";
 import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
 import { RecommendationDetailSkeleton } from "@/components/explore/RecommendationDetailSkeleton";
 import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
@@ -14,7 +14,8 @@ const RecommendationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("info");
-
+  const { t } = useTranslation();
+  
   const {
     recommendation,
     isLoading,
