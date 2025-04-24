@@ -1,14 +1,6 @@
 
-import type { ShopProduct } from '@/integrations/supabase/rpc';
+import type { ShopProduct as SupabaseShopProduct } from '@/integrations/supabase/rpc';
 
-export interface ShopCartItem {
-  id: string;
-  quantity: number;
-  price_at_time: number;
-  shop_products: ShopProduct;
-}
-
-// Export ShopProduct interface if not already defined
 export interface ShopProduct {
   id: string;
   name: string;
@@ -16,4 +8,12 @@ export interface ShopProduct {
   price: number;
   image_url?: string;
   category?: string;
+  in_stock?: boolean;
+}
+
+export interface ShopCartItem {
+  id: string;
+  quantity: number;
+  price_at_time: number;
+  shop_products: ShopProduct;
 }
