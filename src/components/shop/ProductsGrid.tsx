@@ -23,26 +23,23 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   const { data: products, isLoading } = useQuery({
     queryKey: ['shop-products', selectedCategory, searchQuery],
     queryFn: async () => {
-      // Build the query step by step
-      let query = supabase
-        .from('shop_products')
-        .select('*');
+      // Build the query
+      const query = supabase.from('shop_products').select('*');
       
-      // Apply category filter if selected
+      // Apply filters
       if (selectedCategory && selectedCategory !== 'null') {
-        query = query.eq('category', selectedCategory);
+        query.eq('category', selectedCategory);
       }
       
-      // Apply search filter if provided
       if (searchQuery) {
-        query = query.ilike('name', `%${searchQuery}%`);
+        query.ilike('name', `%${searchQuery}%`);
       }
       
-      // Execute the query with ordering
+      // Execute query with ordering
       const { data, error } = await query.order('name');
       
       if (error) throw error;
-      return (data || []) as ShopProduct[];
+      return data as ShopProduct[];
     },
   });
 
