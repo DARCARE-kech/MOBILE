@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +7,7 @@ import MaintenanceService from '@/pages/services/MaintenanceService';
 import TransportService from '@/pages/services/TransportService';
 import BookSpaceService from '@/pages/services/BookSpaceService';
 import ShopService from '@/pages/services/ShopService';
+import LaundryService from '@/pages/services/LaundryService';
 import { Loader2 } from 'lucide-react';
 import { getFallbackImage } from '@/utils/imageUtils';
 import MainHeader from '@/components/MainHeader';
@@ -69,10 +69,17 @@ const ServiceDetail: React.FC = () => {
     return null;
   }
   
-  // Check service category and render appropriate component
-  const serviceNameLower = service.name.toLowerCase();
+  const serviceNameLower = service?.name.toLowerCase();
   
-  if (serviceNameLower.includes('cleaning')) {
+  if (serviceNameLower?.includes('laundry')) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <LaundryService />
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  } else if (serviceNameLower?.includes('cleaning')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
@@ -80,7 +87,7 @@ const ServiceDetail: React.FC = () => {
         <BottomNavigation activeTab="services" />
       </div>
     );
-  } else if (serviceNameLower.includes('maintenance')) {
+  } else if (serviceNameLower?.includes('maintenance')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
@@ -88,7 +95,7 @@ const ServiceDetail: React.FC = () => {
         <BottomNavigation activeTab="services" />
       </div>
     );
-  } else if (serviceNameLower.includes('transport')) {
+  } else if (serviceNameLower?.includes('transport')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
@@ -97,7 +104,6 @@ const ServiceDetail: React.FC = () => {
       </div>
     );
   } else {
-    // Default generic service view
     navigate('/services');
     return null;
   }
