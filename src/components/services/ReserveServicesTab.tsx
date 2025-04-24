@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ServiceBanner } from '@/components/services/ServiceBanner';
+import ServiceBanner from '@/components/services/ServiceBanner';
 import { Separator } from '@/components/ui/separator';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
@@ -77,11 +77,21 @@ const ReserveServicesTab: React.FC = () => {
         <h2 className="font-serif text-xl text-darcare-gold">{t('services.amenities')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {specialServices.map((service) => (
-            <ServiceBanner
+            <div 
               key={service.id}
-              service={service}
               onClick={() => handleServiceClick(service.id, service.name)}
-            />
+              className="cursor-pointer"
+            >
+              <ServiceBanner
+                imageUrl={service.image_url}
+                altText={service.name}
+                withGradient={true}
+              />
+              <div className="mt-2">
+                <h3 className="text-darcare-gold font-serif">{service.name}</h3>
+                <p className="text-darcare-beige text-sm">{service.description}</p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -94,11 +104,21 @@ const ReserveServicesTab: React.FC = () => {
           <h2 className="font-serif text-xl text-darcare-gold">{t(`services.categories.${category.toLowerCase()}`, category)}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {categoryServices.map((service: any) => (
-              <ServiceBanner
+              <div
                 key={service.id}
-                service={service}
                 onClick={() => handleServiceClick(service.id, service.name)}
-              />
+                className="cursor-pointer"
+              >
+                <ServiceBanner
+                  imageUrl={service.image_url || ''}
+                  altText={service.name}
+                  withGradient={true}
+                />
+                <div className="mt-2">
+                  <h3 className="text-darcare-gold font-serif">{service.name}</h3>
+                  <p className="text-darcare-beige text-sm">{service.description}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>

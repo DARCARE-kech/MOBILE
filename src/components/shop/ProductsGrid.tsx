@@ -6,6 +6,16 @@ import ProductCard from './ProductCard';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+export interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  image_url?: string;
+  category?: string;
+  in_stock: boolean;
+}
+
 export interface ProductsGridProps {
   selectedCategory: string | null;
   searchQuery?: string;
@@ -19,23 +29,28 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
 }) => {
   const { t } = useTranslation();
   
-  const { data: products, isLoading } = useQuery({
+  const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['shop-products', selectedCategory, searchQuery],
     queryFn: async () => {
-      let query = supabase.from('shop_products').select('*');
-      
-      if (selectedCategory) {
-        query = query.eq('category', selectedCategory);
+      try {
+        let query = supabase.from('shop_products').select('*');
+        
+        if (selectedCategory) {
+          query = query.eq('category', selectedCategory);
+        }
+        
+        if (searchQuery) {
+          query = query.ilike('name', `%${searchQuery}%`);
+        }
+        
+        const { data, error } = await query.order('name');
+        
+        if (error) throw error;
+        return data || [];
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
       }
-      
-      if (searchQuery) {
-        query = query.ilike('name', `%${searchQuery}%`);
-      }
-      
-      const { data, error } = await query.order('name');
-      
-      if (error) throw error;
-      return data || [];
     },
   });
 
