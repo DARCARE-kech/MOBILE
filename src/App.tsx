@@ -15,11 +15,21 @@ import SpacesListPage from "@/pages/services/SpacesListPage";
 import BookSpaceService from "@/pages/services/BookSpaceService";
 import ShopService from "@/pages/services/ShopService";
 import CartScreen from "@/pages/services/CartScreen";
+import { AuthProvider } from "@/contexts/AuthContext";
+import Auth from "@/pages/Auth";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+  },
+  {
+    path: "/auth",
+    element: <Auth />,
   },
   {
     path: "/explore",
@@ -66,7 +76,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </React.StrictMode>
   );
 }
