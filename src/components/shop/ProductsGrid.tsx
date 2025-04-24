@@ -23,14 +23,15 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   const { data: products, isLoading } = useQuery({
     queryKey: ['shop-products', selectedCategory, searchQuery],
     queryFn: async () => {
-      let query = supabase.from('shop_products').select('*');
+      // Create a typed query to avoid excessive type instantiation
+      const query = supabase.from('shop_products').select('*');
       
       if (selectedCategory && selectedCategory !== 'null') {
-        query = query.eq('category', selectedCategory);
+        query.eq('category', selectedCategory);
       }
       
       if (searchQuery) {
-        query = query.ilike('name', `%${searchQuery}%`);
+        query.ilike('name', `%${searchQuery}%`);
       }
       
       const { data, error } = await query.order('name');
