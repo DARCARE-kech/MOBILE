@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Heart, MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -13,19 +14,19 @@ import type { Recommendation } from "@/types/recommendation";
 import { isValidCategory } from "@/utils/recommendationCategories";
 
 interface RecommendationCardProps {
-  item: Recommendation;
+  recommendation: Recommendation;
   onSelect?: (id: string) => void;
   onToggleFavorite?: (id: string) => Promise<void> | void;
 }
 
-export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: RecommendationCardProps) => {
+export const RecommendationCard = ({ recommendation, onSelect, onToggleFavorite }: RecommendationCardProps) => {
   const [imageError, setImageError] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(item.is_favorite || false);
+  const [isFavorite, setIsFavorite] = useState(recommendation.is_favorite || false);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const fallbackImage = getFallbackImage(item.title, 0);
-  const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
+  const fallbackImage = getFallbackImage(recommendation.title, 0);
+  const imageSource = (!imageError && recommendation.image_url) ? recommendation.image_url : fallbackImage;
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -42,23 +43,23 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
 
     try {
       if (onToggleFavorite) {
-        await onToggleFavorite(item.id);
+        await onToggleFavorite(recommendation.id);
       } else {
         if (isFavorite) {
           await supabase
             .from('favorites')
             .delete()
             .eq('user_id', user.id)
-            .eq('recommendation_id', item.id);
+            .eq('recommendation_id', recommendation.id);
         } else {
           await supabase
             .from('favorites')
-            .insert({ user_id: user.id, recommendation_id: item.id });
+            .insert({ user_id: user.id, recommendation_id: recommendation.id });
         }
         setIsFavorite(!isFavorite);
         toast({
           title: isFavorite ? "Removed from favorites" : "Added to favorites",
-          description: `${item.title} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
+          description: `${recommendation.title} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
         });
       }
     } catch (error) {
@@ -72,13 +73,13 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
 
   const handleCardClick = () => {
     if (onSelect) {
-      onSelect(item.id);
+      onSelect(recommendation.id);
     } else {
-      navigate(`/explore/recommendations/${item.id}`);
+      navigate(`/explore/recommendations/${recommendation.id}`);
     }
   };
 
-  const displayCategory = isValidCategory(item.category) ? item.category : 'other';
+  const displayCategory = isValidCategory(recommendation.category) ? recommendation.category : 'other';
 
   return (
     <div 
@@ -89,7 +90,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
         <AspectRatio ratio={16/9}>
           <img 
             src={imageSource}
-            alt={item.title} 
+            alt={recommendation.title} 
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
             onError={() => setImageError(true)}
             loading="lazy"
@@ -100,18 +101,18 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
           size="icon"
           className={cn(
             "absolute top-2 right-2 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy",
-            (isFavorite || item.is_favorite) && "text-darcare-gold"
+            (isFavorite || recommendation.is_favorite) && "text-darcare-gold"
           )}
           onClick={toggleFavorite}
         >
           <Heart
             size={18}
-            className={cn((isFavorite || item.is_favorite) && "fill-current")}
+            className={cn((isFavorite || recommendation.is_favorite) && "fill-current")}
           />
         </Button>
       </div>
       <div className="p-4 space-y-3">
-        <h3 className="font-medium text-darcare-white line-clamp-1 font-serif">{item.title}</h3>
+        <h3 className="font-medium text-darcare-white line-clamp-1 font-serif">{recommendation.title}</h3>
         <Badge 
           variant="outline" 
           className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif"
@@ -119,16 +120,16 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
           {displayCategory}
         </Badge>
         <div className="flex items-center justify-between text-sm">
-          {item.location && (
+          {recommendation.location && (
             <div className="flex items-center gap-1 text-darcare-beige/80">
               <MapPin size={14} className="flex-shrink-0" />
-              <span className="truncate max-w-[120px]">{item.location}</span>
+              <span className="truncate max-w-[120px]">{recommendation.location}</span>
             </div>
           )}
-          {item.rating && item.rating > 0 && (
+          {recommendation.rating && recommendation.rating > 0 && (
             <div className="flex items-center gap-1 text-darcare-gold">
               <Star size={14} className="fill-current flex-shrink-0" />
-              <span>{item.rating.toFixed(1)}</span>
+              <span>{recommendation.rating.toFixed(1)}</span>
             </div>
           )}
         </div>

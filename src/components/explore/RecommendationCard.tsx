@@ -13,18 +13,24 @@ import { type Recommendation } from "@/types/recommendation";
 interface RecommendationCardProps {
   recommendation: Recommendation;
   onToggleFavorite?: (id: string) => void;
+  onSelect?: (id: string) => void;
 }
 
 export const RecommendationCard = ({
   recommendation,
   onToggleFavorite,
+  onSelect,
 }: RecommendationCardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   
   const handleRecommendationClick = () => {
-    navigate(`/explore/recommendations/${recommendation.id}`);
+    if (onSelect) {
+      onSelect(recommendation.id);
+    } else {
+      navigate(`/explore/recommendations/${recommendation.id}`);
+    }
   };
   
   const handleToggleFavorite = (e: React.MouseEvent) => {

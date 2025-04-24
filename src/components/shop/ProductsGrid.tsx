@@ -5,11 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import ProductCard from './ProductCard';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { ShopProduct } from '@/integrations/supabase/rpc';
 
 export interface ProductsGridProps {
   selectedCategory: string | null;
   searchQuery?: string;
-  onAddToCart: (productId: string, quantity: number) => void;
+  onAddToCart: (product: ShopProduct) => void;
 }
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ 
@@ -62,7 +63,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       {products.map((product) => (
         <ProductCard
           key={product.id}
-          product={product}
+          product={product as ShopProduct}
           onAddToCart={onAddToCart}
         />
       ))}
