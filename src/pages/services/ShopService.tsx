@@ -11,6 +11,10 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
 import type { ShopProduct } from '@/integrations/supabase/rpc';
 
+interface ProductWithCategory extends ShopProduct {
+  category?: string;
+}
+
 const ShopService = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -37,8 +41,9 @@ const ShopService = () => {
     const uniqueCategories = new Set<string>();
     
     products.forEach(product => {
-      if (product.category) {
-        uniqueCategories.add(product.category);
+      const typedProduct = product as ProductWithCategory;
+      if (typedProduct.category) {
+        uniqueCategories.add(typedProduct.category);
       }
     });
     

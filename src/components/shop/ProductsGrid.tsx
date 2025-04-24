@@ -25,7 +25,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     queryFn: async () => {
       let query = supabase.from('shop_products').select('*');
       
-      if (selectedCategory) {
+      if (selectedCategory && selectedCategory !== 'null') {
         query = query.eq('category', selectedCategory);
       }
       
