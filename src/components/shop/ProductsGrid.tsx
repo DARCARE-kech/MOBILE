@@ -13,6 +13,10 @@ export interface ProductsGridProps {
   onAddToCart: (product: ShopProduct) => void;
 }
 
+interface ProductWithCategory extends ShopProduct {
+  category?: string;
+}
+
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ 
   selectedCategory,
   searchQuery = '',
@@ -20,42 +24,24 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
 }) => {
   const { t } = useTranslation();
   
-  const { data: products, isLoading } = useQuery<ShopProduct[]>({
+  const { data: products, isLoading } = useQuery({
     queryKey: ['shop-products', selectedCategory, searchQuery],
     queryFn: async () => {
-      try {
-        // Start with base query
-        let queryBuilder = supabase.from('shop_products').select('*');
-        
-        // Apply category filter conditionally, commenting out temporarily due to schema issues
-        // This silently ignores the category filter if the column doesn't exist
-        if (selectedCategory && selectedCategory !== 'null') {
-          try {
-            queryBuilder = queryBuilder.eq('category', selectedCategory);
-          } catch (err) {
-            console.warn('Category filtering failed, possibly missing column:', err);
-          }
-        }
-        
-        // Apply search query
-        if (searchQuery) {
-          queryBuilder = queryBuilder.ilike('name', `%${searchQuery}%`);
-        }
-        
-        // Execute final query with ordering
-        const { data, error } = await queryBuilder.order('name');
-        
-        if (error) {
-          console.error('Supabase query error:', error);
-          throw error;
-        }
-        
-        return data || [];
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        return []; // Return empty array on error to prevent UI crashes
+      let query = supabase.from('shop_products').select('*');
+      
+      if (selectedCategory && selectedCategory !== 'null') {
+        query = query.eq('category', selectedCategory);
       }
-    }
+      
+      if (searchQuery) {
+        query = query.ilike('name', `%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query.order('name');
+      
+      if (error) throw error;
+      return data as ProductWithCategory[] || [];
+    },
   });
 
   if (isLoading) {
