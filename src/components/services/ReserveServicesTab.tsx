@@ -25,9 +25,15 @@ const ReserveServicesTab: React.FC = () => {
     },
   });
 
-  // Group services by category
+  // Group services by category, excluding any with category 'Amenities' as we'll handle those separately
   const servicesByCategory = services?.reduce((acc: Record<string, any[]>, service: any) => {
     const category = service.category || 'Other';
+    // Skip services that would appear in the special services section
+    if (service.name.toLowerCase().includes('book space') || 
+        service.name.toLowerCase().includes('shop')) {
+      return acc;
+    }
+    
     if (!acc[category]) {
       acc[category] = [];
     }
@@ -53,6 +59,7 @@ const ReserveServicesTab: React.FC = () => {
     );
   }
   
+  // These are our special service cards that we want to show exactly once
   const specialServices = [
     {
       id: 'book-space',
