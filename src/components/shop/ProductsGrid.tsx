@@ -1,9 +1,16 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ProductCard } from './ProductCard';
-import { ShopProduct } from '@/types/shop';
+import ProductCard from './ProductCard';
+
+interface ShopProduct {
+  id: string;
+  name: string;
+  price: number;
+  description?: string;
+  image_url?: string;
+  category?: string;
+}
 
 interface ProductsGridProps {
   selectedCategory: string | null;
