@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,11 +9,8 @@ import { useToast } from "@/components/ui/use-toast";
 import CurrentStay from "@/components/CurrentStay";
 import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainHeader from "@/components/MainHeader";
 import { useTranslation } from "react-i18next";
-
-const queryClient = new QueryClient();
 
 const Home: React.FC = () => {
   const [currentStay, setCurrentStay] = useState<any>(null);
@@ -121,9 +119,7 @@ const Home: React.FC = () => {
       <div className="pt-16 pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
         <ServicesList services={services} isLoading={isLoading} />
-        <QueryClientProvider client={queryClient}>
-          <RecommendationsList />
-        </QueryClientProvider>
+        <RecommendationsList />
       </div>
       <FloatingAction />
       <BottomNavigation activeTab="home" />

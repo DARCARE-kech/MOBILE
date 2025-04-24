@@ -17,6 +17,10 @@ import ShopService from "@/pages/services/ShopService";
 import CartScreen from "@/pages/services/CartScreen";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Auth from "@/pages/Auth";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// Create a client
+const queryClient = new QueryClient();
 
 // Create router with routes
 const router = createBrowserRouter([
@@ -77,9 +81,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <React.StrictMode>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </QueryClientProvider>
     </React.StrictMode>
   );
 }
