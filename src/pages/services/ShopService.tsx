@@ -9,11 +9,6 @@ import ShopFilters from '@/components/shop/ShopFilters';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
-import type { ShopProduct } from '@/integrations/supabase/rpc';
-
-interface ProductWithCategory extends ShopProduct {
-  category?: string;
-}
 
 const ShopService = () => {
   const navigate = useNavigate();
@@ -41,19 +36,13 @@ const ShopService = () => {
     const uniqueCategories = new Set<string>();
     
     products.forEach(product => {
-      const typedProduct = product as ProductWithCategory;
-      if (typedProduct.category) {
-        uniqueCategories.add(typedProduct.category);
+      if (product.category) {
+        uniqueCategories.add(product.category);
       }
     });
     
     return Array.from(uniqueCategories);
   }, [products]);
-
-  // Handle adding product to cart by wrapping the function to match expected signature
-  const handleAddToCart = (product: ShopProduct) => {
-    addToCart(product);
-  };
 
   return (
     <div className="min-h-screen bg-darcare-navy pb-20">
@@ -73,7 +62,7 @@ const ShopService = () => {
         <ProductsGrid
           selectedCategory={selectedCategory}
           searchQuery={searchQuery}
-          onAddToCart={handleAddToCart}
+          onAddToCart={addToCart}
         />
       </div>
       

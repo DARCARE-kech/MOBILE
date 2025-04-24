@@ -100,10 +100,10 @@ export const RecommendationsList = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-      {recommendations?.map((recommendation) => (
+      {recommendations?.map((item) => (
         <RecommendationCard
-          key={recommendation.id}
-          recommendation={recommendation}
+          key={item.id}
+          item={item}
           onToggleFavorite={handleToggleFavorite}
           onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
         />

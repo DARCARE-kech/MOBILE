@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
@@ -122,10 +121,10 @@ const FavoritesPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {favorites?.map((recommendation) => (
+            {favorites?.map((item) => (
               <RecommendationCard 
-                key={recommendation.id} 
-                recommendation={recommendation}
+                key={item.id} 
+                item={item}
                 onToggleFavorite={handleToggleFavorite}
                 onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
               />
