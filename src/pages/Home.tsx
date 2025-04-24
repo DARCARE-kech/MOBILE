@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +22,12 @@ const Home: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (!user) return;

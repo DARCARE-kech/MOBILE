@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 interface UserProfile {
   id: string;
@@ -36,8 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
-
+  
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -96,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setUserProfile(data);
-      navigate('/home');
+      // Instead of navigating here, we'll let the component handle navigation
     } catch (error) {
       console.error("Error fetching user profile:", error);
       toast({
@@ -173,7 +171,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      navigate('/auth');
+      
+      // Instead of navigating directly, we'll let components handle redirection
+      // based on auth state changes
     } catch (error: any) {
       console.error("Error signing out:", error);
       toast({

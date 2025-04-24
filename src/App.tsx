@@ -3,6 +3,9 @@ import React from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
+  createRoutesFromElements,
+  Route,
+  BrowserRouter,
 } from "react-router-dom";
 import "./index.css";
 import Home from "@/pages/Home";
@@ -18,6 +21,7 @@ import CartScreen from "@/pages/services/CartScreen";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Auth from "@/pages/Auth";
 
+// Create router with routes
 const router = createBrowserRouter([
   {
     path: "/",
@@ -76,9 +80,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <React.StrictMode>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </BrowserRouter>
     </React.StrictMode>
   );
 }
