@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
-import { Laundry, Clock } from 'lucide-react';
+import { Shirt, Clock } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Card } from '@/components/ui/card';
@@ -38,7 +38,7 @@ const LaundryService = () => {
       <div className="p-4 space-y-4 pb-24 pt-16">
         <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Laundry className="text-darcare-gold" />
+            <Shirt className="text-darcare-gold" />
             <h2 className="text-darcare-gold font-serif text-xl">
               {t('services.laundryDescription')}
             </h2>
