@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from "lucide-react";
-import { Card } from '@/components/ui/card';
+import { Laundry, Clock } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const LaundryService = () => {
   const navigate = useNavigate();
@@ -19,21 +20,8 @@ const LaundryService = () => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
-        .eq('category', 'laundry_option');
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  const { data: laundryService } = useQuery({
-    queryKey: ['laundry-service-info'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('category', 'laundry')
-        .single();
+        .eq('name', 'Laundry')
+        .or('category.eq.service_option,category.eq.laundry_option');
       
       if (error) throw error;
       return data;
@@ -42,14 +30,23 @@ const LaundryService = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('services.laundry')} onBack={() => navigate('/services')} />
+      <MainHeader 
+        title={t('services.laundry')} 
+        onBack={() => navigate('/services')} 
+      />
       
       <div className="p-4 space-y-4 pb-24 pt-16">
-        {laundryService && (
-          <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
-            <p className="text-darcare-beige">{laundryService.description}</p>
-          </Card>
-        )}
+        <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Laundry className="text-darcare-gold" />
+            <h2 className="text-darcare-gold font-serif text-xl">
+              {t('services.laundryDescription')}
+            </h2>
+          </div>
+          <p className="text-darcare-beige">
+            {t('services.laundryDetails')}
+          </p>
+        </Card>
 
         <div className="grid gap-4">
           {isLoading ? (
@@ -63,12 +60,15 @@ const LaundryService = () => {
                 className="bg-darcare-navy border-darcare-gold/20 p-4 cursor-pointer hover:border-darcare-gold/40 transition-colors"
                 onClick={() => navigate(`/services/requests/new`, { state: { serviceId: option.id } })}
               >
-                <h3 className="text-darcare-gold font-serif text-lg mb-2">{option.name}</h3>
-                <p className="text-darcare-beige text-sm mb-2">{option.description}</p>
-                <div className="flex justify-between items-center mt-2 text-sm">
-                  <span className="text-darcare-beige/70">
-                    {t('services.estimatedTime')}: {option.estimated_duration}
-                  </span>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-darcare-gold font-serif text-lg mb-2">{option.name}</h3>
+                    <p className="text-darcare-beige text-sm mb-2">{option.description}</p>
+                  </div>
+                  <div className="flex items-center gap-1 text-darcare-beige/70">
+                    <Clock size={16} />
+                    <span className="text-sm">{option.estimated_duration}</span>
+                  </div>
                 </div>
               </Card>
             ))
