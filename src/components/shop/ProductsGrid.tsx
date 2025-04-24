@@ -13,10 +13,6 @@ export interface ProductsGridProps {
   onAddToCart: (product: ShopProduct) => void;
 }
 
-interface ProductWithCategory extends ShopProduct {
-  category?: string;
-}
-
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ 
   selectedCategory,
   searchQuery = '',
@@ -40,7 +36,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       const { data, error } = await query.order('name');
       
       if (error) throw error;
-      return data as ProductWithCategory[] || [];
+      return data || [];
     },
   });
 
@@ -67,7 +63,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       {products.map((product) => (
         <ProductCard
           key={product.id}
-          product={product}
+          product={product as ShopProduct}
           onAddToCart={onAddToCart}
         />
       ))}
