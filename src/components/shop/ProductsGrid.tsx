@@ -1,16 +1,9 @@
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import ProductCard from './ProductCard';
-
-interface ShopProduct {
-  id: string;
-  name: string;
-  price: number;
-  description?: string;
-  image_url?: string;
-  category?: string;
-}
+import type { ShopProduct } from '@/integrations/supabase/rpc';
 
 interface ProductsGridProps {
   selectedCategory: string | null;
@@ -62,3 +55,5 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     </div>
   );
 };
+
+export default ProductsGrid;

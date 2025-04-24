@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShopCart } from '@/hooks/useShopCart';
@@ -20,7 +21,9 @@ const ShopService = () => {
       
       <ShopFilters 
         selectedCategory={selectedCategory}
-        onCategorySelect={setSelectedCategory}
+        onCategoryChange={setSelectedCategory}
+        onSearchChange={() => {}}
+        categories={[]}
       />
       
       <ProductsGrid
