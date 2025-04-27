@@ -22,7 +22,7 @@ const ServicesPage: React.FC = () => {
           onValueChange={setActiveTab} 
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-3 bg-darcare-navy/20 border border-darcare-gold/20">
+          <TabsList className="grid w-full grid-cols-3 bg-darcare-navy/50 border border-darcare-gold/20">
             <TabsTrigger 
               value="reserve" 
               className="text-darcare-beige data-[state=active]:bg-darcare-gold data-[state=active]:text-darcare-navy"

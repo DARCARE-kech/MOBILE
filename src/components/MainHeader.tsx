@@ -6,13 +6,14 @@ import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import DrawerMenu from "./DrawerMenu";
 
 interface MainHeaderProps {
   title?: string;
   onBack?: () => void;
   showDrawer?: boolean;
   children?: React.ReactNode;
-  rightContent?: React.ReactNode; // Add the rightContent prop
+  rightContent?: React.ReactNode;
 }
 
 const MainHeader = ({ 
@@ -20,7 +21,7 @@ const MainHeader = ({
   onBack, 
   showDrawer = false,
   children,
-  rightContent // Accept the rightContent prop
+  rightContent
 }: MainHeaderProps) => {
   const navigate = useNavigate();
   const { data: notifications } = useQuery({
@@ -42,14 +43,7 @@ const MainHeader = ({
     <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
       <div className="flex items-center gap-3">
         {showDrawer ? (
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => navigate('/drawer')}
-            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 -ml-2"
-          >
-            <Menu size={24} />
-          </Button>
+          <DrawerMenu />
         ) : onBack && (
           <Button 
             variant="ghost" 
