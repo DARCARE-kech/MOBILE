@@ -10,18 +10,19 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAssistant } from '@/hooks/useAssistant';
+import Message from '@/components/chat/Message';
 
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { messages, sendMessage, isLoading } = useAssistant();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
@@ -57,7 +58,6 @@ const ChatbotPage: React.FC = () => {
       
       <ScrollArea 
         className="flex-1 p-4 pt-20 pb-24"
-        ref={containerRef}
       >
         {isLoading && messages.length === 0 ? (
           <div className="flex items-center justify-center h-40">
@@ -66,20 +66,17 @@ const ChatbotPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {messages?.map((message, index) => (
-              <div 
-                key={index} 
-                className={`p-3 rounded-lg ${
-                  message.role === 'user' 
-                    ? 'bg-darcare-gold/20 ml-auto max-w-[80%]' 
-                    : 'bg-darcare-navy/50 border border-darcare-gold/20 max-w-[80%]'
-                }`}
-              >
-                <p className={`${
-                  message.role === 'user' ? 'text-darcare-beige' : 'text-darcare-gold'
-                }`}>
-                  {message.content}
-                </p>
-              </div>
+              <Message 
+                key={message.id || index} 
+                message={{
+                  id: message.id || `temp-${index}`,
+                  session_id: '',
+                  user_id: '',
+                  content: message.content,
+                  sender: message.role === 'user' ? 'user' : 'bot',
+                  timestamp: message.timestamp || new Date().toISOString(),
+                }}
+              />
             ))}
             {(!messages || messages.length === 0) && (
               <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
@@ -93,6 +90,7 @@ const ChatbotPage: React.FC = () => {
                 <span>DarCare Assistant is thinking...</span>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </ScrollArea>

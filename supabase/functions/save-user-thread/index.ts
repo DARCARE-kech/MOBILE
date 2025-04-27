@@ -33,7 +33,7 @@ serve(async (req) => {
     // Insert or update the thread
     const { data, error } = await supabase
       .from('chat_threads')
-      .insert({
+      .upsert({
         user_id,
         thread_id
       });

@@ -19,7 +19,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         'max-w-[80%] rounded-2xl px-4 py-2',
         isUser ? 'bg-darcare-gold text-darcare-navy' : 'bg-darcare-navy border border-darcare-gold/20 text-darcare-beige'
       )}>
-        <p className="text-sm">{message.content}</p>
+        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
       </div>
     </div>
   );

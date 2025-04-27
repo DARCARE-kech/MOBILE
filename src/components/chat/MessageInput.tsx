@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
@@ -19,12 +19,21 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) => {
       setMessage('');
     }
   };
+  
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey && message.trim()) {
+      e.preventDefault();
+      onSend(message.trim());
+      setMessage('');
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
       <Input
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Type your message..."
         disabled={disabled}
         className="flex-1 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 rounded-full"

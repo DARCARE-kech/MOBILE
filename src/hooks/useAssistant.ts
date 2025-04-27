@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { AssistantMessage, Thread, ChatThread } from '@/types/chat';
+import { AssistantMessage, Thread } from '@/types/chat';
 
 // This is the assistant ID we'll use for the chatbot
 const ASSISTANT_ID = 'asst_Yh87yZ3mNeMJS6W5TeVobQ1S';
@@ -126,6 +126,7 @@ export const useAssistant = () => {
     const userMessage: AssistantMessage = {
       role: 'user',
       content,
+      id: `temp-${Date.now()}`,
       timestamp: Date.now().toString()
     };
     
