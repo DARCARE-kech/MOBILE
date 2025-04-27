@@ -11,16 +11,24 @@ export const useUserProfile = () => {
   const navigate = useNavigate();
   const { changeLanguage } = useLanguage();
   
-  const { data: profile, isLoading: isProfileLoading } = useProfileData(user?.id);
-  const { data: currentStay, isLoading: isStayLoading } = useCurrentStay(user?.id);
+  const { 
+    data: profile, 
+    isLoading: isProfileLoading,
+    error: profileError 
+  } = useProfileData(user?.id);
+  
+  const { 
+    data: currentStay, 
+    isLoading: isStayLoading,
+    error: stayError 
+  } = useCurrentStay(user?.id);
+  
   const { mutate: updateProfile } = useProfileMutations(user?.id);
 
   const handleProfileUpdate = (updates: any) => {
-    // If language is being updated, also update the language context
     if (updates.language) {
       changeLanguage(updates.language);
     }
-    
     updateProfile(updates);
   };
 
@@ -37,6 +45,7 @@ export const useUserProfile = () => {
     profile,
     currentStay,
     isLoading: isProfileLoading || isStayLoading,
+    error: profileError || stayError,
     updateProfile: handleProfileUpdate,
     handleLogout,
   };
