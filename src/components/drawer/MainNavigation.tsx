@@ -1,11 +1,13 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Home, ShoppingBag, List, Book, Compass, Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 const MainNavigation: React.FC = () => {
   const { t } = useTranslation();
+  const location = useLocation();
   
   const mainMenuItems = [
     { icon: <Home size={20} />, label: t('navigation.home'), path: "/home" },
@@ -17,11 +19,11 @@ const MainNavigation: React.FC = () => {
     { 
       icon: <List size={20} />, 
       label: t('services.requests'), 
-      path: "/services/requests"
+      path: "/services"  // Redirect to main services page with requests tab
     },
     { 
       icon: <Book size={20} />, 
-      label: t('services.reservations'), 
+      label: t('services.spaces'), 
       path: "/services/spaces" 
     },
     { 
@@ -38,16 +40,22 @@ const MainNavigation: React.FC = () => {
 
   return (
     <>
-      {mainMenuItems.map((item, index) => (
-        <Link
-          key={index}
-          to={item.path}
-          className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-        >
-          <span className="text-darcare-gold">{item.icon}</span>
-          <span>{item.label}</span>
-        </Link>
-      ))}
+      {mainMenuItems.map((item, index) => {
+        const isActive = location.pathname === item.path;
+        return (
+          <Link
+            key={index}
+            to={item.path}
+            className={cn(
+              "flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors",
+              isActive ? "bg-darcare-gold/20 text-darcare-gold" : ""
+            )}
+          >
+            <span className="text-darcare-gold">{item.icon}</span>
+            <span>{item.label}</span>
+          </Link>
+        )}
+      )}
     </>
   );
 };

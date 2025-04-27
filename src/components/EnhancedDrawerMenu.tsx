@@ -25,6 +25,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
   const { t } = useTranslation();
   const [servicesExpanded, setServicesExpanded] = useState(false);
   const appVersion = "v1.0.0";
+  const navigate = useNavigate();
 
   const getInitials = (name: string) => {
     if (!name) return "?";
@@ -48,7 +49,10 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
           <Menu size={24} />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="bg-darcare-navy border-r border-darcare-gold/20 w-72 overflow-y-auto">
+      <SheetContent 
+        side="left" 
+        className="bg-darcare-navy border-r border-darcare-gold/20 w-72 overflow-y-auto scrollbar-hide"
+      >
         <SheetHeader className="text-left mb-6 mt-2">
           <Logo size="sm" color="gold" />
         </SheetHeader>
@@ -103,7 +107,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
           >
             <span className="text-darcare-gold"><UserCircle size={20} /></span>
-            <span>{t('navigation.profileSettings')}</span>
+            <span>{t('navigation.profile')}</span>
           </Link>
 
           <Link

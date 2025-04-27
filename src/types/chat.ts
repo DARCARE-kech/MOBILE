@@ -1,7 +1,4 @@
 
-export type MessageSender = 'user' | 'bot' | 'admin';
-export type AdminMessageStatus = 'unread' | 'read' | 'responded';
-
 export interface ChatSession {
   id: string;
   user_id: string;
@@ -14,17 +11,57 @@ export interface ChatMessage {
   id: string;
   session_id: string;
   user_id: string;
-  sender: MessageSender;
   content: string;
+  sender: 'user' | 'bot' | 'admin';
   timestamp: string;
+  metadata?: Record<string, any>;
 }
 
-export interface AdminMessage {
+export interface AssistantMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  id?: string;
+  timestamp?: string;
+}
+
+export interface Thread {
   id: string;
-  user_id: string;
-  subject: string;
-  message: string;
-  image_url?: string;
-  status: AdminMessageStatus;
-  created_at: string;
+  created_at: number;
+  metadata?: Record<string, any>;
+}
+
+export interface MessageContent {
+  type: 'text';
+  text: {
+    value: string;
+    annotations: any[];
+  };
+}
+
+export interface MessageResponse {
+  id: string;
+  object: string;
+  created_at: number;
+  thread_id: string;
+  role: 'user' | 'assistant';
+  content: MessageContent[];
+  file_ids: string[];
+  assistant_id: string;
+  run_id: string;
+  metadata: Record<string, any>;
+}
+
+export interface RunResponse {
+  id: string;
+  object: string;
+  created_at: number;
+  thread_id: string;
+  assistant_id: string;
+  status: 'queued' | 'in_progress' | 'completed' | 'failed' | 'cancelled' | 'requires_action';
+  started_at: number | null;
+  completed_at: number | null;
+  model: string;
+  instructions: string | null;
+  tools: any[];
+  metadata: Record<string, any>;
 }
