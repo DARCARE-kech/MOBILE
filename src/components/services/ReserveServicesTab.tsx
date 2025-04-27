@@ -7,6 +7,21 @@ import ServiceBanner from '@/components/services/ServiceBanner';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
 
+// Define proper types for our services
+interface ServiceBase {
+  id: string;
+  name: string;
+  description: string;
+  image_url: string | null;
+  category: string;
+}
+
+interface ServiceWithDuration extends ServiceBase {
+  estimated_duration: string;
+}
+
+type Service = ServiceBase | ServiceWithDuration;
+
 const ReserveServicesTab: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -54,7 +69,7 @@ const ReserveServicesTab: React.FC = () => {
   }
 
   // Create a single array of all services, including special ones
-  const allServices = [
+  const allServices: Service[] = [
     // Special services at the top
     {
       id: 'book-space',
@@ -99,7 +114,8 @@ const ReserveServicesTab: React.FC = () => {
               <p className="text-darcare-beige/80 text-sm mt-1">
                 {service.description}
               </p>
-              {service.estimated_duration && (
+              {/* Add a type guard to check if estimated_duration exists before rendering */}
+              {'estimated_duration' in service && service.estimated_duration && (
                 <div className="mt-2 text-xs text-darcare-beige/60 bg-darcare-gold/5 w-fit px-2 py-1 rounded">
                   {t('services.estimatedTime')}: {service.estimated_duration}
                 </div>
