@@ -9,7 +9,7 @@ import {
   Menu, 
   Home, 
   MessageCircle, 
-  Tool as Settings, 
+  Wrench as Settings, 
   Car, 
   CalendarRange, 
   ShoppingBag, 
