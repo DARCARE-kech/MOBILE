@@ -12,13 +12,15 @@ interface MainHeaderProps {
   onBack?: () => void;
   showDrawer?: boolean;
   children?: React.ReactNode;
+  rightContent?: React.ReactNode; // Add the rightContent prop
 }
 
 const MainHeader = ({ 
   title, 
   onBack, 
   showDrawer = false,
-  children 
+  children,
+  rightContent // Accept the rightContent prop
 }: MainHeaderProps) => {
   const navigate = useNavigate();
   const { data: notifications } = useQuery({
@@ -65,7 +67,9 @@ const MainHeader = ({
         )}
       </div>
       <div className="flex items-center gap-4">
-        {children ? (
+        {rightContent ? (
+          rightContent
+        ) : children ? (
           children
         ) : (
           <>

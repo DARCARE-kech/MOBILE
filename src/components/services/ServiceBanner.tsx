@@ -7,12 +7,14 @@ interface ServiceBannerProps {
   imageUrl: string;
   altText: string;
   withGradient?: boolean;
+  height?: number; // Add the optional height prop
 }
 
 const ServiceBanner: React.FC<ServiceBannerProps> = ({ 
   imageUrl, 
   altText,
-  withGradient = false 
+  withGradient = false,
+  height // Accept the height prop 
 }) => {
   return (
     <div className="w-full overflow-hidden rounded-lg relative">
@@ -21,6 +23,7 @@ const ServiceBanner: React.FC<ServiceBannerProps> = ({
           src={imageUrl}
           alt={altText}
           className="w-full h-full object-cover"
+          style={height ? { height: `${height}px` } : undefined} // Apply height if provided
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = getFallbackImage(altText, 0);

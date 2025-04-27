@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { 
   Sheet, 
@@ -9,15 +8,14 @@ import {
 import { 
   Menu, 
   Home, 
-  CleaningServices, 
-  Tool, 
+  MessageCircle, 
+  Tool as Settings, 
   Car, 
   CalendarRange, 
   ShoppingBag, 
   List, 
   Compass, 
   Heart, 
-  MessageCircle,
   Bot, 
   UserCircle, 
   Bell, 
@@ -45,10 +43,10 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
   const { profile, currentStay, isLoading } = useUserProfile();
   const [servicesExpanded, setServicesExpanded] = useState(false);
   
-  const appVersion = "v1.0.0"; // Could be dynamically loaded from an env variable
+  const appVersion = "v1.0.0";
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = "+212612345678"; // Replace with actual WhatsApp number
+    const phoneNumber = "+212612345678";
     window.open(`https://wa.me/${phoneNumber}`, "_blank");
   };
 
@@ -62,7 +60,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
       .substring(0, 2);
   };
   
-  // Main navigation items
   const mainMenuItems = [
     { icon: <Home size={20} />, label: t('navigation.home'), path: "/home" },
     { 
@@ -92,15 +89,14 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
     },
   ];
   
-  // Service menu subitems
   const serviceSubitems = [
     { 
-      icon: <CleaningServices size={18} />, 
+      icon: <MessageCircle size={18} />, 
       label: t('services.cleaning'), 
       path: "/services/cleaning" 
     },
     { 
-      icon: <Tool size={18} />, 
+      icon: <Settings size={18} />, 
       label: t('services.maintenance'), 
       path: "/services/maintenance" 
     },
@@ -128,7 +124,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
           <Logo size="sm" color="gold" />
         </SheetHeader>
 
-        {/* User Profile Section */}
         <div className="mb-6 p-4 bg-darcare-navy/50 border border-darcare-gold/10 rounded-lg">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="h-14 w-14 bg-darcare-gold/10 border border-darcare-gold/25">
@@ -159,7 +154,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
         </div>
 
         <nav className="flex flex-col space-y-2">
-          {/* Services Expandable Section */}
           <div>
             <button 
               onClick={() => setServicesExpanded(!servicesExpanded)} 
@@ -176,7 +170,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
               )}
             </button>
             
-            {/* Service Subitems */}
             <div className={cn(
               "pl-12 space-y-2 mt-1 mb-1 overflow-hidden transition-all", 
               servicesExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
@@ -194,7 +187,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             </div>
           </div>
 
-          {/* Main Menu Items */}
           {mainMenuItems.map((item, index) => (
             <Link
               key={index}
@@ -208,7 +200,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
 
           <Separator className="my-2 bg-darcare-gold/20" />
 
-          {/* Chat with Us - WhatsApp */}
           <Button
             variant="ghost"
             className="justify-start gap-4 py-3 h-auto text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold"
@@ -218,7 +209,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             <span>{t('common.chatWithUs')}</span>
           </Button>
 
-          {/* DarCare Assistant - In-App Chatbot */}
           <Link
             to="/chatbot"
             className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
@@ -229,7 +219,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
 
           <Separator className="my-2 bg-darcare-gold/20" />
 
-          {/* Settings & Profile */}
           <Link
             to="/profile"
             className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
@@ -238,7 +227,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             <span>{t('navigation.profileSettings')}</span>
           </Link>
 
-          {/* Notifications */}
           <Link
             to="/notifications"
             className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
@@ -248,7 +236,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
           </Link>
         </nav>
 
-        {/* Log Out Button at the bottom */}
         <div className="mt-auto pt-6 pb-4">
           <Separator className="mb-4 bg-darcare-gold/20" />
           <Button
