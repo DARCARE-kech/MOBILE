@@ -65,3 +65,23 @@ export interface RunResponse {
   tools: any[];
   metadata: Record<string, any>;
 }
+
+// Add the missing AdminMessage interface
+export interface AdminMessage {
+  id?: string;
+  user_id?: string;
+  subject: string;
+  message: string;
+  image_url?: string;
+  status?: 'unread' | 'read' | 'responded';
+  created_at?: string;
+}
+
+// Add a ChatThread interface to match the database schema
+export interface ChatThread {
+  id: string;
+  user_id: string;
+  thread_id: string;
+  created_at?: string;
+  updated_at?: string;
+}

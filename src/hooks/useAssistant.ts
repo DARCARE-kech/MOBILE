@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { AssistantMessage, Thread } from '@/types/chat';
+import { AssistantMessage, Thread, ChatThread } from '@/types/chat';
 
 // This is the assistant ID we'll use for the chatbot
 const ASSISTANT_ID = 'asst_Yh87yZ3mNeMJS6W5TeVobQ1S';
@@ -22,35 +22,33 @@ export const useAssistant = () => {
         try {
           setIsLoading(true);
 
-          // Check if user has an existing thread stored in supabase
-          const { data, error } = await supabase
-            .from('chat_threads')
-            .select('thread_id')
-            .eq('user_id', user.id)
-            .maybeSingle();
+          // Use Edge function to check for existing thread instead of direct query
+          const { data: threadData, error: threadError } = await supabase.functions.invoke('get-user-thread', {
+            body: { user_id: user.id }
+          });
 
-          if (error) {
-            throw error;
+          if (threadError) {
+            throw threadError;
           }
 
-          if (data?.thread_id) {
+          if (threadData?.thread_id) {
             // User has an existing thread
-            setThreadId(data.thread_id);
+            setThreadId(threadData.thread_id);
 
             // Load thread messages
-            const threadMessages = await loadThreadMessages(data.thread_id);
+            const threadMessages = await loadThreadMessages(threadData.thread_id);
             setMessages(threadMessages);
           } else {
             // Create a new thread for the user
             const newThread = await createThread();
             
-            // Save thread ID to Supabase
-            const { error: saveError } = await supabase
-              .from('chat_threads')
-              .insert({
+            // Use Edge function to save thread ID
+            const { error: saveError } = await supabase.functions.invoke('save-user-thread', {
+              body: {
                 user_id: user.id,
-                thread_id: newThread.id,
-              });
+                thread_id: newThread.id
+              }
+            });
 
             if (saveError) {
               throw saveError;
