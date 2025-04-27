@@ -87,23 +87,24 @@ const ReserveServicesTab: React.FC = () => {
             <div 
               key={service.id}
               onClick={() => handleServiceClick(service.id, service.name)}
-              className="cursor-pointer"
+              className="cursor-pointer group transition-transform hover:scale-[1.01] bg-darcare-navy/50 border border-darcare-gold/10 rounded-lg overflow-hidden"
             >
               <ServiceBanner
                 imageUrl={service.image_url}
                 altText={service.name}
                 withGradient={true}
+                height={160}
               />
-              <div className="mt-2">
-                <h3 className="text-darcare-gold font-serif">{service.name}</h3>
-                <p className="text-darcare-beige text-sm">{service.description}</p>
+              <div className="p-4">
+                <h3 className="font-serif text-lg text-darcare-gold group-hover:text-darcare-gold/90">{service.name}</h3>
+                <p className="text-darcare-beige/80 text-sm mt-1">{service.description}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
       
-      <Separator className="border-darcare-gold/20" />
+      <Separator className="border-darcare-gold/20 my-6" />
 
       {/* Regular services grouped by category */}
       {servicesByCategory && Object.entries(servicesByCategory).map(([category, categoryServices]) => (
@@ -114,16 +115,22 @@ const ReserveServicesTab: React.FC = () => {
               <div
                 key={service.id}
                 onClick={() => handleServiceClick(service.id, service.name)}
-                className="cursor-pointer"
+                className="cursor-pointer group transition-transform hover:scale-[1.01] bg-darcare-navy/50 border border-darcare-gold/10 rounded-lg overflow-hidden"
               >
                 <ServiceBanner
                   imageUrl={service.image_url || ''}
                   altText={service.name}
                   withGradient={true}
+                  height={140}
                 />
-                <div className="mt-2">
-                  <h3 className="text-darcare-gold font-serif">{service.name}</h3>
-                  <p className="text-darcare-beige text-sm">{service.description}</p>
+                <div className="p-4">
+                  <h3 className="font-serif text-lg text-darcare-gold group-hover:text-darcare-gold/90">{service.name}</h3>
+                  <p className="text-darcare-beige/80 text-sm mt-1">{service.description}</p>
+                  {service.estimated_duration && (
+                    <div className="mt-2 text-xs text-darcare-beige/60 bg-darcare-gold/5 w-fit px-2 py-1 rounded">
+                      {t('services.estimatedTime')}: {service.estimated_duration}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
