@@ -24,20 +24,21 @@ serve(async (req) => {
 
     // Initialize Supabase Admin client
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { user_id, thread_id } = await req.json();
+    const { user_id, thread_id, title } = await req.json();
 
     if (!user_id || !thread_id) {
       throw new Error('User ID and Thread ID are required');
     }
 
-    console.log(`Saving thread ${thread_id} for user ${user_id}`);
+    console.log(`Saving thread ${thread_id} for user ${user_id} with title ${title || 'New Conversation'}`);
 
     // Insert or update the thread
     const { data, error } = await supabase
       .from('chat_threads')
       .upsert({
         user_id,
-        thread_id
+        thread_id,
+        title: title || `Conversation ${new Date().toLocaleDateString()}`
       });
 
     if (error) {

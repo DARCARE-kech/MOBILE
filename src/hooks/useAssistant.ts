@@ -13,7 +13,12 @@ export const useAssistant = () => {
         const { user } = await import('@/contexts/AuthContext').then(m => m.useAuth());
         const newThread = await createThread();
         if (user && newThread) {
-          await saveUserThread(user.id, newThread.id);
+          // Generate a title based on the first message content
+          const title = content.length > 30 
+            ? `${content.substring(0, 30)}...` 
+            : content;
+            
+          await saveUserThread(user.id, newThread.id, title);
         }
         await sendMessage(content);
       } catch (error) {

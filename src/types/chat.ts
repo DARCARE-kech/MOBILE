@@ -84,4 +84,5 @@ export interface ChatThread {
   thread_id: string;
   created_at?: string;
   updated_at?: string;
+  title?: string; // Added the title property
 }
