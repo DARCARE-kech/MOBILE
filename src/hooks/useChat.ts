@@ -2,63 +2,86 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { ChatSession, ChatMessage } from '@/types/chat';
+import type { ChatSession, ChatMessage, ChatThread } from '@/types/chat';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
-export const useChat = (sessionId?: string) => {
+export const useChat = (threadId?: string) => {
   const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(sessionId || null);
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(threadId || null);
 
-  const { data: sessions, isLoading: isLoadingSessions } = useQuery({
-    queryKey: ['chat-sessions', user?.id],
+  // Fetch chat threads (formerly sessions) from the database
+  const { data: threads, isLoading: isLoadingThreads } = useQuery({
+    queryKey: ['chat-threads', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
       
       const { data, error } = await supabase
-        .from('chat_sessions')
+        .from('chat_threads')
         .select('*')
         .eq('user_id', user.id)
         .order('updated_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching chat sessions:', error);
+        console.error('Error fetching chat threads:', error);
         throw error;
       }
-      return data as ChatSession[];
+      return data as ChatThread[];
     },
     enabled: !!user?.id,
   });
 
+  // We no longer fetch chat messages from a local database
+  // Instead, we use the OpenAI API via the assistant hooks
   const { data: messages, isLoading: isLoadingMessages } = useQuery({
-    queryKey: ['chat-messages', currentSessionId],
+    queryKey: ['thread-messages', currentThreadId],
     queryFn: async () => {
-      if (!currentSessionId) return [];
+      if (!currentThreadId) return [];
       
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('*')
-        .eq('session_id', currentSessionId)
-        .order('timestamp', { ascending: true });
+      // This now uses the OpenAI API to fetch messages via our custom edge function
+      const { data, error } = await supabase.functions.invoke('list-messages', {
+        body: { thread_id: currentThreadId }
+      });
 
       if (error) {
-        console.error('Error fetching chat messages:', error);
+        console.error('Error fetching thread messages:', error);
         throw error;
       }
-      return data as ChatMessage[];
+      
+      // Transform the response from the API to match our expected format
+      const formattedMessages = (data || []).map((msg: any) => ({
+        role: msg.role,
+        content: msg.content[0]?.text?.value || '',
+        id: msg.id,
+        timestamp: msg.created_at
+      })).reverse();
+      
+      return formattedMessages;
     },
-    enabled: !!currentSessionId,
+    enabled: !!currentThreadId,
   });
 
-  const createSession = useMutation({
+  const createThread = useMutation({
     mutationFn: async (title: string) => {
       if (!user?.id) throw new Error("User not authenticated");
       
+      // Create a thread via OpenAI API first
+      const { data: threadData, error: threadError } = await supabase.functions.invoke('create-thread', {
+        body: {
+          user_id: user.id,
+          assistant_id: 'asst_5KqcDXQaMYqTDLKQxbQmrSBy'
+        }
+      });
+      
+      if (threadError) throw threadError;
+      
+      // Then save the thread reference in our database
       const { data, error } = await supabase
-        .from('chat_sessions')
+        .from('chat_threads')
         .insert({
+          thread_id: threadData.id,
           title,
           user_id: user.id
         })
@@ -66,51 +89,57 @@ export const useChat = (sessionId?: string) => {
         .single();
 
       if (error) throw error;
-      return data as ChatSession;
+      return data as ChatThread;
     },
-    onSuccess: (newSession) => {
-      queryClient.invalidateQueries({ queryKey: ['chat-sessions', user?.id] });
-      setCurrentSessionId(newSession.id);
+    onSuccess: (newThread) => {
+      queryClient.invalidateQueries({ queryKey: ['chat-threads', user?.id] });
+      setCurrentThreadId(newThread.thread_id);
     },
     onError: (error) => {
-      console.error('Error creating chat session:', error);
+      console.error('Error creating chat thread:', error);
       toast({
         title: 'Error',
-        description: 'Failed to create new chat session',
+        description: 'Failed to create new chat conversation',
         variant: 'destructive',
       });
     },
   });
 
   const sendMessage = useMutation({
-    mutationFn: async ({ content, sender }: { content: string; sender: 'user' | 'bot' | 'admin' }) => {
+    mutationFn: async ({ content, role = 'user' }: { content: string; role?: 'user' | 'assistant' | 'admin' }) => {
       if (!user?.id) throw new Error("User not authenticated");
       
-      // If no current session, create one
-      let sessionId = currentSessionId;
-      if (!sessionId) {
-        const session = await createSession.mutateAsync('New Conversation');
-        sessionId = session.id;
+      // If no current thread, create one
+      let threadId = currentThreadId;
+      if (!threadId) {
+        const thread = await createThread.mutateAsync('New Conversation');
+        threadId = thread.thread_id;
       }
 
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .insert({
-          session_id: sessionId,
+      // Send message to OpenAI API via our edge function
+      const { data, error } = await supabase.functions.invoke('add-message', {
+        body: {
+          thread_id: threadId,
           content,
-          sender,
-          user_id: user.id
-        })
-        .select()
-        .single();
+          role
+        }
+      });
 
       if (error) throw error;
-      return data as ChatMessage;
+      
+      // Also update the thread's updated_at timestamp
+      await supabase
+        .from('chat_threads')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('thread_id', threadId);
+        
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat-messages', currentSessionId] });
-      // Also update the sessions list since timestamps may have changed
-      queryClient.invalidateQueries({ queryKey: ['chat-sessions', user?.id] });
+      // Refetch messages after sending a new one
+      queryClient.invalidateQueries({ queryKey: ['thread-messages', currentThreadId] });
+      // Also update the threads list since timestamps may have changed
+      queryClient.invalidateQueries({ queryKey: ['chat-threads', user?.id] });
     },
     onError: (error) => {
       console.error('Error sending message:', error);
@@ -122,42 +151,42 @@ export const useChat = (sessionId?: string) => {
     },
   });
 
-  const deleteSession = useMutation({
-    mutationFn: async (id: string) => {
+  const deleteThread = useMutation({
+    mutationFn: async (threadId: string) => {
       const { error } = await supabase
-        .from('chat_sessions')
+        .from('chat_threads')
         .delete()
-        .eq('id', id);
+        .eq('thread_id', threadId);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat-sessions', user?.id] });
-      if (currentSessionId) {
-        setCurrentSessionId(null);
+      queryClient.invalidateQueries({ queryKey: ['chat-threads', user?.id] });
+      if (currentThreadId) {
+        setCurrentThreadId(null);
       }
     },
     onError: (error) => {
-      console.error('Error deleting chat session:', error);
+      console.error('Error deleting chat thread:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete chat session',
+        description: 'Failed to delete chat conversation',
         variant: 'destructive',
       });
     },
   });
 
-  const updateSessionTitle = useMutation({
-    mutationFn: async ({ id, title }: { id: string; title: string }) => {
+  const updateThreadTitle = useMutation({
+    mutationFn: async ({ threadId, title }: { threadId: string; title: string }) => {
       const { error } = await supabase
-        .from('chat_sessions')
+        .from('chat_threads')
         .update({ title })
-        .eq('id', id);
+        .eq('thread_id', threadId);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat-sessions', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['chat-threads', user?.id] });
     },
     onError: (error) => {
       console.error('Error updating chat title:', error);
@@ -170,15 +199,15 @@ export const useChat = (sessionId?: string) => {
   });
 
   return {
-    sessions,
+    threads,
     messages,
-    currentSessionId,
-    setCurrentSessionId,
+    currentThreadId,
+    setCurrentThreadId,
     sendMessage,
-    createSession,
-    deleteSession,
-    updateSessionTitle,
-    isLoadingSessions,
+    createThread,
+    deleteThread,
+    updateThreadTitle,
+    isLoadingThreads,
     isLoadingMessages
   };
 };
