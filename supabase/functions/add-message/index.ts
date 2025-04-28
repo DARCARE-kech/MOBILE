@@ -26,13 +26,13 @@ serve(async (req) => {
       throw new Error('thread_id is required');
     }
 
-    // Add a message to the thread
+    // Add a message to the thread using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/messages`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v1'
+        'OpenAI-Beta': 'assistants=v2'
       },
       body: JSON.stringify({
         role: role || 'user',

@@ -9,11 +9,11 @@ export const useMessageManagement = (threadId: string | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Charger les messages quand threadId change
+  // Load messages when threadId changes
   useEffect(() => {
     if (threadId) {
       loadThreadMessages(threadId).catch(error => {
-        console.error('Erreur lors du chargement des messages:', error);
+        console.error('Error loading messages:', error);
       });
     }
   }, [threadId]);
@@ -41,10 +41,10 @@ export const useMessageManagement = (threadId: string | null) => {
       
       setMessages(formattedMessages);
     } catch (error) {
-      console.error('Erreur lors du chargement des messages du thread:', error);
+      console.error('Error loading thread messages:', error);
       toast({
-        title: 'Erreur',
-        description: 'Impossible de charger les messages précédents.',
+        title: 'Error',
+        description: 'Could not load previous messages.',
         variant: 'destructive'
       });
     } finally {
@@ -87,10 +87,10 @@ export const useMessageManagement = (threadId: string | null) => {
       
       await pollForCompletion(threadId, runResponse.data.id);
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du message:', error);
+      console.error('Error sending message:', error);
       toast({
-        title: 'Erreur',
-        description: 'Impossible d\'envoyer votre message.',
+        title: 'Error',
+        description: 'Could not send your message.',
         variant: 'destructive'
       });
       setIsLoading(false);
@@ -125,15 +125,15 @@ export const useMessageManagement = (threadId: string | null) => {
         } else if (run.status === 'failed' || run.status === 'cancelled') {
           clearInterval(intervalId);
           if (timeoutId) clearTimeout(timeoutId);
-          throw new Error(`Exécution ${run.status}: ${run.last_error?.message || 'Erreur inconnue'}`);
+          throw new Error(`Run ${run.status}: ${run.last_error?.message || 'Unknown error'}`);
         }
       } catch (error) {
         clearInterval(intervalId);
         if (timeoutId) clearTimeout(timeoutId);
-        console.error('Erreur lors de la vérification du statut:', error);
+        console.error('Error checking status:', error);
         toast({
-          title: 'Erreur',
-          description: 'Impossible d\'obtenir une réponse de l\'assistant.',
+          title: 'Error',
+          description: 'Could not get a response from the assistant.',
           variant: 'destructive'
         });
         setIsLoading(false);
@@ -146,8 +146,8 @@ export const useMessageManagement = (threadId: string | null) => {
       clearInterval(intervalId);
       if (isLoading) {
         toast({
-          title: 'Délai dépassé',
-          description: 'L\'assistant prend plus de temps que prévu pour répondre.',
+          title: 'Timeout',
+          description: 'The assistant is taking longer than expected to respond.',
           variant: 'destructive'
         });
         setIsLoading(false);

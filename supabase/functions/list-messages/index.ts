@@ -26,13 +26,13 @@ serve(async (req) => {
       throw new Error('thread_id is required');
     }
 
-    // Fetch messages from the thread
+    // Fetch messages from the thread using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/messages?limit=100`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v1'
+        'OpenAI-Beta': 'assistants=v2'
       },
     });
 

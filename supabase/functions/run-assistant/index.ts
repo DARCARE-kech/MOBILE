@@ -28,13 +28,13 @@ serve(async (req) => {
 
     const effective_assistant_id = assistant_id || 'asst_lVVTwlHHW2pHH0gPKYcLmXXz';
 
-    // Run the assistant on the thread
+    // Run the assistant on the thread using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/runs`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v1'
+        'OpenAI-Beta': 'assistants=v2'
       },
       body: JSON.stringify({
         assistant_id: effective_assistant_id

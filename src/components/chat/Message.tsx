@@ -1,6 +1,9 @@
 
 import React from 'react';
 import { AssistantMessage } from '@/types/chat';
+import { cn } from '@/lib/utils';
+import { Avatar } from '@/components/ui/avatar';
+import { User, Bot } from 'lucide-react';
 
 export interface MessageProps {
   message: AssistantMessage;
@@ -8,18 +11,31 @@ export interface MessageProps {
 
 const Message: React.FC<MessageProps> = ({ message }) => {
   const isUser = message.role === 'user';
-
+  
   return (
-    <div className={`flex mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex items-start gap-3 mb-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      {!isUser && (
+        <Avatar className="bg-darcare-gold/20 border border-darcare-gold/30 text-darcare-gold h-8 w-8">
+          <Bot className="h-4 w-4" />
+        </Avatar>
+      )}
+      
       <div
-        className={`${
-          isUser
-            ? 'bg-primary text-primary-foreground rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl'
-            : 'bg-muted rounded-tl-2xl rounded-tr-2xl rounded-br-2xl'
-        } p-4 max-w-[80%]`}
+        className={cn(
+          "px-4 py-3 rounded-xl max-w-[80%] shadow-sm",
+          isUser 
+            ? "bg-darcare-gold text-darcare-navy rounded-tr-none" 
+            : "bg-darcare-navy/50 border border-darcare-gold/20 text-darcare-beige rounded-tl-none"
+        )}
       >
-        <p className="whitespace-pre-wrap">{message.content}</p>
+        <p className="whitespace-pre-wrap text-sm">{message.content}</p>
       </div>
+      
+      {isUser && (
+        <Avatar className="bg-darcare-gold text-darcare-navy h-8 w-8">
+          <User className="h-4 w-4" />
+        </Avatar>
+      )}
     </div>
   );
 };

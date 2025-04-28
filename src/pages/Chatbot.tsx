@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Loader2, MessageSquare, History } from 'lucide-react';
+import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
 import MessageInput from '@/components/chat/MessageInput';
@@ -16,7 +16,7 @@ import { useToast } from '@/components/ui/use-toast';
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { messages, sendMessage, isLoading, isListening, toggleListening, threadId } = useAssistant();
+  const { messages, sendMessage, isLoading, threadId } = useAssistant();
   const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -40,8 +40,8 @@ const ChatbotPage: React.FC = () => {
     
     if (!threadId) {
       toast({
-        title: 'Erreur',
-        description: 'Connexion à l\'assistant en cours. Veuillez réessayer dans quelques instants.',
+        title: 'Error',
+        description: 'Assistant connection in progress. Please try again in a moment.',
         variant: 'destructive'
       });
       return;
@@ -50,10 +50,10 @@ const ChatbotPage: React.FC = () => {
     try {
       await sendMessage(content);
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du message:', error);
+      console.error('Error sending message:', error);
       toast({
-        title: 'Erreur',
-        description: 'Impossible d\'envoyer votre message.',
+        title: 'Error',
+        description: 'Could not send your message.',
         variant: 'destructive'
       });
     }
@@ -71,7 +71,7 @@ const ChatbotPage: React.FC = () => {
             size="icon"
             onClick={() => navigate('/chat-history')}
             className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            title="Historique des conversations"
+            title="Conversation History"
           >
             <History className="h-5 w-5" />
           </Button>
@@ -95,22 +95,24 @@ const ChatbotPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {messages?.map((message, index) => (
-              <Message 
-                key={message.id || index} 
-                message={message}
-              />
-            ))}
-            {(!messages || messages.length === 0) && (
+            {messages?.length > 0 ? (
+              messages.map((message, index) => (
+                <Message 
+                  key={message.id || index} 
+                  message={message}
+                />
+              ))
+            ) : (
               <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
                 <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-                <p>{t('chatbot.startConversation') || "Commencez la conversation..."}</p>
+                <p>{t('chatbot.startConversation') || "Start the conversation..."}</p>
               </div>
             )}
+            
             {isLoading && messages.length > 0 && (
               <div className="flex items-center gap-2 text-darcare-beige/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>DarCare Assistant réfléchit...</span>
+                <span>DarCare Assistant is thinking...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -122,8 +124,6 @@ const ChatbotPage: React.FC = () => {
         <MessageInput
           onSend={handleSend}
           disabled={isLoading}
-          isListening={isListening}
-          onToggleVoice={toggleListening}
         />
       </div>
       

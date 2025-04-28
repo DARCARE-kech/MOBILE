@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { ThreadResponse } from '@/types/assistant';
 
 export const useThreadManagement = () => {
   const [threadId, setThreadId] = useState<string | null>(null);
@@ -18,7 +17,7 @@ export const useThreadManagement = () => {
 
   const getOrCreateThread = async () => {
     try {
-      // Tentative de récupération d'un thread existant
+      // Try to retrieve an existing thread
       const { data: existingThreads, error: fetchError } = await supabase
         .from('chat_threads')
         .select('thread_id')
@@ -26,7 +25,7 @@ export const useThreadManagement = () => {
         .maybeSingle();
 
       if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error("Erreur de récupération du thread:", fetchError);
+        console.error("Error retrieving thread:", fetchError);
         throw fetchError;
       }
 
@@ -35,15 +34,15 @@ export const useThreadManagement = () => {
         return;
       }
 
-      // Si aucun thread n'existe, en créer un nouveau
+      // If no thread exists, create a new one
       const newThread = await createThread();
       await saveThread(newThread.id);
       setThreadId(newThread.id);
     } catch (error) {
-      console.error('Erreur lors de la configuration du thread de chat:', error);
+      console.error('Error setting up chat thread:', error);
       toast({
-        title: 'Erreur de connexion',
-        description: 'Nous n\'avons pas pu vous connecter à l\'assistant pour le moment.',
+        title: 'Connection error',
+        description: 'We couldn\'t connect you to the assistant at this time.',
         variant: 'destructive'
       });
     }
