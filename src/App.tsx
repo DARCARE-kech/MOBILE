@@ -24,6 +24,11 @@ import ContactAdmin from "@/pages/ContactAdmin";
 import Favorites from "@/pages/explore/Favorites";
 import RequestDetailPage from "@/pages/services/RequestDetailPage";
 import StayDetailsPage from "@/pages/stays/StayDetailsPage"
+import EditProfile from "@/pages/profile/EditProfile"
+import HelpSupportPage from "@/pages/profile/HelpSupportPage"
+import AboutPage from "@/pages/profile/AboutPage"
+import ChangePassword from "@/pages/profile/ChangePassword"
+import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage"
 
 // Create a client
 const queryClient = new QueryClient();
@@ -93,6 +98,26 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+  },
+   {
+    path: "/profile/edit",
+    element: < EditProfile />,
+  },
+  {
+    path: "/profile/help",
+    element: < HelpSupportPage />,
+  },
+  {
+    path: "/profile/about",
+    element: < AboutPage />,
+  },
+  {
+    path: "/profile/privacy",
+    element: < PrivacySecurityPage />,
+  },
+  {
+    path: "/profile/change-password",
+    element: < ChangePassword />,
   },
   {
     path: "/services/laundry",
