@@ -98,6 +98,30 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_threads: {
+        Row: {
+          created_at: string | null
+          id: string
+          thread_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          thread_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          thread_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string | null
