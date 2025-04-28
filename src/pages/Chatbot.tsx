@@ -11,13 +11,15 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAssistant } from '@/hooks/useAssistant';
 import Message from '@/components/chat/Message';
+import { useToast } from '@/components/ui/use-toast';
 
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { messages, sendMessage, isLoading, isListening, toggleListening } = useAssistant();
+  const { messages, sendMessage, isLoading, isListening, toggleListening, threadId } = useAssistant();
   const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -35,13 +37,32 @@ const ChatbotPage: React.FC = () => {
 
   const handleSend = async (content: string) => {
     if (!content.trim()) return;
-    await sendMessage(content);
+    
+    if (!threadId) {
+      toast({
+        title: 'Erreur',
+        description: 'Connexion à l\'assistant en cours. Veuillez réessayer dans quelques instants.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    try {
+      await sendMessage(content);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible d\'envoyer votre message.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
       <MainHeader 
-        title={t('navigation.chatbot')}
+        title={t('navigation.chatbot') || "DarCare Assistant"}
         onBack={() => navigate("/home")}
       >
         <div className="flex items-center gap-2">
@@ -50,7 +71,7 @@ const ChatbotPage: React.FC = () => {
             size="icon"
             onClick={() => navigate('/chat-history')}
             className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            title="Chat History"
+            title="Historique des conversations"
           >
             <History className="h-5 w-5" />
           </Button>
@@ -83,13 +104,13 @@ const ChatbotPage: React.FC = () => {
             {(!messages || messages.length === 0) && (
               <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
                 <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-                <p>{t('chatbot.startConversation')}</p>
+                <p>{t('chatbot.startConversation') || "Commencez la conversation..."}</p>
               </div>
             )}
             {isLoading && messages.length > 0 && (
               <div className="flex items-center gap-2 text-darcare-beige/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>DarCare Assistant is thinking...</span>
+                <span>DarCare Assistant réfléchit...</span>
               </div>
             )}
             <div ref={messagesEndRef} />

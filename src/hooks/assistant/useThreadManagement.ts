@@ -18,24 +18,32 @@ export const useThreadManagement = () => {
 
   const getOrCreateThread = async () => {
     try {
-      const { data: threadData, error: threadError } = await supabase.functions.invoke<ThreadResponse>('get-user-thread', {
-        body: { user_id: user?.id }
-      });
+      // Tentative de récupération d'un thread existant
+      const { data: existingThreads, error: fetchError } = await supabase
+        .from('chat_threads')
+        .select('thread_id')
+        .eq('user_id', user?.id)
+        .maybeSingle();
 
-      if (threadError) throw threadError;
-
-      if (threadData?.thread_id) {
-        setThreadId(threadData.thread_id);
-      } else {
-        const newThread = await createThread();
-        await saveThread(newThread.id);
-        setThreadId(newThread.id);
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error("Erreur de récupération du thread:", fetchError);
+        throw fetchError;
       }
+
+      if (existingThreads?.thread_id) {
+        setThreadId(existingThreads.thread_id);
+        return;
+      }
+
+      // Si aucun thread n'existe, en créer un nouveau
+      const newThread = await createThread();
+      await saveThread(newThread.id);
+      setThreadId(newThread.id);
     } catch (error) {
-      console.error('Error setting up chat thread:', error);
+      console.error('Erreur lors de la configuration du thread de chat:', error);
       toast({
-        title: 'Error setting up chat',
-        description: 'We couldn\'t connect you to the assistant right now.',
+        title: 'Erreur de connexion',
+        description: 'Nous n\'avons pas pu vous connecter à l\'assistant pour le moment.',
         variant: 'destructive'
       });
     }
@@ -57,12 +65,11 @@ export const useThreadManagement = () => {
   };
 
   const saveThread = async (threadId: string) => {
-    const { error: saveError } = await supabase.functions.invoke('save-user-thread', {
-      body: {
-        user_id: user?.id,
-        thread_id: threadId
-      }
-    });
+    const { error: saveError } = await supabase
+      .from('chat_threads')
+      .insert([
+        { user_id: user?.id, thread_id: threadId }
+      ]);
 
     if (saveError) {
       throw saveError;

@@ -1,17 +1,26 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { AssistantMessage } from '@/types/chat';
-import { MessageResponse } from '@/types/assistant';
 
 export const useMessageManagement = (threadId: string | null) => {
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // Charger les messages quand threadId change
+  useEffect(() => {
+    if (threadId) {
+      loadThreadMessages(threadId).catch(error => {
+        console.error('Erreur lors du chargement des messages:', error);
+      });
+    }
+  }, [threadId]);
+
   const loadThreadMessages = async (threadId: string) => {
     try {
+      setIsLoading(true);
       const response = await supabase.functions.invoke('list-messages', {
         body: { 
           thread_id: threadId,
@@ -23,7 +32,7 @@ export const useMessageManagement = (threadId: string | null) => {
         throw new Error(response.error.message);
       }
       
-      const formattedMessages = response.data.map((msg: any) => ({
+      const formattedMessages = (response.data || []).map((msg: any) => ({
         role: msg.role,
         content: msg.content[0]?.text?.value || '',
         id: msg.id,
@@ -32,8 +41,14 @@ export const useMessageManagement = (threadId: string | null) => {
       
       setMessages(formattedMessages);
     } catch (error) {
-      console.error('Error loading thread messages:', error);
-      throw error;
+      console.error('Erreur lors du chargement des messages du thread:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de charger les messages précédents.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,10 +87,10 @@ export const useMessageManagement = (threadId: string | null) => {
       
       await pollForCompletion(threadId, runResponse.data.id);
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Erreur lors de l\'envoi du message:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to send your message.',
+        title: 'Erreur',
+        description: 'Impossible d\'envoyer votre message.',
         variant: 'destructive'
       });
       setIsLoading(false);
@@ -83,7 +98,10 @@ export const useMessageManagement = (threadId: string | null) => {
   };
 
   const pollForCompletion = async (threadId: string, runId: string) => {
-    const pollInterval = setInterval(async () => {
+    let intervalId: number | undefined;
+    let timeoutId: number | undefined;
+
+    const poll = async () => {
       try {
         const statusResponse = await supabase.functions.invoke('check-run', {
           body: {
@@ -100,36 +118,41 @@ export const useMessageManagement = (threadId: string | null) => {
         const run = statusResponse.data;
         
         if (run.status === 'completed') {
-          clearInterval(pollInterval);
+          clearInterval(intervalId);
+          if (timeoutId) clearTimeout(timeoutId);
           await loadThreadMessages(threadId);
           setIsLoading(false);
         } else if (run.status === 'failed' || run.status === 'cancelled') {
-          clearInterval(pollInterval);
-          throw new Error(`Run ${run.status}: ${run.last_error?.message || 'Unknown error'}`);
+          clearInterval(intervalId);
+          if (timeoutId) clearTimeout(timeoutId);
+          throw new Error(`Exécution ${run.status}: ${run.last_error?.message || 'Erreur inconnue'}`);
         }
       } catch (error) {
-        clearInterval(pollInterval);
-        console.error('Error polling run status:', error);
+        clearInterval(intervalId);
+        if (timeoutId) clearTimeout(timeoutId);
+        console.error('Erreur lors de la vérification du statut:', error);
         toast({
-          title: 'Error',
-          description: 'Failed to get a response from the assistant.',
+          title: 'Erreur',
+          description: 'Impossible d\'obtenir une réponse de l\'assistant.',
           variant: 'destructive'
         });
         setIsLoading(false);
       }
-    }, 1000);
+    };
 
-    setTimeout(() => {
-      clearInterval(pollInterval);
+    intervalId = setInterval(poll, 1000) as unknown as number;
+
+    timeoutId = setTimeout(() => {
+      clearInterval(intervalId);
       if (isLoading) {
         toast({
-          title: 'Taking too long',
-          description: 'The assistant is taking longer than expected to respond.',
+          title: 'Délai dépassé',
+          description: 'L\'assistant prend plus de temps que prévu pour répondre.',
           variant: 'destructive'
         });
         setIsLoading(false);
       }
-    }, 30000);
+    }, 30000) as unknown as number;
   };
 
   return {
