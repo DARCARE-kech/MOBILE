@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Loader2, MessageSquare } from 'lucide-react';
+import { Mail, Loader2, MessageSquare, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
 import MessageInput from '@/components/chat/MessageInput';
@@ -15,7 +15,7 @@ import Message from '@/components/chat/Message';
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { messages, sendMessage, isLoading } = useAssistant();
+  const { messages, sendMessage, isLoading, isListening, toggleListening } = useAssistant();
   const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -39,12 +39,21 @@ const ChatbotPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-darcare-navy flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
       <MainHeader 
         title={t('navigation.chatbot')}
         onBack={() => navigate("/home")}
       >
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/chat-history')}
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+            title="Chat History"
+          >
+            <History className="h-5 w-5" />
+          </Button>
           <Button
             variant="ghost"
             size="icon"
@@ -88,10 +97,12 @@ const ChatbotPage: React.FC = () => {
         )}
       </ScrollArea>
 
-      <div className="fixed bottom-16 left-0 right-0 px-4 py-2 bg-darcare-navy border-t border-darcare-gold/20">
+      <div className="fixed bottom-16 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20">
         <MessageInput
           onSend={handleSend}
           disabled={isLoading}
+          isListening={isListening}
+          onToggleVoice={toggleListening}
         />
       </div>
       

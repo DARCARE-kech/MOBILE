@@ -20,6 +20,7 @@ import Auth from "@/pages/Auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import RecommendationDetail from "@/pages/explore/RecommendationDetail";
 import Chatbot from "@/pages/Chatbot";
+import ChatHistory from "@/pages/ChatHistory";
 import ContactAdmin from "@/pages/ContactAdmin";
 import Favorites from "@/pages/explore/Favorites";
 import RequestDetailPage from "@/pages/services/RequestDetailPage";
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
   {
     path: "/chatbot",
     element: <Chatbot />,
+  },
+  {
+    path: "/chat-history",
+    element: <ChatHistory />,
   },
   {
     path: "/contact-admin",

@@ -13,7 +13,10 @@ export const useMessageManagement = (threadId: string | null) => {
   const loadThreadMessages = async (threadId: string) => {
     try {
       const response = await supabase.functions.invoke('list-messages', {
-        body: { thread_id: threadId }
+        body: { 
+          thread_id: threadId,
+          assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
+        }
       });
       
       if (response.error) {
@@ -59,7 +62,7 @@ export const useMessageManagement = (threadId: string | null) => {
       const runResponse = await supabase.functions.invoke('run-assistant', {
         body: {
           thread_id: threadId,
-          assistant_id: 'asst_Yh87yZ3mNeMJS6W5TeVobQ1S'
+          assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
         }
       });
       
@@ -85,7 +88,8 @@ export const useMessageManagement = (threadId: string | null) => {
         const statusResponse = await supabase.functions.invoke('check-run', {
           body: {
             thread_id: threadId,
-            run_id: runId
+            run_id: runId,
+            assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
           }
         });
         

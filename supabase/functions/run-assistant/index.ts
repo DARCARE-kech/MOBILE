@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || 'sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,9 +26,7 @@ serve(async (req) => {
       throw new Error('thread_id is required');
     }
 
-    if (!assistant_id) {
-      throw new Error('assistant_id is required');
-    }
+    const effective_assistant_id = assistant_id || 'asst_lVVTwlHHW2pHH0gPKYcLmXXz';
 
     // Run the assistant on the thread
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/runs`, {
@@ -39,7 +37,7 @@ serve(async (req) => {
         'OpenAI-Beta': 'assistants=v1'
       },
       body: JSON.stringify({
-        assistant_id,
+        assistant_id: effective_assistant_id
       })
     });
 
