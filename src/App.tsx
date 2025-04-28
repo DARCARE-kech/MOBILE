@@ -23,6 +23,7 @@ import Chatbot from "@/pages/Chatbot";
 import ContactAdmin from "@/pages/ContactAdmin";
 import Favorites from "@/pages/explore/Favorites";
 import RequestDetailPage from "@/pages/services/RequestDetailPage";
+import StayDetailsPage from "@/pages/stays/StayDetailsPage"
 
 // Create a client
 const queryClient = new QueryClient();
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
   {
     path: "/notifications",
     element: <Notifications />,
+  },
+  {
+    path: "/stays/details",
+    element: <StayDetailsPage />,
   },
   {
     path: "/profile",
