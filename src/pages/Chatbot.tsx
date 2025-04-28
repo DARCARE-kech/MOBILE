@@ -68,14 +68,7 @@ const ChatbotPage: React.FC = () => {
             {messages?.map((message, index) => (
               <Message 
                 key={message.id || index} 
-                message={{
-                  id: message.id || `temp-${index}`,
-                  session_id: '',
-                  user_id: '',
-                  content: message.content,
-                  sender: message.role === 'user' ? 'user' : 'bot',
-                  timestamp: message.timestamp || new Date().toISOString(),
-                }}
+                message={message}
               />
             ))}
             {(!messages || messages.length === 0) && (
