@@ -9,15 +9,6 @@ export const useMessageManagement = (threadId: string | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Load messages when threadId changes
-  useEffect(() => {
-    if (threadId) {
-      loadThreadMessages(threadId).catch(error => {
-        console.error('Error loading messages:', error);
-      });
-    }
-  }, [threadId]);
-
   const loadThreadMessages = async (threadId: string) => {
     try {
       setIsLoading(true);
@@ -42,7 +33,7 @@ export const useMessageManagement = (threadId: string | null) => {
       console.error('Error loading thread messages:', error);
       toast({
         title: 'Error',
-        description: 'Could not load previous messages.',
+        description: 'Could not load messages.',
         variant: 'destructive'
       });
       return [];
@@ -51,28 +42,38 @@ export const useMessageManagement = (threadId: string | null) => {
     }
   };
 
+  const addMessageToState = (message: AssistantMessage) => {
+    setMessages(prev => [...prev, message]);
+  };
+
   const sendMessage = async (content: string) => {
     if (!threadId || !content.trim()) return;
     
-    const userMessage: AssistantMessage = {
+    // Optimistically add user message to state
+    const tempMessage: AssistantMessage = {
       role: 'user',
-      content,
+      content: content.trim(),
       id: `temp-${Date.now()}`,
-      timestamp: Date.now().toString()
+      timestamp: new Date().toISOString()
     };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
+    addMessageToState(tempMessage);
     
     try {
-      await supabase.functions.invoke('add-message', {
+      setIsLoading(true);
+      // Add message to thread
+      const addMessageResponse = await supabase.functions.invoke('add-message', {
         body: {
           thread_id: threadId,
-          content,
+          content: content.trim(),
           role: 'user'
         }
       });
       
+      if (addMessageResponse.error) {
+        throw new Error(addMessageResponse.error.message);
+      }
+
+      // Run the assistant
       const runResponse = await supabase.functions.invoke('run-assistant', {
         body: {
           thread_id: threadId,
@@ -83,7 +84,7 @@ export const useMessageManagement = (threadId: string | null) => {
       if (runResponse.error) {
         throw new Error(runResponse.error.message);
       }
-      
+
       await pollForCompletion(threadId, runResponse.data.id);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -155,6 +156,13 @@ export const useMessageManagement = (threadId: string | null) => {
     }, 30000) as unknown as number;
   };
 
+  // Load messages when threadId changes
+  useEffect(() => {
+    if (threadId) {
+      loadThreadMessages(threadId);
+    }
+  }, [threadId]);
+
   return {
     messages,
     sendMessage,
@@ -162,3 +170,4 @@ export const useMessageManagement = (threadId: string | null) => {
     loadThreadMessages
   };
 };
+

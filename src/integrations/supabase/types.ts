@@ -39,65 +39,6 @@ export type Database = {
         }
         Relationships: []
       }
-      chat_messages: {
-        Row: {
-          content: string
-          id: string
-          sender: Database["public"]["Enums"]["sender_type"]
-          session_id: string
-          timestamp: string
-          user_id: string
-        }
-        Insert: {
-          content: string
-          id?: string
-          sender: Database["public"]["Enums"]["sender_type"]
-          session_id: string
-          timestamp?: string
-          user_id: string
-        }
-        Update: {
-          content?: string
-          id?: string
-          sender?: Database["public"]["Enums"]["sender_type"]
-          session_id?: string
-          timestamp?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_messages_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "chat_sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      chat_sessions: {
-        Row: {
-          created_at: string
-          id: string
-          title: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          title?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       chat_threads: {
         Row: {
           created_at: string | null
