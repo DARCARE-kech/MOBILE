@@ -22,10 +22,7 @@ export const useMessageManagement = (threadId: string | null) => {
     try {
       setIsLoading(true);
       const response = await supabase.functions.invoke('list-messages', {
-        body: { 
-          thread_id: threadId,
-          assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
-        }
+        body: { thread_id: threadId }
       });
       
       if (response.error) {
@@ -40,6 +37,7 @@ export const useMessageManagement = (threadId: string | null) => {
       })).reverse();
       
       setMessages(formattedMessages);
+      return formattedMessages;
     } catch (error) {
       console.error('Error loading thread messages:', error);
       toast({
@@ -47,6 +45,7 @@ export const useMessageManagement = (threadId: string | null) => {
         description: 'Could not load previous messages.',
         variant: 'destructive'
       });
+      return [];
     } finally {
       setIsLoading(false);
     }
@@ -106,8 +105,7 @@ export const useMessageManagement = (threadId: string | null) => {
         const statusResponse = await supabase.functions.invoke('check-run', {
           body: {
             thread_id: threadId,
-            run_id: runId,
-            assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
+            run_id: runId
           }
         });
         
@@ -116,6 +114,7 @@ export const useMessageManagement = (threadId: string | null) => {
         }
         
         const run = statusResponse.data;
+        console.log("Run status:", run.status);
         
         if (run.status === 'completed') {
           clearInterval(intervalId);
@@ -142,6 +141,7 @@ export const useMessageManagement = (threadId: string | null) => {
 
     intervalId = setInterval(poll, 1000) as unknown as number;
 
+    // Set a timeout for 30 seconds
     timeoutId = setTimeout(() => {
       clearInterval(intervalId);
       if (isLoading) {

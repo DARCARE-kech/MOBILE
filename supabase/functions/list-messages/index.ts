@@ -26,6 +26,8 @@ serve(async (req) => {
       throw new Error('thread_id is required');
     }
 
+    console.log(`Listing messages for thread ${thread_id}`);
+
     // Fetch messages from the thread using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/messages?limit=100`, {
       method: 'GET',
@@ -38,10 +40,13 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.json();
+      console.error("Error from OpenAI when listing messages:", error);
       throw new Error(error.error?.message || 'Failed to fetch messages');
     }
 
     const { data } = await response.json();
+    console.log(`Successfully retrieved ${data.length} messages`);
+    
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

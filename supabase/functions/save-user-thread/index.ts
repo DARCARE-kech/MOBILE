@@ -30,6 +30,8 @@ serve(async (req) => {
       throw new Error('User ID and Thread ID are required');
     }
 
+    console.log(`Saving thread ${thread_id} for user ${user_id}`);
+
     // Insert or update the thread
     const { data, error } = await supabase
       .from('chat_threads')
@@ -39,9 +41,12 @@ serve(async (req) => {
       });
 
     if (error) {
+      console.error("Error saving thread to database:", error);
       throw error;
     }
 
+    console.log("Thread saved successfully to database");
+    
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

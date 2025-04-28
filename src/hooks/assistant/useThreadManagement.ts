@@ -36,7 +36,7 @@ export const useThreadManagement = () => {
 
       // If no thread exists, create a new one
       const newThread = await createThread();
-      await saveThread(newThread.id);
+      await saveUserThread(user?.id, newThread.id);
       setThreadId(newThread.id);
     } catch (error) {
       console.error('Error setting up chat thread:', error);
@@ -63,20 +63,24 @@ export const useThreadManagement = () => {
     return response.data;
   };
 
-  const saveThread = async (threadId: string) => {
-    const { error: saveError } = await supabase
-      .from('chat_threads')
-      .insert([
-        { user_id: user?.id, thread_id: threadId }
-      ]);
-
-    if (saveError) {
-      throw saveError;
+  const saveUserThread = async (userId: string | undefined, threadId: string) => {
+    if (!userId) return;
+    
+    const response = await supabase.functions.invoke('save-user-thread', {
+      body: { user_id: userId, thread_id: threadId }
+    });
+    
+    if (response.error) {
+      throw new Error(response.error.message);
     }
+    
+    return response.data;
   };
 
   return {
     threadId,
     setThreadId,
+    createThread,
+    saveUserThread
   };
 };

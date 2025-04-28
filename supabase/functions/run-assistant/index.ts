@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || 'sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx';
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -28,6 +28,8 @@ serve(async (req) => {
 
     const effective_assistant_id = assistant_id || 'asst_lVVTwlHHW2pHH0gPKYcLmXXz';
 
+    console.log(`Running assistant ${effective_assistant_id} on thread ${thread_id}`);
+
     // Run the assistant on the thread using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/runs`, {
       method: 'POST',
@@ -43,10 +45,13 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.json();
+      console.error("Error from OpenAI when running assistant:", error);
       throw new Error(error.error?.message || 'Failed to run assistant');
     }
 
     const run = await response.json();
+    console.log("Assistant run created successfully:", run.id);
+    
     return new Response(JSON.stringify(run), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

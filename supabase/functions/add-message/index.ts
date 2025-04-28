@@ -26,6 +26,8 @@ serve(async (req) => {
       throw new Error('thread_id is required');
     }
 
+    console.log(`Adding message to thread ${thread_id}: ${content}`);
+
     // Add a message to the thread using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/messages`, {
       method: 'POST',
@@ -42,10 +44,13 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.json();
+      console.error("Error from OpenAI when adding message:", error);
       throw new Error(error.error?.message || 'Failed to add message');
     }
 
     const message = await response.json();
+    console.log("Message added successfully:", message.id);
+    
     return new Response(JSON.stringify(message), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -42,10 +42,13 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.json();
+      console.error("OpenAI thread creation failed:", error);
       throw new Error(error.error?.message || 'Failed to create thread');
     }
 
     const thread = await response.json();
+    console.log("Thread created successfully:", thread.id);
+    
     return new Response(JSON.stringify(thread), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

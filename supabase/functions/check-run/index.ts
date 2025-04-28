@@ -26,6 +26,8 @@ serve(async (req) => {
       throw new Error('thread_id and run_id are required');
     }
 
+    console.log(`Checking run ${run_id} on thread ${thread_id}`);
+
     // Check run status using v2 API
     const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/runs/${run_id}`, {
       method: 'GET',
@@ -38,10 +40,13 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.json();
+      console.error("Error from OpenAI when checking run status:", error);
       throw new Error(error.error?.message || 'Failed to check run status');
     }
 
     const run = await response.json();
+    console.log(`Run status: ${run.status}`);
+    
     return new Response(JSON.stringify(run), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

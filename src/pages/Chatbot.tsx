@@ -1,6 +1,6 @@
 
-import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
@@ -12,14 +12,56 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAssistant } from '@/hooks/useAssistant';
 import Message from '@/components/chat/Message';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { messages, sendMessage, isLoading, threadId } = useAssistant();
   const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [initializing, setInitializing] = useState(true);
+
+  // Parse thread ID from URL if present
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const threadParam = queryParams.get('thread');
+    
+    if (threadParam && user) {
+      // If thread ID is in URL, need to verify it belongs to user
+      const checkThreadOwnership = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('chat_threads')
+            .select('thread_id')
+            .eq('thread_id', threadParam)
+            .eq('user_id', user.id)
+            .single();
+          
+          if (error || !data) {
+            console.error("Thread ownership verification failed:", error);
+            toast({
+              title: 'Error',
+              description: 'Could not access the requested conversation.',
+              variant: 'destructive'
+            });
+            // Redirect to main chatbot page without thread param
+            navigate('/chatbot', { replace: true });
+          }
+        } catch (error) {
+          console.error("Thread verification error:", error);
+        } finally {
+          setInitializing(false);
+        }
+      };
+      
+      checkThreadOwnership();
+    } else {
+      setInitializing(false);
+    }
+  }, [location.search, user, navigate]);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -38,15 +80,6 @@ const ChatbotPage: React.FC = () => {
   const handleSend = async (content: string) => {
     if (!content.trim()) return;
     
-    if (!threadId) {
-      toast({
-        title: 'Error',
-        description: 'Assistant connection in progress. Please try again in a moment.',
-        variant: 'destructive'
-      });
-      return;
-    }
-    
     try {
       await sendMessage(content);
     } catch (error) {
@@ -58,6 +91,16 @@ const ChatbotPage: React.FC = () => {
       });
     }
   };
+
+  // Show loading state while initializing thread management
+  if (initializing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        <p className="text-darcare-beige mt-4">Connecting to assistant...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
