@@ -52,7 +52,7 @@ export const useThreadManagement = () => {
     const response = await supabase.functions.invoke('create-thread', {
       body: { 
         user_id: user?.id,
-        assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
+        assistant_id: 'asst_5KqcDXQaMYqTDLKQxbQmrSBy'
       }
     });
     

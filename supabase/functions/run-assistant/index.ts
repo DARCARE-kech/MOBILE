@@ -26,7 +26,7 @@ serve(async (req) => {
       throw new Error('thread_id is required');
     }
 
-    const effective_assistant_id = assistant_id || 'asst_lVVTwlHHW2pHH0gPKYcLmXXz';
+    const effective_assistant_id = assistant_id || 'asst_5KqcDXQaMYqTDLKQxbQmrSBy';
 
     console.log(`Running assistant ${effective_assistant_id} on thread ${thread_id}`);
 

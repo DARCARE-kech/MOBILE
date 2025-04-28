@@ -76,7 +76,7 @@ export const useMessageManagement = (threadId: string | null) => {
       const runResponse = await supabase.functions.invoke('run-assistant', {
         body: {
           thread_id: threadId,
-          assistant_id: 'asst_lVVTwlHHW2pHH0gPKYcLmXXz'
+          assistant_id: 'asst_5KqcDXQaMYqTDLKQxbQmrSBy'
         }
       });
       

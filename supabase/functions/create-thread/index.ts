@@ -22,7 +22,9 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
-    const effective_assistant_id = assistant_id || 'asst_lVVTwlHHW2pHH0gPKYcLmXXz';
+    const effective_assistant_id = assistant_id || 'asst_5KqcDXQaMYqTDLKQxbQmrSBy';
+
+    console.log(`Creating thread for assistant ${effective_assistant_id}`);
 
     // Create a thread with OpenAI using the v2 API
     const response = await fetch('https://api.openai.com/v1/threads', {
