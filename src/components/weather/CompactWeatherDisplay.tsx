@@ -23,6 +23,7 @@ const CompactWeatherDisplay = ({ className, onExpand }: CompactWeatherDisplayPro
     <button 
       className={cn("flex items-center gap-1 text-primary cursor-pointer hover:opacity-80", className)}
       onClick={onExpand}
+      aria-label="Show weather details"
     >
       {isLoading ? (
         <CloudSun size={18} className="animate-pulse" />
