@@ -8,7 +8,7 @@ import {
   LuxuryCardTitle
 } from '@/components/ui/luxury-card';
 import { useTranslation } from 'react-i18next';
-import { ServiceDetail } from './formHelpers';
+import { ServiceDetail } from '@/hooks/services/types';
 
 interface ServiceDetailsCardProps {
   serviceName: string | undefined;

@@ -7,4 +7,3 @@ import type { UseServiceRequestResult, ServiceDetail, ServiceFormData } from './
 
 export type { ServiceLocationState, UseServiceRequestResult, ServiceDetail, ServiceFormData };
 export { useServiceRequest, useServiceRequestById };
-
