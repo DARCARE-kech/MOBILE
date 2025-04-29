@@ -8,7 +8,7 @@ import DynamicServiceForm from '@/components/services/DynamicServiceForm';
 import { FormData } from '@/components/services/form/formHelpers';
 import ServiceRequestHeader from '@/components/services/ServiceRequestHeader';
 import ServiceRequestLoader from '@/components/services/ServiceRequestLoader';
-import { useServiceRequest } from '@/hooks/useServiceRequest';
+import { useServiceRequest as useServiceRequestForForm } from '@/hooks/useServiceRequest.tsx';
 import { useServiceSubmitter } from '@/components/services/ServiceRequestSubmitter';
 
 const ServiceRequestForm: React.FC = () => {
@@ -24,7 +24,7 @@ const ServiceRequestForm: React.FC = () => {
     isLoading,
     enhanceOptionalFields,
     getServiceTitle
-  } = useServiceRequest();
+  } = useServiceRequestForForm();
   
   // Use our custom hook to handle form submission
   const { handleSubmitRequest } = useServiceSubmitter({

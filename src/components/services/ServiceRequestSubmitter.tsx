@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { FormData } from '@/components/services/form/formHelpers';
-import { ServiceLocationState } from '@/hooks/useServiceRequest';
+import { ServiceLocationState } from '@/hooks/useServiceRequest.tsx';
 
 interface ServiceRequestSubmitterProps {
   service: any;
