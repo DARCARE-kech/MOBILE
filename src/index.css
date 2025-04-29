@@ -6,7 +6,7 @@
 @layer base {
   :root {
     /* Light mode variables */
-    --background: 0 0% 96%;
+    --background: 40 50% 98%;
     --foreground: 0 0% 12%;
 
     --card: 0 0% 100%;
@@ -15,26 +15,26 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
  
-    --primary: 40 47% 49%;
+    --primary: 35 44% 49%;
     --primary-foreground: 0 0% 100%;
  
-    --secondary: 0 0% 96%;
+    --secondary: 40 50% 96%;
     --secondary-foreground: 0 0% 12%;
  
-    --muted: 0 0% 96%;
+    --muted: 40 50% 96%;
     --muted-foreground: 0 0% 45%;
  
-    --accent: 0 0% 96%;
+    --accent: 40 50% 96%;
     --accent-foreground: 0 0% 12%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 89%;
-    --input: 0 0% 89%;
-    --ring: 0 0% 12%;
+    --border: 35 44% 88%;
+    --input: 35 44% 88%;
+    --ring: 35 44% 49%;
  
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
  
   .dark {
@@ -109,3 +109,31 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Light mode card styling */
+.light .service-card {
+  @apply bg-white rounded-2xl shadow-sm;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Light mode badge styling */
+.light .badge-pending {
+  @apply bg-[#FDF1C0] text-darcare-deepGold;
+}
+
+.light .badge-in-progress {
+  @apply bg-[#D6F5D2] text-[#147B3E];
+}
+
+/* Bottom navigation styling for light mode */
+.light .bottom-nav {
+  @apply bg-white;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.light .bottom-nav-home {
+  @apply bg-[#F2E4C8] text-darcare-deepGold;
+}
+
+/* Font import for Playfair Display */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');

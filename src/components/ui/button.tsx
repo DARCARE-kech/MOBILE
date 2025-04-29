@@ -10,16 +10,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 transition-colors",
+        default: "bg-primary text-primary-foreground hover:opacity-90 transition-colors",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-darcare-gold/30 text-darcare-gold hover:bg-darcare-gold/10 transition-colors",
+          "border border-primary/30 text-primary hover:bg-primary/10 transition-colors",
         secondary:
-          "bg-darcare-navy text-darcare-beige hover:bg-darcare-navy/80 border border-darcare-gold/20",
-        ghost: "hover:bg-darcare-gold/10 text-darcare-beige hover:text-darcare-gold transition-colors",
-        link: "text-darcare-gold underline-offset-4 hover:underline",
-        luxury: "bg-gradient-to-r from-darcare-gold to-amber-500 text-darcare-navy hover:shadow-md hover:scale-[1.02] transition-all",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-primary/20",
+        ghost: "hover:bg-primary/10 text-foreground hover:text-primary transition-colors",
+        link: "text-primary underline-offset-4 hover:underline",
+        luxury: "bg-gradient-to-r from-primary to-primary text-primary-foreground hover:shadow-md hover:scale-[1.02] transition-all",
       },
       size: {
         default: "h-10 px-4 py-2",

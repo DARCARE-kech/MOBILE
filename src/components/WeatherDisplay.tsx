@@ -4,6 +4,7 @@ import { CloudSun, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface WeatherData {
   current: {
@@ -33,6 +34,7 @@ interface WeatherDisplayProps {
 
 const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
   const [isExpanded, setIsExpanded] = useState(expanded);
+  const { isDarkMode } = useTheme();
   
   // Reset expansion state when prop changes
   useEffect(() => {
@@ -92,8 +94,8 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
 
   if (isLoading || error || !weather) {
     return (
-      <div className="flex items-center gap-1 text-foreground">
-        <CloudSun size={18} className="text-primary" />
+      <div className="flex items-center gap-1 text-primary">
+        <CloudSun size={18} />
         <span className="text-sm">--°C</span>
       </div>
     );
@@ -111,7 +113,7 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
   return (
     <div className="relative">
       <div 
-        className="flex items-center gap-1 text-foreground cursor-pointer"
+        className="flex items-center gap-1 text-primary cursor-pointer"
         onClick={toggleExpanded}
       >
         {weather.current.condition.icon ? (
@@ -129,7 +131,7 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="p-0 h-auto w-auto text-foreground hover:bg-transparent hover:text-primary"
+          className="p-0 h-auto w-auto text-primary hover:bg-transparent hover:text-primary/80"
           onClick={toggleExpanded}
         >
           {isExpanded ? (
@@ -141,7 +143,12 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
       </div>
 
       {isExpanded && (
-        <div className="absolute top-full right-0 mt-2 p-3 w-48 bg-card border border-primary/20 rounded-md shadow-lg z-50">
+        <div className={cn(
+          "absolute top-full right-0 mt-2 p-3 w-48 border rounded-md shadow-lg z-50",
+          isDarkMode 
+            ? "bg-darcare-navy border-darcare-gold/20" 
+            : "bg-white border-darcare-deepGold/20"
+        )}>
           <div className="text-xs text-foreground/70 mb-2">Marrakech Forecast</div>
           <div className="space-y-2">
             {weather.forecast.forecastday.map((day, i) => (

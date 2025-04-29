@@ -12,6 +12,7 @@ import { useToast } from "./ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import type { Recommendation } from "@/types/recommendation";
 import { isValidCategory } from "@/utils/recommendationCategories";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface RecommendationCardProps {
   item: Recommendation;
@@ -25,6 +26,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
   const fallbackImage = getFallbackImage(item.title, 0);
   const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
 
@@ -93,7 +95,12 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
 
   return (
     <div 
-      className="w-[280px] rounded-xl overflow-hidden flex-shrink-0 group bg-darcare-navy border border-darcare-gold/10 cursor-pointer transition-all hover:shadow-lg hover:border-darcare-gold/30"
+      className={cn(
+        "w-[280px] rounded-xl overflow-hidden flex-shrink-0 cursor-pointer transition-all hover:shadow-lg border",
+        isDarkMode 
+          ? "bg-darcare-navy border-darcare-gold/10 hover:border-darcare-gold/30"
+          : "bg-white border-darcare-deepGold/10 hover:border-darcare-deepGold/30"
+      )}
       onClick={handleCardClick}
     >
       <div className="relative">
@@ -110,8 +117,11 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute top-2 right-2 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy",
-            isFavorite && "text-darcare-gold"
+            "absolute top-2 right-2 rounded-full hover:bg-white/80",
+            isDarkMode
+              ? "bg-darcare-navy/80 hover:bg-darcare-navy"
+              : "bg-white/80",
+            isFavorite && "text-primary"
           )}
           onClick={toggleFavorite}
         >
@@ -122,22 +132,25 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
         </Button>
       </div>
       <div className="p-4 space-y-3">
-        <h3 className="font-medium text-darcare-white line-clamp-1 font-serif">{item.title}</h3>
+        <h3 className="font-medium text-foreground line-clamp-1 font-serif">{item.title}</h3>
         <Badge 
           variant="outline" 
-          className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif"
+          className={cn(
+            "bg-transparent border-primary/20 font-serif",
+            isDarkMode ? "text-darcare-beige" : "text-darcare-deepGold"
+          )}
         >
           {displayCategory}
         </Badge>
         <div className="flex items-center justify-between text-sm">
           {item.location && (
-            <div className="flex items-center gap-1 text-darcare-beige/80">
+            <div className="flex items-center gap-1 text-foreground/80">
               <MapPin size={14} className="flex-shrink-0" />
               <span className="truncate max-w-[120px]">{item.location}</span>
             </div>
           )}
           {item.rating && item.rating > 0 && (
-            <div className="flex items-center gap-1 text-darcare-gold">
+            <div className="flex items-center gap-1 text-primary">
               <Star size={14} className="fill-current flex-shrink-0" />
               <span>{item.rating.toFixed(1)}</span>
             </div>
@@ -147,7 +160,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
       <div className="px-4 pb-4">
         <Button 
           variant="outline" 
-          className="w-full text-darcare-gold hover:text-darcare-gold hover:bg-darcare-gold/10 border-darcare-gold/30"
+          className="w-full text-primary hover:text-primary hover:bg-primary/10 border-primary/30"
           onClick={handleCardClick}
         >
           View Details

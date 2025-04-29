@@ -3,6 +3,8 @@ import React from "react";
 import { Home, Search, Bell, UserCircle, MessageSquare } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@/contexts/ThemeContext";
+import { cn } from "@/lib/utils";
 
 interface BottomNavigationProps {
   activeTab?: string;
@@ -12,6 +14,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
   
   // Determine active tab from props or current path if not provided
   const currentPath = location.pathname.split('/')[1] || 'home';
@@ -30,7 +33,12 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-darcare-navy border-t border-darcare-gold/20 py-3 px-4 z-50">
+    <nav className={cn(
+      "fixed bottom-0 left-0 right-0 py-3 px-4 z-50 border-t border-primary/20",
+      isDarkMode 
+        ? "bg-darcare-navy" 
+        : "bg-white bottom-nav"
+    )}>
       <div className="flex justify-between items-center max-w-screen-xl mx-auto">
         {tabs.map((tab) => (
           <button
@@ -39,17 +47,22 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
             onClick={() => handleTabChange(tab.path)}
           >
             {tab.id === 'home' ? (
-              <div className="bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 rounded-full p-4 border border-darcare-gold/30 shadow-lg">
-                <span className="text-darcare-gold">
+              <div className={cn(
+                "rounded-full p-4 border shadow-lg",
+                isDarkMode
+                  ? "bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 border-darcare-gold/30"
+                  : "bg-[#F2E4C8] border-darcare-deepGold/30 bottom-nav-home"
+              )}>
+                <span className="text-primary">
                   {tab.icon}
                 </span>
               </div>
             ) : (
-              <span className={activeTab === tab.id ? "text-darcare-gold" : "text-darcare-beige/70"}>
+              <span className={activeTab === tab.id ? "text-primary" : "text-foreground/70"}>
                 {tab.icon}
               </span>
             )}
-            <span className={`text-xs mt-1 ${activeTab === tab.id ? "text-darcare-gold" : "text-darcare-beige/70"}`}>
+            <span className={`text-xs mt-1 ${activeTab === tab.id ? "text-primary" : "text-foreground/70"}`}>
               {tab.label}
             </span>
           </button>
