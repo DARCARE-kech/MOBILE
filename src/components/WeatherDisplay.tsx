@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { X, ChevronLeft, ChevronRight, CloudSun, Wind, Droplets, Sun } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, CloudSun, Wind, Droplets, Sun, Cloud, CloudDrizzle, CloudRain, CloudSnow, CloudLightning } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -54,6 +54,22 @@ const WeatherDisplay = ({ expanded = false, className }: WeatherDisplayProps) =>
     }
   };
 
+  // Mapping of icon names to Lucide component
+  const iconComponents = {
+    "sun": Sun,
+    "cloud-sun": CloudSun,
+    "cloud": Cloud,
+    "cloud-drizzle": CloudDrizzle,
+    "cloud-rain": CloudRain,
+    "cloud-snow": CloudSnow,
+    "cloud-lightning": CloudLightning
+  };
+
+  // Helper to get the right icon component
+  const getIconComponent = (iconName: string) => {
+    return iconComponents[iconName as keyof typeof iconComponents] || CloudSun;
+  };
+
   // Compact display for header
   if (!isExpanded) {
     return (
@@ -71,7 +87,7 @@ const WeatherDisplay = ({ expanded = false, className }: WeatherDisplayProps) =>
               {weather.current?.condition.icon && (
                 <span className="inline-flex items-center">
                   {(() => {
-                    const IconComponent = require("lucide-react")[weather.current.condition.icon] || CloudSun;
+                    const IconComponent = getIconComponent(weather.current.condition.icon);
                     return <IconComponent size={18} />;
                   })()}
                 </span>
