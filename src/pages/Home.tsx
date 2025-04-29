@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,7 +63,7 @@ const Home: React.FC = () => {
             setCurrentStay(upcomingStayData);
           }
         }
-
+        
         const { data: requestsData, error: requestsError } = await supabase
           .from('service_requests')
           .select(`

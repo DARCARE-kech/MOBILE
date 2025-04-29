@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Heart, MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,11 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
   const fallbackImage = getFallbackImage(item.title, 0);
   const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
 
+  // Update local state when prop changes
+  useEffect(() => {
+    setIsFavorite(item.is_favorite || false);
+  }, [item.is_favorite]);
+
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -41,6 +47,9 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
     }
 
     try {
+      // Optimistically update UI immediately
+      setIsFavorite(!isFavorite);
+      
       if (onToggleFavorite) {
         await onToggleFavorite(item.id);
       } else {
@@ -55,13 +64,15 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
             .from('favorites')
             .insert({ user_id: user.id, recommendation_id: item.id });
         }
-        setIsFavorite(!isFavorite);
+        
         toast({
           title: isFavorite ? "Removed from favorites" : "Added to favorites",
           description: `${item.title} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
         });
       }
     } catch (error) {
+      // Revert the optimistic update if there's an error
+      setIsFavorite(isFavorite);
       toast({
         title: "Error",
         description: "Could not update favorites",
@@ -100,13 +111,13 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
           size="icon"
           className={cn(
             "absolute top-2 right-2 rounded-full bg-darcare-navy/80 hover:bg-darcare-navy",
-            (isFavorite || item.is_favorite) && "text-darcare-gold"
+            isFavorite && "text-darcare-gold"
           )}
           onClick={toggleFavorite}
         >
           <Heart
             size={18}
-            className={cn((isFavorite || item.is_favorite) && "fill-current")}
+            className={cn(isFavorite && "fill-current")}
           />
         </Button>
       </div>

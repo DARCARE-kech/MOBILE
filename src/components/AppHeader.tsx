@@ -34,6 +34,10 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
 
   const hasUnreadNotifications = notifications && notifications.length > 0;
 
+  // Custom title for home page
+  const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
+  const displayTitle = isHome ? "DarCare" : title;
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-darcare-gold/20 bg-gradient-to-b from-darcare-navy/95 to-darcare-navy">
       <div className="flex items-center gap-3">
@@ -50,13 +54,17 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
         ) : (
           <DrawerMenu />
         )}
-        {title && <h1 className="font-serif text-darcare-gold text-xl">{title}</h1>}
+        {displayTitle && (
+          <h1 className={`font-serif text-darcare-gold ${isHome ? "text-2xl" : "text-xl"}`}>
+            {displayTitle}
+          </h1>
+        )}
       </div>
       
       <div className="flex items-center gap-4">
         {rightContent || children || (
           <>
-            <WeatherDisplay />
+            <WeatherDisplay expanded={isHome} />
             <Button
               variant="ghost"
               size="icon"

@@ -20,17 +20,11 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({
   const navigate = useNavigate();
   
   return (
-    <AppHeader title={title}>
-      {showBackButton && (
-        <button 
-          onClick={() => navigate('/services')}
-          className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-darcare-gold/10"
-        >
-          <ArrowLeft className="text-darcare-gold w-5 h-5" />
-        </button>
-      )}
-      {rightComponent}
-    </AppHeader>
+    <AppHeader 
+      title={title}
+      rightContent={rightComponent}
+      onBack={showBackButton ? () => navigate('/services') : undefined}
+    />
   );
 };
 
