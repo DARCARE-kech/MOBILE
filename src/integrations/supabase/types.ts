@@ -294,7 +294,9 @@ export type Database = {
           image_url: string | null
           note: string | null
           preferred_time: string | null
+          selected_options: Json | null
           service_id: string | null
+          space_id: string | null
           status: string | null
           user_id: string | null
         }
@@ -304,7 +306,9 @@ export type Database = {
           image_url?: string | null
           note?: string | null
           preferred_time?: string | null
+          selected_options?: Json | null
           service_id?: string | null
+          space_id?: string | null
           status?: string | null
           user_id?: string | null
         }
@@ -314,7 +318,9 @@ export type Database = {
           image_url?: string | null
           note?: string | null
           preferred_time?: string | null
+          selected_options?: Json | null
           service_id?: string | null
+          space_id?: string | null
           status?: string | null
           user_id?: string | null
         }
@@ -324,6 +330,13 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
             referencedColumns: ["id"]
           },
         ]

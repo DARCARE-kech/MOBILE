@@ -1,38 +1,20 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
-import { Shirt, Clock, Loader2 } from 'lucide-react';
-import MainHeader from '@/components/MainHeader';
-import BottomNavigation from '@/components/BottomNavigation';
+import { Shirt, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 // Define the prop type for LaundryService
 interface LaundryServiceProps {
-  serviceData?: any;  // We'll use any here for flexibility, but could be typed more specifically
+  serviceData?: any;
 }
 
 const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { data: laundryOptions, isLoading } = useQuery({
-    queryKey: ['laundry-services'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('name', 'Laundry')
-        .or('category.eq.service_option,category.eq.laundry_option');
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-  
   // Get laundry service options from the new structure
   const serviceOptions = serviceData?.optional_fields?.options || [];
 
@@ -78,66 +60,46 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
       <h3 className="font-serif text-xl text-darcare-gold mt-6">{t('services.availableOptions')}</h3>
 
       <div className="grid gap-4">
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="animate-spin w-8 h-8 border-4 border-darcare-gold border-t-transparent rounded-full" />
-          </div>
-        ) : serviceOptions && serviceOptions.length > 0 ? (
-          serviceOptions.map((option: any, index: number) => (
-            <Card 
-              key={index}
-              className="bg-darcare-navy/50 border-darcare-gold/20 p-4 rounded-lg cursor-pointer hover:border-darcare-gold/40 transition-colors group"
-              onClick={() => navigate(`/services/requests/new`, { state: { serviceType: 'laundry', option: option.name } })}
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-darcare-gold font-serif text-lg mb-2 group-hover:text-darcare-gold/90">{option.name}</h3>
-                  <p className="text-darcare-beige/80 text-sm mb-3">{option.description}</p>
+        {serviceOptions.length > 0 ? (
+          serviceOptions.map((option: any, index: number) => {
+            const optionName = typeof option === 'string' ? option : option.name;
+            const optionDesc = typeof option === 'string' ? '' : option.description;
+            const optionDuration = typeof option === 'string' ? '1-2h' : option.duration || '1-2h';
+            
+            return (
+              <Card 
+                key={index}
+                className="bg-darcare-navy/50 border-darcare-gold/20 p-4 rounded-lg cursor-pointer hover:border-darcare-gold/40 transition-colors group"
+                onClick={() => navigate(`/services/requests/new`, { state: { serviceType: 'laundry', option: optionName } })}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-darcare-gold font-serif text-lg mb-2 group-hover:text-darcare-gold/90">{optionName}</h3>
+                    <p className="text-darcare-beige/80 text-sm mb-3">{optionDesc}</p>
+                    
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-transparent border-darcare-gold/30 text-darcare-gold hover:bg-darcare-gold hover:text-darcare-navy"
+                    >
+                      {t('services.select')}
+                    </Button>
+                  </div>
                   
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="bg-transparent border-darcare-gold/30 text-darcare-gold hover:bg-darcare-gold hover:text-darcare-navy"
-                  >
-                    {t('services.select')}
-                  </Button>
+                  <div className="flex items-center gap-1 text-darcare-beige/70 bg-darcare-gold/5 px-3 py-2 rounded">
+                    <Clock size={16} />
+                    <span className="text-sm">{optionDuration}</span>
+                  </div>
                 </div>
-                
-                <div className="flex items-center gap-1 text-darcare-beige/70 bg-darcare-gold/5 px-3 py-2 rounded">
-                  <Clock size={16} />
-                  <span className="text-sm">{option.duration || '1-2h'}</span>
-                </div>
-              </div>
-            </Card>
-          ))
+              </Card>
+            );
+          })
         ) : (
-          laundryOptions?.map((option) => (
-            <Card 
-              key={option.id}
-              className="bg-darcare-navy/50 border-darcare-gold/20 p-4 rounded-lg cursor-pointer hover:border-darcare-gold/40 transition-colors group"
-              onClick={() => navigate(`/services/requests/new`, { state: { serviceId: option.id } })}
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-darcare-gold font-serif text-lg mb-2 group-hover:text-darcare-gold/90">{option.name}</h3>
-                  <p className="text-darcare-beige/80 text-sm mb-3">{option.description}</p>
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="bg-transparent border-darcare-gold/30 text-darcare-gold hover:bg-darcare-gold hover:text-darcare-navy"
-                  >
-                    {t('services.select')}
-                  </Button>
-                </div>
-                
-                <div className="flex items-center gap-1 text-darcare-beige/70 bg-darcare-gold/5 px-3 py-2 rounded">
-                  <Clock size={16} />
-                  <span className="text-sm">{option.estimated_duration || '1-2h'}</span>
-                </div>
-              </div>
-            </Card>
-          ))
+          <Card className="bg-darcare-navy/50 border-darcare-gold/20 p-4 rounded-lg">
+            <div className="text-center text-darcare-beige/70 py-4">
+              {t('services.noOptionsAvailable')}
+            </div>
+          </Card>
         )}
       </div>
     </div>
