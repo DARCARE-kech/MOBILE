@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { ServiceDetail } from '@/components/services/form/formHelpers';
 
+// Explicitly export this interface
 export interface ServiceLocationState {
   serviceType?: string;
   serviceId?: string;
