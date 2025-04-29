@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -113,7 +114,7 @@ const Home: React.FC = () => {
   }, [user, toast, t]);
 
   return (
-    <div className="min-h-screen bg-darcare-navy">
+    <div className="min-h-screen bg-background">
       <AppHeader />
       <div className="pt-16 pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />

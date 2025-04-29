@@ -30,6 +30,7 @@ import HelpSupportPage from "@/pages/profile/HelpSupportPage"
 import AboutPage from "@/pages/profile/AboutPage"
 import ChangePassword from "@/pages/profile/ChangePassword"
 import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage"
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -147,7 +148,9 @@ function App() {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <ThemeProvider>
+            <RouterProvider router={router} />
+          </ThemeProvider>
         </AuthProvider>
       </QueryClientProvider>
     </React.StrictMode>

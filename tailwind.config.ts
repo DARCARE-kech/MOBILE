@@ -61,7 +61,12 @@ export default {
           navy: "#0A1F33",
           gold: "#EAC169",
           beige: "#F8F1E0",
-          red: "#C45C5C"
+          red: "#C45C5C",
+          // Light mode colors
+          charcoal: "#1E1E1E",
+          deepGold: "#B88A44",
+          lightGray: "#F5F5F5",
+          lightBeige: "#EDE8D2"
         }
       },
       borderRadius: {

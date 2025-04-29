@@ -10,11 +10,13 @@ import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const ProfilePage: React.FC = () => {
   const { profile, currentStay, isLoading, updateProfile, handleLogout } = useUserProfile();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
 
   const handlePreferenceUpdate = (key: string, value: boolean | string) => {
     updateProfile({ [key]: value });
@@ -31,11 +33,11 @@ const ProfilePage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen bg-darcare-navy" />;
+    return <div className="min-h-screen bg-background" />;
   }
 
   return (
-    <div className="min-h-screen bg-darcare-navy">
+    <div className="min-h-screen bg-background">
       <AppHeader title={t('profile.personalInfo')} />
       
       <div className="pt-16 pb-24">
@@ -54,9 +56,9 @@ const ProfilePage: React.FC = () => {
 
           {/* Preferences Section */}
           <div className="luxury-card">
-            <h3 className="text-lg font-serif text-darcare-gold mb-4">{t('profile.preferences')}</h3>
+            <h3 className="text-lg font-serif text-primary mb-4">{t('profile.preferences')}</h3>
             <PreferencesSection
-              darkMode={profile?.dark_mode || false}
+              darkMode={profile?.dark_mode !== undefined ? profile.dark_mode : isDarkMode}
               language={profile?.language || 'en'}
               onUpdatePreference={handlePreferenceUpdate}
             />
@@ -69,38 +71,38 @@ const ProfilePage: React.FC = () => {
               onClick={() => navigate('/profile/privacy')}
             >
               <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">{t('profile.privacySecurity')}</span>
+                <Shield className="h-5 w-5 text-primary" />
+                <span className="text-foreground">{t('profile.privacySecurity')}</span>
               </div>
             </div>
-            <Separator className="my-2 bg-darcare-gold/10" />
+            <Separator className="my-2 bg-primary/10" />
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/change-password')}
             >
               <div className="flex items-center gap-3">
-                <Key className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">{t('profile.changePassword')}</span>
+                <Key className="h-5 w-5 text-primary" />
+                <span className="text-foreground">{t('profile.changePassword')}</span>
               </div>
             </div>
-            <Separator className="my-2 bg-darcare-gold/10" />
+            <Separator className="my-2 bg-primary/10" />
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/help')}
             >
               <div className="flex items-center gap-3">
-                <HelpCircle className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">{t('profile.helpSupport')}</span>
+                <HelpCircle className="h-5 w-5 text-primary" />
+                <span className="text-foreground">{t('profile.helpSupport')}</span>
               </div>
             </div>
-            <Separator className="my-2 bg-darcare-gold/10" />
+            <Separator className="my-2 bg-primary/10" />
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/about')}
             >
               <div className="flex items-center gap-3">
-                <Info className="h-5 w-5 text-darcare-gold" />
-                <span className="text-darcare-beige">{t('profile.about')}</span>
+                <Info className="h-5 w-5 text-primary" />
+                <span className="text-foreground">{t('profile.about')}</span>
               </div>
             </div>
           </div>
@@ -108,7 +110,7 @@ const ProfilePage: React.FC = () => {
           {/* Logout Button */}
           <Button
             variant="ghost"
-            className="w-full border border-darcare-gold/20 text-darcare-gold hover:bg-darcare-gold/10 mt-6"
+            className="w-full border border-primary/20 text-primary hover:bg-primary/10 mt-6"
             onClick={handleLogout}
           >
             {t('common.logout')}

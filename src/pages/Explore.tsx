@@ -15,7 +15,7 @@ const ExplorePage = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-darcare-navy">
+    <div className="min-h-screen bg-background">
       <AppHeader title={t('navigation.explore')} />
       
       <div className="pt-16 pb-24 space-y-4">

@@ -92,8 +92,8 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
 
   if (isLoading || error || !weather) {
     return (
-      <div className="flex items-center gap-1 text-darcare-beige">
-        <CloudSun size={18} className="text-darcare-gold" />
+      <div className="flex items-center gap-1 text-foreground">
+        <CloudSun size={18} className="text-primary" />
         <span className="text-sm">--°C</span>
       </div>
     );
@@ -111,7 +111,7 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
   return (
     <div className="relative">
       <div 
-        className="flex items-center gap-1 text-darcare-beige cursor-pointer"
+        className="flex items-center gap-1 text-foreground cursor-pointer"
         onClick={toggleExpanded}
       >
         {weather.current.condition.icon ? (
@@ -123,13 +123,13 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
             className="mr-1"
           />
         ) : (
-          <CloudSun size={18} className="text-darcare-gold mr-1" />
+          <CloudSun size={18} className="text-primary mr-1" />
         )}
         <span className="text-sm">{Math.round(weather.current.temp_c)}°C</span>
         <Button 
           variant="ghost" 
           size="sm" 
-          className="p-0 h-auto w-auto text-darcare-beige hover:bg-transparent hover:text-darcare-gold"
+          className="p-0 h-auto w-auto text-foreground hover:bg-transparent hover:text-primary"
           onClick={toggleExpanded}
         >
           {isExpanded ? (
@@ -141,12 +141,12 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
       </div>
 
       {isExpanded && (
-        <div className="absolute top-full right-0 mt-2 p-3 w-48 bg-darcare-navy border border-darcare-gold/20 rounded-md shadow-lg z-50">
-          <div className="text-xs text-darcare-beige/70 mb-2">Marrakech Forecast</div>
+        <div className="absolute top-full right-0 mt-2 p-3 w-48 bg-card border border-primary/20 rounded-md shadow-lg z-50">
+          <div className="text-xs text-foreground/70 mb-2">Marrakech Forecast</div>
           <div className="space-y-2">
             {weather.forecast.forecastday.map((day, i) => (
               <div key={day.date} className="flex items-center justify-between">
-                <span className="text-darcare-beige text-sm">
+                <span className="text-foreground text-sm">
                   {i === 0 ? "Today" : formatDate(day.date)}
                 </span>
                 <div className="flex items-center gap-1">
@@ -158,7 +158,7 @@ const WeatherDisplay = ({ expanded = false }: WeatherDisplayProps) => {
                       height={20}
                     />
                   )}
-                  <span className="text-darcare-beige/90 text-sm">
+                  <span className="text-foreground/90 text-sm">
                     {Math.round(day.day.avgtemp_c)}°C
                   </span>
                 </div>
