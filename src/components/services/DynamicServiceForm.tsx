@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +11,15 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Calendar, Clock, Upload } from 'lucide-react';
+import { Clock, Wallet } from 'lucide-react';
+import { 
+  LuxuryCard, 
+  LuxuryCardContent, 
+  LuxuryCardHeader, 
+  LuxuryCardTitle,
+  LuxuryCardDescription 
+} from '@/components/ui/luxury-card';
+import ServiceBanner from '@/components/services/ServiceBanner';
 
 // Define interfaces for the component props and form data
 interface FormData {
@@ -22,9 +31,22 @@ interface FormData {
   [key: string]: any; // For additional dynamic fields
 }
 
+interface ServiceDetail {
+  id?: string;
+  service_id?: string;
+  category?: string;
+  instructions?: string | null;
+  optional_fields?: Record<string, any> | null;
+  price_range?: string | null;
+  default_duration?: string | null;
+}
+
 interface DynamicServiceFormProps {
   serviceId: string;
   serviceType: string;
+  serviceName?: string;
+  serviceImageUrl?: string | null;
+  serviceDetails?: ServiceDetail;
   optionalFields: Record<string, any>;
   onSubmitSuccess?: (formData: FormData) => void;
 }
@@ -32,6 +54,9 @@ interface DynamicServiceFormProps {
 const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
   serviceId,
   serviceType,
+  serviceName,
+  serviceImageUrl,
+  serviceDetails,
   optionalFields,
   onSubmitSuccess
 }) => {
@@ -70,6 +95,52 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
 
   return (
     <div className="p-4 pb-24">
+      {/* Service Banner (if image is available) */}
+      {serviceImageUrl && (
+        <ServiceBanner 
+          imageUrl={serviceImageUrl} 
+          altText={serviceName || serviceType} 
+          withGradient={true} 
+        />
+      )}
+      
+      {/* Service Details Card */}
+      {serviceDetails && (
+        <LuxuryCard className="mb-6 -mt-4 relative z-10">
+          <LuxuryCardHeader>
+            <LuxuryCardTitle className="text-darcare-gold">
+              {serviceName || t(`services.${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}`)}
+            </LuxuryCardTitle>
+            
+            {/* Display service details like price and duration */}
+            <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-darcare-beige/80">
+              {serviceDetails.default_duration && (
+                <div className="flex items-center gap-1.5">
+                  <Clock size={16} className="text-darcare-gold" />
+                  <span>{serviceDetails.default_duration}</span>
+                </div>
+              )}
+              {serviceDetails.price_range && (
+                <div className="flex items-center gap-1.5">
+                  <Wallet size={16} className="text-darcare-gold" />
+                  <span>{serviceDetails.price_range}</span>
+                </div>
+              )}
+            </div>
+          </LuxuryCardHeader>
+          
+          <LuxuryCardContent>
+            {/* Service Instructions */}
+            {serviceDetails.instructions && (
+              <div className="mb-4 text-darcare-beige/90 text-sm">
+                {serviceDetails.instructions}
+              </div>
+            )}
+          </LuxuryCardContent>
+        </LuxuryCard>
+      )}
+      
+      {/* Form Container */}
       <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <h2 className="text-darcare-gold font-serif text-xl mb-4">
           {t(`services.request${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}`)}
@@ -93,7 +164,7 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
                           className="pl-10"
                           {...field}
                         />
-                        <Calendar size={16} className="absolute left-3 top-3 text-darcare-gold" />
+                        <Clock size={16} className="absolute left-3 top-3 text-darcare-gold" />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -139,7 +210,7 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
                   <FormControl>
                     <Textarea
                       placeholder={t('services.notesPlaceholder')}
-                      className="min-h-24"
+                      className="min-h-24 border-darcare-gold/30 bg-darcare-navy/50 focus:border-darcare-gold/50"
                       {...field}
                     />
                   </FormControl>
@@ -151,10 +222,10 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
             <div className="pt-4">
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !form.formState.isValid}
                 className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
               >
-                {isSubmitting ? t('common.submitting') : t('services.submitRequest')}
+                {isSubmitting ? t('common.submitting') : t('services.requestService')}
               </Button>
             </div>
           </form>
@@ -233,7 +304,7 @@ function renderDynamicFields(form: any, optionalFields: Record<string, any>) {
                     
                     return (
                       <div key={index} className="border border-darcare-gold/20 rounded-lg p-3 bg-darcare-navy/50 flex items-start gap-3">
-                        <RadioGroupItem value={optionName} id={`option-${index}`} className="mt-1" />
+                        <RadioGroupItem value={optionName} id={`option-${index}`} className="mt-1 border-darcare-gold/50" />
                         <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
                           <span className="text-darcare-gold font-medium block mb-1">{optionName}</span>
                           {optionDesc && (
@@ -269,7 +340,7 @@ function renderDynamicFields(form: any, optionalFields: Record<string, any>) {
                 >
                   {optionalFields.categories.map((category: string, index: number) => (
                     <div key={index} className="border border-darcare-gold/20 rounded-lg p-3 bg-darcare-navy/50 flex items-start gap-3">
-                      <RadioGroupItem value={category} id={`category-${index}`} className="mt-1" />
+                      <RadioGroupItem value={category} id={`category-${index}`} className="mt-1 border-darcare-gold/50" />
                       <Label htmlFor={`category-${index}`} className="flex-1 cursor-pointer">
                         <span className="text-darcare-gold font-medium">{category}</span>
                       </Label>
@@ -303,7 +374,7 @@ function renderDynamicFields(form: any, optionalFields: Record<string, any>) {
                       checked={field.value}
                       onCheckedChange={field.onChange}
                       id={`check-${index}`}
-                      className="border-darcare-gold/50"
+                      className="border-darcare-gold/50 data-[state=checked]:bg-darcare-gold data-[state=checked]:text-darcare-navy"
                     />
                     <Label htmlFor={`check-${index}`} className="text-darcare-beige">
                       {option}
@@ -331,6 +402,7 @@ function renderDynamicFields(form: any, optionalFields: Record<string, any>) {
                     <Input 
                       type={customField.type} 
                       placeholder={customField.placeholder}
+                      className="border-darcare-gold/30 bg-darcare-navy/50 focus:border-darcare-gold/50"
                       {...field}
                     />
                   </FormControl>
@@ -353,6 +425,7 @@ function renderDynamicFields(form: any, optionalFields: Record<string, any>) {
                   <FormControl>
                     <Textarea 
                       placeholder={customField.placeholder}
+                      className="border-darcare-gold/30 bg-darcare-navy/50 focus:border-darcare-gold/50"
                       {...field}
                     />
                   </FormControl>

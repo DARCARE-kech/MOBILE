@@ -186,6 +186,9 @@ const ServiceRequestForm: React.FC = () => {
         <DynamicServiceForm 
           serviceId={service?.id || ''}
           serviceType={serviceType || service?.name.toLowerCase() || ''}
+          serviceName={service?.name}
+          serviceImageUrl={service?.image_url}
+          serviceDetails={serviceDetails || undefined}
           optionalFields={enhanceOptionalFields()}
           onSubmitSuccess={handleSubmitRequest}
         />
