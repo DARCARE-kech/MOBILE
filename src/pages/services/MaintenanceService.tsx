@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Tool, Clock } from 'lucide-react';
+import { Wrench, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -27,7 +27,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
       <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
         <div className="flex items-center gap-3 mb-4">
           <div className="bg-darcare-gold/10 p-3 rounded-full">
-            <Tool className="text-darcare-gold" size={24} />
+            <Wrench className="text-darcare-gold" size={24} />
           </div>
           <h2 className="text-darcare-gold font-serif text-xl">
             {t('services.maintenanceDescription')}

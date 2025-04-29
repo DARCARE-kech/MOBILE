@@ -36,6 +36,11 @@ type ServiceType = {
   estimated_duration: string | null;
 };
 
+// Combined type for service details with table name
+type ServiceDetailWithTableName = ServiceDetailType & {
+  tableName: string;
+};
+
 const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -82,7 +87,6 @@ const ServiceDetail: React.FC = () => {
       
       if (!tableName) return null;
       
-      // Using a type assertion to tell TypeScript this is a valid table name
       const { data, error } = await supabase
         .from(tableName as any)
         .select('*')
@@ -94,7 +98,7 @@ const ServiceDetail: React.FC = () => {
         return null;
       }
       
-      return { ...data, tableName } as ServiceDetailType & { tableName: string };
+      return { ...data, tableName } as ServiceDetailWithTableName;
     },
     enabled: !!service
   });
@@ -146,7 +150,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <LaundryService serviceData={serviceDetails} />
+          <LaundryService serviceData={serviceDetails || undefined} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -156,7 +160,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <CleaningService serviceData={serviceDetails} />
+          <CleaningService serviceData={serviceDetails || undefined} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -166,7 +170,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <MaintenanceService serviceData={serviceDetails} />
+          <MaintenanceService serviceData={serviceDetails || undefined} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -176,7 +180,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <TransportService serviceData={serviceDetails} />
+          <TransportService serviceData={serviceDetails || undefined} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
