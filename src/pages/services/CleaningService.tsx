@@ -13,6 +13,28 @@ interface CleaningServiceProps {
 const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
+  // Get cleaning options from optional_fields if available, otherwise use defaults
+  const cleaningOptions = serviceData?.optional_fields?.options || [
+    'Standard Cleaning', 
+    'Deep Cleaning', 
+    'Window Cleaning'
+  ];
+  
+  const getDuration = (index: number) => {
+    if (serviceData?.optional_fields?.durations && serviceData.optional_fields.durations[index]) {
+      return serviceData.optional_fields.durations[index];
+    }
+    return index === 0 ? '1-2h' : index === 1 ? '3-4h' : '1h';
+  };
+
+  const getDescription = (index: number) => {
+    if (serviceData?.optional_fields?.descriptions && serviceData.optional_fields.descriptions[index]) {
+      return serviceData.optional_fields.descriptions[index];
+    }
+    return index === 0 ? t('services.standardCleaningDesc') : 
+           index === 1 ? t('services.deepCleaningDesc') : t('services.windowCleaningDesc');
+  };
 
   return (
     <div className="p-4 space-y-6 pb-24">
@@ -47,7 +69,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
       <h3 className="font-serif text-xl text-darcare-gold mt-6">{t('services.cleaningOptions')}</h3>
       
       <div className="grid gap-4">
-        {['Standard Cleaning', 'Deep Cleaning', 'Window Cleaning'].map((option, index) => (
+        {cleaningOptions.map((option: string, index: number) => (
           <Card 
             key={index}
             className="bg-darcare-navy/50 border-darcare-gold/20 p-4 rounded-lg cursor-pointer hover:border-darcare-gold/40 transition-colors"
@@ -57,16 +79,13 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
               <div>
                 <h3 className="text-darcare-gold font-serif text-lg">{option}</h3>
                 <p className="text-darcare-beige/70 text-sm my-2">
-                  {index === 0 ? t('services.standardCleaningDesc') : 
-                   index === 1 ? t('services.deepCleaningDesc') : t('services.windowCleaningDesc')}
+                  {getDescription(index)}
                 </p>
               </div>
               
               <div className="flex items-center gap-1 text-darcare-beige/70">
                 <Clock size={16} className="text-darcare-gold" />
-                <span>
-                  {index === 0 ? '1-2h' : index === 1 ? '3-4h' : '1h'}
-                </span>
+                <span>{getDuration(index)}</span>
               </div>
             </div>
           </Card>

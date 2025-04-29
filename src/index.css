@@ -1,3 +1,4 @@
+
 /* Font import for Playfair Display */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 
@@ -171,6 +172,3 @@
   @apply bg-white border-darcare-deepGold/10;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.04);
 }
-
-/* Font import for Playfair Display */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');

@@ -17,13 +17,14 @@ import { useTranslation } from 'react-i18next';
 // Define TypeScript types for service details
 type ServiceDetailType = {
   id: string;
-  service_id: string;
+  service_id: string | null;
+  category: string;
   instructions?: string | null;
   optional_fields?: any | null;
   price_range?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
-  default_duration?: string | null; // This will be returned as a string from the database
+  default_duration?: string | null;
 }
 
 // Base service type
@@ -34,11 +35,6 @@ type ServiceType = {
   category: string | null;
   image_url: string | null;
   estimated_duration: string | null;
-};
-
-// Combined type for service details with table name
-type ServiceDetailWithTableName = ServiceDetailType & {
-  tableName: string;
 };
 
 const ServiceDetail: React.FC = () => {
@@ -68,37 +64,19 @@ const ServiceDetail: React.FC = () => {
     queryFn: async () => {
       if (!service) return null;
       
-      const serviceNameLower = service.name.toLowerCase();
-      let tableName: string | null = null;
-      
-      if (serviceNameLower.includes('cleaning')) {
-        tableName = 'cleaning_details';
-      } else if (serviceNameLower.includes('maintenance')) {
-        tableName = 'maintenance_details';
-      } else if (serviceNameLower.includes('transport')) {
-        tableName = 'transport_details';
-      } else if (serviceNameLower.includes('laundry')) {
-        tableName = 'laundry_details';
-      } else if (serviceNameLower.includes('book space')) {
-        tableName = 'book_space_details';
-      } else if (serviceNameLower.includes('shop')) {
-        tableName = 'shop_details';
-      }
-      
-      if (!tableName) return null;
-      
+      // For all standard services, we now query the unified service_details table
       const { data, error } = await supabase
-        .from(tableName as any)
+        .from('service_details')
         .select('*')
         .eq('service_id', service.id)
         .single();
       
       if (error) {
-        console.error(`Error fetching ${tableName}:`, error);
+        console.error(`Error fetching service details:`, error);
         return null;
       }
       
-      return { ...data, tableName } as ServiceDetailWithTableName;
+      return data as ServiceDetailType;
     },
     enabled: !!service
   });

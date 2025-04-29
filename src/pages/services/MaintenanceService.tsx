@@ -14,6 +14,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
   const navigate = useNavigate();
   const { t } = useTranslation();
   
+  // Get categories from optional_fields if available, otherwise use default
   const categories = serviceData?.optional_fields?.categories || [
     'Plumbing', 
     'Electrical', 
