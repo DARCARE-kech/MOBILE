@@ -1,5 +1,5 @@
 
-import { Menu, Bell, Heart, ArrowLeft } from "lucide-react";
+import { Bell, Heart, ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import WeatherDisplay from "./WeatherDisplay";
 import { useQuery } from "@tanstack/react-query";
@@ -39,7 +39,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
   const displayTitle = isHome ? "DarCare" : title;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-primary/20 bg-gradient-to-b from-background/95 to-background">
+    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-primary/20 bg-gradient-to-b from-background/95 to-background backdrop-blur-sm">
       <div className="flex items-center gap-3">
         {onBack ? (
           <Button
@@ -64,7 +64,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
       <div className="flex items-center gap-4">
         {rightContent || children || (
           <>
-            <WeatherDisplay expanded={isHome} />
+            <WeatherDisplay expanded={false} />
             <Button
               variant="ghost"
               size="icon"

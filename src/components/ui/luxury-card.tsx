@@ -15,7 +15,7 @@ const LuxuryCard = React.forwardRef<
       className={cn(
         "rounded-lg border p-6 backdrop-blur-sm shadow-md",
         isDarkMode
-          ? "border-darcare-gold/20 bg-darcare-navy/50"
+          ? "border-darcare-gold/20 bg-darcare-navy/80"
           : "border-darcare-deepGold/20 bg-white",
         className
       )}
