@@ -5,6 +5,6 @@ import { useServiceRequestById, useServiceRequest } from './useServiceRequest.ts
 import type { ServiceLocationState } from './useServiceRequest.tsx';
 
 export type { ServiceLocationState };
-export { useServiceRequestById };
+export { useServiceRequestById, useServiceRequest };
 export const useServiceRequestForForm = useServiceRequest;
 export default useServiceRequestById;

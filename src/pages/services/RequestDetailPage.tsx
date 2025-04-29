@@ -8,7 +8,7 @@ import RequestActions from "@/components/services/RequestActions";
 import RequestRating from "@/components/services/RequestRating";
 import RequestDetailsContent from "@/components/services/RequestDetailsContent";
 import RequestNotFound from "@/components/services/RequestNotFound";
-import { useServiceRequest } from "@/hooks/useServiceRequest";
+import { useServiceRequestById } from "@/hooks/useServiceRequest";
 import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,7 @@ const RequestDetailPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  const { data: request, isLoading } = useServiceRequest(id);
+  const { data: request, isLoading } = useServiceRequestById(id);
   const { 
     submitRating, 
     isSubmittingRating, 
