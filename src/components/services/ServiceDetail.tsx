@@ -14,6 +14,28 @@ import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
 
+// Define TypeScript types for service details
+type ServiceDetailType = {
+  id: string;
+  service_id: string;
+  instructions?: string | null;
+  optional_fields?: any | null;
+  price_range?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  default_duration?: string | null; // This will be returned as a string from the database
+}
+
+// Base service type
+type ServiceType = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  image_url: string | null;
+  estimated_duration: string | null;
+};
+
 const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -30,7 +52,7 @@ const ServiceDetail: React.FC = () => {
         .single();
       
       if (error) throw error;
-      return data;
+      return data as ServiceType;
     },
     enabled: !!id && id !== 'book-space' && id !== 'shop'
   });
@@ -42,7 +64,7 @@ const ServiceDetail: React.FC = () => {
       if (!service) return null;
       
       const serviceNameLower = service.name.toLowerCase();
-      let tableName = '';
+      let tableName: string | null = null;
       
       if (serviceNameLower.includes('cleaning')) {
         tableName = 'cleaning_details';
@@ -60,8 +82,9 @@ const ServiceDetail: React.FC = () => {
       
       if (!tableName) return null;
       
+      // Using a type assertion to tell TypeScript this is a valid table name
       const { data, error } = await supabase
-        .from(tableName)
+        .from(tableName as any)
         .select('*')
         .eq('service_id', service.id)
         .single();
@@ -71,7 +94,7 @@ const ServiceDetail: React.FC = () => {
         return null;
       }
       
-      return { ...data, tableName };
+      return { ...data, tableName } as ServiceDetailType & { tableName: string };
     },
     enabled: !!service
   });
@@ -123,7 +146,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <LaundryService serviceDetails={serviceDetails} />
+          <LaundryService serviceData={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -133,7 +156,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <CleaningService serviceDetails={serviceDetails} />
+          <CleaningService serviceData={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -143,7 +166,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <MaintenanceService serviceDetails={serviceDetails} />
+          <MaintenanceService serviceData={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -153,7 +176,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <TransportService serviceDetails={serviceDetails} />
+          <TransportService serviceData={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>

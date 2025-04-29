@@ -10,11 +10,12 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
+// Define the prop type for LaundryService
 interface LaundryServiceProps {
-  serviceDetails?: any;
+  serviceData?: any;  // We'll use any here for flexibility, but could be typed more specifically
 }
 
-const LaundryService: React.FC<LaundryServiceProps> = ({ serviceDetails }) => {
+const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -50,20 +51,20 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceDetails }) => {
             </h2>
           </div>
           
-          {serviceDetails && (
+          {serviceData && (
             <>
               <p className="text-darcare-beige/80 mb-4">
-                {serviceDetails.instructions || t('services.laundryDetails')}
+                {serviceData.instructions || t('services.laundryDetails')}
               </p>
-              {serviceDetails.price_range && (
+              {serviceData.price_range && (
                 <p className="text-darcare-gold font-medium mt-2">
-                  {t('services.pricing')}: {serviceDetails.price_range}
+                  {t('services.pricing')}: {serviceData.price_range}
                 </p>
               )}
             </>
           )}
           
-          {!serviceDetails && (
+          {!serviceData && (
             <p className="text-darcare-beige/80">
               {t('services.laundryDetails')}
             </p>

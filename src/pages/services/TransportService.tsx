@@ -1,386 +1,92 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import { 
-  CalendarClock, 
-  Send, 
-  PenLine,
-  MapPin,
-  Users,
-  Clock,
-  CarFront
-} from 'lucide-react';
-import { format } from 'date-fns';
 
-import ServiceHeader from '@/components/services/ServiceHeader';
-import ServiceBanner from '@/components/services/ServiceBanner';
-import FormSectionTitle from '@/components/services/FormSectionTitle';
-import IconButton from '@/components/services/IconButton';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Car, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
-import { useForm } from 'react-hook-form';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Input } from '@/components/ui/input';
-import { getFallbackImage } from '@/utils/imageUtils';
 
-const TransportService = () => {
-  const { id } = useParams<{ id: string }>();
+interface TransportServiceProps {
+  serviceData?: any;
+}
+
+const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { user } = useAuth();
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [isTimeOpen, setIsTimeOpen] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [passengerCount, setPassengerCount] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
   
-  const form = useForm({
-    defaultValues: {
-      pickup: '',
-      destination: '',
-      notes: '',
-      date: new Date(),
-    },
-  });
-  
-  const { data: service, isLoading } = useQuery({
-    queryKey: ['service', id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('id', id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-  
-  const timeSlots = [
-    '09:00', '10:00', '11:00', '12:00', 
-    '13:00', '14:00', '15:00', '16:00', '17:00'
+  const vehicleTypes = serviceData?.optional_fields?.vehicle_types || [
+    'Sedan', 
+    'SUV', 
+    'Van'
   ];
-  
-  const onSubmit = async (values: any) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "You must be logged in to submit a request",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (!selectedTime) {
-      toast({
-        title: "Time Required",
-        description: "Please select a preferred time for your transport service",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    try {
-      const preferredTime = new Date(
-        values.date.getFullYear(),
-        values.date.getMonth(),
-        values.date.getDate(),
-        parseInt(selectedTime.split(':')[0]),
-        0, 0
-      );
-      
-      console.log("Submitting transport request with data:", {
-        service_id: id,
-        user_id: user.id,
-        note: JSON.stringify({
-          ...values,
-          time: selectedTime,
-          passengers: passengerCount
-        }),
-        preferred_time: preferredTime.toISOString(),
-      });
-      
-      const { data, error } = await supabase
-        .from('service_requests')
-        .insert({
-          service_id: id,
-          user_id: user.id,
-          note: JSON.stringify({
-            ...values,
-            time: selectedTime,
-            passengers: passengerCount
-          }),
-          preferred_time: preferredTime.toISOString(),
-          status: 'pending'
-        });
-        
-      if (error) {
-        console.error("Error submitting request:", error);
-        throw error;
-      }
-      
-      console.log("Transport request submitted successfully:", data);
-      
-      toast({
-        title: "Success",
-        description: "Your transport request has been submitted",
-      });
-      
-      navigate('/services');
-    } catch (error: any) {
-      console.error("Error submitting request:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to submit your request. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  
-  if (isLoading) {
-    return (
-      <div className="bg-darcare-navy min-h-screen">
-        <ServiceHeader title="Loading..." />
-        <div className="flex justify-center items-center h-[80vh]">
-          <div className="animate-spin w-8 h-8 border-4 border-darcare-gold border-t-transparent rounded-full"></div>
-        </div>
-      </div>
-    );
-  }
-  
-  if (!service) {
-    navigate('/services');
-    return null;
-  }
-  
+
+  const tripTypes = serviceData?.optional_fields?.trip_types || [
+    'Airport Transfer', 
+    'City Tour', 
+    'Custom Trip'
+  ];
+
   return (
-    <div className="bg-darcare-navy min-h-screen">
-      <ServiceHeader title="Transport Service" showWeather />
-      
-      <ServiceBanner 
-        imageUrl={service?.image_url || getFallbackImage("Transport Service", 0)} 
-        altText="Transport Service" 
-      />
-      
-      <div className="p-4">
-        <h2 className="text-darcare-gold font-serif text-2xl mt-2 mb-1">{service?.name}</h2>
-        <p className="text-darcare-beige mb-4">{service?.description}</p>
-        
-        <Card className="bg-darcare-navy border-darcare-gold/20 p-4 mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <CarFront className="text-darcare-gold w-5 h-5" />
-            <h3 className="text-darcare-white font-medium">Service Details</h3>
+    <div className="p-4 space-y-6 pb-24">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="bg-darcare-gold/10 p-3 rounded-full">
+            <Car className="text-darcare-gold" size={24} />
           </div>
-          
-          <ul className="text-darcare-beige space-y-2 ml-2">
-            <li>• Luxury vehicles with professional drivers</li>
-            <li>• 24/7 availability with prior booking</li>
-            <li>• Airport transfers and local transportation</li>
-            <li>• Child seats available upon request</li>
-          </ul>
-        </Card>
+          <h2 className="text-darcare-gold font-serif text-xl">
+            {t('services.transportDescription')}
+          </h2>
+        </div>
         
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
-              <FormSectionTitle title="Pickup Location" icon={<MapPin className="w-5 h-5" />} />
-              
-              <FormField
-                control={form.control}
-                name="pickup"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter pickup location"
-                        className="bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </Card>
-            
-            <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
-              <FormSectionTitle title="Destination" icon={<MapPin className="w-5 h-5" />} />
-              
-              <FormField
-                control={form.control}
-                name="destination"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter destination"
-                        className="bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </Card>
-            
-            <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
-              <FormSectionTitle title="Number of Passengers" icon={<Users className="w-5 h-5" />} />
-              
-              <div className="flex items-center justify-between bg-darcare-navy/60 border border-darcare-gold/20 rounded-md p-2">
-                <button
-                  type="button"
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-darcare-navy border border-darcare-gold/30 text-darcare-gold"
-                  onClick={() => setPassengerCount(Math.max(1, passengerCount - 1))}
-                >
-                  -
-                </button>
-                
-                <div className="text-darcare-beige text-lg font-medium">
-                  {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'}
+        <p className="text-darcare-beige/80 mb-4">
+          {serviceData?.instructions || t('services.transportDefaultInstructions')}
+        </p>
+        
+        {serviceData?.price_range && (
+          <p className="text-darcare-gold font-medium mt-2">
+            {t('services.pricing')}: {serviceData.price_range}
+          </p>
+        )}
+        
+        <Button 
+          className="w-full mt-4 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+          onClick={() => navigate('/services/requests/new', { state: { serviceType: 'transport' } })}
+        >
+          {t('services.requestService')}
+        </Button>
+      </Card>
+      
+      <h3 className="font-serif text-xl text-darcare-gold mt-6">{t('services.transportOptions')}</h3>
+      
+      <div className="grid gap-4">
+        {tripTypes.map((type: string, index: number) => (
+          <Card 
+            key={index}
+            className="bg-darcare-navy/50 border-darcare-gold/20 p-4 rounded-lg cursor-pointer hover:border-darcare-gold/40 transition-colors"
+            onClick={() => navigate('/services/requests/new', { state: { serviceType: 'transport', tripType: type } })}
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-darcare-gold font-serif text-lg">{type}</h3>
+                <p className="text-darcare-beige/70 text-sm my-2">
+                  {t('services.transportTypeDesc', { type })}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {vehicleTypes.map((vehicle: string, vIndex: number) => (
+                    <span key={vIndex} className="text-xs py-1 px-2 border border-darcare-gold/30 rounded-full text-darcare-gold">
+                      {vehicle}
+                    </span>
+                  ))}
                 </div>
-                
-                <button
-                  type="button"
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-darcare-navy border border-darcare-gold/30 text-darcare-gold"
-                  onClick={() => setPassengerCount(Math.min(10, passengerCount + 1))}
-                >
-                  +
-                </button>
               </div>
-            </Card>
-            
-            <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
-              <FormSectionTitle title="Date & Time" icon={<CalendarClock className="w-5 h-5" />} />
               
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-between bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige",
-                            )}
-                          >
-                            <div className="flex items-center">
-                              <CalendarClock className="mr-2 h-4 w-4 text-darcare-gold" />
-                              {format(field.value, "PPP")}
-                            </div>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-darcare-navy border-darcare-gold/20" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(date) => {
-                              if (date) {
-                                field.onChange(date);
-                                setIsDatePickerOpen(false);
-                              }
-                            }}
-                            initialFocus
-                            className="p-3 pointer-events-auto"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </FormItem>
-                  )}
-                />
-                
-                <Collapsible
-                  open={isTimeOpen}
-                  onOpenChange={setIsTimeOpen}
-                  className="w-full"
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige"
-                    >
-                      <div className="flex items-center">
-                        <Clock className="mr-2 h-4 w-4 text-darcare-gold" />
-                        {selectedTime ? selectedTime : "Select Time"}
-                      </div>
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="mt-2">
-                    <div className="grid grid-cols-3 gap-2">
-                      {timeSlots.map((time) => (
-                        <div
-                          key={time}
-                          className={`
-                            p-2 rounded-md text-center cursor-pointer transition-all
-                            ${selectedTime === time 
-                              ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
-                              : 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10'}
-                          `}
-                          onClick={() => {
-                            setSelectedTime(time);
-                            setIsTimeOpen(false);
-                          }}
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
+              <div className="flex items-center gap-1 text-darcare-beige/70">
+                <Clock size={16} className="text-darcare-gold" />
+                <span>{index === 1 ? '3-4h' : index === 0 ? '1h' : 'Varies'}</span>
               </div>
-            </Card>
-            
-            <Card className="bg-darcare-navy border-darcare-gold/20 p-4">
-              <FormSectionTitle title="Additional Notes" icon={<PenLine className="w-5 h-5" />} />
-              
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Any special requirements or instructions..."
-                        className="resize-none bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </Card>
-            
-            <div className="flex justify-center pt-4 pb-20">
-              <IconButton
-                type="submit"
-                icon={<Send className="w-5 h-5" />}
-                variant="primary"
-                size="lg"
-                className={isSubmitting ? "opacity-70 cursor-not-allowed" : ""}
-                disabled={isSubmitting}
-              />
-              {isSubmitting && (
-                <div className="absolute ml-16 flex items-center">
-                  <div className="animate-spin w-5 h-5 border-2 border-darcare-gold border-t-transparent rounded-full"></div>
-                </div>
-              )}
             </div>
-          </form>
-        </Form>
+          </Card>
+        ))}
       </div>
     </div>
   );
