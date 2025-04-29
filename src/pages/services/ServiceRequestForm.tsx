@@ -44,7 +44,7 @@ const ServiceRequestForm: React.FC = () => {
       <div className="pt-16 pb-20">
         <DynamicServiceForm 
           serviceId={service?.id || ''}
-          serviceType={serviceState.serviceType || service?.name.toLowerCase() || ''}
+          serviceType={serviceState.serviceType || service?.name?.toLowerCase() || ''}
           serviceName={service?.name}
           serviceImageUrl={service?.image_url}
           serviceDetails={serviceDetails}

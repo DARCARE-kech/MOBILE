@@ -69,6 +69,8 @@ export function useServiceRequest(): UseServiceRequestResult {
   const { data: serviceDetails, isLoading: isLoadingDetails } = useQuery({
     queryKey: ['service-details', service?.id],
     queryFn: async () => {
+      if (!service?.id) return null;
+      
       const { data, error } = await supabase
         .from('service_details')
         .select('*')
@@ -90,7 +92,7 @@ export function useServiceRequest(): UseServiceRequestResult {
       
       return data as ServiceDetail;
     },
-    enabled: !!service
+    enabled: !!service?.id
   });
 
   // Create a title based on the service type
@@ -143,3 +145,57 @@ export function useServiceRequest(): UseServiceRequestResult {
     getServiceTitle
   };
 }
+
+// Also export the older hook implementation for backward compatibility
+// with the single request details page
+export const useServiceRequestById = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ['service-request', id],
+    queryFn: async () => {
+      if (!id) throw new Error("Request ID is required");
+      
+      const { data, error } = await supabase
+        .from('service_requests')
+        .select(`
+          *,
+          services(*)
+        `)
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+
+      // Fetch staff assignments using our helper
+      const staffAssignments = await getStaffAssignmentsForRequest(id);
+      
+      // Fetch service ratings using our helper
+      const serviceRatings = await getServiceRatingsForRequest(id);
+      
+      return {
+        ...data,
+        staff_assignments: staffAssignments,
+        service_ratings: serviceRatings
+      };
+    },
+    enabled: !!id
+  });
+};
+
+// Helper functions
+const getStaffAssignmentsForRequest = async (requestId: string) => {
+  const { data } = await supabase
+    .from('staff_assignments')
+    .select('*')
+    .eq('request_id', requestId);
+  
+  return data || [];
+};
+
+const getServiceRatingsForRequest = async (requestId: string) => {
+  const { data } = await supabase
+    .from('service_ratings')
+    .select('*')
+    .eq('request_id', requestId);
+  
+  return data || [];
+};

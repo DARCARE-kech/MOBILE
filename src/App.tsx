@@ -24,6 +24,7 @@ import ChatHistory from "@/pages/ChatHistory";
 import ContactAdmin from "@/pages/ContactAdmin";
 import Favorites from "@/pages/explore/Favorites";
 import RequestDetailPage from "@/pages/services/RequestDetailPage";
+import ServiceRequestForm from "@/pages/services/ServiceRequestForm";
 import StayDetailsPage from "@/pages/stays/StayDetailsPage"
 import EditProfile from "@/pages/profile/EditProfile"
 import HelpSupportPage from "@/pages/profile/HelpSupportPage"
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
   {
     path: "/services/request/:id",
     element: <RequestDetailPage />,
+  },
+  {
+    path: "/services/request-form",
+    element: <ServiceRequestForm />,
   },
   {
     path: "/services/space/:id",
