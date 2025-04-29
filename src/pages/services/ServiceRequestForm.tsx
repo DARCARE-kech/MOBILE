@@ -10,6 +10,16 @@ import DynamicServiceForm from '@/components/services/DynamicServiceForm';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+// Define a type for the form data
+interface ServiceRequestFormData {
+  preferredDate: string;
+  preferredTime: string;
+  note: string;
+  selectedCategory?: string;
+  selectedOption?: string;
+  [key: string]: any; // For additional dynamic fields
+}
+
 const ServiceRequestForm: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -74,7 +84,7 @@ const ServiceRequestForm: React.FC = () => {
     enabled: !!service
   });
   
-  const handleSubmitRequest = async (formData: any) => {
+  const handleSubmitRequest = async (formData: ServiceRequestFormData) => {
     setSubmitting(true);
     
     try {
@@ -170,8 +180,8 @@ const ServiceRequestForm: React.FC = () => {
       <MainHeader title={getServiceTitle()} onBack={() => navigate(-1)} />
       <div className="pt-16 pb-20">
         <DynamicServiceForm 
-          serviceId={service?.id}
-          serviceType={serviceType || service?.name.toLowerCase()}
+          serviceId={service?.id || ''}
+          serviceType={serviceType || service?.name.toLowerCase() || ''}
           optionalFields={enhanceOptionalFields()}
           onSubmitSuccess={handleSubmitRequest}
         />

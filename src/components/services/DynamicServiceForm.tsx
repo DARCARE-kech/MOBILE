@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -13,11 +12,21 @@ import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Calendar, Clock, Upload } from 'lucide-react';
 
+// Define interfaces for the component props and form data
+interface FormData {
+  preferredDate: string;
+  preferredTime: string;
+  note: string;
+  selectedCategory?: string;
+  selectedOption?: string;
+  [key: string]: any; // For additional dynamic fields
+}
+
 interface DynamicServiceFormProps {
   serviceId: string;
   serviceType: string;
-  optionalFields: any;
-  onSubmitSuccess?: () => void;
+  optionalFields: Record<string, any>;
+  onSubmitSuccess?: (formData: FormData) => void;
 }
 
 const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
@@ -30,7 +39,7 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const form = useForm({
+  const form = useForm<FormData>({
     defaultValues: {
       preferredDate: '',
       preferredTime: '',
@@ -39,16 +48,16 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
     }
   });
   
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     
     try {
-      // Process form data and submit to service_requests
+      // Process form data
       console.log('Form data:', data);
       
-      // Navigate to success page or call callback
+      // Call the callback function if provided
       if (onSubmitSuccess) {
-        onSubmitSuccess();
+        onSubmitSuccess(data);
       } else {
         navigate('/services/requests/success');
       }
@@ -156,7 +165,7 @@ const DynamicServiceForm: React.FC<DynamicServiceFormProps> = ({
 };
 
 // Helper function to generate default values based on optional fields
-function generateDefaultValues(optionalFields: any): Record<string, any> {
+function generateDefaultValues(optionalFields: Record<string, any>): Record<string, any> {
   const defaults: Record<string, any> = {};
   
   if (!optionalFields) return defaults;
@@ -197,7 +206,7 @@ function generateDefaultValues(optionalFields: any): Record<string, any> {
 }
 
 // Helper function to render dynamic form fields based on optional fields data structure
-function renderDynamicFields(form: any, optionalFields: any) {
+function renderDynamicFields(form: any, optionalFields: Record<string, any>) {
   if (!optionalFields) return null;
   
   return (
