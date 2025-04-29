@@ -3,26 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
-import { ServiceDetail } from '@/components/services/form/formHelpers';
 import { enhanceOptionalFields, getServiceTitle } from './serviceHelpers';
-
-// Location state interface
-export interface ServiceLocationState {
-  serviceType?: string;
-  serviceId?: string;
-  category?: string;
-  option?: string;
-  tripType?: string;
-}
-
-export interface UseServiceRequestResult {
-  serviceState: ServiceLocationState;
-  service: any;
-  serviceDetails: ServiceDetail | null;
-  isLoading: boolean;
-  enhanceOptionalFields: () => Record<string, any>;
-  getServiceTitle: () => string;
-}
+import type { ServiceLocationState, UseServiceRequestResult, ServiceDetail } from './types';
 
 /**
  * Hook for handling service requests form

@@ -1,4 +1,6 @@
 
+import type { ServiceDetail, ServiceFormData } from '@/hooks/services/types';
+
 // Helper function to generate default values based on optional fields
 export function generateDefaultValues(optionalFields: Record<string, any>): Record<string, any> {
   const defaults: Record<string, any> = {};
@@ -40,25 +42,8 @@ export function generateDefaultValues(optionalFields: Record<string, any>): Reco
   return defaults;
 }
 
-// Type definitions for form data
-export interface FormData {
-  preferredDate: string;
-  preferredTime: string;
-  note: string;
-  selectedCategory?: string;
-  selectedOption?: string;
-  [key: string]: any; // For additional dynamic fields
-}
-
-export interface ServiceDetail {
-  id?: string;
-  service_id?: string;
-  category?: string;
-  instructions?: string | null;
-  optional_fields?: Record<string, any> | null;
-  price_range?: string | null;
-  default_duration?: string | null;
-}
+// Use the shared FormData type
+export type { ServiceFormData as FormData };
 
 export interface ServiceFormProps {
   serviceId: string;
@@ -67,5 +52,5 @@ export interface ServiceFormProps {
   serviceImageUrl?: string | null;
   serviceDetails?: ServiceDetail;
   optionalFields: Record<string, any>;
-  onSubmitSuccess?: (formData: FormData) => void;
+  onSubmitSuccess?: (formData: ServiceFormData) => void;
 }

@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { ServiceDetail } from '@/components/services/form/formHelpers';
+import type { ServiceDetail } from './types';
 
 // Helper functions for service requests
 export const getStaffAssignmentsForRequest = async (requestId: string) => {
