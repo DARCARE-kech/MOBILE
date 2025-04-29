@@ -5,32 +5,32 @@
 
 @layer base {
   :root {
-    /* Light mode variables */
-    --background: 40 50% 98%;
-    --foreground: 0 0% 12%;
+    /* Light mode variables - updated for luxury feel */
+    --background: 44 30% 98%;     /* Soft cream background: #FDFBF7 */
+    --foreground: 0 0% 10%;       /* Charcoal text: #1A1A1A */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 12%;
+    --card: 0 0% 100%;            /* White card background */
+    --card-foreground: 0 0% 12%;  /* Dark text on cards */
  
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
  
-    --primary: 35 44% 49%;
+    --primary: 35 44% 49%;        /* Gold accent */
     --primary-foreground: 0 0% 100%;
  
-    --secondary: 40 50% 96%;
+    --secondary: 44 30% 96%;      /* Light gold secondary */
     --secondary-foreground: 0 0% 12%;
  
-    --muted: 40 50% 96%;
+    --muted: 44 30% 96%;
     --muted-foreground: 0 0% 45%;
  
-    --accent: 40 50% 96%;
+    --accent: 44 30% 96%;
     --accent-foreground: 0 0% 12%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 44% 88%;
+    --border: 35 44% 88%;         /* Soft golden border */
     --input: 35 44% 88%;
     --ring: 35 44% 49%;
  
@@ -38,7 +38,7 @@
   }
  
   .dark {
-    /* Dark mode variables */
+    /* Dark mode variables - unchanged */
     --background: 220 40% 8%;
     --foreground: 0 0% 96%; 
 
@@ -133,6 +133,12 @@
 
 .light .bottom-nav-home {
   @apply bg-[#F2E4C8] text-darcare-deepGold;
+}
+
+/* Header styling that's consistent across both themes */
+.app-header {
+  @apply bg-gradient-to-b from-darcare-navy to-[#1C1F2A] backdrop-blur-sm;
+  border-bottom: 1px solid rgba(184, 138, 68, 0.2);
 }
 
 /* Font import for Playfair Display */

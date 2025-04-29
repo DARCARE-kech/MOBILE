@@ -1,41 +1,34 @@
 
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import CompactWeatherDisplay from "./CompactWeatherDisplay";
-import ExpandedWeatherDisplay from "./ExpandedWeatherDisplay";
+import React, { useState } from 'react';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import CompactWeatherDisplay from './CompactWeatherDisplay';
+import ExpandedWeatherDisplay from './ExpandedWeatherDisplay';
 
 interface WeatherDisplayProps {
   expanded?: boolean;
-  className?: string;
 }
 
-const WeatherDisplay = ({ expanded = false, className }: WeatherDisplayProps) => {
-  const [isExpanded, setIsExpanded] = useState(expanded);
+const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ expanded = false }) => {
+  const [isOpen, setIsOpen] = useState(expanded);
   
-  // Reset expansion state when prop changes
-  useEffect(() => {
-    setIsExpanded(expanded);
-  }, [expanded]);
-
-  const handleExpand = () => {
-    setIsExpanded(true);
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
   };
 
-  const handleClose = () => {
-    setIsExpanded(false);
-  };
-
-  // Show either compact or expanded view
-  return isExpanded ? (
-    <ExpandedWeatherDisplay 
-      onClose={handleClose} 
-      className={className} 
-    />
-  ) : (
-    <CompactWeatherDisplay 
-      onExpand={handleExpand} 
-      className={className} 
-    />
+  return (
+    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
+      <SheetTrigger asChild>
+        <div>
+          <CompactWeatherDisplay 
+            onExpand={() => setIsOpen(true)} 
+            className="text-darcare-beige hover:text-darcare-gold transition-colors" 
+          />
+        </div>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-full max-w-md p-0">
+        <ExpandedWeatherDisplay onClose={() => setIsOpen(false)} />
+      </SheetContent>
+    </Sheet>
   );
 };
 

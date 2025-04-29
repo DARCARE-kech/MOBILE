@@ -14,7 +14,7 @@ const ServicesPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-darcare-navy">
+    <div className="min-h-screen bg-background">
       <AppHeader title={t('navigation.services')} />
       <div className="pt-16 pb-24">
         <Tabs 
@@ -22,7 +22,7 @@ const ServicesPage: React.FC = () => {
           onValueChange={setActiveTab} 
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-3 bg-darcare-navy/50 border border-darcare-gold/20">
+          <TabsList className="grid w-full grid-cols-3 bg-gradient-to-b from-darcare-navy to-[#1C1F2A] border border-darcare-gold/20">
             <TabsTrigger 
               value="reserve" 
               className="text-darcare-beige data-[state=active]:bg-darcare-gold data-[state=active]:text-darcare-navy"

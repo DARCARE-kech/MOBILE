@@ -63,7 +63,7 @@ export default {
           beige: "#F8F1E0",
           red: "#C45C5C",
           // Light mode colors
-          charcoal: "#1E1E1E",
+          charcoal: "#1A1A1A",
           deepGold: "#B88A44",
           lightGray: "#F5F5F5",
           lightBeige: "#FDFBF7"

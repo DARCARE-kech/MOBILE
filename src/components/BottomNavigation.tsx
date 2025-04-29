@@ -53,16 +53,22 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
                   ? "bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 border-darcare-gold/30"
                   : "bg-[#F2E4C8] border-darcare-deepGold/30 bottom-nav-home"
               )}>
-                <span className="text-primary">
+                <span className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"}>
                   {tab.icon}
                 </span>
               </div>
             ) : (
-              <span className={activeTab === tab.id ? "text-primary" : "text-foreground/70"}>
+              <span className={activeTab === tab.id 
+                ? (isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold") 
+                : "text-foreground/70"}>
                 {tab.icon}
               </span>
             )}
-            <span className={`text-xs mt-1 ${activeTab === tab.id ? "text-primary" : "text-foreground/70"}`}>
+            <span className={`text-xs mt-1 ${
+              activeTab === tab.id 
+                ? (isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold")
+                : "text-foreground/70"
+            }`}>
               {tab.label}
             </span>
           </button>

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import DrawerMenu from "./DrawerMenu";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 export interface AppHeaderProps {
   title?: string;
@@ -39,14 +40,14 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
   const displayTitle = isHome ? "DarCare" : title;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-primary/20 bg-gradient-to-b from-background/95 to-background backdrop-blur-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center app-header">
       <div className="flex items-center gap-3">
         {onBack ? (
           <Button
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-primary hover:text-primary/80 hover:bg-primary/10"
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
             aria-label={t('common.back')}
           >
             <ArrowLeft size={20} />
@@ -55,7 +56,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
           <DrawerMenu />
         )}
         {displayTitle && (
-          <h1 className={`font-serif text-primary ${isHome ? "text-2xl" : "text-xl"}`}>
+          <h1 className={cn("font-serif text-darcare-gold", isHome ? "text-2xl" : "text-xl")}>
             {displayTitle}
           </h1>
         )}
@@ -68,7 +69,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
             <Button
               variant="ghost"
               size="icon"
-              className="text-primary hover:text-primary/80 hover:bg-primary/10"
+              className="text-darcare-beige hover:text-darcare-gold hover:bg-darcare-gold/10"
               onClick={() => navigate('/explore/favorites')}
               aria-label={t('common.favorites')}
             >
@@ -77,13 +78,13 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
             <Button
               variant="ghost"
               size="icon"
-              className="relative text-primary hover:text-primary/80 hover:bg-primary/10"
+              className="relative text-darcare-beige hover:text-darcare-gold hover:bg-darcare-gold/10"
               onClick={() => navigate('/notifications')}
               aria-label={t('common.notifications')}
             >
               <Bell size={20} />
               {hasUnreadNotifications && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-darcare-gold rounded-full" />
               )}
             </Button>
           </>
