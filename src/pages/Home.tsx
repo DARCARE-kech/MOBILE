@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import CurrentStay from "@/components/CurrentStay";
 import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
-import AppHeader from "@/components/AppHeader";
+import MainHeader from "@/components/MainHeader";
 import { useTranslation } from "react-i18next";
 
 const Home: React.FC = () => {
@@ -115,7 +115,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <AppHeader />
+      <MainHeader showDrawer />
       <div className="pt-16 pb-24 overflow-auto">
         <CurrentStay currentStay={currentStay} />
         <ServicesList services={services} isLoading={isLoading} />

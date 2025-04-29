@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReserveServicesTab from "@/components/services/ReserveServicesTab";
 import MyRequestsTab from "@/components/services/MyRequestsTab";
 import HistoryTab from "@/components/services/HistoryTab";
-import AppHeader from "@/components/AppHeader";
+import MainHeader from "@/components/MainHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
 import FloatingAction from "@/components/FloatingAction";
@@ -15,7 +15,7 @@ const ServicesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <AppHeader title={t('navigation.services')} />
+      <MainHeader showDrawer title={t('navigation.services')} />
       <div className="pt-16 pb-24">
         <Tabs 
           value={activeTab} 
