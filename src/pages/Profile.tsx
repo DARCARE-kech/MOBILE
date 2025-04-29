@@ -4,7 +4,7 @@ import { Shield, HelpCircle, Info, Key } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import MainHeader from '@/components/MainHeader';
+import AppHeader from '@/components/AppHeader';
 import { UserInfoBlock } from '@/components/profile/UserInfoBlock';
 import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -36,7 +36,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader showDrawer title={t('profile.personalInfo')} />
+      <AppHeader title={t('profile.personalInfo')} />
       
       <div className="pt-16 pb-24">
         <div className="p-4 space-y-6">

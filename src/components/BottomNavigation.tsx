@@ -35,12 +35,20 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            className={`nav-icon ${activeTab === tab.id ? "active" : ""}`}
+            className={`flex flex-col items-center ${tab.id === 'home' ? 'relative -mt-6' : ''}`}
             onClick={() => handleTabChange(tab.path)}
           >
-            <span className={activeTab === tab.id ? "text-darcare-gold" : "text-darcare-beige/70"}>
-              {tab.icon}
-            </span>
+            {tab.id === 'home' ? (
+              <div className="bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 rounded-full p-4 border border-darcare-gold/30 shadow-lg">
+                <span className="text-darcare-gold">
+                  {tab.icon}
+                </span>
+              </div>
+            ) : (
+              <span className={activeTab === tab.id ? "text-darcare-gold" : "text-darcare-beige/70"}>
+                {tab.icon}
+              </span>
+            )}
             <span className={`text-xs mt-1 ${activeTab === tab.id ? "text-darcare-gold" : "text-darcare-beige/70"}`}>
               {tab.label}
             </span>
