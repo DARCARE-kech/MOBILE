@@ -19,7 +19,7 @@ const ServiceBanner: React.FC<ServiceBannerProps> = ({
   aspectRatio = 16/9
 }) => {
   return (
-    <div className="w-full overflow-hidden relative">
+    <div className="w-full overflow-hidden relative rounded-t-2xl">
       <AspectRatio ratio={aspectRatio}>
         <img
           src={imageUrl}

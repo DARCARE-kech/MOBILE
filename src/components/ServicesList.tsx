@@ -90,8 +90,10 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           <div 
             key={service.id}
             className={cn(
-              "request-card hover:bg-primary/5 transition-colors duration-200 cursor-pointer p-3 shadow-sm border-l-2 border-l-primary",
-              !isDarkMode && "service-card"
+              "rounded-2xl border transition-all duration-200 cursor-pointer p-3 hover:shadow-md",
+              isDarkMode 
+                ? "bg-[#1C1F2A] border-darcare-gold/10 hover:border-darcare-gold/20" 
+                : "bg-white border-darcare-deepGold/10 hover:border-darcare-deepGold/20"
             )}
             onClick={() => navigate(`/services/requests/${service.id}`)}
           >

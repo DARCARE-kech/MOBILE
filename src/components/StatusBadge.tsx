@@ -22,12 +22,12 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       case 'pending':
         return isDarkMode
           ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30"
-          : "badge-pending";
+          : "bg-[#FDF1C0] text-darcare-deepGold border-[#F6D87E]";
       case 'active':
       case 'in_progress':
         return isDarkMode
           ? "bg-green-500/20 text-green-300 border-green-500/30"
-          : "badge-in-progress";
+          : "bg-[#D6F5D2] text-[#147B3E] border-[#AEEAA5]";
       case 'completed':
         return isDarkMode
           ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
@@ -51,7 +51,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   return (
     <Badge 
       className={cn(
-        "rounded-full px-3 py-1 text-xs font-medium border",
+        "rounded-full px-2 py-0.5 text-xs font-medium border",
         getStatusClass()
       )}
     >

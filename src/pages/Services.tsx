@@ -19,13 +19,13 @@ const ServicesPage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <AppHeader title={t('navigation.services')} />
       
-      <div className="pt-20 pb-24"> {/* Increased top padding to prevent header overlap */}
+      <div className="pt-20 pb-24"> {/* Padding to prevent header overlap */}
         <div className="px-4 mb-4">
           <div className={cn(
-            "flex justify-between rounded-full p-1",
+            "flex justify-center rounded-full p-1.5",
             isDarkMode 
               ? "bg-white/5 backdrop-blur-sm" 
-              : "bg-white border border-darcare-deepGold/20 shadow-sm"
+              : "bg-white/80 border border-darcare-deepGold/10 shadow-sm"
           )}>
             <TabButton 
               active={activeTab === "reserve"}
@@ -71,14 +71,15 @@ const TabButton: React.FC<TabButtonProps> = ({ active, onClick, label }) => {
     <button
       onClick={onClick}
       className={cn(
-        "flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-200",
+        "flex-1 py-1.5 px-3 rounded-full text-sm font-medium transition-all duration-200",
         active 
           ? isDarkMode 
             ? "bg-darcare-gold text-darcare-navy" 
             : "bg-darcare-deepGold text-white"
           : isDarkMode
-            ? "text-darcare-beige hover:text-darcare-gold"
-            : "text-darcare-charcoal hover:text-darcare-deepGold"
+            ? "text-darcare-beige hover:text-darcare-gold border border-darcare-gold/30"
+            : "text-darcare-charcoal hover:text-darcare-deepGold border border-darcare-deepGold/30",
+        "mx-1"
       )}
     >
       {label}
