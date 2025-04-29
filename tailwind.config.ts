@@ -66,7 +66,8 @@ export default {
           charcoal: "#1A1A1A",
           deepGold: "#B88A44",
           lightGray: "#F5F5F5",
-          lightBeige: "#FDFBF7"
+          lightBeige: "#FDFBF7",
+          darkNavy: "#1E2230"
         }
       },
       borderRadius: {

@@ -5,7 +5,9 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import ServiceBanner from '@/components/services/ServiceBanner';
 import { useTranslation } from 'react-i18next';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Clock } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Define proper types for our services
 interface ServiceBase {
@@ -25,6 +27,7 @@ type Service = ServiceBase | ServiceWithDuration;
 const ReserveServicesTab: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
   
   const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
@@ -93,31 +96,44 @@ const ReserveServicesTab: React.FC = () => {
   ];
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-2 space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {allServices.map((service) => (
           <div 
             key={service.id}
             onClick={() => handleServiceClick(service.id, service.name)}
-            className="cursor-pointer group transition-transform hover:scale-[1.01] bg-darcare-navy/50 border border-darcare-gold/10 rounded-lg overflow-hidden"
+            className="cursor-pointer group transition-transform hover:scale-[1.01] service-card-elegant"
           >
             <ServiceBanner
               imageUrl={service.image_url || ''}
               altText={service.name}
-              withGradient={true}
-              height={160}
+              withGradient={false}
+              height={180}
             />
             <div className="p-4">
-              <h3 className="font-serif text-lg text-darcare-gold group-hover:text-darcare-gold/90">
+              <h3 className={cn(
+                "font-serif text-lg font-medium line-clamp-1",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
                 {service.name}
               </h3>
-              <p className="text-darcare-beige/80 text-sm mt-1">
+              <p className={cn(
+                "text-sm mt-1 line-clamp-2",
+                isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
+              )}>
                 {service.description}
               </p>
+              
               {/* Add a type guard to check if estimated_duration exists before rendering */}
               {'estimated_duration' in service && service.estimated_duration && (
-                <div className="mt-2 text-xs text-darcare-beige/60 bg-darcare-gold/5 w-fit px-2 py-1 rounded">
-                  {t('services.estimatedTime')}: {service.estimated_duration}
+                <div className={cn(
+                  "mt-3 text-xs flex items-center gap-1.5 w-fit px-2.5 py-1 rounded-full",
+                  isDarkMode 
+                    ? "text-darcare-beige/70 bg-darcare-gold/10" 
+                    : "text-darcare-deepGold bg-darcare-deepGold/10"
+                )}>
+                  <Clock size={12} />
+                  <span>{service.estimated_duration}</span>
                 </div>
               )}
             </div>

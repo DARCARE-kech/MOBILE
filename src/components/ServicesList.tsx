@@ -90,14 +90,19 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           <div 
             key={service.id}
             className={cn(
-              "luxury-card border-l-2 border-l-primary hover:bg-primary/5 transition-colors duration-200 cursor-pointer p-3 shadow-sm",
+              "request-card hover:bg-primary/5 transition-colors duration-200 cursor-pointer p-3 shadow-sm border-l-2 border-l-primary",
               !isDarkMode && "service-card"
             )}
             onClick={() => navigate(`/services/requests/${service.id}`)}
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-medium text-foreground text-sm">{service.title}</h3>
+                <h3 className={cn(
+                  "font-serif font-medium",
+                  isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+                )}>
+                  {service.title}
+                </h3>
                 <div className="flex items-center gap-2 text-xs text-foreground/70 mt-1">
                   <Clock size={12} className="text-primary" />
                   <span>{service.time}</span>
@@ -105,7 +110,10 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
               </div>
               <StatusBadge status={service.status} />
             </div>
-            <div className="mt-2 pt-2 border-t border-primary/10">
+            <div className={cn(
+              "mt-2 pt-2 border-t",
+              isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
+            )}>
               <div className="flex items-center gap-2 text-xs text-foreground/70">
                 <User size={12} className="text-primary" />
                 <span>Staff: {service.staff}</span>

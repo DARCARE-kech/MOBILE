@@ -2,14 +2,16 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Clock, User } from 'lucide-react';
 import { getStaffAssignmentsForRequest, getServiceRatingsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
 import StatusBadge from '@/components/StatusBadge';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { RatingStars } from '@/components/RatingStars';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
 
 interface Service {
   id: string;
@@ -35,6 +37,8 @@ interface ServiceRequest {
 
 const HistoryTab: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
   
   const { data: history, isLoading, error } = useQuery({
     queryKey: ['service-history'],
@@ -76,7 +80,7 @@ const HistoryTab: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center p-8">
+      <div className="flex justify-center items-center py-10">
         <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
       </div>
     );
@@ -85,51 +89,85 @@ const HistoryTab: React.FC = () => {
   if (error || !history) {
     return (
       <div className="p-4 text-destructive">
-        Error loading history. Please try again.
+        {t('common.error')} {t('common.fetchDataError')}
       </div>
     );
   }
 
   if (history.length === 0) {
     return (
-      <div className="p-6 text-center text-darcare-beige/80">
-        <p>You don't have any service history yet.</p>
+      <div className="p-6 text-center">
+        <p className={cn(
+          isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
+        )}>
+          {t('services.noHistoryYet')}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 mt-4">
+    <div className="space-y-4 p-2">
       {history?.map(record => (
-        <Card 
+        <div 
           key={record.id} 
-          className="bg-darcare-navy border border-darcare-gold/20 p-4 cursor-pointer hover:border-darcare-gold/40 transition-colors"
+          className="request-card cursor-pointer hover:shadow-md transition-all duration-200"
           onClick={() => handleRequestClick(record.id)}
         >
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-darcare-white font-medium">
+              <h3 className={cn(
+                "font-serif font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
                 {record.services?.name}
               </h3>
-              <p className="text-darcare-beige/70 text-sm mt-1">
-                {record.preferred_time ? format(new Date(record.preferred_time), 'PPP p') : 'Time not specified'}
-              </p>
+              
+              <div className="flex items-center gap-2 mt-2">
+                <div className={cn(
+                  "flex items-center gap-1.5 text-xs",
+                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                )}>
+                  <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                  <span>
+                    {record.preferred_time 
+                      ? format(new Date(record.preferred_time), 'PPP p') 
+                      : t('services.unscheduled')}
+                  </span>
+                </div>
+              </div>
+              
               {record.staff_assignments && record.staff_assignments.length > 0 && (
-                <p className="text-darcare-beige text-sm mt-2">
-                  Staff: {record.staff_assignments[0].staff_name || 'Assigned'}
-                </p>
+                <div className={cn(
+                  "flex items-center gap-1.5 text-xs mt-1.5",
+                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                )}>
+                  <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                  <span>
+                    {record.staff_assignments[0].staff_name || t('services.assigned')}
+                  </span>
+                </div>
               )}
             </div>
+            
             <StatusBadge status={record.status || 'completed'} />
           </div>
 
           {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-darcare-gold/10 flex items-center">
+            <div className={cn(
+              "mt-3 pt-3 border-t flex items-center",
+              isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
+            )}>
               <RatingStars rating={record.service_ratings[0].rating} />
-              <span className="text-darcare-beige/70 text-sm ml-2">Rated</span>
+              <span className={cn(
+                "text-sm ml-2",
+                isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+              )}>
+                {t('services.rated')}
+              </span>
             </div>
           )}
-        </Card>
+        </div>
       ))}
     </div>
   );

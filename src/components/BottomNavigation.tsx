@@ -32,12 +32,11 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
     navigate(path);
   };
 
+  // Updated bottom navigation for consistent dark design across both themes
   return (
     <nav className={cn(
       "fixed bottom-0 left-0 right-0 py-3 px-4 z-50 border-t border-primary/20",
-      isDarkMode 
-        ? "bg-darcare-navy" 
-        : "bg-white bottom-nav"
+      "bg-gradient-to-b from-darcare-navy to-[#1C1F2A]"
     )}>
       <div className="flex justify-between items-center max-w-screen-xl mx-auto">
         {tabs.map((tab) => (
@@ -47,27 +46,22 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
             onClick={() => handleTabChange(tab.path)}
           >
             {tab.id === 'home' ? (
-              <div className={cn(
-                "rounded-full p-4 border shadow-lg",
-                isDarkMode
-                  ? "bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 border-darcare-gold/30"
-                  : "bg-[#F2E4C8] border-darcare-deepGold/30 bottom-nav-home"
-              )}>
-                <span className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"}>
+              <div className="rounded-full p-4 border border-darcare-gold/30 bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 shadow-lg">
+                <span className="text-darcare-gold">
                   {tab.icon}
                 </span>
               </div>
             ) : (
               <span className={activeTab === tab.id 
-                ? (isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold") 
-                : "text-foreground/70"}>
+                ? "text-darcare-gold" 
+                : "text-darcare-beige/70"}>
                 {tab.icon}
               </span>
             )}
             <span className={`text-xs mt-1 ${
               activeTab === tab.id 
-                ? (isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold")
-                : "text-foreground/70"
+                ? "text-darcare-gold"
+                : "text-darcare-beige/70"
             }`}>
               {tab.label}
             </span>

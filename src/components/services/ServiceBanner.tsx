@@ -7,23 +7,25 @@ interface ServiceBannerProps {
   imageUrl: string;
   altText: string;
   withGradient?: boolean;
-  height?: number; // Add the optional height prop
+  height?: number;
+  aspectRatio?: number;
 }
 
 const ServiceBanner: React.FC<ServiceBannerProps> = ({ 
   imageUrl, 
   altText,
   withGradient = false,
-  height // Accept the height prop 
+  height,
+  aspectRatio = 16/9
 }) => {
   return (
-    <div className="w-full overflow-hidden rounded-lg relative">
-      <AspectRatio ratio={16/9}>
+    <div className="w-full overflow-hidden relative">
+      <AspectRatio ratio={aspectRatio}>
         <img
           src={imageUrl}
           alt={altText}
           className="w-full h-full object-cover"
-          style={height ? { height: `${height}px` } : undefined} // Apply height if provided
+          style={height ? { height: `${height}px` } : undefined}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = getFallbackImage(altText, 0);

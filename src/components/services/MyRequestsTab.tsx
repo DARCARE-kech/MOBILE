@@ -2,14 +2,15 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Clock, User } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
 import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment } from '@/integrations/supabase/rpc';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
 
 interface Service {
   id: string;
@@ -35,6 +36,7 @@ interface ServiceRequest {
 const MyRequestsTab: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
   
   const { data: requests, isLoading, error } = useQuery({
     queryKey: ['my-service-requests'],
@@ -71,7 +73,7 @@ const MyRequestsTab: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center p-8">
+      <div className="flex justify-center items-center py-10">
         <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
       </div>
     );
@@ -87,38 +89,69 @@ const MyRequestsTab: React.FC = () => {
 
   if (requests.length === 0) {
     return (
-      <div className="p-6 text-center text-darcare-beige/80">
-        <p>{t('services.noActiveRequests')}</p>
-        <p className="mt-2">{t('services.switchToReserveTab')}</p>
+      <div className="p-6 text-center">
+        <p className={cn(
+          isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
+        )}>
+          {t('services.noActiveRequests')}
+        </p>
+        <p className={cn(
+          "mt-2",
+          isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
+        )}>
+          {t('services.switchToReserveTab')}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 mt-4">
+    <div className="space-y-4 p-2">
       {requests?.map(request => (
-        <Card 
+        <div 
           key={request.id} 
-          className="bg-darcare-navy border border-darcare-gold/20 p-4 cursor-pointer hover:border-darcare-gold/40 transition-colors"
+          className="request-card cursor-pointer hover:shadow-md transition-all duration-200"
           onClick={() => handleRequestClick(request.id)}
         >
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-darcare-white font-medium">
+              <h3 className={cn(
+                "font-serif font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
                 {request.services?.name}
               </h3>
-              <p className="text-darcare-beige/70 text-sm mt-1">
-                {request.preferred_time ? format(new Date(request.preferred_time), 'PPP p') : t('services.unscheduled')}
-              </p>
+              
+              <div className="flex items-center gap-2 mt-2">
+                <div className={cn(
+                  "flex items-center gap-1.5 text-xs",
+                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                )}>
+                  <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                  <span>
+                    {request.preferred_time 
+                      ? format(new Date(request.preferred_time), 'PPP p') 
+                      : t('services.unscheduled')}
+                  </span>
+                </div>
+              </div>
+              
               {request.staff_assignments && request.staff_assignments.length > 0 && (
-                <p className="text-darcare-beige text-sm mt-2">
-                  {t('services.staff')}: {request.staff_assignments[0].staff_name || t('services.assigned')}
-                </p>
+                <div className={cn(
+                  "flex items-center gap-1.5 text-xs mt-1.5",
+                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                )}>
+                  <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                  <span>
+                    {request.staff_assignments[0].staff_name || t('services.assigned')}
+                  </span>
+                </div>
               )}
             </div>
+            
             <StatusBadge status={request.status || 'pending'} />
           </div>
-        </Card>
+        </div>
       ))}
     </div>
   );
