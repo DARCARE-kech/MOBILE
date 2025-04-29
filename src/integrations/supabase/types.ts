@@ -39,6 +39,44 @@ export type Database = {
         }
         Relationships: []
       }
+      book_space_details: {
+        Row: {
+          created_at: string | null
+          id: string
+          instructions: string | null
+          optional_fields: Json | null
+          price_range: string | null
+          service_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_space_details_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_threads: {
         Row: {
           created_at: string | null
@@ -66,6 +104,47 @@ export type Database = {
         }
         Relationships: []
       }
+      cleaning_details: {
+        Row: {
+          created_at: string | null
+          default_duration: unknown | null
+          id: string
+          instructions: string | null
+          optional_fields: Json | null
+          price_range: string | null
+          service_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cleaning_details_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string | null
@@ -91,6 +170,88 @@ export type Database = {
             columns: ["recommendation_id"]
             isOneToOne: false
             referencedRelation: "recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      laundry_details: {
+        Row: {
+          created_at: string | null
+          default_duration: unknown | null
+          id: string
+          instructions: string | null
+          optional_fields: Json | null
+          price_range: string | null
+          service_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "laundry_details_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_details: {
+        Row: {
+          created_at: string | null
+          default_duration: unknown | null
+          id: string
+          instructions: string | null
+          optional_fields: Json | null
+          price_range: string | null
+          service_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_details_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
             referencedColumns: ["id"]
           },
         ]
@@ -311,6 +472,41 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_details: {
+        Row: {
+          created_at: string | null
+          id: string
+          instructions: string | null
+          optional_fields: Json | null
+          service_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          service_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          service_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_details_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shop_order_items: {
         Row: {
           created_at: string | null
@@ -504,6 +700,47 @@ export type Database = {
           villa_number?: string
         }
         Relationships: []
+      }
+      transport_details: {
+        Row: {
+          created_at: string | null
+          default_duration: unknown | null
+          id: string
+          instructions: string | null
+          optional_fields: Json | null
+          price_range: string | null
+          service_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          default_duration?: unknown | null
+          id?: string
+          instructions?: string | null
+          optional_fields?: Json | null
+          price_range?: string | null
+          service_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transport_details_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_profiles: {
         Row: {

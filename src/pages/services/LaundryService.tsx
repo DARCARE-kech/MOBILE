@@ -10,7 +10,11 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-const LaundryService = () => {
+interface LaundryServiceProps {
+  serviceDetails?: any;
+}
+
+const LaundryService: React.FC<LaundryServiceProps> = ({ serviceDetails }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -45,9 +49,25 @@ const LaundryService = () => {
               {t('services.laundryDescription')}
             </h2>
           </div>
-          <p className="text-darcare-beige/80">
-            {t('services.laundryDetails')}
-          </p>
+          
+          {serviceDetails && (
+            <>
+              <p className="text-darcare-beige/80 mb-4">
+                {serviceDetails.instructions || t('services.laundryDetails')}
+              </p>
+              {serviceDetails.price_range && (
+                <p className="text-darcare-gold font-medium mt-2">
+                  {t('services.pricing')}: {serviceDetails.price_range}
+                </p>
+              )}
+            </>
+          )}
+          
+          {!serviceDetails && (
+            <p className="text-darcare-beige/80">
+              {t('services.laundryDetails')}
+            </p>
+          )}
         </Card>
 
         <h3 className="font-serif text-xl text-darcare-gold mt-6">{t('services.availableOptions')}</h3>

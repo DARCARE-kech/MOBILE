@@ -19,7 +19,8 @@ const ServiceDetail: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  const { data: service, isLoading, error } = useQuery({
+  // Fetch the base service information
+  const { data: service, isLoading: isLoadingService, error: serviceError } = useQuery({
     queryKey: ['service', id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,6 +34,49 @@ const ServiceDetail: React.FC = () => {
     },
     enabled: !!id && id !== 'book-space' && id !== 'shop'
   });
+
+  // Fetch the service-specific details based on service type
+  const { data: serviceDetails, isLoading: isLoadingDetails } = useQuery({
+    queryKey: ['service-details', id, service?.name],
+    queryFn: async () => {
+      if (!service) return null;
+      
+      const serviceNameLower = service.name.toLowerCase();
+      let tableName = '';
+      
+      if (serviceNameLower.includes('cleaning')) {
+        tableName = 'cleaning_details';
+      } else if (serviceNameLower.includes('maintenance')) {
+        tableName = 'maintenance_details';
+      } else if (serviceNameLower.includes('transport')) {
+        tableName = 'transport_details';
+      } else if (serviceNameLower.includes('laundry')) {
+        tableName = 'laundry_details';
+      } else if (serviceNameLower.includes('book space')) {
+        tableName = 'book_space_details';
+      } else if (serviceNameLower.includes('shop')) {
+        tableName = 'shop_details';
+      }
+      
+      if (!tableName) return null;
+      
+      const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .eq('service_id', service.id)
+        .single();
+      
+      if (error) {
+        console.error(`Error fetching ${tableName}:`, error);
+        return null;
+      }
+      
+      return { ...data, tableName };
+    },
+    enabled: !!service
+  });
+  
+  const isLoading = isLoadingService || isLoadingDetails;
   
   if (id === 'book-space') {
     return (
@@ -66,19 +110,20 @@ const ServiceDetail: React.FC = () => {
     );
   }
   
-  if (error || !service) {
+  if (serviceError || !service) {
     navigate('/services');
     return null;
   }
   
   const serviceNameLower = service?.name.toLowerCase();
   
+  // Pass serviceDetails to the specific service component
   if (serviceNameLower?.includes('laundry')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <LaundryService />
+          <LaundryService serviceDetails={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -88,7 +133,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <CleaningService />
+          <CleaningService serviceDetails={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -98,7 +143,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <MaintenanceService />
+          <MaintenanceService serviceDetails={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -108,7 +153,7 @@ const ServiceDetail: React.FC = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={service.name} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <TransportService />
+          <TransportService serviceDetails={serviceDetails} />
         </div>
         <BottomNavigation activeTab="services" />
       </div>

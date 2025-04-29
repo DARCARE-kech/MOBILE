@@ -1,34 +1,19 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import ServiceBanner from '@/components/services/ServiceBanner';
+import { useNavigate } from 'react-router-dom';
+import { ChevronRight, Clock, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Loader2, Clock, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
+import { getFallbackImage } from '@/utils/imageUtils';
 
-// Define proper types for our services
-interface ServiceBase {
-  id: string;
-  name: string;
-  description: string;
-  image_url: string | null;
-  category: string;
-}
-
-interface ServiceWithDuration extends ServiceBase {
-  estimated_duration: string;
-}
-
-type Service = ServiceBase | ServiceWithDuration;
-
-const ReserveServicesTab: React.FC = () => {
+const ReserveServicesTab = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
-  
+
   const { data: services, isLoading } = useQuery({
     queryKey: ['services'],
     queryFn: async () => {
@@ -39,118 +24,86 @@ const ReserveServicesTab: React.FC = () => {
       
       if (error) throw error;
       return data;
-    },
+    }
   });
 
-  // Group services by category
-  const servicesByCategory = services?.reduce((acc: Record<string, any[]>, service: any) => {
-    const category = service.category || 'Other';
+  const handleServiceClick = (id: string, name: string) => {
+    const nameLower = name.toLowerCase();
     
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(service);
-    return acc;
-  }, {});
-  
-  const handleServiceClick = (serviceId: string, serviceName: string) => {
-    if (serviceName.toLowerCase().includes('book space')) {
+    if (nameLower.includes('book space')) {
       navigate('/services/spaces');
-    } else if (serviceName.toLowerCase().includes('shop')) {
+    } else if (nameLower.includes('shop')) {
       navigate('/services/shop');
     } else {
-      navigate(`/services/${serviceId}`);
+      navigate(`/services/${id}`);
     }
   };
-  
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-40">
+      <div className="flex justify-center items-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
       </div>
     );
   }
 
-  // Create a single array of all services, including special ones
-  const allServices: Service[] = [
-    // Special services at the top
-    {
-      id: 'book-space',
-      name: t('services.bookSpace'),
-      description: t('services.bookSpaceDesc'),
-      image_url: '/images/spaces.jpg',
-      category: 'Amenities',
-    },
-    {
-      id: 'shop',
-      name: t('services.shop'),
-      description: t('services.shopDesc'),
-      image_url: '/images/shop.jpg',
-      category: 'Amenities',
-    },
-    // Add all other services
-    ...(services || []).filter(s => 
-      !s.name.toLowerCase().includes('book space') && 
-      !s.name.toLowerCase().includes('shop')
-    )
-  ];
-
   return (
-    <div className="p-2 space-y-6">
+    <div className="py-4">
       <div className="grid grid-cols-2 gap-4">
-        {allServices.map((service) => (
-          <div 
+        {services?.map((service) => (
+          <div
             key={service.id}
-            onClick={() => handleServiceClick(service.id, service.name)}
             className={cn(
-              "cursor-pointer group rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.02]",
-              isDarkMode 
-                ? "bg-[#1E2230] border border-darcare-gold/10" 
-                : "bg-white border border-darcare-deepGold/10 shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+              "rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 shadow",
+              isDarkMode
+                ? "bg-[#1E2230] hover:shadow-darcare-gold/10 hover:shadow-md"
+                : "bg-white hover:shadow-darcare-deepGold/10 hover:shadow-md"
             )}
+            onClick={() => handleServiceClick(service.id, service.name)}
           >
-            <ServiceBanner
-              imageUrl={service.image_url || ''}
-              altText={service.name}
-              withGradient={false}
-              height={120}
-            />
-            <div className="p-3 pb-4 relative">
+            {/* Image Section */}
+            <div className="aspect-[4/3] w-full">
+              <img
+                src={service.image_url || getFallbackImage(service.name, 0)}
+                alt={service.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = getFallbackImage(service.name, 0);
+                }}
+              />
+            </div>
+            
+            {/* Content Section */}
+            <div className="p-3 relative">
               <h3 className={cn(
-                "font-serif text-base font-medium line-clamp-1",
+                "font-serif text-lg mb-1 line-clamp-1",
                 isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
               )}>
                 {service.name}
               </h3>
+              
               <p className={cn(
-                "text-xs mt-1 line-clamp-2",
+                "text-xs line-clamp-2 mb-2 min-h-[2.5rem]",
                 isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
               )}>
                 {service.description}
               </p>
               
-              <div className="flex justify-between items-end mt-2">
-                {/* Add a type guard to check if estimated_duration exists before rendering */}
-                {('estimated_duration' in service && service.estimated_duration) ? (
+              <div className="flex items-center justify-between">
+                {service.estimated_duration && (
                   <div className={cn(
-                    "text-xs flex items-center gap-1 w-fit px-2 py-0.5 rounded-full",
-                    isDarkMode 
-                      ? "text-darcare-beige/70 bg-darcare-gold/10" 
-                      : "text-darcare-deepGold bg-darcare-deepGold/10"
+                    "flex items-center gap-1 text-xs",
+                    isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
                   )}>
-                    <Clock size={10} />
+                    <Clock size={14} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
                     <span>{service.estimated_duration}</span>
                   </div>
-                ) : (
-                  <div></div> // Empty div to maintain layout when no duration
                 )}
                 
                 <ChevronRight 
                   size={16} 
-                  className={cn(
-                    "transition-transform group-hover:translate-x-1",
-                    isDarkMode ? "text-darcare-gold/60" : "text-darcare-deepGold/60"
-                  )}
+                  className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} 
                 />
               </div>
             </div>
