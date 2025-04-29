@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +8,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import DynamicServiceForm from '@/components/services/DynamicServiceForm';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { FormData, ServiceDetail } from '@/components/services/form/formHelpers';
 
 // Define a type for the form data
 interface ServiceRequestFormData {
@@ -79,12 +79,20 @@ const ServiceRequestForm: React.FC = () => {
         return null;
       }
       
-      return data;
+      // Ensure the optional_fields is correctly typed
+      if (data && data.optional_fields) {
+        return {
+          ...data,
+          optional_fields: data.optional_fields as Record<string, any>
+        } as ServiceDetail;
+      }
+      
+      return data as ServiceDetail;
     },
     enabled: !!service
   });
   
-  const handleSubmitRequest = async (formData: ServiceRequestFormData) => {
+  const handleSubmitRequest = async (formData: FormData) => {
     setSubmitting(true);
     
     try {
@@ -188,7 +196,7 @@ const ServiceRequestForm: React.FC = () => {
           serviceType={serviceType || service?.name.toLowerCase() || ''}
           serviceName={service?.name}
           serviceImageUrl={service?.image_url}
-          serviceDetails={serviceDetails || undefined}
+          serviceDetails={serviceDetails}
           optionalFields={enhanceOptionalFields()}
           onSubmitSuccess={handleSubmitRequest}
         />
