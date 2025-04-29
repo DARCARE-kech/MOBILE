@@ -8,12 +8,14 @@ interface ServiceHeaderProps {
   title: string;
   showBackButton?: boolean;
   rightComponent?: React.ReactNode;
+  showWeather?: boolean;
 }
 
 const ServiceHeader: React.FC<ServiceHeaderProps> = ({ 
   title, 
   showBackButton = false,
-  rightComponent
+  rightComponent,
+  showWeather = false
 }) => {
   const navigate = useNavigate();
   
