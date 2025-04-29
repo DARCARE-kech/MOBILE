@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import BottomNavigation from '@/components/BottomNavigation';
-import Header from '@/components/services/space-booking/Header';
+import AppHeader from '@/components/AppHeader';
 import LoadingState from '@/components/services/space-booking/LoadingState';
 import SpaceInfoCard from '@/components/services/space-booking/SpaceInfoCard';
 import { SpaceBookingForm } from '@/components/services/space-booking/SpaceBookingForm';
@@ -33,12 +33,13 @@ const BookSpaceService = () => {
 
   return (
     <div className="bg-darcare-navy min-h-screen pb-20">
-      <Header 
+      <AppHeader 
         title={selectedSpace.name}
-        onBack={() => navigate('/services/spaces')} 
+        showBackButton
+        onBack={() => navigate('/services/spaces')}
       />
 
-      <div className="p-4 space-y-4 pb-24">
+      <div className="pt-16 p-4 space-y-4 pb-24">
         <SpaceInfoCard space={selectedSpace} />
         <SpaceBookingForm 
           space={selectedSpace}

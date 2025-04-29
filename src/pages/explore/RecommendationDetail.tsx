@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import BottomNavigation from "@/components/BottomNavigation";
 import { RecommendationHeader } from "@/components/RecommendationHeader";
-import { RecommendationDetailHeader } from "@/components/explore/RecommendationDetailHeader";
+import AppHeader from "@/components/AppHeader";
 import { RecommendationDetailSkeleton } from "@/components/explore/RecommendationDetailSkeleton";
 import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
 import { RecommendationTabs } from "@/components/explore/RecommendationTabs";
@@ -48,12 +48,10 @@ const RecommendationDetail = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <RecommendationDetailHeader 
-        title={recommendation.title} 
+      <AppHeader 
+        title={recommendation.title}
+        showBackButton
         onBack={handleBack}
-        isFavorite={recommendation.is_favorite || false}
-        onToggleFavorite={toggleFavorite}
-        recommendationId={id}
       />
       
       <RecommendationHeader 
