@@ -1,15 +1,10 @@
 
 // This file redirects imports to the new AppHeader
 // It's a compatibility layer for existing imports
-import AppHeader from "./AppHeader";
-import { AppHeaderProps } from "./AppHeader";
+import AppHeader, { AppHeaderProps } from "./AppHeader";
 
-interface MainHeaderProps extends AppHeaderProps {
-  onBack?: () => void;
-}
-
-const MainHeader = (props: MainHeaderProps) => {
-  // Just forwarding props to AppHeader
+// MainHeader just passes all props to AppHeader
+const MainHeader = (props: AppHeaderProps) => {
   return <AppHeader {...props} />;
 };
 

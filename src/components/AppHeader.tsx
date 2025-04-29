@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import DrawerMenu from "./DrawerMenu";
 import { useTranslation } from "react-i18next";
 
-interface AppHeaderProps {
+export interface AppHeaderProps {
   title?: string;
   children?: React.ReactNode;
   onBack?: () => void;
