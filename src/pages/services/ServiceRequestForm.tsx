@@ -8,7 +8,7 @@ import DynamicServiceForm from '@/components/services/DynamicServiceForm';
 import { FormData } from '@/components/services/form/formHelpers';
 import ServiceRequestHeader from '@/components/services/ServiceRequestHeader';
 import ServiceRequestLoader from '@/components/services/ServiceRequestLoader';
-import { useServiceRequest as useServiceRequestForForm } from '@/hooks/useServiceRequest';
+import { useServiceRequestForForm } from '@/hooks/useServiceRequest';
 import { useServiceSubmitter } from '@/components/services/ServiceRequestSubmitter';
 
 const ServiceRequestForm: React.FC = () => {
