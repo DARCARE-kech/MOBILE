@@ -155,8 +155,11 @@ const ServiceRequestForm: React.FC = () => {
   const enhanceOptionalFields = () => {
     if (!serviceDetails?.optional_fields) return {};
     
+    // Safely cast the optional_fields to Record<string, any> to ensure TypeScript knows it's an object
+    const optionalFields = serviceDetails.optional_fields as Record<string, any>;
+    
     // Create a copy of optional_fields to avoid modifying the original data
-    const enhanced: Record<string, any> = { ...serviceDetails.optional_fields || {} };
+    const enhanced: Record<string, any> = { ...optionalFields };
     
     // Pre-select the category if provided
     if (category && enhanced.categories) {
