@@ -155,7 +155,8 @@ const ServiceRequestForm: React.FC = () => {
   const enhanceOptionalFields = () => {
     if (!serviceDetails?.optional_fields) return {};
     
-    const enhanced = { ...serviceDetails.optional_fields };
+    // Create a copy of optional_fields to avoid modifying the original data
+    const enhanced: Record<string, any> = { ...serviceDetails.optional_fields || {} };
     
     // Pre-select the category if provided
     if (category && enhanced.categories) {
