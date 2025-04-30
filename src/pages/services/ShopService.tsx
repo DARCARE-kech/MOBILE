@@ -86,7 +86,7 @@ const ShopService = () => {
   return (
     <div className="min-h-screen bg-darcare-navy pb-20">
       <MainHeader 
-        title={t('shop.title')} 
+        title={t('services.shop')} 
         onBack={() => navigate('/services')} 
         rightContent={
           <Button

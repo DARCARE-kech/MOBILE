@@ -65,11 +65,12 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-3">
-      {products.map((product) => (
+      {products.map((product, index) => (
         <ProductCard
           key={product.id}
           product={product as ShopProduct}
           onAddToCart={handleAddToCart}
+          index={index}
         />
       ))}
     </div>
