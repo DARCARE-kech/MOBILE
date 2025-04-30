@@ -40,7 +40,7 @@ export const PreferencesSection = ({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Moon className="h-4 w-4 text-primary" />
+          <Moon className="h-4 w-4 text-secondary" />
           <Label htmlFor="dark-mode" className="text-foreground">{t('profile.darkMode')}</Label>
         </div>
         <Switch
@@ -52,7 +52,7 @@ export const PreferencesSection = ({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Globe className="h-4 w-4 text-primary" />
+          <Globe className="h-4 w-4 text-secondary" />
           <Label htmlFor="language" className="text-foreground">{t('profile.language')}</Label>
         </div>
         <Select

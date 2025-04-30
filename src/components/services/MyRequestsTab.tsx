@@ -81,7 +81,10 @@ const MyRequestsTab: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-10">
-        <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        <Loader2 className={cn(
+          "h-8 w-8 animate-spin",
+          isDarkMode ? "text-darcare-gold" : "text-secondary"
+        )} />
       </div>
     );
   }
@@ -98,13 +101,13 @@ const MyRequestsTab: React.FC = () => {
     return (
       <div className="p-6 text-center">
         <p className={cn(
-          isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
+          isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
         )}>
           {t('services.noActiveRequests')}
         </p>
         <p className={cn(
           "mt-2 mb-6",
-          isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
+          isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
         )}>
           {t('services.switchToReserveTab')}
         </p>
@@ -114,7 +117,7 @@ const MyRequestsTab: React.FC = () => {
           className={cn(
             isDarkMode
               ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-              : "bg-primary hover:bg-primary/90"
+              : "bg-secondary text-white hover:bg-secondary/90"
           )}
         >
           Request a Service
@@ -135,7 +138,7 @@ const MyRequestsTab: React.FC = () => {
             <div>
               <h3 className={cn(
                 "font-serif font-medium",
-                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+                isDarkMode ? "text-darcare-gold" : "text-primary"
               )}>
                 {request.services?.name}
               </h3>
@@ -143,9 +146,9 @@ const MyRequestsTab: React.FC = () => {
               <div className="flex items-center gap-2 mt-2">
                 <div className={cn(
                   "flex items-center gap-1.5 text-xs",
-                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                  isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
                 )}>
-                  <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                  <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
                   <span>
                     {request.preferred_time 
                       ? format(new Date(request.preferred_time), 'PPP p') 
@@ -157,9 +160,9 @@ const MyRequestsTab: React.FC = () => {
               {request.staff_assignments && request.staff_assignments.length > 0 && (
                 <div className={cn(
                   "flex items-center gap-1.5 text-xs mt-1.5",
-                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                  isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
                 )}>
-                  <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                  <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
                   <span>
                     {request.staff_assignments[0].staff_name || t('services.assigned')}
                   </span>

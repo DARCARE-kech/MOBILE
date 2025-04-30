@@ -16,7 +16,7 @@ const LuxuryCard = React.forwardRef<
         "rounded-lg border p-6 backdrop-blur-sm shadow-md",
         isDarkMode
           ? "border-darcare-gold/20 bg-darcare-navy/80"
-          : "border-darcare-deepGold/20 bg-white",
+          : "border-secondary/20 bg-white",
         className
       )}
       {...props}
@@ -36,7 +36,7 @@ const LuxuryCardHeader = React.forwardRef<
       ref={ref}
       className={cn(
         "flex flex-col space-y-1.5 pb-4 border-b",
-        isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10",
+        isDarkMode ? "border-darcare-gold/10" : "border-secondary/10",
         className
       )}
       {...props}
@@ -91,7 +91,7 @@ const LuxuryCardFooter = React.forwardRef<
       ref={ref}
       className={cn(
         "flex items-center pt-4 border-t",
-        isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10",
+        isDarkMode ? "border-darcare-gold/10" : "border-secondary/10",
         className
       )}
       {...props}

@@ -8,28 +8,48 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
 
 const StayDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const { currentStay, isLoading } = useUserProfile();
+  const { isDarkMode } = useTheme();
 
   if (isLoading) {
-    return <div className="min-h-screen bg-darcare-navy flex items-center justify-center">
+    return <div className={cn(
+      "min-h-screen flex items-center justify-center",
+      isDarkMode ? "bg-darcare-navy" : "bg-background"
+    )}>
       <div className="animate-pulse">Loading stay details...</div>
     </div>;
   }
 
   if (!currentStay) {
     return (
-      <div className="min-h-screen bg-darcare-navy">
+      <div className={cn(
+        "min-h-screen",
+        isDarkMode ? "bg-darcare-navy" : "bg-background"
+      )}>
         <MainHeader title="Stay Details" onBack={() => navigate('/profile')} />
         <div className="pt-20 pb-24 px-4 flex flex-col items-center justify-center">
-          <div className="text-darcare-beige text-center">
-            <h3 className="text-xl font-serif text-darcare-gold mb-2">No Active Stay</h3>
+          <div className={cn(
+            "text-center",
+            isDarkMode ? "text-darcare-beige" : "text-foreground"
+          )}>
+            <h3 className={cn(
+              "text-xl font-serif mb-2",
+              isDarkMode ? "text-darcare-gold" : "text-primary"
+            )}>No Active Stay</h3>
             <p>You don't have any active stay information.</p>
           </div>
           <Button 
-            className="mt-6 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            className={cn(
+              "mt-6",
+              isDarkMode 
+                ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+                : "bg-secondary text-white hover:bg-secondary/90"
+            )}
             onClick={() => navigate('/profile')}
           >
             Back to Profile
@@ -44,49 +64,92 @@ const StayDetailsPage: React.FC = () => {
   const stayDuration = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 3600 * 24));
 
   return (
-    <div className="min-h-screen bg-darcare-navy">
+    <div className={cn(
+      "min-h-screen",
+      isDarkMode ? "bg-darcare-navy" : "bg-background"
+    )}>
       <MainHeader title="Stay Details" onBack={() => navigate('/profile')} />
       
       <div className="pt-20 pb-24 px-4">
-        <Card className="p-6 bg-darcare-navy/50 border-darcare-gold/20 mb-6">
-          <h2 className="text-2xl font-serif text-darcare-gold mb-4">Villa {currentStay.villa_number}</h2>
+        <Card className={cn(
+          "p-6 mb-6",
+          isDarkMode 
+            ? "bg-darcare-navy/50 border-darcare-gold/20" 
+            : "bg-white border-secondary/20"
+        )}>
+          <h2 className={cn(
+            "text-2xl font-serif mb-4",
+            isDarkMode ? "text-darcare-gold" : "text-primary"
+          )}>Villa {currentStay.villa_number}</h2>
           
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">Marrakech, Morocco</span>
+              <MapPin className={cn(
+                "h-5 w-5",
+                isDarkMode ? "text-darcare-gold" : "text-secondary"
+              )} />
+              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>Marrakech, Morocco</span>
             </div>
             
             <div className="flex items-center gap-3">
-              <Building className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">Premium Suite</span>
+              <Building className={cn(
+                "h-5 w-5",
+                isDarkMode ? "text-darcare-gold" : "text-secondary"
+              )} />
+              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>Premium Suite</span>
             </div>
             
-            <Separator className="my-3 bg-darcare-gold/10" />
+            <Separator className={cn(
+              "my-3",
+              isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"
+            )} />
             
             <div className="flex items-center gap-3">
-              <CalendarDays className="h-5 w-5 text-darcare-gold" />
-              <div className="text-darcare-beige">
+              <CalendarDays className={cn(
+                "h-5 w-5",
+                isDarkMode ? "text-darcare-gold" : "text-secondary"
+              )} />
+              <div className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>
                 <div>{format(checkInDate, 'MMMM d, yyyy')} - {format(checkOutDate, 'MMMM d, yyyy')}</div>
-                <div className="text-darcare-beige/60 text-sm">Check-in: 2:00 PM | Check-out: 12:00 PM</div>
+                <div className={cn(
+                  "text-sm",
+                  isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
+                )}>Check-in: 2:00 PM | Check-out: 12:00 PM</div>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
-              <Clock className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">{stayDuration} nights</span>
+              <Clock className={cn(
+                "h-5 w-5",
+                isDarkMode ? "text-darcare-gold" : "text-secondary"
+              )} />
+              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>{stayDuration} nights</span>
             </div>
             
             <div className="flex items-center gap-3">
-              <Users className="h-5 w-5 text-darcare-gold" />
-              <span className="text-darcare-beige">2 Guests</span>
+              <Users className={cn(
+                "h-5 w-5",
+                isDarkMode ? "text-darcare-gold" : "text-secondary"
+              )} />
+              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>2 Guests</span>
             </div>
           </div>
         </Card>
         
-        <Card className="p-6 bg-darcare-navy/50 border-darcare-gold/20">
-          <h3 className="text-lg font-serif text-darcare-gold mb-3">Amenities</h3>
-          <ul className="space-y-2 text-darcare-beige">
+        <Card className={cn(
+          "p-6",
+          isDarkMode 
+            ? "bg-darcare-navy/50 border-darcare-gold/20" 
+            : "bg-white border-secondary/20"
+        )}>
+          <h3 className={cn(
+            "text-lg font-serif mb-3",
+            isDarkMode ? "text-darcare-gold" : "text-primary"
+          )}>Amenities</h3>
+          <ul className={cn(
+            "space-y-2",
+            isDarkMode ? "text-darcare-beige" : "text-foreground"
+          )}>
             <li>• Private Pool</li>
             <li>• 24/7 Concierge</li>
             <li>• Daily Housekeeping</li>
@@ -98,7 +161,12 @@ const StayDetailsPage: React.FC = () => {
         
         <div className="mt-6">
           <Button 
-            className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            className={cn(
+              "w-full",
+              isDarkMode
+                ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+                : "bg-secondary text-white hover:bg-secondary/90"
+            )}
             onClick={() => navigate('/services')}
           >
             Request Services

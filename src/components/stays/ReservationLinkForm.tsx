@@ -118,10 +118,18 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
   return (
     <div className={cn(
       "luxury-card",
-      isDarkMode && "bg-gradient-to-br from-darcare-navy/90 to-darcare-navy"
+      isDarkMode 
+        ? "bg-gradient-to-br from-darcare-navy/90 to-darcare-navy" 
+        : "bg-white border-secondary/10"
     )}>
-      <h2 className="font-serif text-primary text-xl mb-3">Link Your Reservation</h2>
-      <p className="text-foreground/70 mb-4">Please enter your reservation number to access your stay details.</p>
+      <h2 className={cn(
+        "font-serif text-xl mb-3",
+        isDarkMode ? "text-darcare-gold" : "text-primary"
+      )}>Link Your Reservation</h2>
+      <p className={cn(
+        isDarkMode ? "text-darcare-beige/70" : "text-foreground/70",
+        "mb-4"
+      )}>Please enter your reservation number to access your stay details.</p>
       
       <form onSubmit={handleLinkReservation} className="space-y-4">
         <div className="space-y-1">
@@ -135,7 +143,9 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
             }}
             className={cn(
               "bg-background/50 border",
-              isDarkMode ? "border-darcare-gold/30" : "border-primary/30",
+              isDarkMode 
+                ? "border-darcare-gold/30" 
+                : "border-secondary/30",
               error ? "border-red-500" : ""
             )}
             disabled={isSubmitting}
@@ -154,7 +164,7 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
             "w-full",
             isDarkMode
               ? "bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy"
-              : "bg-primary hover:bg-primary/90"
+              : "bg-secondary hover:bg-secondary/90 text-white"
           )}
           disabled={isSubmitting || !reservationNumber.trim()}
         >

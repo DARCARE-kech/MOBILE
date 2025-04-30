@@ -63,12 +63,15 @@ export default {
           beige: "#F8F1E0",
           red: "#C45C5C",
           // Light mode colors
-          charcoal: "#1A1A1A",
-          deepGold: "#B88A44",
+          charcoal: "#0A0F2C",
+          deepGold: "#C7A17A",
           lightGray: "#F5F5F5",
-          lightBeige: "#FDFBF7",
-          darkNavy: "#1E2230"
+          lightBeige: "#F8F4F0",
+          darkNavy: "#1C243A"
         }
+      },
+      backgroundImage: {
+        'navy-gradient': 'linear-gradient(to bottom, #0A0F2C, #1C243A)',
       },
       borderRadius: {
         lg: "var(--radius)",
