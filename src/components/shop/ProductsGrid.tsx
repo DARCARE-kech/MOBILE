@@ -9,22 +9,28 @@ import type { ShopProduct } from '@/types/shop';
 
 export interface ProductsGridProps {
   searchQuery?: string;
+  categoryFilter?: string;
   onAddToCart: (productId: string, quantity: number) => void;
 }
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ 
   searchQuery = '',
+  categoryFilter = '',
   onAddToCart 
 }) => {
   const { t } = useTranslation();
   
   const { data: products, isLoading } = useQuery({
-    queryKey: ['shop-products', searchQuery],
+    queryKey: ['shop-products', searchQuery, categoryFilter],
     queryFn: async () => {
       let query = supabase.from('shop_products').select('*');
       
       if (searchQuery) {
         query = query.ilike('name', `%${searchQuery}%`);
+      }
+      
+      if (categoryFilter) {
+        query = query.eq('category', categoryFilter);
       }
       
       const { data, error } = await query.order('name');
@@ -45,7 +51,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   if (!products || products.length === 0) {
     return (
       <div className="flex justify-center items-center h-40 p-4 text-darcare-beige text-lg">
-        {searchQuery 
+        {searchQuery || categoryFilter
           ? t('shop.noProductsFound') 
           : t('shop.noProductsAvailable')}
       </div>
@@ -58,7 +64,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-3">
       {products.map((product) => (
         <ProductCard
           key={product.id}

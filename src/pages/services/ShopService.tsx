@@ -13,10 +13,12 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import CategoryFilter from '@/components/shop/CategoryFilter';
 
 const ShopService = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const { addToCart } = useShopCart();
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -52,6 +54,27 @@ const ShopService = () => {
     },
     enabled: !!user?.id,
     refetchInterval: 5000, // Refetch every 5 seconds to keep cart updated
+  });
+
+  // Query to get unique categories
+  const { data: categories = [] } = useQuery({
+    queryKey: ['shop-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('shop_products')
+        .select('category')
+        .not('category', 'is', null)
+        .order('category');
+      
+      if (error) throw error;
+      
+      // Extract unique categories
+      const uniqueCategories = [...new Set(data
+        .map(item => item.category)
+        .filter(Boolean))] as string[];
+        
+      return uniqueCategories;
+    },
   });
 
   // Create a wrapper function to adapt between different function signatures
@@ -94,8 +117,15 @@ const ShopService = () => {
           </div>
         </div>
         
+        <CategoryFilter 
+          categories={categories} 
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+        
         <ProductsGrid
           searchQuery={searchQuery}
+          categoryFilter={selectedCategory}
           onAddToCart={handleAddToCart}
         />
       </div>

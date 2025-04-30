@@ -163,6 +163,7 @@
     }
   },
   "shop": {
+    "title": "Luxury Shop",
     "cart": "Cart",
     "continueShopping": "Continue Shopping",
     "emptyCart": "Your cart is empty",
@@ -174,7 +175,21 @@
     "orderSubmitted": "Order Submitted",
     "orderChargedToRoom": "Your items will be charged to your room.",
     "quantity": "Quantity",
-    "price": "Price"
+    "price": "Price",
+    "searchProducts": "Search products...",
+    "allProducts": "All Products",
+    "noProductsFound": "No products found",
+    "noProductsAvailable": "No products available",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to cart",
+    "categories": {
+      "groceries": "Groceries",
+      "drinks": "Drinks",
+      "snacks": "Snacks",
+      "hygiene": "Hygiene",
+      "local": "Local Specialties",
+      "essentials": "Essentials"
+    }
   },
   "chatbot": {
     "newChat": "New Chat",

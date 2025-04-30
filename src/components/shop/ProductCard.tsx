@@ -19,7 +19,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   };
 
   return (
-    <Card className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden">
+    <Card className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden h-full">
       <AspectRatio ratio={4/3}>
         <img 
           src={product.image_url || '/placeholder.svg'} 
@@ -28,24 +28,25 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
           onError={handleImageError}
         />
       </AspectRatio>
-      <CardContent className="p-4">
-        <div className="flex justify-between mb-2">
-          <h3 className="text-darcare-white text-lg font-semibold">
+      <CardContent className="p-3">
+        <div className="flex justify-between mb-1.5">
+          <h3 className="text-darcare-white text-lg font-serif font-medium">
             {product.name}
           </h3>
           <span className="text-darcare-gold font-medium">
             ${product.price.toFixed(2)}
           </span>
         </div>
-        <p className="text-darcare-beige text-sm mb-4 line-clamp-2">
+        <p className="text-darcare-beige text-sm mb-3 line-clamp-2">
           {product.description}
         </p>
         <div className="flex justify-end">
           <IconButton
-            icon={<Plus className="w-4 h-4" />}
+            icon={<Plus className="w-3.5 h-3.5" />}
             variant="primary"
-            size="sm"
+            size="xs"
             onClick={() => onAddToCart(product)}
+            className="shadow-md"
           />
         </div>
       </CardContent>

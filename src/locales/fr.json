@@ -163,6 +163,7 @@
     }
   },
   "shop": {
+    "title": "Boutique de Luxe",
     "cart": "Panier",
     "continueShopping": "Continuer les Achats",
     "emptyCart": "Votre panier est vide",
@@ -174,7 +175,21 @@
     "orderSubmitted": "Commande Soumise",
     "orderChargedToRoom": "Vos articles seront facturés à votre chambre.",
     "quantity": "Quantité",
-    "price": "Prix"
+    "price": "Prix",
+    "searchProducts": "Rechercher des produits...",
+    "allProducts": "Tous les Produits",
+    "noProductsFound": "Aucun produit trouvé",
+    "noProductsAvailable": "Aucun produit disponible",
+    "addToCart": "Ajouter au Panier",
+    "addedToCart": "Ajouté au panier",
+    "categories": {
+      "groceries": "Épicerie",
+      "drinks": "Boissons",
+      "snacks": "Collations",
+      "hygiene": "Hygiène",
+      "local": "Spécialités Locales",
+      "essentials": "Essentiels"
+    }
   },
   "chatbot": {
     "newChat": "Nouvelle Conversation",
