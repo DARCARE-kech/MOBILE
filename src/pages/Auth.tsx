@@ -77,8 +77,8 @@ const Auth = () => {
         await signIn(email, password);
         // Auth context will handle navigation on successful login
       } else {
-        const { success } = await signUp(email, password, name);
-        if (success) {
+        const result = await signUp(email, password, name);
+        if (result.success) {
           // Switch to login mode after successful sign up
           setIsLogin(true);
           // Clear form fields

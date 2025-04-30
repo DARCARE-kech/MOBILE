@@ -18,8 +18,14 @@ export interface AuthContextType {
   session: Session | null;
   user: User | null;
   userProfile: UserProfile | null;
-  signUp: (email: string, password: string, fullName: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{
+    success: boolean;
+    data: any;
+  }>;
+  signIn: (email: string, password: string) => Promise<{
+    success: boolean;
+    data: any;
+  }>;
   signOut: () => Promise<void>;
   isLoading: boolean;
 }
