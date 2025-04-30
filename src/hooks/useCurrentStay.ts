@@ -1,13 +1,9 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 
-interface CurrentStay {
-  villa_number: string;
-  check_in: string;
-  check_out: string;
-  status: string;
-}
+// Update the interface to match the stays table structure
+export type CurrentStayType = Tables<"stays">;
 
 export const useCurrentStay = (userId: string | undefined) => {
   const query = useQuery({
@@ -30,17 +26,36 @@ export const useCurrentStay = (userId: string | undefined) => {
           .maybeSingle();
           
         if (stayError) throw stayError;
-        return stayData;
+        return stayData as CurrentStayType | null;
       }
       
-      return data[0] as CurrentStay | null;
+      // Convert RPC data to match stays table structure
+      if (data[0]) {
+        // The RPC function returns only some fields, we need to ensure it matches the expected structure
+        return {
+          id: '',
+          villa_number: data[0].villa_number,
+          check_in: data[0].check_in,
+          check_out: data[0].check_out,
+          status: data[0].status,
+          // Default values for required fields
+          user_id: userId,
+          // Other fields can be null/undefined as they are optional in the interface
+          city: 'Marrakech',
+          guests: 2,
+          reservation_number: null,
+          created_at: null
+        } as CurrentStayType;
+      }
+      
+      return null;
     },
     enabled: !!userId,
   });
   
   return {
     ...query,
-    data: query.data,
+    data: query.data as CurrentStayType | null,
     refetch: query.refetch
   };
 };

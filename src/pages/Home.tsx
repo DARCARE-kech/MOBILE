@@ -11,7 +11,7 @@ import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
 import AppHeader from "@/components/AppHeader";
 import { useTranslation } from "react-i18next";
-import { useCurrentStay } from "@/hooks/useCurrentStay";
+import { useCurrentStay, type CurrentStayType } from "@/hooks/useCurrentStay";
 
 const Home: React.FC = () => {
   const [services, setServices] = useState<any[]>([]);
@@ -88,7 +88,7 @@ const Home: React.FC = () => {
       <AppHeader />
       <div className="pt-16 pb-24 overflow-auto">
         <CurrentStay 
-          currentStay={currentStay || null} 
+          currentStay={currentStay}
           userId={user?.id} 
           refetchStay={refetchStay} 
         />
