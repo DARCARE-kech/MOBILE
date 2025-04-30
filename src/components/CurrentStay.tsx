@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-import { Calendar, ChevronRight, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
+import React from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import type { Tables } from "@/integrations/supabase/types";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { AlertCircle } from "lucide-react";
+import ReservationLinkForm from "./stays/ReservationLinkForm";
+import StayDetails from "./stays/StayDetails";
 
 type Stay = Tables<"stays">;
 
@@ -19,198 +14,19 @@ interface CurrentStayProps {
 }
 
 const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay, userId, refetchStay }) => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const { isDarkMode } = useTheme();
-  const [reservationNumber, setReservationNumber] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  const handleLinkReservation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!userId) {
-      setError("Please log in to link your reservation");
-      return;
-    }
-    
-    if (!reservationNumber.trim()) {
-      setError("Please enter a reservation number");
-      return;
-    }
-    
-    setError(null);
-    setIsSubmitting(true);
-    
-    try {
-      // First check if reservation exists
-      const { data: stayData, error: fetchError } = await supabase
-        .from('stays')
-        .select('*')
-        .eq('reservation_number', reservationNumber.trim())
-        .maybeSingle();
-      
-      if (fetchError) throw fetchError;
-      
-      if (!stayData) {
-        setError("Invalid reservation number");
-        return;
-      }
-      
-      if (stayData.user_id) {
-        setError("This reservation is already linked to an account");
-        return;
-      }
-      
-      // Link reservation to user
-      const { error: updateError } = await supabase
-        .from('stays')
-        .update({ user_id: userId })
-        .eq('id', stayData.id);
-      
-      if (updateError) throw updateError;
-      
-      toast({
-        title: "Reservation linked successfully",
-        description: "Your stay details have been updated.",
-      });
-      
-      setReservationNumber("");
-      
-      // Refetch stay data immediately to update the UI
-      await refetchStay();
-      
-    } catch (error: any) {
-      console.error('Error linking reservation:', error);
-      setError(error.message || "Error linking reservation");
-      toast({
-        title: "Error linking reservation",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+  // If no stay is found, show the reservation link form
   if (!currentStay) {
     return (
       <div className="p-4">
-        <div className={cn(
-          "luxury-card",
-          isDarkMode && "bg-gradient-to-br from-darcare-navy/90 to-darcare-navy"
-        )}>
-          <h2 className="font-serif text-primary text-xl mb-3">Link Your Reservation</h2>
-          <p className="text-foreground/70 mb-4">Please enter your reservation number to access your stay details.</p>
-          
-          <form onSubmit={handleLinkReservation} className="space-y-4">
-            <div className="space-y-1">
-              <Input
-                type="text"
-                placeholder="Enter your reservation number"
-                value={reservationNumber}
-                onChange={(e) => {
-                  setReservationNumber(e.target.value);
-                  setError(null);
-                }}
-                className={cn(
-                  "bg-background/50 border",
-                  isDarkMode ? "border-darcare-gold/30" : "border-primary/30",
-                  error ? "border-red-500" : ""
-                )}
-                disabled={isSubmitting}
-              />
-              {error && (
-                <div className="flex items-center gap-1 text-red-500 text-sm">
-                  <AlertCircle size={14} />
-                  <span>{error}</span>
-                </div>
-              )}
-            </div>
-            
-            <Button
-              type="submit"
-              className={cn(
-                "w-full",
-                isDarkMode
-                  ? "bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy"
-                  : "bg-primary hover:bg-primary/90"
-              )}
-              disabled={isSubmitting || !reservationNumber.trim()}
-            >
-              {isSubmitting ? "Linking..." : "Link Reservation"}
-            </Button>
-          </form>
-        </div>
+        <ReservationLinkForm userId={userId} refetchStay={refetchStay} />
       </div>
     );
   }
 
-  const checkIn = new Date(currentStay.check_in || "");
-  const checkOut = new Date(currentStay.check_out || "");
-  const guestCount = currentStay.guests || 2;
-
+  // If a stay is found, show the stay details
   return (
     <div className="p-4">
-      <div className={cn(
-        "luxury-card",
-        isDarkMode && "bg-gradient-to-br from-darcare-navy/90 to-darcare-navy"
-      )}>
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h2 className="font-serif text-primary text-xl mb-1">{currentStay.villa_number}</h2>
-            <p className="text-foreground/80 text-sm">{currentStay.city}</p>
-          </div>
-          <div className={cn(
-            "flex items-center gap-1 text-sm rounded-full px-3 py-1",
-            isDarkMode
-              ? "bg-darcare-gold/10 text-darcare-gold"
-              : "bg-primary/10 text-primary"
-          )}>
-            <Calendar size={14} />
-            <span>
-              {currentStay.status === 'current' 
-                ? 'Currently Staying' 
-                : 'Upcoming Stay'}
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex flex-col space-y-3">
-          <div className={cn(
-            "flex items-center justify-between text-sm border-t pt-3",
-            isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
-          )}>
-            <div className="flex items-center gap-2 text-foreground">
-              <Calendar size={16} className="text-primary" />
-              <span>
-                {checkIn.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} 
-                {" - "}
-                {checkOut.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-              </span>
-            </div>
-            <span className="text-foreground/70">
-              ({Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights)
-            </span>
-          </div>
-          
-          <div className={cn(
-            "flex items-center justify-between text-sm border-t pt-3",
-            isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
-          )}>
-            <div className="flex items-center gap-2 text-foreground">
-              <Users size={16} className="text-primary" />
-              <span>{guestCount} {guestCount === 1 ? 'Guest' : 'Guests'}</span>
-            </div>
-            <button 
-              className="text-primary flex items-center gap-1 hover:text-primary/80 transition-colors"
-              onClick={() => navigate("/stays/details")}
-            >
-              View Details <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-      </div>
+      <StayDetails currentStay={currentStay} />
     </div>
   );
 };
