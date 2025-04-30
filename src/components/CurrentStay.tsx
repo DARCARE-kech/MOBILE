@@ -8,6 +8,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { AlertCircle } from "lucide-react";
 
 type Stay = Tables<"stays">;
 
@@ -23,12 +24,24 @@ const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay, userId, refetchS
   const { isDarkMode } = useTheme();
   const [reservationNumber, setReservationNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   const handleLinkReservation = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId || !reservationNumber.trim()) return;
     
+    if (!userId) {
+      setError("Please log in to link your reservation");
+      return;
+    }
+    
+    if (!reservationNumber.trim()) {
+      setError("Please enter a reservation number");
+      return;
+    }
+    
+    setError(null);
     setIsSubmitting(true);
+    
     try {
       // First check if reservation exists
       const { data: stayData, error: fetchError } = await supabase
@@ -40,20 +53,12 @@ const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay, userId, refetchS
       if (fetchError) throw fetchError;
       
       if (!stayData) {
-        toast({
-          title: "Invalid reservation number",
-          description: "Please check your reservation number and try again.",
-          variant: "destructive",
-        });
+        setError("Invalid reservation number");
         return;
       }
       
       if (stayData.user_id) {
-        toast({
-          title: "Reservation already linked",
-          description: "This reservation is already linked to another account.",
-          variant: "destructive",
-        });
+        setError("This reservation is already linked to an account");
         return;
       }
       
@@ -70,11 +75,14 @@ const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay, userId, refetchS
         description: "Your stay details have been updated.",
       });
       
-      // Refetch stay data
-      refetchStay();
+      setReservationNumber("");
+      
+      // Refetch stay data immediately to update the UI
+      await refetchStay();
       
     } catch (error: any) {
       console.error('Error linking reservation:', error);
+      setError(error.message || "Error linking reservation");
       toast({
         title: "Error linking reservation",
         description: error.message || "Please try again later.",
@@ -96,17 +104,30 @@ const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay, userId, refetchS
           <p className="text-foreground/70 mb-4">Please enter your reservation number to access your stay details.</p>
           
           <form onSubmit={handleLinkReservation} className="space-y-4">
-            <Input
-              type="text"
-              placeholder="Enter your reservation number"
-              value={reservationNumber}
-              onChange={(e) => setReservationNumber(e.target.value)}
-              className={cn(
-                "bg-background/50 border",
-                isDarkMode ? "border-darcare-gold/30" : "border-primary/30"
+            <div className="space-y-1">
+              <Input
+                type="text"
+                placeholder="Enter your reservation number"
+                value={reservationNumber}
+                onChange={(e) => {
+                  setReservationNumber(e.target.value);
+                  setError(null);
+                }}
+                className={cn(
+                  "bg-background/50 border",
+                  isDarkMode ? "border-darcare-gold/30" : "border-primary/30",
+                  error ? "border-red-500" : ""
+                )}
+                disabled={isSubmitting}
+              />
+              {error && (
+                <div className="flex items-center gap-1 text-red-500 text-sm">
+                  <AlertCircle size={14} />
+                  <span>{error}</span>
+                </div>
               )}
-              disabled={isSubmitting}
-            />
+            </div>
+            
             <Button
               type="submit"
               className={cn(
@@ -115,7 +136,7 @@ const CurrentStay: React.FC<CurrentStayProps> = ({ currentStay, userId, refetchS
                   ? "bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy"
                   : "bg-primary hover:bg-primary/90"
               )}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !reservationNumber.trim()}
             >
               {isSubmitting ? "Linking..." : "Link Reservation"}
             </Button>

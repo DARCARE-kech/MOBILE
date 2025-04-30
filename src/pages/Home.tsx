@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useTranslation();
-  const { data: currentStay, refetch: refetchStay } = useCurrentStay(user?.id);
+  const { data: currentStay, refetch: refetchStay, isLoading: isStayLoading } = useCurrentStay(user?.id);
 
   useEffect(() => {
     if (!user) {
@@ -94,7 +94,7 @@ const Home: React.FC = () => {
         />
         <ServicesList 
           services={services} 
-          isLoading={isLoading} 
+          isLoading={isLoading || isStayLoading} 
         />
         <RecommendationsList />
       </div>

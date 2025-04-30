@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -51,6 +52,9 @@ export const useCurrentStay = (userId: string | undefined) => {
       return null;
     },
     enabled: !!userId,
+    // Add staleTime: 0 to prevent caching in this specific case
+    // so we can always get fresh data when refetching
+    staleTime: 0,
   });
   
   return {
