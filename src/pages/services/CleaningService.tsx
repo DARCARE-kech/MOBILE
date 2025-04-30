@@ -197,7 +197,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
     <div className="p-4 pb-24">
       {/* Service Header with instructions */}
       <ServiceHeader 
-        serviceName={serviceData?.category || t('services.cleaning')}
+        serviceName={serviceData?.category || t('services.cleaning', 'Cleaning')}
         serviceDetail={serviceData}
       />
       
@@ -210,7 +210,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
               form={form}
               fieldType="radio"
               name="cleaningType"
-              label={t('services.cleaningType')}
+              label={t('services.cleaningType', 'Cleaning Type')}
               options={cleaningTypes}
               icon={<Home className="h-5 w-5" />}
             />
@@ -220,10 +220,10 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
               form={form}
               fieldType="checkbox"
               name="rooms"
-              label={t('services.selectRooms')}
+              label={t('services.selectRooms', 'Select Rooms')}
               options={roomOptions}
               icon={<Bed className="h-5 w-5" />}
-              subtitle={t('services.roomsSubtitle')}
+              subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
             />
             
             {/* Date and Time Selection */}
@@ -238,8 +238,8 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
               disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
-              {isSubmitting ? t('common.submitting') : 
-                editMode ? t('services.updateRequest') : t('services.sendRequest')
+              {isSubmitting ? t('common.submitting', 'Submitting...') : 
+                editMode ? t('services.updateRequest', 'Update Request') : t('services.sendRequest', 'Send Request')
               }
             </Button>
           </form>

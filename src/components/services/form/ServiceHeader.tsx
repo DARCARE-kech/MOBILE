@@ -35,11 +35,11 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
         const minutes = parseInt(parts[1]);
         
         if (hours > 0 && minutes > 0) {
-          return `${hours} ${t('common.hour')}${hours > 1 ? 's' : ''} ${minutes} ${t('common.minute')}${minutes > 1 ? 's' : ''}`;
+          return `${hours} ${t('common.hour', 'hour')}${hours > 1 ? 's' : ''} ${minutes} ${t('common.minute', 'minute')}${minutes > 1 ? 's' : ''}`;
         } else if (hours > 0) {
-          return `${hours} ${t('common.hour')}${hours > 1 ? 's' : ''}`;
+          return `${hours} ${t('common.hour', 'hour')}${hours > 1 ? 's' : ''}`;
         } else if (minutes > 0) {
-          return `${minutes} ${t('common.minute')}${minutes > 1 ? 's' : ''}`;
+          return `${minutes} ${t('common.minute', 'minute')}${minutes > 1 ? 's' : ''}`;
         }
       }
       
@@ -66,7 +66,7 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
       {displayDuration && (
         <div className="flex items-center gap-2 text-sm text-darcare-beige/70 mb-4">
           <Clock size={16} className="text-darcare-gold" />
-          <span>{t('services.estimatedDuration', { defaultValue: 'Estimated Duration' })}: {displayDuration}</span>
+          <span>{t('services.estimatedDuration', 'Estimated Duration')}: {displayDuration}</span>
         </div>
       )}
     </div>

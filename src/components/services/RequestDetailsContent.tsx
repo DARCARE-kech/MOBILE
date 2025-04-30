@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { formatFieldKey, renderSelectedOptions } from '@/utils/formattingUtils';
-import { Clock, Calendar, Check } from 'lucide-react';
+import { Clock, Calendar, Check, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface RequestDetailsContentProps {
@@ -38,14 +38,14 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
     <div className="space-y-6">
       {/* Scheduling info section */}
       <div className="space-y-4">
-        <h3 className="text-darcare-white font-medium">{t('services.schedulingDetails')}</h3>
+        <h3 className="text-darcare-white font-medium">{t('services.schedulingDetails', 'Scheduling Details')}</h3>
         
         <div className="rounded-lg bg-darcare-navy/40 p-4 space-y-3">
           {preferredTime && (
             <div className="flex items-center gap-3">
               <Clock className="h-5 w-5 text-darcare-gold" />
               <div>
-                <p className="text-sm text-darcare-beige/80">{t('services.scheduledFor')}</p>
+                <p className="text-sm text-darcare-beige/80">{t('services.scheduledFor', 'Scheduled For')}</p>
                 <p className="text-darcare-beige">{format(new Date(preferredTime), "PPP p")}</p>
               </div>
             </div>
@@ -55,7 +55,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
             <div className="flex items-center gap-3">
               <Calendar className="h-5 w-5 text-darcare-gold" />
               <div>
-                <p className="text-sm text-darcare-beige/80">{t('services.submittedOn')}</p>
+                <p className="text-sm text-darcare-beige/80">{t('services.submittedOn', 'Submitted On')}</p>
                 <p className="text-darcare-beige">{format(new Date(createdAt), "PPP")}</p>
               </div>
             </div>
@@ -66,7 +66,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* Selected preferences section */}
       {formattedOptions.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('services.yourPreferences')}</h3>
+          <h3 className="text-darcare-white font-medium">{t('services.yourPreferences', 'Your Preferences')}</h3>
           
           <div className="rounded-lg bg-darcare-navy/40 p-4 space-y-3">
             {formattedOptions.map((option, index) => (
@@ -78,7 +78,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
                     {Array.isArray(option.value) 
                       ? option.value.join(', ')
                       : typeof option.value === 'boolean' 
-                        ? (option.value ? t('common.yes') : t('common.no'))
+                        ? (option.value ? t('common.yes', 'Yes') : t('common.no', 'No'))
                         : String(option.value)}
                   </p>
                 </div>
@@ -91,9 +91,9 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* Staff assigned */}
       {hasStaffAssigned && (
         <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('services.assignedStaff')}</h3>
+          <h3 className="text-darcare-white font-medium">{t('services.assignedStaff', 'Assigned Staff')}</h3>
           <div className="rounded-lg bg-darcare-navy/40 p-4">
-            <p className="text-darcare-beige">{staffAssignments[0].staff_name || t('services.assigned')}</p>
+            <p className="text-darcare-beige">{staffAssignments[0].staff_name || t('services.assigned', 'Assigned')}</p>
           </div>
         </div>
       )}
@@ -101,7 +101,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* Notes section */}
       {(note || parsedNote) && (
         <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('services.additionalNotes')}</h3>
+          <h3 className="text-darcare-white font-medium">{t('services.additionalNotes', 'Additional Notes')}</h3>
           
           {/* If note is JSON, display structured data */}
           {parsedNote && (
@@ -110,7 +110,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
                 if (key === 'notes' || key === 'note') {
                   return (
                     <div key={index} className="space-y-1">
-                      <p className="text-sm text-darcare-beige/80">{t('services.additionalNotes')}</p>
+                      <p className="text-sm text-darcare-beige/80">{t('services.additionalNotes', 'Additional Notes')}</p>
                       <p className="text-darcare-beige bg-darcare-navy/60 p-2 rounded-md">{String(value)}</p>
                     </div>
                   );
@@ -137,7 +137,10 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
           {/* If note is not JSON, display as text */}
           {!parsedNote && note && (
             <div className="rounded-lg bg-darcare-navy/40 p-4">
-              <p className="text-darcare-beige">{note}</p>
+              <div className="flex items-start gap-3">
+                <FileText className="h-5 w-5 text-darcare-gold mt-0.5" />
+                <p className="text-darcare-beige">{note}</p>
+              </div>
             </div>
           )}
         </div>
@@ -146,11 +149,11 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* Image preview if available */}
       {imageUrl && (
         <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('common.image')}</h3>
+          <h3 className="text-darcare-white font-medium">{t('common.image', 'Image')}</h3>
           <div className="rounded-lg overflow-hidden">
             <img 
               src={imageUrl} 
-              alt={t('services.requestAttachment')} 
+              alt={t('services.requestAttachment', 'Request Attachment')} 
               className="w-full h-auto object-cover"
             />
           </div>

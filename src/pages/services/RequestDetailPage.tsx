@@ -30,7 +30,7 @@ const RequestDetailPage = () => {
   if (isLoading) {
     return (
       <div className="bg-darcare-navy min-h-screen">
-        <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
+        <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate(-1)} />
         <div className="flex justify-center items-center h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
@@ -42,7 +42,7 @@ const RequestDetailPage = () => {
   if (!request) {
     return (
       <div className="bg-darcare-navy min-h-screen">
-        <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
+        <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate(-1)} />
         <RequestNotFound />
         <BottomNavigation activeTab="services" />
       </div>
@@ -73,9 +73,9 @@ const RequestDetailPage = () => {
   
   return (
     <div className="bg-darcare-navy min-h-screen pb-24">
-      <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
+      <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate(-1)} />
       
-      <div className="p-4 space-y-6 pt-20"> {/* Increased top padding for header clearance */}
+      <div className="p-4 space-y-6 pt-20"> {/* Ensures content is below the header */}
         <div className="luxury-card">
           <RequestDetailHeader
             serviceName={request.services?.name || ''}
@@ -107,7 +107,7 @@ const RequestDetailPage = () => {
         
         {isCompleted && (
           <div className="luxury-card">
-            <h3 className="text-darcare-gold font-serif text-lg mb-4">{t('services.serviceRating')}</h3>
+            <h3 className="text-darcare-gold font-serif text-lg mb-4">{t('services.serviceRating', 'Service Rating')}</h3>
             <RequestRating
               onSubmit={submitRating}
               isSubmitting={isSubmittingRating}

@@ -22,7 +22,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
   return (
     <div className="space-y-6 mb-6">
       <FormSectionTitle 
-        title={t('services.schedulingInformation')} 
+        title={t('services.schedulingInformation', 'Scheduling Information')} 
         icon={<CalendarIcon className="h-5 w-5" />}
         rawKeys={true}
       />
@@ -33,7 +33,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
         render={({ field }) => (
           <FormItem className="flex flex-col">
             <FormSectionTitle 
-              title={t('services.preferredDate')}
+              title={t('services.preferredDate', 'Preferred Date')}
               className="mb-2"
               rawKeys={true}
             />
@@ -48,7 +48,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4 text-darcare-gold" />
-                    {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                    {field.value ? format(field.value, "PPP") : <span>{t('services.pickADate', 'Pick a date')}</span>}
                   </Button>
                 </FormControl>
               </PopoverTrigger>
@@ -73,7 +73,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
         render={({ field }) => (
           <FormItem>
             <FormSectionTitle
-              title={t('services.preferredTime')}
+              title={t('services.preferredTime', 'Preferred Time')}
               className="mb-2"
               rawKeys={true}
             />

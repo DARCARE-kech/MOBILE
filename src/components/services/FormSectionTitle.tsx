@@ -2,13 +2,14 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { formatFieldKey } from '@/utils/formattingUtils';
+import { useTranslation } from 'react-i18next';
 
 interface FormSectionTitleProps {
   title: string;
   icon?: React.ReactNode;
   subtitle?: string;
   className?: string;
-  rawKeys?: boolean; // Set to true only when title is already formatted
+  rawKeys?: boolean; // Set to true only when title is already formatted or is a translation key
 }
 
 const FormSectionTitle: React.FC<FormSectionTitleProps> = ({ 
@@ -18,9 +19,11 @@ const FormSectionTitle: React.FC<FormSectionTitleProps> = ({
   className,
   rawKeys = false
 }) => {
-  // Format the title if it's a raw key, unless rawKeys is true
+  const { t } = useTranslation();
+  
+  // For translation keys, we try to translate them first
+  // If rawKeys is true, we assume the title is already a human-readable string or direct translation key
   const displayTitle = rawKeys ? title : formatFieldKey(title);
-  // Format the subtitle if it's a raw key
   const displaySubtitle = subtitle ? (rawKeys ? subtitle : formatFieldKey(subtitle)) : undefined;
   
   return (
