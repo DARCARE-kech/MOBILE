@@ -31,7 +31,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   const { t } = useTranslation();
   const hasStaffAssigned = staffAssignments && staffAssignments.length > 0;
   
-  // Format the selected options into readable format
+  // Format the selected options into readable format - now with proper type safety
   const formattedOptions = selectedOptions ? renderSelectedOptions(selectedOptions) : [];
 
   return (

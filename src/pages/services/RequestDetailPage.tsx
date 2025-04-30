@@ -12,6 +12,7 @@ import { useServiceRequestById } from "@/hooks/useServiceRequest";
 import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
+import { Json } from "@/integrations/supabase/types"; 
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -56,6 +57,13 @@ const RequestDetailPage = () => {
     parsedNote = null;
   }
   
+  // Convert selected_options to Record<string, any> with proper type checking
+  const selectedOptions = (request.selected_options && 
+    typeof request.selected_options === 'object' && 
+    request.selected_options !== null) 
+    ? request.selected_options as Record<string, any>
+    : null;
+  
   const isCompleted = request.status === 'completed';
   const isCancelled = request.status === 'cancelled';
   const canModify = !isCompleted && !isCancelled;
@@ -81,7 +89,7 @@ const RequestDetailPage = () => {
             parsedNote={parsedNote}
             imageUrl={request.image_url}
             staffAssignments={request.staff_assignments}
-            selectedOptions={request.selected_options}
+            selectedOptions={selectedOptions}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
           />
