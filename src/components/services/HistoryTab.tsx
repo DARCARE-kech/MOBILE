@@ -12,6 +12,8 @@ import { RatingStars } from '@/components/RatingStars';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 
 interface Service {
   id: string;
@@ -39,17 +41,21 @@ const HistoryTab: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
+  const { user } = useAuth();
   
   const { data: history, isLoading, error } = useQuery({
-    queryKey: ['service-history'],
+    queryKey: ['service-history', user?.id],
     queryFn: async () => {
-      // Fetch service requests with completed or cancelled status
+      if (!user?.id) throw new Error("User ID is required");
+      
+      // Fetch service requests with completed or cancelled status for the current user
       const { data: historyData, error: historyError } = await supabase
         .from('service_requests')
         .select(`
           *,
           services(*)
         `)
+        .eq('user_id', user.id) // Filter by the current user's ID
         .in('status', ['completed', 'cancelled'])
         .order('created_at', { ascending: false });
       
@@ -71,7 +77,8 @@ const HistoryTab: React.FC = () => {
       }));
       
       return enhancedHistory as ServiceRequest[];
-    }
+    },
+    enabled: !!user?.id
   });
 
   const handleRequestClick = (requestId: string) => {
@@ -102,6 +109,23 @@ const HistoryTab: React.FC = () => {
         )}>
           {t('services.noHistoryYet')}
         </p>
+        <p className={cn(
+          "mt-2 mb-6",
+          isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
+        )}>
+          {t('services.switchToReserveTab')}
+        </p>
+        
+        <Button 
+          onClick={() => navigate('/services')} 
+          className={cn(
+            isDarkMode
+              ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+              : "bg-primary hover:bg-primary/90"
+          )}
+        >
+          Request a Service
+        </Button>
       </div>
     );
   }

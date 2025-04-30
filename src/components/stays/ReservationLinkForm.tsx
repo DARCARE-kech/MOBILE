@@ -37,26 +37,33 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
     setIsSubmitting(true);
     
     try {
-      // First check if reservation exists
+      // First check if reservation exists and is not linked yet
       const { data: stayData, error: fetchError } = await supabase
         .from('stays')
         .select('*')
         .eq('reservation_number', reservationNumber.trim())
+        .is('user_id', null) // Specifically check for null user_id
         .maybeSingle();
       
       if (fetchError) throw fetchError;
       
       if (!stayData) {
-        setError("Invalid reservation number");
+        // No stay found with this reservation number OR it's already linked
+        const { count } = await supabase
+          .from('stays')
+          .select('*', { count: 'exact', head: true })
+          .eq('reservation_number', reservationNumber.trim());
+          
+        if (count && count > 0) {
+          setError("This reservation is already linked to an account");
+        } else {
+          setError("Invalid reservation number");
+        }
+        setIsSubmitting(false);
         return;
       }
       
-      if (stayData.user_id) {
-        setError("This reservation is already linked to an account");
-        return;
-      }
-      
-      // Link reservation to user
+      // Link reservation to user since we found a valid unlinked reservation
       const { error: updateError } = await supabase
         .from('stays')
         .update({ user_id: userId })
@@ -72,7 +79,7 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
       setReservationNumber("");
       
       // Refetch stay data immediately to update the UI
-      await refetchStay();
+      refetchStay();
       
     } catch (error: any) {
       console.error('Error linking reservation:', error);

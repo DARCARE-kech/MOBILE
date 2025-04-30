@@ -11,6 +11,8 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 
 interface Service {
   id: string;
@@ -37,17 +39,21 @@ const MyRequestsTab: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
+  const { user } = useAuth();
   
   const { data: requests, isLoading, error } = useQuery({
-    queryKey: ['my-service-requests'],
+    queryKey: ['my-service-requests', user?.id],
     queryFn: async () => {
-      // Fetch service requests with pending status
+      if (!user?.id) throw new Error("User ID is required");
+      
+      // Fetch service requests with pending status for the current user
       const { data: requestsData, error: requestsError } = await supabase
         .from('service_requests')
         .select(`
           *,
           services(*)
         `)
+        .eq('user_id', user.id) // Filter by the current user's ID
         .in('status', ['pending', 'in_progress'])
         .order('created_at', { ascending: false });
       
@@ -64,7 +70,8 @@ const MyRequestsTab: React.FC = () => {
       }));
       
       return enhancedRequests as ServiceRequest[];
-    }
+    },
+    enabled: !!user?.id
   });
 
   const handleRequestClick = (requestId: string) => {
@@ -96,11 +103,22 @@ const MyRequestsTab: React.FC = () => {
           {t('services.noActiveRequests')}
         </p>
         <p className={cn(
-          "mt-2",
+          "mt-2 mb-6",
           isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
         )}>
           {t('services.switchToReserveTab')}
         </p>
+        
+        <Button 
+          onClick={() => navigate('/services')} 
+          className={cn(
+            isDarkMode
+              ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+              : "bg-primary hover:bg-primary/90"
+          )}
+        >
+          Request a Service
+        </Button>
       </div>
     );
   }
