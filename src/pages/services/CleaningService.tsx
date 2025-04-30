@@ -14,6 +14,7 @@ import DateTimePickerSection from '@/components/services/form/DateTimePickerSect
 import NoteInput from '@/components/services/form/NoteInput';
 import { useAuth } from '@/contexts/AuthContext';
 import { ServiceDetail } from '@/hooks/services/types';
+import { Broom, Bed, ShowerHead } from 'lucide-react';
 
 interface CleaningServiceProps {
   serviceData?: ServiceDetail;
@@ -56,8 +57,22 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
         balcony: false,
         all_areas: false,
       }
-    }
+    },
+    mode: 'onChange'
   });
+  
+  // Check if form is valid for enabling submit button
+  const isFormValid = () => {
+    const { cleaningType, rooms } = form.getValues();
+    // Check if a cleaning type is selected
+    if (!cleaningType) return false;
+    
+    // Check if at least one room is selected
+    const hasSelectedRoom = Object.values(rooms).some(value => value === true);
+    if (!hasSelectedRoom) return false;
+    
+    return true;
+  };
   
   const onSubmit = async (data: FormValues) => {
     if (!user) {
@@ -122,7 +137,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
       {/* Form Card */}
       <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Cleaning Type Option */}
             <OptionField
               form={form}
@@ -130,22 +145,19 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
               name="cleaningType"
               label={t('services.cleaningType')}
               options={cleaningTypes}
+              icon={<Broom className="h-5 w-5" />}
             />
             
             {/* Rooms Selection */}
-            <div className="space-y-4">
-              <h3 className="text-darcare-gold font-serif">{t('services.selectRooms')}</h3>
-              {roomOptions.map((room) => (
-                <OptionField
-                  key={room}
-                  form={form}
-                  fieldType="checkbox"
-                  name={`rooms.${room.replace(/\s+/g, '_').toLowerCase()}`}
-                  label={room}
-                  options={[room]}
-                />
-              ))}
-            </div>
+            <OptionField
+              form={form}
+              fieldType="checkbox"
+              name="rooms"
+              label={t('services.selectRooms')}
+              options={roomOptions}
+              icon={<Bed className="h-5 w-5" />}
+              subtitle={t('services.roomsSubtitle')}
+            />
             
             {/* Date and Time Selection */}
             <DateTimePickerSection form={form} />
@@ -156,7 +168,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting ? t('common.submitting') : t('services.sendRequest')}

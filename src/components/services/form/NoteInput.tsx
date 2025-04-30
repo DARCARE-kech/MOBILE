@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { UseFormReturn } from 'react-hook-form';
+import FormSectionTitle from '@/components/services/FormSectionTitle';
 
 interface NoteInputProps {
   form: UseFormReturn<any>;
@@ -18,13 +19,14 @@ const NoteInput: React.FC<NoteInputProps> = ({ form }) => {
       name="note"
       render={({ field }) => (
         <FormItem className="mb-4">
-          <FormLabel className="text-darcare-gold font-serif">
-            {t('services.additionalNotes')}
-          </FormLabel>
+          <FormSectionTitle 
+            title={t('services.additionalNotes')}
+            subtitle={t('services.notesSubtitle')}
+          />
           <FormControl>
             <Textarea
               placeholder={t('services.notesPlaceholder')}
-              className="min-h-24 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
+              className="min-h-24 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige focus:border-darcare-gold/50 rounded-md"
               {...field}
             />
           </FormControl>

@@ -48,8 +48,15 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
       driverLanguage: 'english',
       passengers: 2,
       luggageSupport: false
-    }
+    },
+    mode: 'onChange'
   });
+  
+  // Check if form is valid for enabling submit button
+  const isFormValid = () => {
+    const { vehicleType } = form.getValues();
+    return !!vehicleType;
+  };
   
   const onSubmit = async (data: FormValues) => {
     if (!user) {
@@ -111,7 +118,7 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
       {/* Form Card */}
       <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Vehicle Type Selection */}
             <OptionField
               form={form}
@@ -146,6 +153,7 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
               fieldType="toggle"
               name="luggageSupport"
               label={t('services.luggageSupport')}
+              subtitle={t('services.luggageSubtitle')}
             />
             
             {/* Date and Time Selection */}
@@ -157,7 +165,7 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting ? t('common.submitting') : t('services.sendRequest')}

@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 import { UseFormReturn } from 'react-hook-form';
+import FormSectionTitle from '@/components/services/FormSectionTitle';
 
 interface OptionFieldProps {
   form: UseFormReturn<any>;
@@ -19,6 +20,9 @@ interface OptionFieldProps {
   min?: number;
   max?: number;
   step?: number;
+  subtitle?: string;
+  icon?: React.ReactNode;
+  className?: string;
 }
 
 const OptionField: React.FC<OptionFieldProps> = ({
@@ -29,17 +33,33 @@ const OptionField: React.FC<OptionFieldProps> = ({
   options = [],
   min = 1,
   max = 10,
-  step = 1
+  step = 1,
+  subtitle,
+  icon,
+  className
 }) => {
+  // Format label to be more readable - ensures displayed label is clean, not a key
+  const formatLabel = (text: string) => {
+    return text
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, char => char.toUpperCase());
+  };
+
   return (
-    <div className="mb-4">
+    <div className={cn("mb-6", className)}>
+      {/* Section title for all field types */}
+      <FormSectionTitle
+        title={label}
+        icon={icon}
+        subtitle={subtitle}
+      />
+
       {fieldType === 'radio' && options.length > 0 && (
         <FormField
           control={form.control}
           name={name}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-darcare-gold font-serif">{label}</FormLabel>
               <div className="space-y-3">
                 <RadioGroup
                   value={field.value}
@@ -47,14 +67,14 @@ const OptionField: React.FC<OptionFieldProps> = ({
                   className="flex flex-col space-y-2"
                 >
                   {options.map((option, index) => (
-                    <div key={index} className="border border-darcare-gold/20 rounded-lg p-3 bg-darcare-navy/50 flex items-start gap-3">
+                    <div key={index} className="border border-darcare-gold/20 rounded-lg p-3 bg-darcare-navy/50 flex items-start gap-3 transition-all hover:border-darcare-gold/40">
                       <RadioGroupItem 
                         value={option} 
                         id={`${name}-${index}`} 
                         className="mt-1 border-darcare-gold/50" 
                       />
                       <Label htmlFor={`${name}-${index}`} className="flex-1 cursor-pointer">
-                        <span className="text-darcare-gold font-medium">{option}</span>
+                        <span className="text-darcare-beige font-medium">{formatLabel(option)}</span>
                       </Label>
                     </div>
                   ))}
@@ -67,31 +87,28 @@ const OptionField: React.FC<OptionFieldProps> = ({
       )}
 
       {fieldType === 'checkbox' && options.length > 0 && (
-        <div className="space-y-4">
-          <Label className="text-darcare-gold font-serif">{label}</Label>
-          <div className="space-y-2">
-            {options.map((option, index) => (
-              <FormField
-                key={index}
-                control={form.control}
-                name={`${name}.${option}`}
-                render={({ field }) => (
-                  <FormItem className="flex items-start space-x-3 space-y-0 rounded-md p-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="border-darcare-gold/50 data-[state=checked]:bg-darcare-gold data-[state=checked]:text-darcare-navy"
-                      />
-                    </FormControl>
-                    <Label className="text-darcare-beige cursor-pointer" htmlFor={`${name}-${index}`}>
-                      {option}
-                    </Label>
-                  </FormItem>
-                )}
-              />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {options.map((option, index) => (
+            <FormField
+              key={index}
+              control={form.control}
+              name={`${name}.${option.replace(/\s+/g, '_').toLowerCase()}`}
+              render={({ field }) => (
+                <FormItem className="flex items-start space-x-3 space-y-0 rounded-md p-2 border border-darcare-gold/20 bg-darcare-navy/50 hover:border-darcare-gold/40 transition-all">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="border-darcare-gold/50 data-[state=checked]:bg-darcare-gold data-[state=checked]:text-darcare-navy mt-0.5"
+                    />
+                  </FormControl>
+                  <Label className="text-darcare-beige cursor-pointer font-medium">
+                    {formatLabel(option)}
+                  </Label>
+                </FormItem>
+              )}
+            />
+          ))}
         </div>
       )}
 
@@ -101,13 +118,12 @@ const OptionField: React.FC<OptionFieldProps> = ({
           name={name}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-darcare-gold font-serif">{label}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   min={min}
                   max={max}
-                  className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
+                  className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige focus:border-darcare-gold/50 rounded-md"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
@@ -123,9 +139,10 @@ const OptionField: React.FC<OptionFieldProps> = ({
           control={form.control}
           name={name}
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-md p-3 border border-darcare-gold/20 bg-darcare-navy/50">
+            <FormItem className="flex flex-row items-center justify-between rounded-md p-4 border border-darcare-gold/20 bg-darcare-navy/50 hover:border-darcare-gold/40 transition-all">
               <div className="space-y-0.5">
-                <FormLabel className="text-darcare-gold">{label}</FormLabel>
+                <Label className="text-darcare-beige font-medium">{formatLabel(name.split('.').pop() || '')}</Label>
+                {subtitle && <p className="text-sm text-darcare-beige/70">{subtitle}</p>}
               </div>
               <FormControl>
                 <Switch
@@ -146,9 +163,9 @@ const OptionField: React.FC<OptionFieldProps> = ({
           name={name}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-darcare-gold font-serif">
-                {label}: {field.value} kg
-              </FormLabel>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-darcare-beige font-medium">{field.value} kg</span>
+              </div>
               <FormControl>
                 <Slider
                   min={min}

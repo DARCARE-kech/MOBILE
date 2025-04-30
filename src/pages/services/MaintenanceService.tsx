@@ -15,6 +15,8 @@ import NoteInput from '@/components/services/form/NoteInput';
 import FileUpload from '@/components/services/form/FileUpload';
 import { useAuth } from '@/contexts/AuthContext';
 import { ServiceDetail } from '@/hooks/services/types';
+import FormSectionTitle from '@/components/services/FormSectionTitle';
+import { Wrench } from 'lucide-react';
 
 interface MaintenanceServiceProps {
   serviceData?: ServiceDetail;
@@ -46,8 +48,15 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
       note: '',
       maintenanceType: '',
       urgency: 'standard'
-    }
+    },
+    mode: 'onChange'
   });
+  
+  // Check if form is valid for enabling submit button
+  const isFormValid = () => {
+    const { maintenanceType } = form.getValues();
+    return !!maintenanceType;
+  };
   
   const uploadImage = async (): Promise<string | null> => {
     if (!imageFile) return null;
@@ -143,7 +152,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
       {/* Form Card */}
       <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Maintenance Type Option */}
             <OptionField
               form={form}
@@ -151,6 +160,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
               name="maintenanceType"
               label={t('services.maintenanceType')}
               options={maintenanceTypes}
+              icon={<Wrench className="h-5 w-5" />}
             />
             
             {/* Urgency Selection */}
@@ -163,7 +173,13 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
             />
             
             {/* Image Upload */}
-            <FileUpload onFileChange={setImageFile} />
+            <div className="space-y-3">
+              <FormSectionTitle 
+                title={t('services.uploadImage')}
+                subtitle={t('services.imageHelp')}
+              />
+              <FileUpload onFileChange={setImageFile} />
+            </div>
             
             {/* Date and Time Selection */}
             <DateTimePickerSection form={form} />
@@ -174,7 +190,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting ? t('common.submitting') : t('services.sendRequest')}

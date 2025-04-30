@@ -14,6 +14,7 @@ import DateTimePickerSection from '@/components/services/form/DateTimePickerSect
 import NoteInput from '@/components/services/form/NoteInput';
 import { useAuth } from '@/contexts/AuthContext';
 import { ServiceDetail } from '@/hooks/services/types';
+import { WashingMachine, Ironing, Shirt } from 'lucide-react';
 
 interface LaundryServiceProps {
   serviceData?: ServiceDetail;
@@ -66,8 +67,16 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
       },
       weight: 3,
       sameDayDelivery: false
-    }
+    },
+    mode: 'onChange'
   });
+  
+  // Check if form is valid for enabling submit button
+  const isFormValid = () => {
+    const { services } = form.getValues();
+    // Check if at least one service is selected
+    return Object.values(services).some(value => value === true);
+  };
   
   const onSubmit = async (data: FormValues) => {
     if (!user) {
@@ -139,36 +148,28 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
       {/* Form Card */}
       <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Laundry Services Selection */}
-            <div className="space-y-4">
-              <h3 className="text-darcare-gold font-serif">{t('services.laundryServices')}</h3>
-              {serviceOptions.map((service) => (
-                <OptionField
-                  key={service}
-                  form={form}
-                  fieldType="checkbox"
-                  name={`services.${service}`}
-                  label={service}
-                  options={[service]}
-                />
-              ))}
-            </div>
+            <OptionField
+              form={form}
+              fieldType="checkbox"
+              name="services"
+              label={t('services.laundryServices')}
+              options={serviceOptions}
+              icon={<WashingMachine className="h-5 w-5" />}
+              subtitle={t('services.selectAtLeastOne')}
+            />
             
             {/* Special Fabrics Selection */}
-            <div className="space-y-4">
-              <h3 className="text-darcare-gold font-serif">{t('services.specialFabrics')}</h3>
-              {fabricOptions.map((fabric) => (
-                <OptionField
-                  key={fabric}
-                  form={form}
-                  fieldType="checkbox"
-                  name={`specialFabrics.${fabric}`}
-                  label={fabric}
-                  options={[fabric]}
-                />
-              ))}
-            </div>
+            <OptionField
+              form={form}
+              fieldType="checkbox"
+              name="specialFabrics"
+              label={t('services.specialFabrics')}
+              options={fabricOptions}
+              icon={<Shirt className="h-5 w-5" />}
+              subtitle={t('services.fabricsSubtitle')}
+            />
             
             {/* Weight Slider */}
             <OptionField
@@ -179,6 +180,7 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
               min={1}
               max={10}
               step={0.5}
+              icon={<Shirt className="h-5 w-5" />}
             />
             
             {/* Same Day Delivery Toggle */}
@@ -187,6 +189,7 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
               fieldType="toggle"
               name="sameDayDelivery"
               label={t('services.sameDayDelivery')}
+              subtitle={t('services.premiumService')}
             />
             
             {/* Date and Time Selection */}
@@ -198,7 +201,7 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting ? t('common.submitting') : t('services.sendRequest')}
