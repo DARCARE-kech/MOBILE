@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, AlertCircle } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +12,9 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [nameError, setNameError] = useState("");
   const { signIn, signUp, isLoading, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -22,27 +25,74 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    }
+    if (!re.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
+
+  const validatePassword = (password: string) => {
+    if (!password) {
+      setPasswordError("Password is required");
+      return false;
+    }
+    if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
+  const validateName = (name: string) => {
+    if (!isLogin && !name) {
+      setNameError("Name is required");
+      return false;
+    }
+    setNameError("");
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || (!isLogin && !name)) {
-      toast({
-        title: "Missing fields",
-        description: "Please fill all required fields",
-        variant: "destructive",
-      });
+    
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+    const isNameValid = validateName(name);
+    
+    if (!isEmailValid || !isPasswordValid || (!isLogin && !isNameValid)) {
       return;
     }
+
     try {
       if (isLogin) {
         await signIn(email, password);
-        // Auth context will handle navigation
+        // Auth context will handle navigation on successful login
       } else {
-        await signUp(email, password, name);
-        // Auth context will handle navigation
+        const { success } = await signUp(email, password, name);
+        if (success) {
+          // Switch to login mode after successful sign up
+          setIsLogin(true);
+          // Clear form fields
+          setPassword("");
+        }
       }
     } catch (error) {
-      // handled in context
+      // Error handled in auth context
     }
+  };
+
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>, errorSetter: React.Dispatch<React.SetStateAction<string>>, value: string) => {
+    setter(value);
+    errorSetter("");
   };
 
   return (
@@ -96,11 +146,19 @@ const Auth = () => {
                     type="text"
                     id="name"
                     placeholder="Your full name"
-                    className="w-full pl-12 py-3 rounded-lg outline-none border border-darcare-gold/20 bg-darcare-navy/40 text-darcare-beige font-sans text-base transition-all focus:border-darcare-gold focus:ring-1 focus:ring-darcare-gold"
+                    className={`w-full pl-12 py-3 rounded-lg outline-none border ${
+                      nameError ? "border-red-500" : "border-darcare-gold/20"
+                    } bg-darcare-navy/40 text-darcare-beige font-sans text-base transition-all focus:border-darcare-gold focus:ring-1 focus:ring-darcare-gold`}
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => handleInputChange(setName, setNameError, e.target.value)}
                   />
                 </div>
+                {nameError && (
+                  <div className="flex items-center text-red-500 text-sm mt-1">
+                    <AlertCircle size={14} className="mr-1" />
+                    {nameError}
+                  </div>
+                )}
               </div>
             )}
             <div className="flex flex-col gap-1">
@@ -114,11 +172,19 @@ const Auth = () => {
                   id="email"
                   placeholder="you@email.com"
                   autoComplete="email"
-                  className="w-full pl-12 py-3 rounded-lg outline-none border border-darcare-gold/20 bg-darcare-navy/40 text-darcare-beige font-sans text-base transition-all focus:border-darcare-gold focus:ring-1 focus:ring-darcare-gold"
+                  className={`w-full pl-12 py-3 rounded-lg outline-none border ${
+                    emailError ? "border-red-500" : "border-darcare-gold/20"
+                  } bg-darcare-navy/40 text-darcare-beige font-sans text-base transition-all focus:border-darcare-gold focus:ring-1 focus:ring-darcare-gold`}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => handleInputChange(setEmail, setEmailError, e.target.value)}
                 />
               </div>
+              {emailError && (
+                <div className="flex items-center text-red-500 text-sm mt-1">
+                  <AlertCircle size={14} className="mr-1" />
+                  {emailError}
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-darcare-beige font-medium mb-1 font-serif" htmlFor="password">
@@ -131,9 +197,11 @@ const Auth = () => {
                   id="password"
                   placeholder="Password"
                   autoComplete={isLogin ? "current-password" : "new-password"}
-                  className="w-full pl-12 pr-12 py-3 rounded-lg outline-none border border-darcare-gold/20 bg-darcare-navy/40 text-darcare-beige font-sans text-base transition-all focus:border-darcare-gold focus:ring-1 focus:ring-darcare-gold"
+                  className={`w-full pl-12 pr-12 py-3 rounded-lg outline-none border ${
+                    passwordError ? "border-red-500" : "border-darcare-gold/20"
+                  } bg-darcare-navy/40 text-darcare-beige font-sans text-base transition-all focus:border-darcare-gold focus:ring-1 focus:ring-darcare-gold`}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => handleInputChange(setPassword, setPasswordError, e.target.value)}
                 />
                 <button
                   type="button"
@@ -144,6 +212,12 @@ const Auth = () => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {passwordError && (
+                <div className="flex items-center text-red-500 text-sm mt-1">
+                  <AlertCircle size={14} className="mr-1" />
+                  {passwordError}
+                </div>
+              )}
             </div>
             {isLogin && (
               <div className="text-right mb-1">

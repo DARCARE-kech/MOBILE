@@ -26,8 +26,11 @@ export const useAuthMethods = () => {
 
       toast({
         title: "Success",
-        description: "Account created successfully!",
+        description: "A confirmation email has been sent. Please check your inbox and confirm your email before signing in.",
+        duration: 6000,
       });
+      
+      return { success: true, data };
     } catch (error: any) {
       console.error("Error signing up:", error);
       toast({
@@ -55,13 +58,26 @@ export const useAuthMethods = () => {
         title: "Welcome back!",
         description: "Successfully signed in",
       });
+      
+      return { success: true, data };
     } catch (error: any) {
       console.error("Error signing in:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to sign in",
-        variant: "destructive",
-      });
+      
+      // Check if the error is related to email confirmation
+      if (error.message.includes("Email not confirmed")) {
+        toast({
+          title: "Email not confirmed",
+          description: "Please check your inbox and confirm your email before signing in",
+          duration: 6000,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to sign in",
+          variant: "destructive",
+        });
+      }
       throw error;
     } finally {
       setIsLoading(false);
