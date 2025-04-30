@@ -11,7 +11,6 @@ export interface Recommendation {
   longitude: number | null;
   image_url: string | null;
   contact_phone: string | null;
-  email: string | null;
   site: string | null;
   opening_hours: string | null;
   address: string | null;

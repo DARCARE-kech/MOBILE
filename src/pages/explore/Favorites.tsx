@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
@@ -43,7 +44,7 @@ const FavoritesPage = () => {
           is_favorite: true,
           tags: fav.recommendations.tags || [],
           contact_phone: fav.recommendations.contact_phone || null,
-          email: fav.recommendations.email || null,
+          site: fav.recommendations.site || null,
           opening_hours: fav.recommendations.opening_hours || null,
           address: fav.recommendations.address || null,
           rating: Number(avgRating.toFixed(1)),

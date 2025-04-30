@@ -41,7 +41,7 @@ export function useRecommendations() {
             is_favorite: !!favorites,
             tags: rec.tags || [],
             contact_phone: rec.contact_phone || null,
-            email: rec.email || null,
+            site: rec.site || null,
             opening_hours: rec.opening_hours || null,
             address: rec.address || null,
             // Add a properly structured empty reviews array

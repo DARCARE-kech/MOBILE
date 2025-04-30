@@ -61,7 +61,6 @@ export function useRecommendationDetail(id: string | undefined) {
         rating: Number(avgRating.toFixed(1)),
         review_count: data.reviews?.length || 0,
         is_favorite: !!favoriteResponse.data,
-        site: data.site || data.email, // Use email as fallback for site if site is not available
         reviews: data.reviews?.map(review => ({
           ...review,
           user_profiles: {
