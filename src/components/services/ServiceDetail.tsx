@@ -13,19 +13,7 @@ import { Loader2 } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
-
-// Define TypeScript types for service details
-type ServiceDetailType = {
-  id: string;
-  service_id: string | null;
-  category: string;
-  instructions?: string | null;
-  optional_fields?: any | null;
-  price_range?: string | null;
-  created_at?: string | null;
-  updated_at?: string | null;
-  default_duration?: string | null;
-}
+import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
 
 // Base service type
 type ServiceType = {
