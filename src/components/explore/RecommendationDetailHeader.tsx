@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
-import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
 
 interface RecommendationDetailHeaderProps {
   title: string;
@@ -20,17 +20,45 @@ export const RecommendationDetailHeader = ({
   const navigate = useNavigate();
   
   return (
-    <AppHeader title={title}>
-      <button
-        className={`w-10 h-10 rounded-full flex items-center justify-center ${
-          isFavorite ? 'text-darcare-gold' : 'text-darcare-beige/70'
-        } hover:bg-darcare-gold/10`}
-        onClick={onToggleFavorite}
-        aria-label="Toggle favorite"
-      >
-        <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
-      </button>
-    </AppHeader>
+    <div className="fixed top-0 left-0 right-0 z-40 bg-darcare-navy/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-4 py-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="text-darcare-beige"
+        >
+          <svg 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M15 18L9 12L15 6" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Button>
+        
+        <h1 className="font-serif text-darcare-gold text-lg font-medium truncate">
+          {title}
+        </h1>
+        
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onToggleFavorite}
+          className={`${isFavorite ? 'text-darcare-gold' : 'text-darcare-beige/70'}`}
+        >
+          <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+        </Button>
+      </div>
+    </div>
   );
 };
 

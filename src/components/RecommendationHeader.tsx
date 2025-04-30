@@ -28,7 +28,7 @@ export const RecommendationHeader = ({
     : 'other';
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-16">
       <div className="relative">
         <img
           src={imageSource}

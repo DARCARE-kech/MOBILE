@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Home, Search, Bell, UserCircle, MessageSquare } from "lucide-react";
+import { Calendar, Search, Home, UserCircle, MessageSquare } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -21,7 +21,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   const activeTab = propActiveTab || currentPath;
 
   const tabs = [
-    { id: "services", label: t('navigation.services'), icon: <Bell size={20} />, path: "/services" },
+    { id: "services", label: t('navigation.services'), icon: <Calendar size={20} />, path: "/services" },
     { id: "explore", label: t('navigation.explore'), icon: <Search size={20} />, path: "/explore" },
     { id: "home", label: t('navigation.home'), icon: <Home size={20} />, path: "/home" },
     { id: "profile", label: t('navigation.profile'), icon: <UserCircle size={20} />, path: "/profile" },

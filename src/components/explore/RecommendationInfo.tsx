@@ -1,6 +1,7 @@
 
-import { MapPin, Star, Clock, Phone, Mail } from "lucide-react";
+import { MapPin, Star, Clock, Phone, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { TagsList } from "./TagsList";
@@ -20,9 +21,35 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
   // Section visibility checks
   const hasContactOrLocation =
     recommendation.contact_phone ||
-    recommendation.email ||
+    recommendation.site ||
     recommendation.opening_hours ||
     recommendation.address;
+
+  // Handle phone dialer
+  const handlePhoneClick = () => {
+    if (recommendation.contact_phone) {
+      window.open(`tel:${recommendation.contact_phone}`);
+    }
+  };
+
+  // Handle website opening
+  const handleSiteClick = () => {
+    if (recommendation.site) {
+      // Check if URL has http/https prefix, if not add it
+      let url = recommendation.site;
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+      window.open(url, '_blank');
+    }
+  };
+
+  // Handle map opening
+  const handleAddressClick = () => {
+    if (recommendation.latitude && recommendation.longitude) {
+      window.open(`https://www.openstreetmap.org/?mlat=${recommendation.latitude}&mlon=${recommendation.longitude}`, '_blank');
+    }
+  };
 
   return (
     <div className="p-0">
@@ -60,27 +87,48 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
       {hasContactOrLocation && (
         <section className="px-6 pb-2 space-y-4">
           {recommendation.contact_phone && (
-            <div className="flex items-center gap-3">
+            <button 
+              className="flex items-center gap-3 w-full text-left" 
+              onClick={handlePhoneClick}
+            >
               <Phone size={18} className="text-darcare-gold flex-shrink-0" />
-              <span className="text-darcare-beige break-all">{recommendation.contact_phone}</span>
-            </div>
+              <span className="text-darcare-beige break-all underline underline-offset-2">
+                {recommendation.contact_phone}
+              </span>
+            </button>
           )}
-          {recommendation.email && (
-            <div className="flex items-center gap-3">
-              <Mail size={18} className="text-darcare-gold flex-shrink-0" />
-              <span className="text-darcare-beige break-all">{recommendation.email}</span>
-            </div>
+          
+          {recommendation.site && (
+            <button 
+              className="flex items-center gap-3 w-full text-left" 
+              onClick={handleSiteClick}
+            >
+              <Globe size={18} className="text-darcare-gold flex-shrink-0" />
+              <span className="text-darcare-beige break-all underline underline-offset-2">
+                {recommendation.site}
+              </span>
+            </button>
           )}
+          
           {recommendation.address && (
-            <div className="flex items-center gap-3">
+            <button 
+              className="flex items-center gap-3 w-full text-left"
+              onClick={handleAddressClick}
+              disabled={!recommendation.latitude || !recommendation.longitude}
+            >
               <MapPin size={18} className="text-darcare-gold flex-shrink-0" />
-              <span className="text-darcare-beige break-words">{recommendation.address}</span>
-            </div>
+              <span className={`text-darcare-beige break-words ${(recommendation.latitude && recommendation.longitude) ? "underline underline-offset-2" : ""}`}>
+                {recommendation.address}
+              </span>
+            </button>
           )}
+          
           {recommendation.opening_hours && (
             <div className="flex items-center gap-3">
               <Clock size={18} className="text-darcare-gold flex-shrink-0" />
-              <span className="text-darcare-beige break-words">{recommendation.opening_hours}</span>
+              <span className="text-darcare-beige break-words">
+                {recommendation.opening_hours}
+              </span>
             </div>
           )}
         </section>

@@ -24,7 +24,7 @@ const ShopService = () => {
   const { t } = useTranslation();
 
   // Query to get cart items count
-  const { data: cartItemsCount = 0 } = useQuery({
+  const { data: cartItemsCount = 0, refetch: refetchCartCount } = useQuery({
     queryKey: ['cart-count'],
     queryFn: async () => {
       if (!user?.id) return 0;
@@ -77,10 +77,10 @@ const ShopService = () => {
     },
   });
 
-  // Create a wrapper function to adapt between different function signatures
-  const handleAddToCart = (productId: string, quantity: number) => {
-    // Find the product by ID from the query cache and add it to cart
-    addToCart({ id: productId } as ShopProduct);
+  const handleAddToCart = async (product: ShopProduct) => {
+    await addToCart(product);
+    // Refetch the cart count after adding to cart
+    refetchCartCount();
   };
 
   return (

@@ -10,7 +10,7 @@ import type { ShopProduct } from '@/types/shop';
 export interface ProductsGridProps {
   searchQuery?: string;
   categoryFilter?: string;
-  onAddToCart: (productId: string, quantity: number) => void;
+  onAddToCart: (product: ShopProduct) => void;
 }
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ 
@@ -58,18 +58,13 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     );
   }
 
-  // Create a wrapper function to adapt between different function signatures
-  const handleAddToCart = (product: ShopProduct) => {
-    onAddToCart(product.id, 1);
-  };
-
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-3">
       {products.map((product, index) => (
         <ProductCard
           key={product.id}
           product={product as ShopProduct}
-          onAddToCart={handleAddToCart}
+          onAddToCart={() => onAddToCart(product as ShopProduct)}
           index={index}
         />
       ))}

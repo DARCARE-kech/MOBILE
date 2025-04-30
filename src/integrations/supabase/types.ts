@@ -131,13 +131,13 @@ export type Database = {
           category: string | null
           contact_phone: string | null
           description: string | null
-          email: string | null
           id: string
           image_url: string | null
           latitude: number | null
           location: string | null
           longitude: number | null
           opening_hours: string | null
+          site: string | null
           tags: string[] | null
           title: string
         }
@@ -146,13 +146,13 @@ export type Database = {
           category?: string | null
           contact_phone?: string | null
           description?: string | null
-          email?: string | null
           id?: string
           image_url?: string | null
           latitude?: number | null
           location?: string | null
           longitude?: number | null
           opening_hours?: string | null
+          site?: string | null
           tags?: string[] | null
           title: string
         }
@@ -161,13 +161,13 @@ export type Database = {
           category?: string | null
           contact_phone?: string | null
           description?: string | null
-          email?: string | null
           id?: string
           image_url?: string | null
           latitude?: number | null
           location?: string | null
           longitude?: number | null
           opening_hours?: string | null
+          site?: string | null
           tags?: string[] | null
           title?: string
         }

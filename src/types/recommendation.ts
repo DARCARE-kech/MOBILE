@@ -5,13 +5,14 @@ export interface Recommendation {
   id: string;
   title: string;
   description: string | null;
-  category: string | null;  // Changed from RecommendationCategory to string | null
+  category: string | null;
   location: string | null;
   latitude: number | null;
   longitude: number | null;
   image_url: string | null;
   contact_phone: string | null;
   email: string | null;
+  site: string | null;
   opening_hours: string | null;
   address: string | null;
   tags: string[] | null;
