@@ -5,21 +5,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import BottomNavigation from "@/components/BottomNavigation";
 import FloatingAction from "@/components/FloatingAction";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import CurrentStay from "@/components/CurrentStay";
 import ServicesList from "@/components/ServicesList";
 import RecommendationsList from "@/components/RecommendationsList";
 import AppHeader from "@/components/AppHeader";
 import { useTranslation } from "react-i18next";
+import { useCurrentStay } from "@/hooks/useCurrentStay";
 
 const Home: React.FC = () => {
-  const [currentStay, setCurrentStay] = useState<any>(null);
   const [services, setServices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { data: currentStay, refetch: refetchStay } = useCurrentStay(user?.id);
 
   useEffect(() => {
     if (!user) {
@@ -32,39 +33,7 @@ const Home: React.FC = () => {
 
     const fetchUserData = async () => {
       setIsLoading(true);
-      try {
-        const { data: currentStayData, error: currentStayError } = await supabase
-          .from('stays')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('status', 'current')
-          .maybeSingle();
-
-        if (currentStayError) {
-          throw currentStayError;
-        }
-
-        if (currentStayData) {
-          setCurrentStay(currentStayData);
-        } else {
-          const { data: upcomingStayData, error: upcomingStayError } = await supabase
-            .from('stays')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('status', 'upcoming')
-            .order('check_in', { ascending: true })
-            .limit(1)
-            .maybeSingle();
-
-          if (upcomingStayError) {
-            throw upcomingStayError;
-          }
-
-          if (upcomingStayData) {
-            setCurrentStay(upcomingStayData);
-          }
-        }
-        
+      try {        
         const { data: requestsData, error: requestsError } = await supabase
           .from('service_requests')
           .select(`
@@ -79,6 +48,7 @@ const Home: React.FC = () => {
               staff_name
             )
           `)
+          .eq('user_id', user.id) // Filter by the current user's ID
           .in('status', ['pending', 'in_progress'])
           .order('created_at', { ascending: false })
           .limit(3);
@@ -87,7 +57,7 @@ const Home: React.FC = () => {
           throw requestsError;
         }
 
-        const formattedServices = requestsData.map(request => ({
+        const formattedServices = (requestsData || []).map(request => ({
           id: request.id,
           title: request.services?.name || t('common.unknownService'),
           status: request.status || 'pending',
@@ -117,8 +87,15 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-background">
       <AppHeader />
       <div className="pt-16 pb-24 overflow-auto">
-        <CurrentStay currentStay={currentStay} />
-        <ServicesList services={services} isLoading={isLoading} />
+        <CurrentStay 
+          currentStay={currentStay || null} 
+          userId={user?.id} 
+          refetchStay={refetchStay} 
+        />
+        <ServicesList 
+          services={services} 
+          isLoading={isLoading} 
+        />
         <RecommendationsList />
       </div>
       <FloatingAction />

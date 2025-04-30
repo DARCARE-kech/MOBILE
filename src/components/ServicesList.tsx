@@ -60,9 +60,12 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
         <div className="luxury-card p-6 flex flex-col items-center justify-center text-center">
           <AlertTriangle className="text-primary mb-3 h-8 w-8" />
           <h3 className="text-foreground font-medium mb-2">No Activities Scheduled</h3>
-          <p className="text-foreground/70 text-sm mb-4">You don't have any services scheduled today.</p>
+          <p className="text-foreground/70 text-sm mb-4">No requests yet? Let us take care of you.</p>
           <Button 
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className={cn(
+              "bg-primary text-primary-foreground hover:bg-primary/90",
+              isDarkMode && "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            )}
             onClick={() => navigate('/services')}
           >
             Request a Service
