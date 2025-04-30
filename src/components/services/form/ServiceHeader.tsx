@@ -5,6 +5,7 @@ import { Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { ServiceDetail } from '@/hooks/services/types';
 import { cn } from '@/lib/utils';
+import { formatFieldKey } from '@/utils/formattingUtils';
 
 interface ServiceHeaderProps {
   serviceName: string;
@@ -52,7 +53,7 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
   
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-serif text-darcare-gold mb-4">{serviceName}</h1>
+      <h1 className="text-2xl font-serif text-darcare-gold mb-4">{formatFieldKey(serviceName)}</h1>
       
       {instructions && (
         <Card className={cn(
@@ -65,7 +66,7 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
       {displayDuration && (
         <div className="flex items-center gap-2 text-sm text-darcare-beige/70 mb-4">
           <Clock size={16} className="text-darcare-gold" />
-          <span>{t('services.estimatedDuration')}: {displayDuration}</span>
+          <span>{t('services.estimatedDuration', { defaultValue: 'Estimated Duration' })}: {displayDuration}</span>
         </div>
       )}
     </div>

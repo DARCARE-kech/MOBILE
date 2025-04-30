@@ -17,6 +17,8 @@ import { ServiceDetail } from '@/hooks/services/types';
 
 interface TransportServiceProps {
   serviceData?: ServiceDetail;
+  existingRequest?: any;
+  editMode?: boolean;
 }
 
 interface FormValues {
@@ -29,7 +31,11 @@ interface FormValues {
   luggageSupport: boolean;
 }
 
-const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
+const TransportService: React.FC<TransportServiceProps> = ({ 
+  serviceData,
+  existingRequest,
+  editMode = false
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -39,15 +45,39 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
   const vehicleTypes = optionalFields.vehicle_types || ["van", "sedan", "luxury car", "motorbike"];
   const languageOptions = optionalFields.driver_languages || ["english", "french", "arabic"];
   
+  // Extract date and time from existingRequest if in edit mode
+  const getDefaultDate = (): Date => {
+    if (editMode && existingRequest?.preferred_time) {
+      return new Date(existingRequest.preferred_time);
+    }
+    return new Date();
+  };
+  
+  const getDefaultTime = (): string => {
+    if (editMode && existingRequest?.preferred_time) {
+      const date = new Date(existingRequest.preferred_time);
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+    return '12:00';
+  };
+  
   const form = useForm<FormValues>({
     defaultValues: {
-      date: new Date(),
-      time: '12:00',
-      note: '',
-      vehicleType: '',
-      driverLanguage: 'english',
-      passengers: 2,
-      luggageSupport: false
+      date: getDefaultDate(),
+      time: getDefaultTime(),
+      note: editMode && existingRequest?.note ? existingRequest.note : '',
+      vehicleType: editMode && existingRequest?.selected_options?.vehicleType 
+        ? existingRequest.selected_options.vehicleType 
+        : '',
+      driverLanguage: editMode && existingRequest?.selected_options?.driverLanguage 
+        ? existingRequest.selected_options.driverLanguage 
+        : 'english',
+      passengers: editMode && existingRequest?.selected_options?.passengers 
+        ? existingRequest.selected_options.passengers 
+        : 2,
+      luggageSupport: editMode && existingRequest?.selected_options?.luggageSupport 
+        ? existingRequest.selected_options.luggageSupport 
+        : false
     },
     mode: 'onChange'
   });
@@ -77,7 +107,7 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
         parseInt(data.time.split(':')[1])
       ).toISOString();
       
-      const { error } = await supabase.from('service_requests').insert({
+      const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
         preferred_time: isoDateTime,
@@ -88,13 +118,40 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
           passengers: data.passengers,
           luggageSupport: data.luggageSupport
         }
-      });
+      };
+      
+      let error;
+      
+      if (editMode && existingRequest?.id) {
+        // Update existing request
+        const { error: updateError } = await supabase
+          .from('service_requests')
+          .update(requestData)
+          .eq('id', existingRequest.id);
+        
+        error = updateError;
+        
+        if (!updateError) {
+          toast.success(t('services.requestUpdated'), {
+            description: t('services.requestUpdatedDesc')
+          });
+        }
+      } else {
+        // Create new request
+        const { error: insertError } = await supabase
+          .from('service_requests')
+          .insert(requestData);
+        
+        error = insertError;
+        
+        if (!insertError) {
+          toast.success(t('services.requestSubmitted'), {
+            description: t('services.requestSubmittedDesc')
+          });
+        }
+      }
       
       if (error) throw error;
-      
-      toast.success(t('services.requestSubmitted'), {
-        description: t('services.requestSubmittedDesc')
-      });
       
       navigate('/services');
     } catch (error) {
@@ -168,7 +225,8 @@ const TransportService: React.FC<TransportServiceProps> = ({ serviceData }) => {
               disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
-              {isSubmitting ? t('common.submitting') : t('services.sendRequest')}
+              {isSubmitting ? t('common.submitting') : 
+                editMode ? t('services.updateRequest') : t('services.sendRequest')}
             </Button>
           </form>
         </Form>

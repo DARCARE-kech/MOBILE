@@ -24,6 +24,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
       <FormSectionTitle 
         title={t('services.schedulingInformation')} 
         icon={<CalendarIcon className="h-5 w-5" />}
+        rawKeys={true}
       />
       
       <FormField
@@ -34,6 +35,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
             <FormSectionTitle 
               title={t('services.preferredDate')}
               className="mb-2"
+              rawKeys={true}
             />
             <Popover>
               <PopoverTrigger asChild>
@@ -73,6 +75,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
             <FormSectionTitle
               title={t('services.preferredTime')}
               className="mb-2"
+              rawKeys={true}
             />
             <FormControl>
               <div className="relative">

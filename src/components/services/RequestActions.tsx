@@ -1,85 +1,62 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { PenLine, X } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { useTranslation } from 'react-i18next';
+import { Pencil, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface RequestActionsProps {
-  onEdit: () => void;
-  onCancel: () => void;
+  onEdit?: () => void;
+  onCancel?: () => void;
   isSubmitting?: boolean;
+  request?: any;
+  serviceId?: string;
 }
 
-const RequestActions: React.FC<RequestActionsProps> = ({ 
-  onEdit, 
+const RequestActions: React.FC<RequestActionsProps> = ({
+  onEdit,
   onCancel,
-  isSubmitting = false 
+  isSubmitting = false,
+  request,
+  serviceId
 }) => {
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const { t } = useTranslation();
-
-  const handleCancelRequest = () => {
-    onCancel();
-    setIsCancelDialogOpen(false);
+  const navigate = useNavigate();
+  
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit();
+    } else if (request && serviceId) {
+      // Navigate to service form with edit state
+      navigate(`/services/${serviceId}`, { 
+        state: { 
+          editMode: true,
+          requestId: request.id
+        }
+      });
+    }
   };
-
+  
   return (
-    <div className="flex gap-3">
-      <Button 
-        className="flex-1 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-        onClick={onEdit}
-        disabled={isSubmitting}
+    <div className="grid grid-cols-2 gap-3">
+      <Button
+        variant="outline"
+        className="bg-transparent border-darcare-gold/30 text-darcare-gold hover:border-darcare-gold hover:text-darcare-gold/90 hover:bg-transparent"
+        onClick={handleEdit}
       >
-        <PenLine className="mr-2 h-4 w-4" />
-        {t('common.modify')}
+        <Pencil className="h-4 w-4 mr-2" />
+        {t('services.modify')}
       </Button>
       
-      <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
-        <Button 
-          variant="outline" 
-          className="flex-1 border-darcare-gold/50 text-darcare-gold hover:bg-darcare-gold/10"
-          onClick={() => setIsCancelDialogOpen(true)}
-          disabled={isSubmitting}
-        >
-          <X className="mr-2 h-4 w-4" />
-          {t('common.cancel')}
-        </Button>
-        
-        <DialogContent className="bg-darcare-navy border-darcare-gold/20">
-          <DialogHeader>
-            <DialogTitle className="text-darcare-gold">{t('services.cancelRequest')}</DialogTitle>
-            <DialogDescription className="text-darcare-beige/80">
-              {t('services.cancelRequestConfirmation')}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <DialogFooter className="mt-4">
-            <Button 
-              variant="outline" 
-              className="border-darcare-gold/50 text-darcare-gold hover:bg-darcare-gold/10"
-              onClick={() => setIsCancelDialogOpen(false)}
-              disabled={isSubmitting}
-            >
-              {t('services.keepRequest')}
-            </Button>
-            <Button 
-              className="bg-red-600 hover:bg-red-700"
-              onClick={handleCancelRequest}
-              disabled={isSubmitting}
-            >
-              {t('services.confirmCancel')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Button
+        variant="destructive"
+        className="bg-darcare-red/10 text-darcare-red hover:bg-darcare-red/20"
+        onClick={onCancel}
+        disabled={isSubmitting}
+      >
+        <X className="h-4 w-4 mr-2" />
+        {isSubmitting ? t('common.processing') : t('services.cancel')}
+      </Button>
     </div>
   );
 };

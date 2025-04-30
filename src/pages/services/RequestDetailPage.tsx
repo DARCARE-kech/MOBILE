@@ -67,7 +67,7 @@ const RequestDetailPage = () => {
     <div className="bg-darcare-navy min-h-screen pb-24">
       <MainHeader title={t('services.requestDetails')} onBack={() => navigate(-1)} />
       
-      <div className="p-4 space-y-6 pt-16">
+      <div className="p-4 space-y-6 pt-20"> {/* Increased top padding for header clearance */}
         <div className="luxury-card">
           <RequestDetailHeader
             serviceName={request.services?.name || ''}
@@ -81,6 +81,9 @@ const RequestDetailPage = () => {
             parsedNote={parsedNote}
             imageUrl={request.image_url}
             staffAssignments={request.staff_assignments}
+            selectedOptions={request.selected_options}
+            preferredTime={request.preferred_time}
+            createdAt={request.created_at}
           />
         </div>
         

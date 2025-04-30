@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import CleaningService from '@/pages/services/CleaningService';
@@ -25,10 +25,51 @@ type ServiceType = {
   estimated_duration: string | null;
 };
 
+// Add service request type
+type ServiceRequestType = {
+  id: string;
+  user_id: string | null;
+  service_id: string | null;
+  preferred_time: string | null;
+  status: string | null;
+  note: string | null;
+  image_url: string | null;
+  created_at: string | null;
+  selected_options: Record<string, any> | null;
+};
+
 const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
+  
+  // Check if we're editing an existing request
+  const [editMode, setEditMode] = useState(false);
+  const [existingRequest, setExistingRequest] = useState<ServiceRequestType | null>(null);
+  
+  // Check if we're in edit mode based on location state
+  useEffect(() => {
+    const state = location.state as { editMode?: boolean; requestId?: string } | undefined;
+    if (state?.editMode && state.requestId) {
+      setEditMode(true);
+      
+      // Fetch the existing request data
+      const fetchRequest = async () => {
+        const { data, error } = await supabase
+          .from('service_requests')
+          .select('*')
+          .eq('id', state.requestId)
+          .single();
+        
+        if (!error && data) {
+          setExistingRequest(data as ServiceRequestType);
+        }
+      };
+      
+      fetchRequest();
+    }
+  }, [location]);
   
   // Fetch the base service information
   const { data: service, isLoading: isLoadingService, error: serviceError } = useQuery({
@@ -109,14 +150,19 @@ const ServiceDetail: React.FC = () => {
   }
   
   const serviceNameLower = service?.name.toLowerCase();
+  const pageTitle = editMode ? t('services.editRequest') : service.name;
   
-  // Pass serviceDetails to the specific service component
+  // Pass serviceDetails and existingRequest to the specific service component
   if (serviceNameLower?.includes('laundry')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <LaundryService serviceData={serviceDetails || undefined} />
+          <LaundryService 
+            serviceData={serviceDetails || undefined} 
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -124,9 +170,13 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('cleaning')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <CleaningService serviceData={serviceDetails || undefined} />
+          <CleaningService 
+            serviceData={serviceDetails || undefined}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -134,9 +184,13 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('maintenance')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <MaintenanceService serviceData={serviceDetails || undefined} />
+          <MaintenanceService 
+            serviceData={serviceDetails || undefined}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
         </div>
         <BottomNavigation activeTab="services" />
       </div>
@@ -144,9 +198,13 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('transport')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={service.name} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-16">
-          <TransportService serviceData={serviceDetails || undefined} />
+          <TransportService 
+            serviceData={serviceDetails || undefined}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
         </div>
         <BottomNavigation activeTab="services" />
       </div>

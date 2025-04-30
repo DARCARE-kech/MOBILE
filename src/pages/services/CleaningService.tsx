@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -18,6 +18,8 @@ import { Home, Bed, ShowerHead } from 'lucide-react';
 
 interface CleaningServiceProps {
   serviceData?: ServiceDetail;
+  existingRequest?: any;
+  editMode?: boolean;
 }
 
 interface FormValues {
@@ -34,7 +36,11 @@ interface FormValues {
   };
 }
 
-const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
+const CleaningService: React.FC<CleaningServiceProps> = ({ 
+  serviceData, 
+  existingRequest, 
+  editMode = false
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -44,19 +50,53 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
   const cleaningTypes = optionalFields.cleaning_types || ["standard cleaning", "deep cleaning", "premium cleaning"];
   const roomOptions = optionalFields.rooms || ["bedroom", "kitchen", "bathroom", "balcony", "all areas"];
   
+  // Extract date and time from existingRequest if in edit mode
+  const getDefaultDate = (): Date => {
+    if (editMode && existingRequest?.preferred_time) {
+      return new Date(existingRequest.preferred_time);
+    }
+    return new Date();
+  };
+  
+  const getDefaultTime = (): string => {
+    if (editMode && existingRequest?.preferred_time) {
+      const date = new Date(existingRequest.preferred_time);
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+    return '12:00';
+  };
+  
+  // Extract selected rooms from existingRequest
+  const getDefaultRooms = () => {
+    const defaultRooms = {
+      bedroom: false,
+      kitchen: false,
+      bathroom: false,
+      balcony: false,
+      all_areas: false
+    };
+    
+    if (editMode && existingRequest?.selected_options?.selectedRooms) {
+      const selectedRooms = existingRequest.selected_options.selectedRooms;
+      selectedRooms.forEach((room: string) => {
+        if (defaultRooms.hasOwnProperty(room)) {
+          defaultRooms[room as keyof typeof defaultRooms] = true;
+        }
+      });
+    }
+    
+    return defaultRooms;
+  };
+  
   const form = useForm<FormValues>({
     defaultValues: {
-      date: new Date(),
-      time: '12:00',
-      note: '',
-      cleaningType: '',
-      rooms: {
-        bedroom: false,
-        kitchen: false,
-        bathroom: false,
-        balcony: false,
-        all_areas: false,
-      }
+      date: getDefaultDate(),
+      time: getDefaultTime(),
+      note: editMode && existingRequest?.note ? existingRequest.note : '',
+      cleaningType: editMode && existingRequest?.selected_options?.cleaningType 
+        ? existingRequest.selected_options.cleaningType 
+        : '',
+      rooms: getDefaultRooms()
     },
     mode: 'onChange'
   });
@@ -98,7 +138,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
         .filter(([_, isSelected]) => isSelected)
         .map(([room]) => room);
       
-      const { error } = await supabase.from('service_requests').insert({
+      const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
         preferred_time: isoDateTime,
@@ -107,13 +147,40 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
           cleaningType: data.cleaningType,
           selectedRooms
         }
-      });
+      };
+      
+      let error;
+      
+      if (editMode && existingRequest?.id) {
+        // Update existing request
+        const { error: updateError } = await supabase
+          .from('service_requests')
+          .update(requestData)
+          .eq('id', existingRequest.id);
+        
+        error = updateError;
+        
+        if (!updateError) {
+          toast.success(t('services.requestUpdated'), {
+            description: t('services.requestUpdatedDesc')
+          });
+        }
+      } else {
+        // Create new request
+        const { error: insertError } = await supabase
+          .from('service_requests')
+          .insert(requestData);
+        
+        error = insertError;
+        
+        if (!insertError) {
+          toast.success(t('services.requestSubmitted'), {
+            description: t('services.requestSubmittedDesc')
+          });
+        }
+      }
       
       if (error) throw error;
-      
-      toast.success(t('services.requestSubmitted'), {
-        description: t('services.requestSubmittedDesc')
-      });
       
       navigate('/services');
     } catch (error) {
@@ -171,7 +238,9 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
               disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
-              {isSubmitting ? t('common.submitting') : t('services.sendRequest')}
+              {isSubmitting ? t('common.submitting') : 
+                editMode ? t('services.updateRequest') : t('services.sendRequest')
+              }
             </Button>
           </form>
         </Form>

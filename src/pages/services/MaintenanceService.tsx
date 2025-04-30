@@ -20,6 +20,8 @@ import { Wrench } from 'lucide-react';
 
 interface MaintenanceServiceProps {
   serviceData?: ServiceDetail;
+  existingRequest?: any;
+  editMode?: boolean;
 }
 
 interface FormValues {
@@ -30,7 +32,11 @@ interface FormValues {
   urgency: string;
 }
 
-const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) => {
+const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ 
+  serviceData,
+  existingRequest,
+  editMode = false
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -41,13 +47,33 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
   const maintenanceTypes = optionalFields.maintenance_types || ["plumbing", "electrical", "AC", "painting"];
   const urgencyLevels = optionalFields.urgency_levels || ["standard", "urgent"];
   
+  // Extract date and time from existingRequest if in edit mode
+  const getDefaultDate = (): Date => {
+    if (editMode && existingRequest?.preferred_time) {
+      return new Date(existingRequest.preferred_time);
+    }
+    return new Date();
+  };
+  
+  const getDefaultTime = (): string => {
+    if (editMode && existingRequest?.preferred_time) {
+      const date = new Date(existingRequest.preferred_time);
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+    return '12:00';
+  };
+  
   const form = useForm<FormValues>({
     defaultValues: {
-      date: new Date(),
-      time: '12:00',
-      note: '',
-      maintenanceType: '',
-      urgency: 'standard'
+      date: getDefaultDate(),
+      time: getDefaultTime(),
+      note: editMode && existingRequest?.note ? existingRequest.note : '',
+      maintenanceType: editMode && existingRequest?.selected_options?.maintenanceType 
+        ? existingRequest.selected_options.maintenanceType 
+        : '',
+      urgency: editMode && existingRequest?.selected_options?.urgency 
+        ? existingRequest.selected_options.urgency 
+        : 'standard'
     },
     mode: 'onChange'
   });
@@ -59,7 +85,13 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
   };
   
   const uploadImage = async (): Promise<string | null> => {
-    if (!imageFile) return null;
+    if (!imageFile) {
+      // If we're editing and there was an existing image, return that
+      if (editMode && existingRequest?.image_url) {
+        return existingRequest.image_url;
+      }
+      return null;
+    }
     
     try {
       const fileExt = imageFile.name.split('.').pop();
@@ -99,10 +131,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
     
     try {
       // Upload image if present
-      let imageUrl = null;
-      if (imageFile) {
-        imageUrl = await uploadImage();
-      }
+      let imageUrl = await uploadImage();
       
       const isoDateTime = new Date(
         data.date.getFullYear(),
@@ -112,7 +141,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
         parseInt(data.time.split(':')[1])
       ).toISOString();
       
-      const { error } = await supabase.from('service_requests').insert({
+      const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
         preferred_time: isoDateTime,
@@ -122,13 +151,40 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
           maintenanceType: data.maintenanceType,
           urgency: data.urgency
         }
-      });
+      };
+      
+      let error;
+      
+      if (editMode && existingRequest?.id) {
+        // Update existing request
+        const { error: updateError } = await supabase
+          .from('service_requests')
+          .update(requestData)
+          .eq('id', existingRequest.id);
+        
+        error = updateError;
+        
+        if (!updateError) {
+          toast.success(t('services.requestUpdated'), {
+            description: t('services.requestUpdatedDesc')
+          });
+        }
+      } else {
+        // Create new request
+        const { error: insertError } = await supabase
+          .from('service_requests')
+          .insert(requestData);
+        
+        error = insertError;
+        
+        if (!insertError) {
+          toast.success(t('services.requestSubmitted'), {
+            description: t('services.requestSubmittedDesc')
+          });
+        }
+      }
       
       if (error) throw error;
-      
-      toast.success(t('services.requestSubmitted'), {
-        description: t('services.requestSubmittedDesc')
-      });
       
       navigate('/services');
     } catch (error) {
@@ -177,8 +233,12 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
               <FormSectionTitle 
                 title={t('services.uploadImage')}
                 subtitle={t('services.imageHelp')}
+                rawKeys={true}
               />
-              <FileUpload onFileChange={setImageFile} />
+              <FileUpload 
+                onFileChange={setImageFile} 
+                existingUrl={editMode ? existingRequest?.image_url : undefined}
+              />
             </div>
             
             {/* Date and Time Selection */}
@@ -193,7 +253,8 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({ serviceData }) 
               disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
-              {isSubmitting ? t('common.submitting') : t('services.sendRequest')}
+              {isSubmitting ? t('common.submitting') : 
+                editMode ? t('services.updateRequest') : t('services.sendRequest')}
             </Button>
           </form>
         </Form>

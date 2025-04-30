@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -18,6 +18,8 @@ import { WashingMachine, Shirt } from 'lucide-react';
 
 interface LaundryServiceProps {
   serviceData?: ServiceDetail;
+  existingRequest?: any;
+  editMode?: boolean;
 }
 
 interface FormValues {
@@ -39,7 +41,11 @@ interface FormValues {
   sameDayDelivery: boolean;
 }
 
-const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
+const LaundryService: React.FC<LaundryServiceProps> = ({ 
+  serviceData,
+  existingRequest,
+  editMode = false
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -49,24 +55,76 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
   const serviceOptions = optionalFields.service_options || ["washing", "drying", "ironing", "folding"];
   const fabricOptions = optionalFields.fabric_options || ["silk", "wool", "delicate"];
   
+  // Extract date and time from existingRequest if in edit mode
+  const getDefaultDate = (): Date => {
+    if (editMode && existingRequest?.preferred_time) {
+      return new Date(existingRequest.preferred_time);
+    }
+    return new Date();
+  };
+  
+  const getDefaultTime = (): string => {
+    if (editMode && existingRequest?.preferred_time) {
+      const date = new Date(existingRequest.preferred_time);
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+    return '12:00';
+  };
+  
+  // Extract selected services from existingRequest
+  const getDefaultServices = () => {
+    const defaultServices = {
+      washing: false,
+      drying: false,
+      ironing: false,
+      folding: false
+    };
+    
+    if (editMode && existingRequest?.selected_options?.selectedServices) {
+      const selectedServices = existingRequest.selected_options.selectedServices;
+      selectedServices.forEach((service: string) => {
+        if (defaultServices.hasOwnProperty(service)) {
+          defaultServices[service as keyof typeof defaultServices] = true;
+        }
+      });
+    }
+    
+    return defaultServices;
+  };
+  
+  // Extract selected fabrics from existingRequest
+  const getDefaultFabrics = () => {
+    const defaultFabrics = {
+      silk: false,
+      wool: false,
+      delicate: false
+    };
+    
+    if (editMode && existingRequest?.selected_options?.selectedFabrics) {
+      const selectedFabrics = existingRequest.selected_options.selectedFabrics;
+      selectedFabrics.forEach((fabric: string) => {
+        if (defaultFabrics.hasOwnProperty(fabric)) {
+          defaultFabrics[fabric as keyof typeof defaultFabrics] = true;
+        }
+      });
+    }
+    
+    return defaultFabrics;
+  };
+  
   const form = useForm<FormValues>({
     defaultValues: {
-      date: new Date(),
-      time: '12:00',
-      note: '',
-      services: {
-        washing: false,
-        drying: false,
-        ironing: false,
-        folding: false,
-      },
-      specialFabrics: {
-        silk: false,
-        wool: false,
-        delicate: false,
-      },
-      weight: 3,
-      sameDayDelivery: false
+      date: getDefaultDate(),
+      time: getDefaultTime(),
+      note: editMode && existingRequest?.note ? existingRequest.note : '',
+      services: getDefaultServices(),
+      specialFabrics: getDefaultFabrics(),
+      weight: editMode && existingRequest?.selected_options?.weight 
+        ? existingRequest.selected_options.weight 
+        : 3,
+      sameDayDelivery: editMode && existingRequest?.selected_options?.sameDayDelivery 
+        ? existingRequest.selected_options.sameDayDelivery 
+        : false
     },
     mode: 'onChange'
   });
@@ -107,7 +165,7 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
         .filter(([_, isSelected]) => isSelected)
         .map(([fabric]) => fabric);
       
-      const { error } = await supabase.from('service_requests').insert({
+      const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
         preferred_time: isoDateTime,
@@ -118,13 +176,40 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
           weight: data.weight,
           sameDayDelivery: data.sameDayDelivery
         }
-      });
+      };
+      
+      let error;
+      
+      if (editMode && existingRequest?.id) {
+        // Update existing request
+        const { error: updateError } = await supabase
+          .from('service_requests')
+          .update(requestData)
+          .eq('id', existingRequest.id);
+        
+        error = updateError;
+        
+        if (!updateError) {
+          toast.success(t('services.requestUpdated'), {
+            description: t('services.requestUpdatedDesc')
+          });
+        }
+      } else {
+        // Create new request
+        const { error: insertError } = await supabase
+          .from('service_requests')
+          .insert(requestData);
+        
+        error = insertError;
+        
+        if (!insertError) {
+          toast.success(t('services.requestSubmitted'), {
+            description: t('services.requestSubmittedDesc')
+          });
+        }
+      }
       
       if (error) throw error;
-      
-      toast.success(t('services.requestSubmitted'), {
-        description: t('services.requestSubmittedDesc')
-      });
       
       navigate('/services');
     } catch (error) {
@@ -204,7 +289,9 @@ const LaundryService: React.FC<LaundryServiceProps> = ({ serviceData }) => {
               disabled={isSubmitting || !isFormValid()}
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
-              {isSubmitting ? t('common.submitting') : t('services.sendRequest')}
+              {isSubmitting ? t('common.submitting') : 
+                editMode ? t('services.updateRequest') : t('services.sendRequest')
+              }
             </Button>
           </form>
         </Form>

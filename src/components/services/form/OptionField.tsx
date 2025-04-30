@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 import { UseFormReturn } from 'react-hook-form';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
+import { formatFieldKey } from '@/utils/formattingUtils';
 
 interface OptionFieldProps {
   form: UseFormReturn<any>;
@@ -38,16 +39,9 @@ const OptionField: React.FC<OptionFieldProps> = ({
   icon,
   className
 }) => {
-  // Format label to be more readable - ensures displayed label is clean, not a key
-  const formatLabel = (text: string) => {
-    return text
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, char => char.toUpperCase());
-  };
-
   return (
     <div className={cn("mb-6", className)}>
-      {/* Section title for all field types */}
+      {/* Section title with formatted label */}
       <FormSectionTitle
         title={label}
         icon={icon}
@@ -74,7 +68,7 @@ const OptionField: React.FC<OptionFieldProps> = ({
                         className="mt-1 border-darcare-gold/50" 
                       />
                       <Label htmlFor={`${name}-${index}`} className="flex-1 cursor-pointer">
-                        <span className="text-darcare-beige font-medium">{formatLabel(option)}</span>
+                        <span className="text-darcare-beige font-medium">{formatFieldKey(option)}</span>
                       </Label>
                     </div>
                   ))}
@@ -103,7 +97,7 @@ const OptionField: React.FC<OptionFieldProps> = ({
                     />
                   </FormControl>
                   <Label className="text-darcare-beige cursor-pointer font-medium">
-                    {formatLabel(option)}
+                    {formatFieldKey(option)}
                   </Label>
                 </FormItem>
               )}
@@ -141,8 +135,8 @@ const OptionField: React.FC<OptionFieldProps> = ({
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-md p-4 border border-darcare-gold/20 bg-darcare-navy/50 hover:border-darcare-gold/40 transition-all">
               <div className="space-y-0.5">
-                <Label className="text-darcare-beige font-medium">{formatLabel(name.split('.').pop() || '')}</Label>
-                {subtitle && <p className="text-sm text-darcare-beige/70">{subtitle}</p>}
+                <Label className="text-darcare-beige font-medium">{formatFieldKey(name.split('.').pop() || '')}</Label>
+                {subtitle && <p className="text-sm text-darcare-beige/70">{formatFieldKey(subtitle)}</p>}
               </div>
               <FormControl>
                 <Switch
