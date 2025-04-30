@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 interface RecommendationDetailHeaderProps {
   title: string;
   onBack: () => void;
-  isFavorite: boolean;
-  onToggleFavorite: () => void;
-  recommendationId: string;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
+  recommendationId?: string;
 }
 
 export const RecommendationDetailHeader = ({ 

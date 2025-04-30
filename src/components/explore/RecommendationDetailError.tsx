@@ -17,9 +17,6 @@ export const RecommendationDetailError = ({ onBack, onRetry }: RecommendationDet
       <RecommendationDetailHeader 
         title={t('common.error')} 
         onBack={onBack}
-        isFavorite={false}
-        onToggleFavorite={() => {}} // No-op function for error state
-        recommendationId="error" // Placeholder for error state
       />
       <div className="flex flex-col items-center justify-center p-8 pt-20 h-[80vh]">
         <h2 className="text-2xl font-serif text-darcare-gold mb-2">{t('explore.somethingWentWrong')}</h2>
