@@ -37,33 +37,38 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
     setIsSubmitting(true);
     
     try {
-      // First check if reservation exists and is not linked yet
+      // Search for stay with this reservation number where user_id IS NULL
       const { data: stayData, error: fetchError } = await supabase
         .from('stays')
         .select('*')
         .eq('reservation_number', reservationNumber.trim())
-        .is('user_id', null) // Specifically check for null user_id
-        .maybeSingle();
+        .is('user_id', null) // Look for unlinked reservations only
+        .single();
       
-      if (fetchError) throw fetchError;
-      
-      if (!stayData) {
-        // No stay found with this reservation number OR it's already linked
-        const { count } = await supabase
-          .from('stays')
-          .select('*', { count: 'exact', head: true })
-          .eq('reservation_number', reservationNumber.trim());
-          
-        if (count && count > 0) {
-          setError("This reservation is already linked to an account");
+      if (fetchError) {
+        if (fetchError.code === 'PGRST116') {
+          // No reservation found with this number or it's already linked
+          // Now check if it exists but is already linked
+          const { count } = await supabase
+            .from('stays')
+            .select('*', { count: 'exact', head: true })
+            .eq('reservation_number', reservationNumber.trim());
+            
+          if (count && count > 0) {
+            setError("This reservation is already linked to an account");
+          } else {
+            setError("Invalid reservation number");
+          }
+          setIsSubmitting(false);
+          return;
         } else {
-          setError("Invalid reservation number");
+          // Some other error occurred
+          throw fetchError;
         }
-        setIsSubmitting(false);
-        return;
       }
       
-      // Link reservation to user since we found a valid unlinked reservation
+      // If we got here, we found a valid unlinked reservation
+      // Update the user_id on the stay
       const { error: updateError } = await supabase
         .from('stays')
         .update({ user_id: userId })
