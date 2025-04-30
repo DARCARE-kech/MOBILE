@@ -13,9 +13,7 @@ interface RecommendationDetailHeaderProps {
 
 export const RecommendationDetailHeader = ({ 
   title, 
-  onBack,
-  isFavorite,
-  onToggleFavorite
+  onBack
 }: RecommendationDetailHeaderProps) => {
   const navigate = useNavigate();
   
@@ -52,10 +50,10 @@ export const RecommendationDetailHeader = ({
         <Button
           variant="ghost"
           size="icon"
-          onClick={onToggleFavorite}
-          className={`${isFavorite ? 'text-darcare-gold' : 'text-darcare-beige/70'}`}
+          onClick={() => navigate('/explore/favorites')}
+          className="text-darcare-gold"
         >
-          <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+          <Heart size={20} />
         </Button>
       </div>
     </div>

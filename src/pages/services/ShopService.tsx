@@ -6,7 +6,7 @@ import { ProductsGrid } from '@/components/shop/ProductsGrid';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Input } from '@/components/ui/input';
-import { Search, ShoppingCart } from 'lucide-react';
+import { Search, ShoppingCart, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ShopProduct } from '@/types/shop';
 import { Button } from '@/components/ui/button';
@@ -23,8 +23,8 @@ const ShopService = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  // Query to get cart items count
-  const { data: cartItemsCount = 0, refetch: refetchCartCount } = useQuery({
+  // Query to get cart items count - Fixed to count total number of items
+  const { data: cartItemsCount = 0 } = useQuery({
     queryKey: ['cart-count'],
     queryFn: async () => {
       if (!user?.id) return 0;
@@ -40,9 +40,9 @@ const ShopService = () => {
       if (!order) return 0;
       
       // Then count the items in the cart
-      const { count, error } = await supabase
+      const { data: items, error } = await supabase
         .from('shop_order_items')
-        .select('*', { count: 'exact', head: true })
+        .select('quantity')
         .eq('order_id', order.id);
       
       if (error) {
@@ -50,7 +50,10 @@ const ShopService = () => {
         return 0;
       }
       
-      return count || 0;
+      // Calculate total quantity from all items
+      const totalQuantity = items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+      
+      return totalQuantity;
     },
     enabled: !!user?.id,
     refetchInterval: 5000, // Refetch every 5 seconds to keep cart updated
@@ -79,12 +82,10 @@ const ShopService = () => {
 
   const handleAddToCart = async (product: ShopProduct) => {
     await addToCart(product);
-    // Refetch the cart count after adding to cart
-    refetchCartCount();
   };
 
   return (
-    <div className="min-h-screen bg-darcare-navy pb-20">
+    <div className="min-h-screen bg-darcare-navy pb-20 relative">
       <MainHeader 
         title={t('services.shop')} 
         onBack={() => navigate('/services')} 
@@ -129,6 +130,18 @@ const ShopService = () => {
           onAddToCart={handleAddToCart}
         />
       </div>
+      
+      {cartItemsCount > 0 && (
+        <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4 z-40">
+          <Button 
+            className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium py-6 px-8 rounded-full shadow-lg flex items-center gap-2"
+            onClick={() => navigate('/services/cart')}
+          >
+            Go to Cart
+            <ArrowRight size={18} />
+          </Button>
+        </div>
+      )}
       
       <BottomNavigation activeTab="services" />
     </div>

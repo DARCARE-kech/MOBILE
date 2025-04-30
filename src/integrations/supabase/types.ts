@@ -534,6 +534,7 @@ export type Database = {
           created_at: string | null
           guests: number | null
           id: string
+          reservation_number: string | null
           status: string
           user_id: string | null
           villa_number: string
@@ -545,6 +546,7 @@ export type Database = {
           created_at?: string | null
           guests?: number | null
           id?: string
+          reservation_number?: string | null
           status: string
           user_id?: string | null
           villa_number: string
@@ -556,6 +558,7 @@ export type Database = {
           created_at?: string | null
           guests?: number | null
           id?: string
+          reservation_number?: string | null
           status?: string
           user_id?: string | null
           villa_number?: string

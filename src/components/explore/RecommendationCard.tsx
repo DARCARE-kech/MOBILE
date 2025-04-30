@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Heart, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +28,14 @@ export const RecommendationCard = ({
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
   
+  // Local state for immediate UI updates
+  const [isFavorite, setIsFavorite] = useState(recommendation.is_favorite || false);
+  
+  // Update local state when prop changes
+  useEffect(() => {
+    setIsFavorite(recommendation.is_favorite || false);
+  }, [recommendation.is_favorite]);
+  
   const handleRecommendationClick = () => {
     if (onSelect) {
       onSelect(recommendation.id);
@@ -38,6 +46,10 @@ export const RecommendationCard = ({
   
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Update UI immediately for responsive feel
+    setIsFavorite(!isFavorite);
+    
     if (onToggleFavorite) {
       onToggleFavorite(recommendation.id);
     }
@@ -80,7 +92,7 @@ export const RecommendationCard = ({
           >
             <Heart
               size={18}
-              className={recommendation.is_favorite ? "fill-current" : ""}
+              className={isFavorite ? "fill-current" : ""}
             />
           </Button>
         )}

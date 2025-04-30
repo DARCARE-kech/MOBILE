@@ -51,9 +51,6 @@ const RecommendationDetail = () => {
       <RecommendationDetailHeader 
         title={recommendation.title} 
         onBack={handleBack}
-        isFavorite={recommendation.is_favorite || false}
-        onToggleFavorite={toggleFavorite}
-        recommendationId={id}
       />
       
       <RecommendationHeader 

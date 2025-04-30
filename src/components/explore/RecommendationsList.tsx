@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,6 +6,7 @@ import { RecommendationCard } from "./RecommendationCard";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isValidCategory, type RecommendationCategory } from "@/utils/recommendationCategories";
+import { useState } from "react";
 
 interface RecommendationsListProps {
   searchQuery: string;
@@ -24,12 +24,15 @@ export const RecommendationsList = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
   
+  // Keep track of favorites locally for optimistic updates
+  const [localFavorites, setLocalFavorites] = useState<Record<string, boolean>>({});
+  
   // Validate the category before passing it to the query
   const validCategory = selectedCategory && isValidCategory(selectedCategory) 
     ? selectedCategory as RecommendationCategory 
     : null;
 
-  const { data: recommendations, isLoading } = useRecommendationsQuery({
+  const { data: recommendations, isLoading, refetch } = useRecommendationsQuery({
     searchQuery,
     category: validCategory,
     sortBy
@@ -46,6 +49,12 @@ export const RecommendationsList = ({
     }
 
     try {
+      // Update local state optimistically for immediate UI feedback
+      setLocalFavorites(prev => ({
+        ...prev,
+        [recommendationId]: !prev[recommendationId]
+      }));
+      
       const { data: existing } = await supabase
         .from('favorites')
         .select('id')
@@ -58,16 +67,29 @@ export const RecommendationsList = ({
           .from('favorites')
           .delete()
           .eq('id', existing.id);
+          
+        toast({
+          title: t('explore.removedFromFavorites'),
+        });
       } else {
         await supabase
           .from('favorites')
           .insert({ user_id: user.id, recommendation_id: recommendationId });
+          
+        toast({
+          title: t('explore.addedToFavorites'),
+        });
       }
-
-      toast({
-        title: existing ? t('explore.removedFromFavorites') : t('explore.addedToFavorites'),
-      });
+      
+      // Refetch after successful DB operation to keep UI in sync
+      refetch();
     } catch (error) {
+      // Revert optimistic update on error
+      setLocalFavorites(prev => ({
+        ...prev,
+        [recommendationId]: !prev[recommendationId]
+      }));
+      
       toast({
         title: t('common.error'),
         description: t('explore.couldNotUpdateFavorites'),
@@ -100,14 +122,24 @@ export const RecommendationsList = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-      {recommendations?.map((item) => (
-        <RecommendationCard
-          key={item.id}
-          recommendation={item}
-          onToggleFavorite={handleToggleFavorite}
-          onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
-        />
-      ))}
+      {recommendations?.map((item) => {
+        // Apply any local favorite state if it exists
+        const isFavorite = localFavorites[item.id] !== undefined 
+          ? localFavorites[item.id] 
+          : item.is_favorite;
+        
+        return (
+          <RecommendationCard
+            key={item.id}
+            recommendation={{
+              ...item,
+              is_favorite: isFavorite
+            }}
+            onToggleFavorite={handleToggleFavorite}
+            onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
+          />
+        );
+      })}
     </div>
   );
 };
