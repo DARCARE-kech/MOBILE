@@ -39,11 +39,27 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
     try {
       // Search for stay with this reservation number where user_id IS NULL
       const { data: stayData, error: fetchError } = await supabase
-        .from('stays')
-        .select('*')
-        .eq('reservation_number', reservationNumber.trim())
-        .is('user_id', null) // Look for unlinked reservations only
-        .single();
+  .from('stays')
+  .select('*')
+  .eq('reservation_number', reservationNumber.trim())
+  .is('user_id', null)
+  .maybeSingle(); // ← plus souple
+
+      if (!stayData) {
+  // Soit il n'existe pas, soit il est déjà lié
+  const { count } = await supabase
+    .from('stays')
+    .select('*', { count: 'exact', head: true })
+    .eq('reservation_number', reservationNumber.trim());
+
+  if (count && count > 0) {
+    setError("This reservation is already linked to another account");
+  } else {
+    setError("Invalid reservation number");
+  }
+  setIsSubmitting(false);
+  return;
+}
       
       if (fetchError) {
         if (fetchError.code === 'PGRST116') {
