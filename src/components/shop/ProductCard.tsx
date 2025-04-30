@@ -44,7 +44,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
           <IconButton
             icon={<Plus className="w-3.5 h-3.5" />}
             variant="primary"
-            size="xs"
+            size="sm"
             onClick={() => onAddToCart(product)}
             className="shadow-md"
           />
