@@ -62,9 +62,9 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
         )}
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center">
         {rightContent || children || (
-          <>
+          <div className="flex items-center gap-2"> {/* Reduced gap from gap-4 to gap-2 */}
             <WeatherDisplay expanded={false} />
             <Button
               variant="ghost"
@@ -87,7 +87,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-darcare-gold rounded-full" />
               )}
             </Button>
-          </>
+          </div>
         )}
       </div>
     </header>

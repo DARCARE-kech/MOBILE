@@ -1,19 +1,16 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
-import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { formatFieldKey, renderSelectedOptions } from '@/utils/formattingUtils';
-import { Clock, Calendar, Check, FileText } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { formatFieldKey } from '@/utils/formattingUtils';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface RequestDetailsContentProps {
   note: string | null;
-  parsedNote: any | null;
+  parsedNote: Record<string, any> | null;
   imageUrl: string | null;
-  staffAssignments: Array<{
-    staff_name: string | null;
-  }> | null;
+  staffAssignments: any[] | null;
   selectedOptions: Record<string, any> | null;
   preferredTime: string | null;
   createdAt: string | null;
@@ -26,137 +23,149 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   staffAssignments,
   selectedOptions,
   preferredTime,
-  createdAt
+  createdAt,
 }) => {
   const { t } = useTranslation();
-  const hasStaffAssigned = staffAssignments && staffAssignments.length > 0;
   
-  // Format the selected options into readable format - now with proper type safety
-  const formattedOptions = selectedOptions ? renderSelectedOptions(selectedOptions) : [];
+  // Fetch space details if space_id is present in parsedNote
+  const { data: spaceData } = useQuery({
+    queryKey: ['space', parsedNote?.space_id],
+    queryFn: async () => {
+      if (!parsedNote?.space_id) return null;
+      
+      const { data, error } = await supabase
+        .from('spaces')
+        .select('name')
+        .eq('id', parsedNote.space_id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!parsedNote?.space_id
+  });
+
+  // Format the date and time for display
+  const formattedDate = preferredTime 
+    ? format(new Date(preferredTime), 'PPP') 
+    : null;
+  
+  const formattedTime = preferredTime 
+    ? format(new Date(preferredTime), 'p') 
+    : null;
 
   return (
-    <div className="space-y-6">
-      {/* Scheduling info section */}
-      <div className="space-y-4">
-        <h3 className="text-darcare-white font-medium">{t('services.schedulingDetails', 'Scheduling Details')}</h3>
-        
-        <div className="rounded-lg bg-darcare-navy/40 p-4 space-y-3">
-          {preferredTime && (
-            <div className="flex items-center gap-3">
-              <Clock className="h-5 w-5 text-darcare-gold" />
-              <div>
-                <p className="text-sm text-darcare-beige/80">{t('services.scheduledFor', 'Scheduled For')}</p>
-                <p className="text-darcare-beige">{format(new Date(preferredTime), "PPP p")}</p>
-              </div>
-            </div>
-          )}
-          
-          {createdAt && (
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-darcare-gold" />
-              <div>
-                <p className="text-sm text-darcare-beige/80">{t('services.submittedOn', 'Submitted On')}</p>
-                <p className="text-darcare-beige">{format(new Date(createdAt), "PPP")}</p>
-              </div>
-            </div>
-          )}
+    <div className="space-y-6 mt-4">
+      {/* Display image if available */}
+      {imageUrl && (
+        <div className="rounded-md overflow-hidden">
+          <img 
+            src={imageUrl} 
+            alt={t('services.requestImage')} 
+            className="w-full h-auto object-cover"
+          />
         </div>
+      )}
+      
+      {/* Scheduling Details */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-darcare-gold uppercase">
+          {t('services.schedulingDetails', 'Scheduling Details')}
+        </h3>
+        
+        {formattedDate && (
+          <div className="flex justify-between">
+            <span className="text-darcare-beige/80">{t('services.preferredDate', 'Preferred Date')}</span>
+            <span className="text-darcare-beige font-medium">{formattedDate}</span>
+          </div>
+        )}
+        
+        {formattedTime && (
+          <div className="flex justify-between">
+            <span className="text-darcare-beige/80">{t('services.preferredTime', 'Preferred Time')}</span>
+            <span className="text-darcare-beige font-medium">{formattedTime}</span>
+          </div>
+        )}
       </div>
       
-      {/* Selected preferences section */}
-      {formattedOptions.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('services.yourPreferences', 'Your Preferences')}</h3>
+      {/* For space bookings, show space details */}
+      {parsedNote?.space_id && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-darcare-gold uppercase">
+            {t('services.spaceDetails', 'Space Details')}
+          </h3>
           
-          <div className="rounded-lg bg-darcare-navy/40 p-4 space-y-3">
-            {formattedOptions.map((option, index) => (
-              <div key={index} className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-darcare-gold mt-0.5" />
-                <div>
-                  <p className="text-sm text-darcare-beige/80">{option.label}</p>
-                  <p className="text-darcare-beige">
-                    {Array.isArray(option.value) 
-                      ? option.value.join(', ')
-                      : typeof option.value === 'boolean' 
-                        ? (option.value ? t('common.yes', 'Yes') : t('common.no', 'No'))
-                        : String(option.value)}
-                  </p>
-                </div>
-              </div>
-            ))}
+          <div className="flex justify-between">
+            <span className="text-darcare-beige/80">{t('services.spaceName', 'Space')}</span>
+            <span className="text-darcare-beige font-medium">
+              {spaceData?.name || t('common.loading')}
+            </span>
           </div>
-        </div>
-      )}
-      
-      {/* Staff assigned */}
-      {hasStaffAssigned && (
-        <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('services.assignedStaff', 'Assigned Staff')}</h3>
-          <div className="rounded-lg bg-darcare-navy/40 p-4">
-            <p className="text-darcare-beige">{staffAssignments[0].staff_name || t('services.assigned', 'Assigned')}</p>
-          </div>
-        </div>
-      )}
-      
-      {/* Notes section */}
-      {(note || parsedNote) && (
-        <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('services.additionalNotes', 'Additional Notes')}</h3>
           
-          {/* If note is JSON, display structured data */}
-          {parsedNote && (
-            <div className="rounded-lg bg-darcare-navy/40 p-4 space-y-3">
-              {Object.entries(parsedNote).map(([key, value], index) => {
-                if (key === 'notes' || key === 'note') {
-                  return (
-                    <div key={index} className="space-y-1">
-                      <p className="text-sm text-darcare-beige/80">{t('services.additionalNotes', 'Additional Notes')}</p>
-                      <p className="text-darcare-beige bg-darcare-navy/60 p-2 rounded-md">{String(value)}</p>
-                    </div>
-                  );
-                } else if (value && typeof value !== 'object') {
-                  return (
-                    <div key={index} className="space-y-1">
-                      <p className="text-sm text-darcare-beige/80">{formatFieldKey(key)}</p>
-                      <p className="text-darcare-beige">{String(value)}</p>
-                    </div>
-                  );
-                } else if (Array.isArray(value) && value.length > 0) {
-                  return (
-                    <div key={index} className="space-y-1">
-                      <p className="text-sm text-darcare-beige/80">{formatFieldKey(key)}</p>
-                      <p className="text-darcare-beige">{value.map(formatFieldKey).join(', ')}</p>
-                    </div>
-                  );
-                }
-                return null;
-              })}
-            </div>
-          )}
-          
-          {/* If note is not JSON, display as text */}
-          {!parsedNote && note && (
-            <div className="rounded-lg bg-darcare-navy/40 p-4">
-              <div className="flex items-start gap-3">
-                <FileText className="h-5 w-5 text-darcare-gold mt-0.5" />
-                <p className="text-darcare-beige">{note}</p>
-              </div>
+          {parsedNote.people && (
+            <div className="flex justify-between">
+              <span className="text-darcare-beige/80">{t('services.numberOfPeople', 'Number of People')}</span>
+              <span className="text-darcare-beige font-medium">
+                {parsedNote.people} {parsedNote.people === 1 
+                  ? t('services.person', 'Person') 
+                  : t('services.people', 'People')}
+              </span>
             </div>
           )}
         </div>
       )}
       
-      {/* Image preview if available */}
-      {imageUrl && (
-        <div className="space-y-4">
-          <h3 className="text-darcare-white font-medium">{t('common.image', 'Image')}</h3>
-          <div className="rounded-lg overflow-hidden">
-            <img 
-              src={imageUrl} 
-              alt={t('services.requestAttachment', 'Request Attachment')} 
-              className="w-full h-auto object-cover"
-            />
-          </div>
+      {/* Selected Options */}
+      {selectedOptions && Object.keys(selectedOptions).length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-darcare-gold uppercase">
+            {t('services.yourPreferences', 'Your Preferences')}
+          </h3>
+          
+          {Object.entries(selectedOptions).map(([key, value]) => (
+            <div key={key} className="flex justify-between">
+              <span className="text-darcare-beige/80">{formatFieldKey(key)}</span>
+              <span className="text-darcare-beige font-medium">
+                {Array.isArray(value) 
+                  ? value.join(', ') 
+                  : typeof value === 'boolean'
+                    ? (value ? t('common.yes') : t('common.no'))
+                    : value}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {/* Notes */}
+      {(note || parsedNote?.notes) && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-darcare-gold uppercase">
+            {t('services.notesTitle', 'Notes')}
+          </h3>
+          <p className="text-darcare-beige whitespace-pre-wrap">
+            {parsedNote?.notes || note}
+          </p>
+        </div>
+      )}
+      
+      {/* Staff Assignments */}
+      {staffAssignments && staffAssignments.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-darcare-gold uppercase">
+            {t('services.assignedStaff', 'Assigned Staff')}
+          </h3>
+          
+          {staffAssignments.map((staff) => (
+            <div key={staff.id} className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-darcare-gold/20 rounded-full flex items-center justify-center">
+                <span className="text-darcare-gold text-xs font-bold">
+                  {staff.staff_name?.substring(0, 1) || 'S'}
+                </span>
+              </div>
+              <span className="text-darcare-beige">{staff.staff_name || t('services.pendingAssignment')}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>

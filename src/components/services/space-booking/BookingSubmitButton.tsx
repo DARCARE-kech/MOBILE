@@ -13,7 +13,7 @@ export const BookingSubmitButton: React.FC<BookingSubmitButtonProps> = ({ isSubm
   return (
     <Button
       type="submit"
-      className="w-full bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy font-medium text-base py-6"
+      className="w-full bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy font-medium text-base py-6 mt-6"
       disabled={isSubmitting}
     >
       {isSubmitting 

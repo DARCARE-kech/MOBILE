@@ -15,7 +15,8 @@ const ServiceRequestHeader: React.FC<ServiceRequestHeaderProps> = ({ serviceTitl
   return (
     <MainHeader 
       title={serviceTitle || t('services.newRequest')} 
-      onBack={() => navigate(-1)} 
+      onBack={() => navigate(-1)}
+      rightContent={<div />} // Empty div to prevent default icons on service request screens
     />
   );
 };

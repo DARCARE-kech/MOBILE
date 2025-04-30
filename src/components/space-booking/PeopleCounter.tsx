@@ -23,7 +23,7 @@ export const PeopleCounter: React.FC<PeopleCounterProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div>
+    <div className="mt-2">
       <FormSectionTitle 
         title={t('services.numberOfPeople', 'Number of People')} 
         icon={<Users className="w-5 h-5" />}

@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import type { ServiceDetail } from './types';
 
@@ -65,4 +64,23 @@ export const getServiceTitle = (service: any, serviceType?: string) => {
   }
   
   return 'New Request';
+};
+
+// Define or export additional functions for getting space details
+export const getSpaceById = async (id: string) => {
+  if (!id) return null;
+  
+  try {
+    const { data, error } = await supabase
+      .from('spaces')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('Error in getSpaceById:', err);
+    return null;
+  }
 };
