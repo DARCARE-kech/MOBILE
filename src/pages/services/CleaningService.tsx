@@ -14,7 +14,7 @@ import DateTimePickerSection from '@/components/services/form/DateTimePickerSect
 import NoteInput from '@/components/services/form/NoteInput';
 import { useAuth } from '@/contexts/AuthContext';
 import { ServiceDetail } from '@/hooks/services/types';
-import { Broom, Bed, ShowerHead } from 'lucide-react';
+import { Home, Bed, ShowerHead } from 'lucide-react';
 
 interface CleaningServiceProps {
   serviceData?: ServiceDetail;
@@ -145,7 +145,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({ serviceData }) => {
               name="cleaningType"
               label={t('services.cleaningType')}
               options={cleaningTypes}
-              icon={<Broom className="h-5 w-5" />}
+              icon={<Home className="h-5 w-5" />}
             />
             
             {/* Rooms Selection */}

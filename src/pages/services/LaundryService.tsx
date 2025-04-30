@@ -14,7 +14,7 @@ import DateTimePickerSection from '@/components/services/form/DateTimePickerSect
 import NoteInput from '@/components/services/form/NoteInput';
 import { useAuth } from '@/contexts/AuthContext';
 import { ServiceDetail } from '@/hooks/services/types';
-import { WashingMachine, Ironing, Shirt } from 'lucide-react';
+import { WashingMachine, Shirt } from 'lucide-react';
 
 interface LaundryServiceProps {
   serviceData?: ServiceDetail;
