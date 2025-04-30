@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { ServiceHeader } from '@/components/services/form/ServiceHeader';
+import ServiceHeader from '@/components/services/form/ServiceHeader';
 import OptionField from '@/components/services/form/OptionField';
 import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
 import NoteInput from '@/components/services/form/NoteInput';
