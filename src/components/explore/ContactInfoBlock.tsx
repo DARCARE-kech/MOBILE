@@ -10,7 +10,7 @@ interface ContactInfoBlockProps {
 export const ContactInfoBlock = ({ recommendation }: ContactInfoBlockProps) => {
   const { t } = useTranslation();
   
-  if (!recommendation.contact_phone && !recommendation.email && !recommendation.opening_hours && !recommendation.address) {
+  if (!recommendation.contact_phone && !recommendation.site && !recommendation.opening_hours && !recommendation.address) {
     return null;
   }
 
@@ -25,10 +25,10 @@ export const ContactInfoBlock = ({ recommendation }: ContactInfoBlockProps) => {
         </div>
       )}
       
-      {recommendation.email && (
+      {recommendation.site && (
         <div className="flex items-center gap-2 text-darcare-beige">
           <Mail size={16} className="text-darcare-gold" />
-          <span>{recommendation.email}</span>
+          <span>{recommendation.site}</span>
         </div>
       )}
       
