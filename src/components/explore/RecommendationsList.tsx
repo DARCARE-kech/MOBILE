@@ -6,7 +6,8 @@ import { RecommendationCard } from "./RecommendationCard";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isValidCategory, type RecommendationCategory } from "@/utils/recommendationCategories";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RecommendationsListProps {
   searchQuery: string;
@@ -23,6 +24,7 @@ export const RecommendationsList = ({
   const { toast } = useToast();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   
   // Keep track of favorites locally for optimistic updates
   const [localFavorites, setLocalFavorites] = useState<Record<string, boolean>>({});
@@ -38,6 +40,17 @@ export const RecommendationsList = ({
     sortBy
   });
 
+  // Initialize localFavorites from recommendations data when it loads
+  useEffect(() => {
+    if (recommendations) {
+      const initialState: Record<string, boolean> = {};
+      recommendations.forEach(item => {
+        initialState[item.id] = item.is_favorite || false;
+      });
+      setLocalFavorites(initialState);
+    }
+  }, [recommendations]);
+
   const handleToggleFavorite = async (recommendationId: string) => {
     if (!user) {
       toast({
@@ -49,12 +62,14 @@ export const RecommendationsList = ({
     }
 
     try {
-      // Update local state optimistically for immediate UI feedback
+      // Update local state immediately for responsive UI
+      const newIsFavorite = !localFavorites[recommendationId];
       setLocalFavorites(prev => ({
         ...prev,
-        [recommendationId]: !prev[recommendationId]
+        [recommendationId]: newIsFavorite
       }));
       
+      // Check if already in favorites
       const { data: existing } = await supabase
         .from('favorites')
         .select('id')
@@ -62,7 +77,8 @@ export const RecommendationsList = ({
         .eq('recommendation_id', recommendationId)
         .maybeSingle();
 
-      if (existing) {
+      if (existing && !newIsFavorite) {
+        // Remove from favorites if it exists and we're toggling off
         await supabase
           .from('favorites')
           .delete()
@@ -71,20 +87,26 @@ export const RecommendationsList = ({
         toast({
           title: t('explore.removedFromFavorites'),
         });
-      } else {
+      } else if (!existing && newIsFavorite) {
+        // Add to favorites if it doesn't exist and we're toggling on
         await supabase
           .from('favorites')
-          .insert({ user_id: user.id, recommendation_id: recommendationId });
+          .insert({ 
+            user_id: user.id, 
+            recommendation_id: recommendationId 
+          });
           
         toast({
           title: t('explore.addedToFavorites'),
         });
       }
       
-      // Refetch after successful DB operation to keep UI in sync
-      refetch();
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
     } catch (error) {
       // Revert optimistic update on error
+      console.error('Error toggling favorite:', error);
       setLocalFavorites(prev => ({
         ...prev,
         [recommendationId]: !prev[recommendationId]
