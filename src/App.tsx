@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
+  Navigate,
 } from "react-router-dom";
 import "./index.css";
 import Home from "@/pages/Home";
@@ -32,121 +33,13 @@ import AboutPage from "@/pages/profile/AboutPage"
 import ChangePassword from "@/pages/profile/ChangePassword"
 import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage"
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import SplashScreen from "@/pages/SplashScreen";
+import Onboarding from "@/pages/Onboarding";
+import ForgotPassword from "@/pages/ForgotPassword";
+import MainApp from "@/pages/MainApp";
 
 // Create a client
 const queryClient = new QueryClient();
-
-// Create router with routes
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    path: "/auth",
-    element: <Auth />,
-  },
-  {
-    path: "/explore",
-    element: <Explore />,
-  },
-  {
-    path: "/explore/recommendations/:id",
-    element: <RecommendationDetail />,
-  },
-  {
-    path: "/explore/favorites",
-    element: <Favorites />,
-  },
-  {
-    path: "/services",
-    element: <Services />,
-  },
-  {
-    path: "/services/:id",
-    element: <ServiceDetail />,
-  },
-  {
-    path: "/services/requests/:id",
-    element: <RequestDetailPage />,
-  },
-  {
-    path: "/services/request/:id",
-    element: <RequestDetailPage />,
-  },
-  {
-    path: "/services/request-form",
-    element: <ServiceRequestForm />,
-  },
-  {
-    path: "/services/space/:id",
-    element: <BookSpaceService />,
-  },
-  {
-    path: "/services/spaces",
-    element: <SpacesListPage />,
-  },
-  {
-    path: "/services/shop",
-    element: <ShopService />,
-  },
-  {
-    path: "/services/cart",
-    element: <CartScreen />,
-  },
-  {
-    path: "/notifications",
-    element: <Notifications />,
-  },
-  {
-    path: "/stays/details",
-    element: <StayDetailsPage />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
-   {
-    path: "/profile/edit",
-    element: < EditProfile />,
-  },
-  {
-    path: "/profile/help",
-    element: < HelpSupportPage />,
-  },
-  {
-    path: "/profile/about",
-    element: < AboutPage />,
-  },
-  {
-    path: "/profile/privacy",
-    element: < PrivacySecurityPage />,
-  },
-  {
-    path: "/profile/change-password",
-    element: < ChangePassword />,
-  },
-  {
-    path: "/services/laundry",
-    element: <ServiceDetail />,
-  },
-  {
-    path: "/chatbot",
-    element: <Chatbot />,
-  },
-  {
-    path: "/chat-history",
-    element: <ChatHistory />,
-  },
-  {
-    path: "/contact-admin",
-    element: <ContactAdmin />,
-  },
-]);
 
 function App() {
   return (
@@ -154,7 +47,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ThemeProvider>
-            <RouterProvider router={router} />
+            <MainApp />
           </ThemeProvider>
         </AuthProvider>
       </QueryClientProvider>

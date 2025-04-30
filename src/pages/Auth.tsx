@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import Logo from "@/components/Logo";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -147,12 +147,12 @@ const Auth = () => {
             </div>
             {isLogin && (
               <div className="text-right mb-1">
-                <button
-                  type="button"
-                  className="text-sm text-darcare-beige/70 hover:text-darcare-gold font-sans underline-offset-4"
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-darcare-beige/70 hover:text-darcare-gold font-sans underline-offset-4 hover:underline"
                 >
                   Forgot Password?
-                </button>
+                </Link>
               </div>
             )}
             <button
