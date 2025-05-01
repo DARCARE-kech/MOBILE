@@ -1,4 +1,5 @@
 
+import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRecommendations } from "@/hooks/useRecommendations";
 import { RecommendationCardHome } from "./RecommendationCardHome";
@@ -7,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const RecommendationsList = () => {
   const { data: recommendations, isLoading, refetch } = useRecommendations();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const handleToggleFavorite = async (id: string) => {
     if (!user) {
@@ -45,6 +48,9 @@ const RecommendationsList = () => {
         description: `${recommendation.title} has been ${recommendation.is_favorite ? 'removed from' : 'added to'} your favorites`,
       });
       
+      // Invalidate related queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      
       // Refetch to update the UI
       refetch();
     } catch (error) {
@@ -58,14 +64,14 @@ const RecommendationsList = () => {
   
   if (isLoading) {
     return (
-      <div className="p-4 space-y-4">
+      <div className="space-y-4">
         <div className="flex justify-between items-center mb-4">
           <div className="h-8 w-48 bg-darcare-gold/20 animate-pulse rounded" />
           <div className="h-8 w-24 bg-darcare-gold/20 animate-pulse rounded" />
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="min-w-[280px] rounded-xl overflow-hidden flex-shrink-0">
+            <div key={i} className="rounded-xl overflow-hidden">
               <div className="h-[220px] bg-darcare-gold/20 animate-pulse" />
             </div>
           ))}
@@ -75,7 +81,7 @@ const RecommendationsList = () => {
   }
 
   return (
-    <div className="p-4">
+    <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-serif text-darcare-gold">Marrakech Highlights</h2>
         <button 
@@ -86,15 +92,19 @@ const RecommendationsList = () => {
         </button>
       </div>
       
-      <div className="overflow-x-auto touch-pan-x pb-4 flex gap-4">
-        {recommendations?.map((item) => (
-          <RecommendationCardHome
-            key={item.id}
-            item={item}
-            onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
-            onToggleFavorite={handleToggleFavorite}
-          />
-        ))}
+      <div className="overflow-hidden">
+        <ScrollArea orientation="horizontal" className="w-full pb-4">
+          <div className="flex gap-4 pb-1 pr-4">
+            {recommendations?.map((item) => (
+              <RecommendationCardHome
+                key={item.id}
+                item={item}
+                onSelect={() => navigate(`/explore/recommendations/${item.id}`)}
+                onToggleFavorite={() => handleToggleFavorite(item.id)}
+              />
+            ))}
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

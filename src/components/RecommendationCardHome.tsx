@@ -5,23 +5,18 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getFallbackImage } from "@/utils/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "./ui/use-toast";
-import { useNavigate } from "react-router-dom";
-import type { Recommendation } from "@/types/recommendation";
 import { useTheme } from "@/contexts/ThemeContext";
+import type { Recommendation } from "@/types/recommendation";
 
 interface RecommendationCardHomeProps {
   item: Recommendation;
-  onSelect?: (id: string) => void;
-  onToggleFavorite?: (id: string) => Promise<void> | void;
+  onSelect: (id: string) => void;
+  onToggleFavorite: (id: string) => void;
 }
 
 export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: RecommendationCardHomeProps) => {
   const [isFavorite, setIsFavorite] = useState(item.is_favorite || false);
   const { user } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
   const { isDarkMode } = useTheme();
   
   // Update local state when prop changes
@@ -29,108 +24,73 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
     setIsFavorite(item.is_favorite || false);
   }, [item.is_favorite]);
 
-  const toggleFavorite = async (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to save favorites",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // Optimistically update UI immediately
-      setIsFavorite(!isFavorite);
-      
-      if (onToggleFavorite) {
-        await onToggleFavorite(item.id);
-      } else {
-        if (isFavorite) {
-          await supabase
-            .from('favorites')
-            .delete()
-            .eq('user_id', user.id)
-            .eq('recommendation_id', item.id);
-        } else {
-          await supabase
-            .from('favorites')
-            .insert({ user_id: user.id, recommendation_id: item.id });
-        }
-        
-        toast({
-          title: isFavorite ? "Removed from favorites" : "Added to favorites",
-          description: `${item.title} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
-        });
-      }
-    } catch (error) {
-      // Revert the optimistic update if there's an error
-      setIsFavorite(isFavorite);
-      toast({
-        title: "Error",
-        description: "Could not update favorites",
-        variant: "destructive",
-      });
-    }
+    setIsFavorite(!isFavorite);
+    onToggleFavorite(item.id);
   };
 
-  const handleCardClick = () => {
-    if (onSelect) {
-      onSelect(item.id);
-    } else {
-      navigate(`/explore/recommendations/${item.id}`);
-    }
-  };
+  // Use image_url with fallback
+  const imageUrl = item.image_url || getFallbackImage(item.title, 0);
 
   return (
     <div 
-      className={cn(
-        "w-[280px] rounded-xl overflow-hidden flex-shrink-0 cursor-pointer transition-all hover:shadow-lg border h-[220px] flex flex-col",
-        "bg-darcare-navy border-darcare-gold/10 hover:border-darcare-gold/30"
-      )}
-      onClick={handleCardClick}
+      className="w-[280px] rounded-xl overflow-hidden flex-shrink-0 cursor-pointer transition-all hover:shadow-lg border border-darcare-gold/10 hover:border-darcare-gold/30 bg-darcare-navy"
+      onClick={() => onSelect(item.id)}
     >
-      <div className="p-4 space-y-3 flex-1">
-        <h3 className="font-medium text-foreground font-serif line-clamp-1">{item.title}</h3>
+      <div className="w-full h-32 relative overflow-hidden">
+        <img 
+          src={imageUrl} 
+          alt={item.title}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = getFallbackImage(item.title, 0);
+          }}
+        />
+        {user && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2 rounded-full bg-darcare-navy/60 hover:bg-darcare-navy/80 w-8 h-8"
+            onClick={handleToggleFavorite}
+          >
+            <Heart
+              size={16}
+              className={cn(
+                "transition-colors",
+                isFavorite ? "fill-darcare-gold text-darcare-gold" : "text-darcare-beige"
+              )}
+            />
+          </Button>
+        )}
+      </div>
+      
+      <div className="p-4 space-y-2">
+        <h3 className="font-serif font-medium text-darcare-gold line-clamp-1">{item.title}</h3>
         
-        <p className="text-sm text-foreground/70 line-clamp-3">
-          {item.description || "No description available."}
+        <p className="text-sm text-darcare-beige/80 line-clamp-2">
+          {item.description || "Discover this amazing place in Marrakech"}
         </p>
         
-        <div className="flex items-center justify-between text-sm mt-auto">
-          {item.rating !== undefined && (
-            <div className="flex items-center gap-1 text-primary">
-              <Star size={16} className="fill-darcare-gold text-darcare-gold" />
-              <span>{item.rating.toFixed(1)}</span>
-            </div>
-          )}
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center gap-1">
+            <Star size={16} className="fill-darcare-gold text-darcare-gold" />
+            <span className="text-sm text-darcare-beige">{item.rating?.toFixed(1) || "N/A"}</span>
+          </div>
           
           <Button
             variant="ghost"
             size="sm"
-            className="p-0 hover:bg-transparent hover:text-darcare-gold"
-            onClick={handleCardClick}
+            className="p-0 hover:bg-transparent hover:text-darcare-gold text-darcare-beige"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(item.id);
+            }}
           >
-            <ArrowRight size={18} />
+            <ArrowRight size={16} />
           </Button>
         </div>
-      </div>
-      
-      <div className="absolute top-2 right-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full bg-darcare-navy/80 hover:bg-darcare-navy w-8 h-8 flex items-center justify-center p-0"
-          onClick={toggleFavorite}
-        >
-          <Heart
-            size={18}
-            className={cn(isFavorite && "fill-darcare-gold text-darcare-gold")}
-          />
-        </Button>
       </div>
     </div>
   );

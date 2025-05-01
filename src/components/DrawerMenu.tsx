@@ -1,8 +1,11 @@
 
 import React from "react";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import EnhancedDrawerMenu from "./EnhancedDrawerMenu";
 import { useAuth } from "@/contexts/AuthContext";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 
 interface DrawerMenuProps {
   onLogout?: () => void;
@@ -22,7 +25,21 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
     }
   };
   
-  return <EnhancedDrawerMenu onLogout={handleLogoutClick} />;
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+          aria-label="Menu"
+        >
+          <Menu size={20} />
+        </Button>
+      </SheetTrigger>
+      <EnhancedDrawerMenu onLogout={handleLogoutClick} />
+    </Sheet>
+  );
 };
 
 export default DrawerMenu;

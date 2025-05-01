@@ -9,6 +9,7 @@ import HistoryTab from "@/components/services/HistoryTab";
 import FloatingAction from "@/components/FloatingAction";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
+import DrawerMenu from "@/components/DrawerMenu";
 
 const ServicesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("reserve");
@@ -17,7 +18,10 @@ const ServicesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader title={t('navigation.services')} />
+      <AppHeader 
+        title={t('navigation.services')} 
+        drawerContent={<DrawerMenu />}
+      />
       
       <div className="pt-20 pb-24"> {/* Padding to prevent header overlap */}
         <div className="px-4 mb-4">

@@ -2,11 +2,12 @@
 import { useState } from "react";
 import AppHeader from "@/components/AppHeader";
 import BottomNavigation from "@/components/BottomNavigation";
-import { RecommendationsList } from "@/components/explore/RecommendationsList";
+import { RecommendationsList as ExploreRecommendationsList } from "@/components/explore/RecommendationsList";
 import { SearchBar } from "@/components/explore/SearchBar";
 import { FiltersBar } from "@/components/explore/FiltersBar";
 import { useTranslation } from "react-i18next";
 import FloatingAction from "@/components/FloatingAction";
+import DrawerMenu from "@/components/DrawerMenu";
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +17,10 @@ const ExplorePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader title={t('navigation.explore')} />
+      <AppHeader 
+        title={t('navigation.explore')}
+        drawerContent={<DrawerMenu />}
+      />
       
       <div className="pt-16 pb-24 space-y-4">
         <div className="p-4">
@@ -31,7 +35,7 @@ const ExplorePage = () => {
           </div>
         </div>
         
-        <RecommendationsList 
+        <ExploreRecommendationsList 
           searchQuery={searchQuery}
           selectedCategory={selectedCategory}
           sortBy={sortBy}
