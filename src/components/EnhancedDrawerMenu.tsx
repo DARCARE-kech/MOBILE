@@ -43,55 +43,91 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
   };
 
   return (
-    <SheetContent side="left" className="bg-darcare-navy border-r border-darcare-gold/10 p-0 w-72 max-w-xs">
-      <div className="flex flex-col h-full">
-        <SheetHeader className="p-4 border-b border-darcare-gold/10">
-          <div className="w-full flex justify-center items-center">
-            <Logo size="sm" />
-          </div>
+    <SheetContent 
+        side="left" 
+        className="bg-darcare-navy border-r border-darcare-gold/20 w-72 overflow-y-auto scrollbar-hide"
+      >
+        <SheetHeader className="text-left mb-6 mt-2">
+          <Logo size="sm" color="gold" />
         </SheetHeader>
-        
-        <div className="overflow-y-auto flex-1 px-2 py-4">
-          <UserProfileSection getInitials={getInitials} />
-          
-          <nav className="space-y-1">
-            <MainNavigation />
-            <ServicesSubMenu 
-              expanded={servicesExpanded}
-              onToggle={() => setServicesExpanded(!servicesExpanded)}
-            />
-          </nav>
-        </div>
-        
-        <div className="mt-auto border-t border-darcare-gold/10 p-4">
-          <div className="flex justify-between items-center mb-4">
-            <Button
-              variant="ghost"
-              className="text-darcare-beige hover:text-darcare-gold hover:bg-darcare-gold/10 w-full justify-start"
-              onClick={handleWhatsAppClick}
+
+        <UserProfileSection getInitials={getInitials} />
+
+        <nav className="flex flex-col space-y-2">
+          <div>
+            <button 
+              onClick={() => setServicesExpanded(!servicesExpanded)} 
+              className="w-full flex items-center justify-between gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 rounded-lg transition-colors"
             >
-              <MessageCircle className="mr-2" size={18} />
-              {t('drawer.contactSupport')}
-            </Button>
+              <div className="flex items-center gap-4">
+                <span className="text-darcare-gold"><Menu size={20} /></span>
+                <span>{t('navigation.services')}</span>
+              </div>
+              {servicesExpanded ? (
+                <ChevronDown size={18} className="text-darcare-beige/60" />
+              ) : (
+                <ChevronRight size={18} className="text-darcare-beige/60" />
+              )}
+            </button>
+            
+            <ServicesSubMenu expanded={servicesExpanded} />
           </div>
-          
-          <Separator className="my-2 bg-darcare-gold/10" />
-          
+
+          <MainNavigation />
+
+          <Separator className="my-2 bg-darcare-gold/20" />
+
           <Button
             variant="ghost"
-            className="text-darcare-beige hover:text-darcare-gold hover:bg-darcare-gold/10 w-full justify-start"
-            onClick={onLogout}
+            className="justify-start gap-4 py-3 h-auto text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold"
+            onClick={handleWhatsAppClick}
           >
-            <LogOut className="mr-2" size={18} />
-            {t('auth.logout')}
+            <span className="text-darcare-gold"><MessageCircle size={20} /></span>
+            <span>{t('navigation.chatWithUs')}</span>
           </Button>
-          
-          <div className="text-xs text-center mt-4 text-darcare-beige/40">
-            {appVersion}
+
+          <Link
+            to="/chatbot"
+            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
+          >
+            <span className="text-darcare-gold"><Bot size={20} /></span>
+            <span>{t('navigation.assistant')}</span>
+          </Link>
+
+          <Separator className="my-2 bg-darcare-gold/20" />
+
+          <Link
+            to="/profile"
+            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
+          >
+            <span className="text-darcare-gold"><UserCircle size={20} /></span>
+            <span>{t('navigation.profile')}</span>
+          </Link>
+
+          <Link
+            to="/notifications"
+            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
+          >
+            <span className="text-darcare-gold"><Bell size={20} /></span>
+            <span>{t('navigation.notifications')}</span>
+          </Link>
+
+          <div className="mt-auto pt-6 pb-4">
+            <Separator className="mb-4 bg-darcare-gold/20" />
+            <Button
+              variant="ghost" 
+              onClick={onLogout}
+              className="w-full justify-start gap-4 py-3 h-auto text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold"
+            >
+              <span className="text-darcare-gold"><LogOut size={20} /></span>
+              <span>{t('common.logout')}</span>
+            </Button>
+            <div className="text-center mt-4">
+              <span className="text-xs text-darcare-beige/40">{appVersion}</span>
+            </div>
           </div>
-        </div>
-      </div>
-    </SheetContent>
+        </nav>
+      </SheetContent>
   );
 };
 
