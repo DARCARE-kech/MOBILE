@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import AppHeader from '@/components/AppHeader';
+import DrawerMenu from "@/components/DrawerMenu";
 import { UserInfoBlock } from '@/components/profile/UserInfoBlock';
 import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
