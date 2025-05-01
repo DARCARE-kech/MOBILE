@@ -52,8 +52,9 @@ const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: App
           >
             <ArrowLeft size={20} />
           </Button>
-      
+        ) : drawerContent ? (
           <div>{drawerContent}</div>
+        ) : null}
         
         {displayTitle && (
           <h1 className={cn("font-serif text-darcare-gold", isHome ? "text-2xl" : "text-xl")}>
