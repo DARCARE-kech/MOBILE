@@ -14,7 +14,7 @@ import { UserRound } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
 
 const countryCodes = [
   { value: "+1", label: "United States (+1)" },
@@ -41,7 +41,6 @@ const EditProfile: React.FC = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countryCode, setCountryCode] = useState("+212");
-  const [emailChanged, setEmailChanged] = useState(false);
 
   // Extract phone number without country code if it exists
   const getPhoneWithoutCode = (phone: string | null) => {
@@ -74,6 +73,7 @@ const EditProfile: React.FC = () => {
       country_code: extractCountryCode(profile?.phone_number || ""),
       whatsapp_number: profile?.whatsapp_number || "",
     },
+    mode: "onChange"
   });
 
   React.useEffect(() => {
@@ -95,175 +95,149 @@ const EditProfile: React.FC = () => {
       // Combine country code with phone number
       const fullPhoneNumber = data.phone_number ? `${countryCode}${data.phone_number}` : null;
       
-      // Check if email was changed
-      if (data.email !== profile?.email) {
-        setEmailChanged(true);
-        
-        // Update email in auth
-        const { error: updateEmailError } = await supabase.auth.updateUser({
-          email: data.email,
-        });
-        
-        if (updateEmailError) {
-          throw updateEmailError;
-        }
-        
-        toast({
-          title: t('profile.emailUpdateSent'),
-          description: t('profile.emailConfirmationRequired'),
-        });
-      }
-      
+      // Update profile with all data including email
+      // The updateProfile hook will handle email confirmation if needed
       await updateProfile({
         full_name: data.full_name,
+        email: data.email, // This will be handled by the hook
         phone_number: fullPhoneNumber,
         whatsapp_number: data.whatsapp_number,
-      });
-      
-      toast({
-        title: t('profile.profileUpdated'),
-        description: emailChanged 
-          ? t('profile.profileUpdatedEmailPending') 
-          : t('profile.profileUpdatedMessage'),
       });
       
       navigate("/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast({
-        title: t('common.error'),
-        description: t('profile.updateFailedMessage'),
-        variant: "destructive",
-      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-darcare-navy">
+    <div className="min-h-screen bg-background">
       <MainHeader title={t('profile.editProfile')} onBack={() => navigate('/profile')} />
       
       <div className="pt-20 pb-24 px-4">
-        <div className="flex flex-col items-center mb-6">
-          <Avatar className="h-24 w-24 border-2 border-darcare-gold/20 mb-4">
-            <AvatarImage src={profile?.avatar_url ?? undefined} />
-            <AvatarFallback>
-              <UserRound className="h-12 w-12 text-darcare-gold/50" />
-            </AvatarFallback>
-          </Avatar>
-        </div>
+        <Card className="p-6 mb-6 border-darcare-gold/20 bg-card">
+          <div className="flex flex-col items-center mb-6">
+            <Avatar className="h-24 w-24 border-2 border-darcare-gold/20 mb-4 shadow-md">
+              <AvatarImage src={profile?.avatar_url ?? undefined} />
+              <AvatarFallback className="bg-darcare-gold/10">
+                <UserRound className="h-12 w-12 text-darcare-gold/70" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="full_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-darcare-beige">{t('profile.fullName')}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={t('profile.enterFullName')} 
-                      {...field} 
-                      className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-darcare-beige">{t('profile.email')}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={t('profile.enterEmail')} 
-                      {...field} 
-                      className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone_number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-darcare-beige">{t('profile.phoneNumber')}</FormLabel>
-                  <div className="flex space-x-2">
-                    <Select 
-                      value={countryCode} 
-                      onValueChange={setCountryCode}
-                    >
-                      <SelectTrigger className="w-[120px] bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige">
-                        <SelectValue placeholder={countryCode} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countryCodes.map((code) => (
-                          <SelectItem key={code.value} value={code.value}>
-                            {code.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="full_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-darcare-beige">{t('profile.fullName')}</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder={t('profile.enterPhoneNumber')} 
+                        placeholder={t('profile.enterFullName')} 
                         {...field} 
-                        className="flex-1 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
+                        className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
                       />
                     </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="whatsapp_number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-darcare-beige">{t('profile.whatsappNumber')} ({t('common.optional')})</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={t('profile.enterWhatsappNumber')} 
-                      {...field} 
-                      className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="flex gap-4 justify-end pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => navigate('/profile')}
-                className="border-darcare-gold/20 text-darcare-beige hover:bg-darcare-gold/10"
-              >
-                {t('common.cancel')}
-              </Button>
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-              >
-                {t('common.save')}
-              </Button>
-            </div>
-          </form>
-        </Form>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-darcare-beige">{t('profile.email')}</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder={t('profile.enterEmail')} 
+                        {...field} 
+                        className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-darcare-beige">{t('profile.phoneNumber')}</FormLabel>
+                    <div className="flex space-x-2">
+                      <Select 
+                        value={countryCode} 
+                        onValueChange={setCountryCode}
+                      >
+                        <SelectTrigger className="w-[120px] bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige">
+                          <SelectValue placeholder={countryCode} />
+                        </SelectTrigger>
+                        <SelectContent className="bg-darcare-navy border-darcare-gold/20">
+                          {countryCodes.map((code) => (
+                            <SelectItem key={code.value} value={code.value} className="focus:bg-darcare-gold/20 focus:text-white">
+                              {code.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormControl>
+                        <Input 
+                          placeholder={t('profile.enterPhoneNumber')} 
+                          {...field} 
+                          className="flex-1 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="whatsapp_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-darcare-beige">{t('profile.whatsappNumber')} ({t('common.optional')})</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder={t('profile.enterWhatsappNumber')} 
+                        {...field} 
+                        className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="flex gap-4 justify-end pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => navigate('/profile')}
+                  className="border-darcare-gold/20 text-darcare-beige hover:bg-darcare-gold/10"
+                >
+                  {t('common.cancel')}
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting || !form.formState.isDirty}
+                  className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+                >
+                  {t('common.save')}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </Card>
       </div>
     </div>
   );

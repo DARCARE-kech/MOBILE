@@ -23,6 +23,11 @@ export const useProfileData = (userId: string | undefined) => {
     queryKey: ['userProfile', userId],
     queryFn: async () => {
       if (!userId) throw new Error('No user logged in');
+      
+      // Fetch user email from auth.users
+      const { data: authUserData, error: authError } = await supabase.auth.getUser();
+      
+      // Fetch user profile data
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -30,7 +35,14 @@ export const useProfileData = (userId: string | undefined) => {
         .single();
 
       if (error) throw error;
-      return data as UserProfile;
+      
+      // Combine auth user data with profile data
+      const profile = {
+        ...data,
+        email: authUserData?.user?.email || null
+      } as UserProfile;
+      
+      return profile;
     },
     enabled: !!userId,
   });
