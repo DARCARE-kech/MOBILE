@@ -8,20 +8,38 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAdminContact } from '@/hooks/useAdminContact';
 import BottomNavigation from '@/components/BottomNavigation';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import type { Enums } from '@/integrations/supabase/types';
 
 interface FormData {
-  subject: string;
+  category: Enums<'admin_message_category'>;
   message: string;
 }
 
 const ContactAdmin: React.FC = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>();
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, watch } = useForm<FormData>({
+    defaultValues: {
+      category: 'issue',
+    }
+  });
   const { sendAdminMessage } = useAdminContact();
+  
+  const selectedCategory = watch('category');
 
   const onSubmit = async (data: FormData) => {
     await sendAdminMessage.mutateAsync(data);
     navigate('/chatbot');
+  };
+
+  const handleCategoryChange = (value: Enums<'admin_message_category'>) => {
+    setValue('category', value);
   };
 
   return (
@@ -31,13 +49,23 @@ const ContactAdmin: React.FC = () => {
       <div className="p-4 pt-20 pb-24">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Input
-              {...register('subject', { required: 'Subject is required' })}
-              placeholder="Subject"
-              className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50"
-            />
-            {errors.subject && (
-              <p className="mt-1 text-sm text-red-500">{errors.subject.message}</p>
+            <Select 
+              defaultValue="issue" 
+              onValueChange={handleCategoryChange}
+              value={selectedCategory}
+            >
+              <SelectTrigger className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="issue">Issue</SelectItem>
+                <SelectItem value="report">Report</SelectItem>
+                <SelectItem value="external_request">External Request</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.category && (
+              <p className="mt-1 text-sm text-red-500">{errors.category.message}</p>
             )}
           </div>
 

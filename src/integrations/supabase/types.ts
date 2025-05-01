@@ -11,30 +11,30 @@ export type Database = {
     Tables: {
       admin_messages: {
         Row: {
+          category: Database["public"]["Enums"]["admin_message_category"]
           created_at: string
           id: string
           image_url: string | null
           message: string
           status: Database["public"]["Enums"]["admin_message_status"]
-          subject: string
           user_id: string
         }
         Insert: {
+          category: Database["public"]["Enums"]["admin_message_category"]
           created_at?: string
           id?: string
           image_url?: string | null
           message: string
           status?: Database["public"]["Enums"]["admin_message_status"]
-          subject: string
           user_id: string
         }
         Update: {
+          category?: Database["public"]["Enums"]["admin_message_category"]
           created_at?: string
           id?: string
           image_url?: string | null
           message?: string
           status?: Database["public"]["Enums"]["admin_message_status"]
-          subject?: string
           user_id?: string
         }
         Relationships: []
@@ -655,6 +655,7 @@ export type Database = {
       }
     }
     Enums: {
+      admin_message_category: "report" | "external_request" | "issue" | "other"
       admin_message_status: "unread" | "read" | "responded"
       sender_type: "user" | "bot" | "admin"
     }
@@ -772,6 +773,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_message_category: ["report", "external_request", "issue", "other"],
       admin_message_status: ["unread", "read", "responded"],
       sender_type: ["user", "bot", "admin"],
     },

@@ -40,7 +40,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
   const displayTitle = isHome ? "DarCare" : title;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center app-header">
+    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center bg-darcare-navy">
       <div className="flex items-center gap-3">
         {onBack ? (
           <Button
@@ -64,7 +64,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
       
       <div className="flex items-center">
         {rightContent || children || (
-          <div className="flex items-center gap-2"> {/* Reduced gap from gap-4 to gap-2 */}
+          <div className="flex items-center gap-2">
             <WeatherDisplay expanded={false} />
             <Button
               variant="ghost"

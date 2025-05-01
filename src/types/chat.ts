@@ -1,4 +1,3 @@
-
 export interface ChatSession {
   id: string;
   user_id: string;
@@ -68,13 +67,13 @@ export interface RunResponse {
 
 // Add the missing AdminMessage interface
 export interface AdminMessage {
-  id?: string;
-  user_id?: string;
-  subject: string;
+  id: string;
+  user_id: string;
+  category: Enums<'admin_message_category'>;
   message: string;
-  image_url?: string;
-  status?: 'unread' | 'read' | 'responded';
-  created_at?: string;
+  image_url?: string | null;
+  status: Enums<'admin_message_status'>;
+  created_at: string;
 }
 
 // Add a ChatThread interface to match the database schema
