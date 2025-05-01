@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, HelpCircle, Info, Key, LogOut, ChevronRight } from 'lucide-react';
+import { Shield, HelpCircle, Info, LogOut, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -10,7 +10,6 @@ import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -64,6 +63,7 @@ const ProfilePage: React.FC = () => {
           {/* Preferences Section */}
           <PreferencesSection
             language={profile?.language || 'en'}
+            darkMode={profile?.dark_mode || false}
             onUpdatePreference={handlePreferenceUpdate}
           />
 

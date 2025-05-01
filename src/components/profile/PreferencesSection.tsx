@@ -1,19 +1,25 @@
 
-import { Label } from "@/components/ui/label";
+import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Globe } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Globe, Moon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
+import { PreferenceItem } from "./PreferenceItem";
 
 interface PreferencesSectionProps {
   language: string;
+  darkMode?: boolean;
   onUpdatePreference: (key: string, value: boolean | string) => void;
+  className?: string;
 }
 
 export const PreferencesSection = ({
   language,
+  darkMode = false,
   onUpdatePreference,
+  className,
 }: PreferencesSectionProps) => {
   const { t } = useTranslation();
   const { changeLanguage } = useLanguage();
@@ -26,29 +32,47 @@ export const PreferencesSection = ({
     await changeLanguage(value);
   };
 
+  const handleDarkModeChange = (checked: boolean) => {
+    onUpdatePreference('dark_mode', checked);
+  };
+
   return (
-    <Card className="p-6 shadow-sm bg-card border-darcare-gold/20">
+    <Card className={`p-6 shadow-sm bg-card border-darcare-gold/20 ${className}`}>
       <h3 className="text-lg font-serif mb-4 text-darcare-gold">{t('profile.preferences')}</h3>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Globe className="h-5 w-5 text-darcare-gold" />
-            <Label htmlFor="language" className="text-foreground">{t('profile.language')}</Label>
-          </div>
-          <Select
-            value={language}
-            onValueChange={handleLanguageChange}
-          >
-            <SelectTrigger className="w-[140px] bg-darcare-navy/50 border-darcare-gold/20 rounded-full">
-              <SelectValue placeholder={t('common.select')} />
-            </SelectTrigger>
-            <SelectContent className="bg-darcare-navy border-darcare-gold/20">
-              <SelectItem value="en" className="focus:bg-darcare-gold/20 focus:text-white">{t('languages.en')}</SelectItem>
-              <SelectItem value="fr" className="focus:bg-darcare-gold/20 focus:text-white">{t('languages.fr')}</SelectItem>
-              <SelectItem value="ar" className="focus:bg-darcare-gold/20 focus:text-white">{t('languages.ar')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <PreferenceItem
+          icon={<Globe className="h-5 w-5 text-darcare-gold" />}
+          label={t('profile.language')}
+          control={
+            <Select
+              value={language}
+              onValueChange={handleLanguageChange}
+            >
+              <SelectTrigger className="w-[140px] bg-darcare-navy/50 border-darcare-gold/20 rounded-full">
+                <SelectValue placeholder={t('common.select')} />
+              </SelectTrigger>
+              <SelectContent className="bg-darcare-navy border-darcare-gold/20">
+                <SelectItem value="en" className="focus:bg-darcare-gold/20 focus:text-white">{t('languages.en')}</SelectItem>
+                <SelectItem value="fr" className="focus:bg-darcare-gold/20 focus:text-white">{t('languages.fr')}</SelectItem>
+                <SelectItem value="ar" className="focus:bg-darcare-gold/20 focus:text-white">{t('languages.ar')}</SelectItem>
+              </SelectContent>
+            </Select>
+          }
+        />
+        
+        {darkMode !== undefined && (
+          <PreferenceItem
+            icon={<Moon className="h-5 w-5 text-darcare-gold" />}
+            label={t('profile.darkMode')}
+            control={
+              <Switch 
+                checked={darkMode} 
+                onCheckedChange={handleDarkModeChange}
+                className="data-[state=checked]:bg-darcare-gold" 
+              />
+            }
+          />
+        )}
       </div>
     </Card>
   );
