@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { AlertCircle } from "lucide-react";
-import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -15,7 +14,6 @@ interface ReservationLinkFormProps {
 
 const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refetchStay }) => {
   const { toast } = useToast();
-  const { isDarkMode } = useTheme();
   const [reservationNumber, setReservationNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,48 +37,33 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
     try {
       // Search for stay with this reservation number where user_id IS NULL
       const { data: stayData, error: fetchError } = await supabase
-  .from('stays')
-  .select('*')
-  .eq('reservation_number', reservationNumber.trim())
-  .is('user_id', null)
-  .maybeSingle(); // ← plus souple
-
-      if (!stayData) {
-  // Soit il n'existe pas, soit il est déjà lié
-  const { count } = await supabase
-    .from('stays')
-    .select('*', { count: 'exact', head: true })
-    .eq('reservation_number', reservationNumber.trim());
-
-  if (count && count > 0) {
-    setError("This reservation is already linked to another account");
-  } else {
-    setError("Invalid reservation number");
-  }
-  setIsSubmitting(false);
-  return;
-}
-      
+        .from('stays')
+        .select('*')
+        .eq('reservation_number', reservationNumber.trim())
+        .is('user_id', null)
+        .single();
+        
       if (fetchError) {
+        // Check if it's a "not found" error or another type of error
         if (fetchError.code === 'PGRST116') {
-          // No reservation found with this number or it's already linked
-          // Now check if it exists but is already linked
+          // Let's check if the reservation exists but is already linked
           const { count } = await supabase
             .from('stays')
             .select('*', { count: 'exact', head: true })
             .eq('reservation_number', reservationNumber.trim());
             
           if (count && count > 0) {
-            setError("This reservation is already linked to an account");
+            setError("This reservation is already linked to another account");
           } else {
             setError("Invalid reservation number");
           }
-          setIsSubmitting(false);
-          return;
         } else {
           // Some other error occurred
-          throw fetchError;
+          console.error('Error checking reservation:', fetchError);
+          setError("Error checking reservation");
         }
+        setIsSubmitting(false);
+        return;
       }
       
       // If we got here, we found a valid unlinked reservation
@@ -90,7 +73,12 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
         .update({ user_id: userId })
         .eq('id', stayData.id);
       
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Error updating stay:', updateError);
+        setError("Error linking reservation");
+        setIsSubmitting(false);
+        return;
+      }
       
       toast({
         title: "Reservation linked successfully",
@@ -105,31 +93,15 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
     } catch (error: any) {
       console.error('Error linking reservation:', error);
       setError(error.message || "Error linking reservation");
-      toast({
-        title: "Error linking reservation",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className={cn(
-      "luxury-card",
-      isDarkMode 
-        ? "bg-gradient-to-br from-darcare-navy/90 to-darcare-navy" 
-        : "bg-white border-secondary/10"
-    )}>
-      <h2 className={cn(
-        "font-serif text-xl mb-3",
-        isDarkMode ? "text-darcare-gold" : "text-primary"
-      )}>Link Your Reservation</h2>
-      <p className={cn(
-        isDarkMode ? "text-darcare-beige/70" : "text-foreground/70",
-        "mb-4"
-      )}>Please enter your reservation number to access your stay details.</p>
+    <div className="luxury-card bg-gradient-to-br from-darcare-navy/90 to-darcare-navy">
+      <h2 className="font-serif text-xl mb-3 text-darcare-gold">Link Your Reservation</h2>
+      <p className="text-darcare-beige/70 mb-4">Please enter your reservation number to access your stay details.</p>
       
       <form onSubmit={handleLinkReservation} className="space-y-4">
         <div className="space-y-1">
@@ -142,10 +114,7 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
               setError(null);
             }}
             className={cn(
-              "bg-background/50 border",
-              isDarkMode 
-                ? "border-darcare-gold/30" 
-                : "border-secondary/30",
+              "bg-background/50 border border-darcare-gold/30",
               error ? "border-red-500" : ""
             )}
             disabled={isSubmitting}
@@ -160,12 +129,7 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
         
         <Button
           type="submit"
-          className={cn(
-            "w-full",
-            isDarkMode
-              ? "bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy"
-              : "bg-secondary hover:bg-secondary/90 text-white"
-          )}
+          className="w-full bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy"
           disabled={isSubmitting || !reservationNumber.trim()}
         >
           {isSubmitting ? "Linking..." : "Link Reservation"}

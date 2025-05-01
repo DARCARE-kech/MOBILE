@@ -89,7 +89,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             onClick={handleWhatsAppClick}
           >
             <span className="text-darcare-gold"><MessageCircle size={20} /></span>
-            <span>{t('common.chatWithUs')}</span>
+            <span>{t('navigation.chatWithUs')}</span>
           </Button>
 
           <Link
@@ -97,7 +97,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
           >
             <span className="text-darcare-gold"><Bot size={20} /></span>
-            <span>{t('common.darCareAssistant')}</span>
+            <span>{t('navigation.assistant')}</span>
           </Link>
 
           <Separator className="my-2 bg-darcare-gold/20" />

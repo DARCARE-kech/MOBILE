@@ -13,27 +13,27 @@ const MainNavigation: React.FC = () => {
     { icon: <Home size={20} />, label: t('navigation.home'), path: "/home" },
     { 
       icon: <ShoppingBag size={20} />, 
-      label: t('services.shop'), 
+      label: t('navigation.shop'), 
       path: "/services/shop"
     },
     { 
       icon: <List size={20} />, 
-      label: t('services.requests'), 
+      label: t('navigation.requests'), 
       path: "/services"  // Redirect to main services page with requests tab
     },
     { 
       icon: <Book size={20} />, 
-      label: t('services.spaces'), 
+      label: t('navigation.spaces'), 
       path: "/services/spaces" 
     },
     { 
       icon: <Compass size={20} />, 
-      label: t('explore.recommendations'), 
+      label: t('navigation.explore'), 
       path: "/explore" 
     },
     { 
       icon: <Heart size={20} />, 
-      label: t('explore.favorites'), 
+      label: t('navigation.favorites'), 
       path: "/explore/favorites"
     },
   ];

@@ -10,14 +10,12 @@ import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
 const ProfilePage: React.FC = () => {
   const { profile, currentStay, isLoading, updateProfile, handleLogout } = useUserProfile();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isDarkMode } = useTheme();
 
   const handlePreferenceUpdate = (key: string, value: boolean | string) => {
     updateProfile({ [key]: value });
@@ -57,12 +55,8 @@ const ProfilePage: React.FC = () => {
 
           {/* Preferences Section */}
           <div className="luxury-card">
-            <h3 className={cn(
-              "text-lg font-serif mb-4",
-              isDarkMode ? "text-darcare-gold" : "text-primary"
-            )}>{t('profile.preferences')}</h3>
+            <h3 className="text-lg font-serif mb-4 text-darcare-gold">{t('profile.preferences')}</h3>
             <PreferencesSection
-              darkMode={profile?.dark_mode !== undefined ? profile.dark_mode : isDarkMode}
               language={profile?.language || 'en'}
               onUpdatePreference={handlePreferenceUpdate}
             />
@@ -75,58 +69,37 @@ const ProfilePage: React.FC = () => {
               onClick={() => navigate('/profile/privacy')}
             >
               <div className="flex items-center gap-3">
-                <Shield className={cn(
-                  "h-5 w-5",
-                  isDarkMode ? "text-darcare-gold" : "text-secondary"
-                )} />
+                <Shield className="h-5 w-5 text-darcare-gold" />
                 <span className="text-foreground">{t('profile.privacySecurity')}</span>
               </div>
             </div>
-            <Separator className={cn(
-              "my-2",
-              isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"
-            )} />
+            <Separator className="my-2 bg-darcare-gold/10" />
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/change-password')}
             >
               <div className="flex items-center gap-3">
-                <Key className={cn(
-                  "h-5 w-5",
-                  isDarkMode ? "text-darcare-gold" : "text-secondary"
-                )} />
+                <Key className="h-5 w-5 text-darcare-gold" />
                 <span className="text-foreground">{t('profile.changePassword')}</span>
               </div>
             </div>
-            <Separator className={cn(
-              "my-2",
-              isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"
-            )} />
+            <Separator className="my-2 bg-darcare-gold/10" />
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/help')}
             >
               <div className="flex items-center gap-3">
-                <HelpCircle className={cn(
-                  "h-5 w-5",
-                  isDarkMode ? "text-darcare-gold" : "text-secondary"
-                )} />
+                <HelpCircle className="h-5 w-5 text-darcare-gold" />
                 <span className="text-foreground">{t('profile.helpSupport')}</span>
               </div>
             </div>
-            <Separator className={cn(
-              "my-2",
-              isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"
-            )} />
+            <Separator className="my-2 bg-darcare-gold/10" />
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/about')}
             >
               <div className="flex items-center gap-3">
-                <Info className={cn(
-                  "h-5 w-5",
-                  isDarkMode ? "text-darcare-gold" : "text-secondary"
-                )} />
+                <Info className="h-5 w-5 text-darcare-gold" />
                 <span className="text-foreground">{t('profile.about')}</span>
               </div>
             </div>
@@ -135,12 +108,7 @@ const ProfilePage: React.FC = () => {
           {/* Logout Button */}
           <Button
             variant="ghost"
-            className={cn(
-              "w-full border text-primary hover:bg-primary/10 mt-6",
-              isDarkMode 
-                ? "border-darcare-gold/20" 
-                : "border-secondary/20"
-            )}
+            className="w-full border border-darcare-gold/20 text-primary hover:bg-primary/10 mt-6"
             onClick={handleLogout}
           >
             {t('common.logout')}

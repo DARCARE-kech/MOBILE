@@ -26,19 +26,19 @@ const FloatingAction: React.FC = () => {
   const quickActions: QuickAction[] = [
     {
       id: "space",
-      label: t('services.bookSpace'),
+      label: t('navigation.bookSpace'),
       icon: <DoorOpen size={20} />,
       action: () => navigate("/services/spaces"),
     },
     {
       id: "service",
-      label: t('services.requestService'),
+      label: t('navigation.requestService'),
       icon: <Wrench size={20} />,
       action: () => navigate("/services"),
     },
     {
       id: "whatsapp",
-      label: t('common.chatWithUs'),
+      label: t('navigation.chatWithUs'),
       icon: <MessageCircle size={20} />,
       action: openWhatsApp,
     },
