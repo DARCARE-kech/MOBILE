@@ -74,16 +74,7 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
             <Separator className="my-2 bg-darcare-gold/10" />
-            <div 
-              className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
-              onClick={() => navigate('/profile/change-password')}
-            >
-              <div className="flex items-center gap-3">
-                <Key className="h-5 w-5 text-darcare-gold" />
-                <span className="text-foreground">{t('profile.changePassword')}</span>
-              </div>
-            </div>
-            <Separator className="my-2 bg-darcare-gold/10" />
+            
             <div 
               className="flex items-center justify-between gap-3 py-3 cursor-pointer" 
               onClick={() => navigate('/profile/help')}
