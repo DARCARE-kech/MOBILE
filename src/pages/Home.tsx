@@ -56,7 +56,7 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-background">
       <MainHeader 
         title="DarCare" 
-        drawerContent={<DrawerMenu />}
+        
       />
       
       <div className="pt-20 pb-24">
