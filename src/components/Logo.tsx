@@ -3,7 +3,7 @@ import React from "react";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
-  color?: "gold" | "white";
+  color?: "gold" | "white" | "navy";
   withText?: boolean;
 }
 
@@ -21,6 +21,7 @@ const Logo: React.FC<LogoProps> = ({
   const colorClass = {
     gold: "text-darcare-gold",
     white: "text-darcare-white",
+    navy: "text-darcare-charcoal",
   };
 
   return (
