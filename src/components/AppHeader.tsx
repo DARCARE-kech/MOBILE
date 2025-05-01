@@ -13,7 +13,7 @@ export interface AppHeaderProps {
   children?: React.ReactNode;
   onBack?: () => void;
   rightContent?: React.ReactNode;
-  drawerContent?: React.ReactNode; // Added prop to accept drawer content
+   // Added prop to accept drawer content
 }
 
 const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: AppHeaderProps) => {
