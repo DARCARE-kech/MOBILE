@@ -93,7 +93,7 @@ const RecommendationsList = () => {
       </div>
       
       <div className="overflow-hidden">
-        <ScrollArea orientation="horizontal" className="w-full pb-4">
+        <ScrollArea className="w-full pb-4">
           <div className="flex gap-4 pb-1 pr-4">
             {recommendations?.map((item) => (
               <RecommendationCardHome

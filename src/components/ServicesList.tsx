@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 interface Service {
   id: string;
   title?: string;
-  status: "pending" | "active" | "completed" | "cancelled";
+  status: "pending" | "active" | "completed" | "cancelled" | string;
   preferred_time?: string | null;
   staff_assignments?: { staff_name?: string | null }[] | null;
   services?: {

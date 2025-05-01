@@ -40,7 +40,15 @@ const Home: React.FC = () => {
         .limit(3);
       
       if (error) throw error;
-      return data || [];
+      
+      // Convert to Service type with correct status handling
+      return (data || []).map(item => ({
+        ...item,
+        // Convert status to a valid enum value or default to "pending"
+        status: item.status === "pending" || item.status === "active" || 
+               item.status === "completed" || item.status === "cancelled" 
+               ? item.status : "pending"
+      }));
     },
     enabled: !!user?.id,
   });
