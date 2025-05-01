@@ -68,17 +68,14 @@ const Home: React.FC = () => {
         />
         
         <div className="p-4">
-          
-            <ServicesList 
-              services={serviceRequests || []} 
-              isLoading={isRequestsLoading} 
-            />
-          </div>
-          
-          <div className="mt-8">
-            
-            <RecommendationsList />
-          </div>
+          <ServicesList 
+            services={serviceRequests || []} 
+            isLoading={isRequestsLoading} 
+          />
+        </div>
+        
+        <div className="mt-8">
+          <RecommendationsList />
         </div>
       </div>
       
