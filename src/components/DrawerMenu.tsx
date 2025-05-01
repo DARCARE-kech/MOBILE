@@ -6,6 +6,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import EnhancedDrawerMenu from "./EnhancedDrawerMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useTranslation } from "react-i18next";
 
 interface DrawerMenuProps {
   onLogout?: () => void;
@@ -14,6 +15,7 @@ interface DrawerMenuProps {
 const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
   const { handleLogout } = useUserProfile();
   const { signOut } = useAuth();
+  const { t } = useTranslation();
   
   // Use the provided onLogout or fallback to the default logout functions
   const handleLogoutClick = () => {
@@ -32,7 +34,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
           variant="ghost"
           size="icon"
           className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-          aria-label="Menu"
+          aria-label={t('common.menu')}
         >
           <Menu size={20} />
         </Button>

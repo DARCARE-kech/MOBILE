@@ -1,5 +1,5 @@
 
-import { Bell, Heart, ArrowLeft, Menu } from "lucide-react";
+import { Bell, Heart, ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import WeatherDisplay from "./WeatherDisplay";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ export interface AppHeaderProps {
   children?: React.ReactNode;
   onBack?: () => void;
   rightContent?: React.ReactNode;
-  drawerContent?: React.ReactNode;
+  drawerContent?: React.ReactNode; // Added prop to accept drawer content
 }
 
 const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: AppHeaderProps) => {
@@ -54,16 +54,7 @@ const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: App
           </Button>
         ) : drawerContent ? (
           <div>{drawerContent}</div>
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            aria-label={t('common.menu')}
-          >
-            <Menu size={20} />
-          </Button>
-        )}
+        ) : null}
         {displayTitle && (
           <h1 className={cn("font-serif text-darcare-gold", isHome ? "text-2xl" : "text-xl")}>
             {displayTitle}

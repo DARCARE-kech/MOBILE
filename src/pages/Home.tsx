@@ -5,7 +5,6 @@ import BottomNavigation from "@/components/BottomNavigation";
 import CurrentStay from "@/components/CurrentStay";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentStay } from "@/hooks/useCurrentStay";
-import WeatherDisplay from "@/components/WeatherDisplay";
 import RecommendationsList from "@/components/RecommendationsList";
 import ServicesList from "@/components/ServicesList";
 import { useTranslation } from "react-i18next";
@@ -70,9 +69,11 @@ const Home: React.FC = () => {
         
         <div className="p-4">
           <div className="mt-8">
-            <h2 className="font-serif text-xl text-primary mb-4">
-              {t('services.todaySchedule')}
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-serif text-xl text-primary">
+                {t('services.todaySchedule')}
+              </h2>
+            </div>
             <ServicesList 
               services={serviceRequests || []} 
               isLoading={isRequestsLoading} 
@@ -80,9 +81,11 @@ const Home: React.FC = () => {
           </div>
           
           <div className="mt-8">
-            <h2 className="font-serif text-xl text-primary mb-4">
-              {t('explore.marrakechHighlights')}
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-serif text-xl text-primary">
+                {t('explore.marrakechHighlights')}
+              </h2>
+            </div>
             <RecommendationsList />
           </div>
         </div>

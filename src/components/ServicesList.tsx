@@ -61,7 +61,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-serif text-primary text-xl">{t('services.todaySchedule')}</h2>
+        <div className="flex-1"></div> {/* Empty div for spacing */}
         <Button 
           variant="ghost" 
           className="text-primary text-sm flex items-center gap-1"
