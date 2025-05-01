@@ -81,9 +81,9 @@ const RecommendationsList = () => {
   }
 
   return (
-    <div>
+    <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <div className="flex-1"></div> {/* Empty div for spacing */}
+        <h2 className="text-xl font-serif text-darcare-gold">Marrakech Highlights</h2>
         <button 
           className="text-darcare-gold text-sm flex items-center"
           onClick={() => navigate('/explore')}

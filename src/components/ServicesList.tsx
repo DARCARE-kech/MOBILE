@@ -59,18 +59,18 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
   }
 
   return (
-    <div>
+    <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <div className="flex-1"></div> {/* Empty div for spacing */}
+        <h2 className="font-serif text-primary text-xl">Today's Schedule</h2>
         <Button 
           variant="ghost" 
           className="text-primary text-sm flex items-center gap-1"
           onClick={() => navigate('/services')}
         >
-          {t('common.viewAll')} <ChevronRight size={16} />
+          View All <ChevronRight size={16} />
         </Button>
       </div>
-
+      
       <div className="space-y-3">
         {services.map((service) => {
           // Extract service name from nested objects or fallback
