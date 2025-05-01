@@ -1,104 +1,61 @@
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
+import React from "react";
+import MainHeader from "@/components/MainHeader";
 import BottomNavigation from "@/components/BottomNavigation";
-import FloatingAction from "@/components/FloatingAction";
-import { useToast } from "@/hooks/use-toast";
 import CurrentStay from "@/components/CurrentStay";
-import ServicesList from "@/components/ServicesList";
-import RecommendationsList from "@/components/RecommendationsList";
-import AppHeader from "@/components/AppHeader";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCurrentStay } from "@/hooks/useCurrentStay";
+import { WeatherDisplay } from "@/components/WeatherDisplay";
+import { RecommendationsList } from "@/components/RecommendationsList";
+import { ServicesList } from "@/components/ServicesList";
 import { useTranslation } from "react-i18next";
-import { useCurrentStay, type CurrentStayType } from "@/hooks/useCurrentStay";
+import DrawerMenu from "@/components/DrawerMenu";
 
 const Home: React.FC = () => {
-  const [services, setServices] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const { user } = useAuth();
   const { t } = useTranslation();
-  const { data: currentStay, refetch: refetchStay, isLoading: isStayLoading } = useCurrentStay(user?.id);
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-    }
-  }, [user, navigate]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchUserData = async () => {
-      setIsLoading(true);
-      try {        
-        const { data: requestsData, error: requestsError } = await supabase
-          .from('service_requests')
-          .select(`
-            id,
-            status,
-            preferred_time,
-            services (
-              name,
-              category
-            ),
-            staff_assignments (
-              staff_name
-            )
-          `)
-          .eq('user_id', user.id) // Filter by the current user's ID
-          .in('status', ['pending', 'in_progress'])
-          .order('created_at', { ascending: false })
-          .limit(3);
-
-        if (requestsError) {
-          throw requestsError;
-        }
-
-        const formattedServices = (requestsData || []).map(request => ({
-          id: request.id,
-          title: request.services?.name || t('common.unknownService'),
-          status: request.status || 'pending',
-          time: request.preferred_time ? new Date(request.preferred_time).toLocaleString() : t('services.unscheduled'),
-          staff: request.staff_assignments && request.staff_assignments[0]
-            ? request.staff_assignments[0].staff_name
-            : t('services.unassigned')
-        }));
-
-        setServices(formattedServices);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        toast({
-          title: t('common.error'),
-          description: t('common.fetchDataError'),
-          variant: "destructive"
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [user, toast, t]);
+  const { user } = useAuth();
+  
+  const { 
+    data: currentStay, 
+    isLoading: isStayLoading,
+    refetch: refetchStay 
+  } = useCurrentStay(user?.id);
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
-      <div className="pt-16 pb-24 overflow-auto">
+      <MainHeader 
+        title="DarCare" 
+        showDrawerButton 
+        drawerContent={<DrawerMenu />}
+      />
+      
+      <div className="pt-20 pb-24">
         <CurrentStay 
-          currentStay={currentStay}
+          currentStay={currentStay} 
           userId={user?.id} 
-          refetchStay={refetchStay} 
+          refetchStay={refetchStay}
+          isLoading={isStayLoading}
         />
-        <ServicesList 
-          services={services} 
-          isLoading={isLoading || isStayLoading} 
-        />
-        <RecommendationsList />
+        
+        <div className="p-4">
+          <WeatherDisplay />
+          
+          <div className="mt-8">
+            <h2 className="font-serif text-xl text-primary mb-4">
+              {t('home.quickServices')}
+            </h2>
+            <ServicesList limit={3} />
+          </div>
+          
+          <div className="mt-8">
+            <h2 className="font-serif text-xl text-primary mb-4">
+              {t('home.exploreMarrakech')}
+            </h2>
+            <RecommendationsList limit={3} />
+          </div>
+        </div>
       </div>
-      <FloatingAction />
+      
       <BottomNavigation activeTab="home" />
     </div>
   );

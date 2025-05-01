@@ -12,54 +12,50 @@ export const useCurrentStay = (userId: string | undefined) => {
     queryFn: async () => {
       if (!userId) throw new Error('No user logged in');
       
-      const { data, error } = await supabase
+      // Look for a stay with this user_id directly
+      const { data: directData, error: directError } = await supabase
+        .from('stays')
+        .select('*')
+        .eq('user_id', userId)
+        .order('check_in', { ascending: true })
+        .maybeSingle();
+        
+      if (directError) throw directError;
+      
+      // If we found a stay linked to this user, return it
+      if (directData) {
+        return directData as CurrentStayType;
+      }
+      
+      // If no direct stay found, try to use the RPC function as a fallback
+      const { data: rpcData, error: rpcError } = await supabase
         .rpc('get_current_stay', { user_id: userId });
 
-      if (error) throw error;
+      if (rpcError) throw rpcError;
       
-      if (!data || data.length === 0) {
-        // If no stay is found via RPC, try to fetch from stays table directly
-        const { data: stayData, error: stayError } = await supabase
-          .from('stays')
-          .select('*')
-          .eq('user_id', userId)
-          .order('check_in', { ascending: true })
-          .maybeSingle();
-          
-        if (stayError) throw stayError;
-        return stayData as CurrentStayType | null;
+      if (!rpcData || rpcData.length === 0) {
+        // No stay found through either method
+        return null;
       }
       
       // Convert RPC data to match stays table structure
-      if (data[0]) {
-        // The RPC function returns only some fields, we need to ensure it matches the expected structure
-        return {
-          id: '',
-          villa_number: data[0].villa_number,
-          check_in: data[0].check_in,
-          check_out: data[0].check_out,
-          status: data[0].status,
-          // Default values for required fields
-          user_id: userId,
-          // Other fields can be null/undefined as they are optional in the interface
-          city: 'Marrakech',
-          guests: 2,
-          reservation_number: null,
-          created_at: null
-        } as CurrentStayType;
-      }
-      
-      return null;
+      return {
+        id: '',
+        villa_number: rpcData[0].villa_number,
+        check_in: rpcData[0].check_in,
+        check_out: rpcData[0].check_out,
+        status: rpcData[0].status,
+        user_id: userId,
+        city: 'Marrakech',
+        guests: 2,
+        reservation_number: null,
+        created_at: null
+      } as CurrentStayType;
     },
     enabled: !!userId,
-    // Add staleTime: 0 to prevent caching in this specific case
-    // so we can always get fresh data when refetching
+    // Prevent caching to always get fresh data when refetching
     staleTime: 0,
   });
   
-  return {
-    ...query,
-    data: query.data as CurrentStayType | null,
-    refetch: query.refetch
-  };
+  return query;
 };

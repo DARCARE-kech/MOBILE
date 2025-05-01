@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import LuxuryLogo from "@/components/ui/LuxuryLogo";
 
 interface ReservationLinkFormProps {
   userId: string | undefined;
@@ -100,8 +101,14 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
 
   return (
     <div className="luxury-card bg-gradient-to-br from-darcare-navy/90 to-darcare-navy">
-      <h2 className="font-serif text-xl mb-3 text-darcare-gold">Link Your Reservation</h2>
-      <p className="text-darcare-beige/70 mb-4">Please enter your reservation number to access your stay details.</p>
+      <div className="flex flex-col items-center mb-6">
+        <LuxuryLogo size="md" />
+        <h2 className="font-serif text-xl mt-4 text-darcare-gold">Welcome to DarCare</h2>
+      </div>
+      
+      <p className="text-darcare-beige/70 mb-6 text-center">
+        Please enter your reservation number to access your stay details.
+      </p>
       
       <form onSubmit={handleLinkReservation} className="space-y-4">
         <div className="space-y-1">

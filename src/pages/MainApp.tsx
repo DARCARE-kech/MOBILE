@@ -50,9 +50,15 @@ const MainApp: React.FC = () => {
     setHasSeenOnboarding(true);
   };
 
+  // Higher-order component to protect routes that require authentication
+  const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
+    return user ? element : <Navigate to="/auth" />;
+  };
+
   // Create routes based on authentication state
   const createAppRoutes = () => {
-    const routes = [
+    // Public routes - accessible without authentication
+    const publicRoutes = [
       {
         path: "/auth",
         element: user ? <Navigate to="/home" /> : <Auth />,
@@ -62,105 +68,130 @@ const MainApp: React.FC = () => {
         element: <ForgotPassword />,
       },
       {
-        path: "/home",
-        element: user ? <Home /> : <Navigate to="/auth" />,
+        path: "/onboarding",
+        element: hasSeenOnboarding ? (
+          <Navigate to="/auth" />
+        ) : (
+          <Onboarding onComplete={handleOnboardingComplete} />
+        ),
       },
+    ];
+
+    // Protected routes - require authentication
+    const protectedRoutes = [
+      // Home routes
+      {
+        path: "/home",
+        element: <ProtectedRoute element={<Home />} />,
+      },
+      
+      // Explore routes
       {
         path: "/explore",
-        element: user ? <Explore /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<Explore />} />,
       },
       {
         path: "/explore/recommendations/:id",
-        element: user ? <RecommendationDetail /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<RecommendationDetail />} />,
       },
       {
         path: "/explore/favorites",
-        element: user ? <Favorites /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<Favorites />} />,
       },
+      
+      // Services routes
       {
         path: "/services",
-        element: user ? <Services /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<Services />} />,
       },
       {
         path: "/services/:id",
-        element: user ? <ServiceDetail /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<ServiceDetail />} />,
       },
       {
         path: "/services/requests/:id",
-        element: user ? <RequestDetailPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<RequestDetailPage />} />,
       },
       {
         path: "/services/request/:id",
-        element: user ? <RequestDetailPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<RequestDetailPage />} />,
       },
       {
         path: "/services/request-form",
-        element: user ? <ServiceRequestForm /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<ServiceRequestForm />} />,
       },
       {
         path: "/services/space/:id",
-        element: user ? <BookSpaceService /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<BookSpaceService />} />,
       },
       {
         path: "/services/spaces",
-        element: user ? <SpacesListPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<SpacesListPage />} />,
       },
       {
         path: "/services/shop",
-        element: user ? <ShopService /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<ShopService />} />,
       },
       {
         path: "/services/cart",
-        element: user ? <CartScreen /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<CartScreen />} />,
       },
-      {
-        path: "/notifications",
-        element: user ? <Notifications /> : <Navigate to="/auth" />,
-      },
+      
+      // Stays routes
       {
         path: "/stays/details",
-        element: user ? <StayDetailsPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<StayDetailsPage />} />,
       },
+      
+      // Notifications
+      {
+        path: "/notifications",
+        element: <ProtectedRoute element={<Notifications />} />,
+      },
+      
+      // Profile routes
       {
         path: "/profile",
-        element: user ? <Profile /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<Profile />} />,
       },
       {
         path: "/profile/edit",
-        element: user ? <EditProfile /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<EditProfile />} />,
       },
       {
         path: "/profile/help",
-        element: user ? <HelpSupportPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<HelpSupportPage />} />,
       },
       {
         path: "/profile/about",
-        element: user ? <AboutPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<AboutPage />} />,
       },
       {
         path: "/profile/privacy",
-        element: user ? <PrivacySecurityPage /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<PrivacySecurityPage />} />,
       },
       {
         path: "/profile/change-password",
-        element: user ? <ChangePassword /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<ChangePassword />} />,
       },
-      {
-        path: "/services/laundry",
-        element: user ? <ServiceDetail /> : <Navigate to="/auth" />,
-      },
+      
+      // Chat routes
       {
         path: "/chatbot",
-        element: user ? <Chatbot /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<Chatbot />} />,
       },
       {
         path: "/chat-history",
-        element: user ? <ChatHistory /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<ChatHistory />} />,
       },
       {
         path: "/contact-admin",
-        element: user ? <ContactAdmin /> : <Navigate to="/auth" />,
+        element: <ProtectedRoute element={<ContactAdmin />} />,
       },
+    ];
+
+    // Redirection routes
+    const redirectRoutes = [
       {
         path: "/",
         element: user ? (
@@ -172,20 +203,12 @@ const MainApp: React.FC = () => {
         ),
       },
       {
-        path: "/onboarding",
-        element: hasSeenOnboarding ? (
-          <Navigate to="/auth" />
-        ) : (
-          <Onboarding onComplete={handleOnboardingComplete} />
-        ),
-      },
-      {
         path: "*",
         element: <Navigate to="/" />,
       },
     ];
 
-    return routes;
+    return [...publicRoutes, ...protectedRoutes, ...redirectRoutes];
   };
 
   const router = createBrowserRouter(createAppRoutes());
