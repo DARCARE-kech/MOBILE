@@ -7,9 +7,10 @@ import { useTranslation } from "react-i18next";
 
 interface ServicesSubMenuProps {
   expanded: boolean;
+  onToggle?: () => void; // Added onToggle as optional prop
 }
 
-const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded }) => {
+const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle }) => {
   const { t } = useTranslation();
   const location = useLocation();
   
