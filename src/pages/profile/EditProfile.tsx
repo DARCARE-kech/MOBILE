@@ -14,6 +14,7 @@ import { UserRound } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
 const countryCodes = [
   { value: "+1", label: "United States (+1)" },
@@ -40,6 +41,7 @@ const EditProfile: React.FC = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countryCode, setCountryCode] = useState("+212");
+  const [emailChanged, setEmailChanged] = useState(false);
 
   // Extract phone number without country code if it exists
   const getPhoneWithoutCode = (phone: string | null) => {
@@ -93,16 +95,36 @@ const EditProfile: React.FC = () => {
       // Combine country code with phone number
       const fullPhoneNumber = data.phone_number ? `${countryCode}${data.phone_number}` : null;
       
+      // Check if email was changed
+      if (data.email !== profile?.email) {
+        setEmailChanged(true);
+        
+        // Update email in auth
+        const { error: updateEmailError } = await supabase.auth.updateUser({
+          email: data.email,
+        });
+        
+        if (updateEmailError) {
+          throw updateEmailError;
+        }
+        
+        toast({
+          title: t('profile.emailUpdateSent'),
+          description: t('profile.emailConfirmationRequired'),
+        });
+      }
+      
       await updateProfile({
         full_name: data.full_name,
-        email: data.email,
         phone_number: fullPhoneNumber,
         whatsapp_number: data.whatsapp_number,
       });
       
       toast({
         title: t('profile.profileUpdated'),
-        description: t('profile.profileUpdatedMessage'),
+        description: emailChanged 
+          ? t('profile.profileUpdatedEmailPending') 
+          : t('profile.profileUpdatedMessage'),
       });
       
       navigate("/profile");

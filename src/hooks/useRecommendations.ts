@@ -44,7 +44,7 @@ export function useRecommendations() {
             site: rec.site || null,
             opening_hours: rec.opening_hours || null,
             address: rec.address || null,
-            // Add a properly structured empty reviews array
+            description: rec.description || null,
             reviews: []
           };
 

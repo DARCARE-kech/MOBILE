@@ -1,7 +1,7 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRecommendations } from "@/hooks/useRecommendations";
-import { RecommendationCard } from "./RecommendationCard";
+import { RecommendationCardHome } from "./RecommendationCardHome";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,11 +66,7 @@ const RecommendationsList = () => {
         <div className="flex gap-4 overflow-x-auto pb-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="min-w-[280px] rounded-xl overflow-hidden flex-shrink-0">
-              <div className="h-40 bg-darcare-gold/20 animate-pulse" />
-              <div className="p-3 space-y-2">
-                <div className="h-5 w-3/4 bg-darcare-gold/20 animate-pulse rounded" />
-                <div className="h-4 w-1/2 bg-darcare-gold/20 animate-pulse rounded" />
-              </div>
+              <div className="h-[220px] bg-darcare-gold/20 animate-pulse" />
             </div>
           ))}
         </div>
@@ -89,20 +85,17 @@ const RecommendationsList = () => {
           View All <ChevronRight size={16} />
         </button>
       </div>
-      {/* Horizontal scroll area with flex gap and padding */}
-      <ScrollArea type="auto" className="w-full">
-        <div className="flex gap-4 pb-4 px-1 overflow-x-auto">
-          {recommendations?.map((item) => (
-            <div key={item.id} className="min-w-[270px] max-w-xs flex-shrink-0">
-              <RecommendationCard 
-                item={item} 
-                onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+      
+      <div className="overflow-x-auto touch-pan-x pb-4 flex gap-4">
+        {recommendations?.map((item) => (
+          <RecommendationCardHome
+            key={item.id}
+            item={item}
+            onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        ))}
+      </div>
     </div>
   );
 };
