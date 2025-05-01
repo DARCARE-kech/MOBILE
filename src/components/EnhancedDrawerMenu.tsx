@@ -47,7 +47,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
       <div className="flex flex-col h-full">
         <SheetHeader className="p-4 border-b border-darcare-gold/10">
           <div className="w-full flex justify-center items-center">
-            <Logo size="small" />
+            <Logo size="sm" />
           </div>
         </SheetHeader>
         
@@ -57,7 +57,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
           <nav className="space-y-1">
             <MainNavigation />
             <ServicesSubMenu 
-              isExpanded={servicesExpanded}
+              expanded={servicesExpanded}
               onToggle={() => setServicesExpanded(!servicesExpanded)}
             />
           </nav>
