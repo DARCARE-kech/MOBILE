@@ -2,7 +2,7 @@
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
-import RecommendationCardHome from "./RecommendationCardHome";
+import { RecommendationCardHome } from "@/components/RecommendationCardHome";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -26,8 +26,7 @@ const RecommendationsList: React.FC<RecommendationsListProps> = ({
     data: recommendations,
     isLoading,
     isError,
-    userFavorites
-  } = useRecommendationsQuery(user?.id);
+  } = useRecommendationsQuery({});
 
   if (isLoading) {
     return (
@@ -60,16 +59,12 @@ const RecommendationsList: React.FC<RecommendationsListProps> = ({
       <ScrollArea className="pb-4">
         <div className="flex space-x-4 pb-4">
           {recommendations.slice(0, MAX_RECOMMENDATIONS).map((recommendation) => {
-            const isFavorite = userFavorites.some(
-              (fav) => fav.recommendation_id === recommendation.id
-            );
-
             return (
               <RecommendationCardHome
                 key={recommendation.id}
-                recommendation={recommendation}
-                isFavorite={isFavorite}
-                userId={user?.id}
+                item={recommendation}
+                onSelect={(id) => console.log(`Selected recommendation: ${id}`)}
+                onToggleFavorite={(id) => console.log(`Toggled favorite for: ${id}`)}
               />
             );
           })}
