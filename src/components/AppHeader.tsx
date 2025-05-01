@@ -5,7 +5,6 @@ import WeatherDisplay from "./WeatherDisplay";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import DrawerMenu from "./DrawerMenu";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
@@ -14,9 +13,10 @@ export interface AppHeaderProps {
   children?: React.ReactNode;
   onBack?: () => void;
   rightContent?: React.ReactNode;
+  drawerContent?: React.ReactNode; // Added drawerContent prop
 }
 
-const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) => {
+const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: AppHeaderProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
@@ -53,7 +53,7 @@ const AppHeader = ({ title, children, onBack, rightContent }: AppHeaderProps) =>
             <ArrowLeft size={20} />
           </Button>
         ) : (
-          <DrawerMenu />
+          drawerContent
         )}
         {displayTitle && (
           <h1 className={cn("font-serif text-darcare-gold", isHome ? "text-2xl" : "text-xl")}>
