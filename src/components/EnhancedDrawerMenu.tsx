@@ -42,16 +42,9 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
     window.open(`https://wa.me/${phoneNumber}`, "_blank");
   };
 
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <button className="w-10 h-10 flex items-center justify-center text-darcare-beige hover:text-darcare-gold">
-          <Menu size={24} />
-        </button>
-      </SheetTrigger>
-      
-    </Sheet>
-  );
+  return <EnhancedDrawerMenu onLogout={handleLogoutClick} />;
+
+  
 };
 
 export default EnhancedDrawerMenu;
