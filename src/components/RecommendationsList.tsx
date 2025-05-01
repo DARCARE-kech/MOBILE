@@ -1,78 +1,45 @@
 
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRecommendations } from "@/hooks/useRecommendations";
-import { RecommendationCardHome } from "./RecommendationCardHome";
-import { ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
+import RecommendationCardHome from "./RecommendationCardHome";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
+import { Skeleton } from "./ui/skeleton";
 
-const RecommendationsList = () => {
-  const { data: recommendations, isLoading, refetch } = useRecommendations();
-  const navigate = useNavigate();
+const MAX_RECOMMENDATIONS = 5;
+
+interface RecommendationsListProps {
+  className?: string;
+  showTitle?: boolean;
+}
+
+const RecommendationsList: React.FC<RecommendationsListProps> = ({
+  className,
+  showTitle = false,
+}) => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { t } = useTranslation();
   
-  const handleToggleFavorite = async (id: string) => {
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to save favorites",
-        variant: "destructive",
-      });
-      return;
-    }
+  const {
+    data: recommendations,
+    isLoading,
+    isError,
+    userFavorites
+  } = useRecommendationsQuery(user?.id);
 
-    const recommendation = recommendations?.find(rec => rec.id === id);
-    if (!recommendation) return;
-
-    try {
-      if (recommendation.is_favorite) {
-        await supabase
-          .from('favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('recommendation_id', id);
-      } else {
-        await supabase
-          .from('favorites')
-          .insert({ user_id: user.id, recommendation_id: id });
-      }
-      
-      toast({
-        title: recommendation.is_favorite ? "Removed from favorites" : "Added to favorites",
-        description: `${recommendation.title} has been ${recommendation.is_favorite ? 'removed from' : 'added to'} your favorites`,
-      });
-      
-      // Invalidate related queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
-      
-      // Refetch to update the UI
-      refetch();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Could not update favorites",
-        variant: "destructive",
-      });
-    }
-  };
-  
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center mb-4">
-          <div className="h-8 w-48 bg-darcare-gold/20 animate-pulse rounded" />
-          <div className="h-8 w-24 bg-darcare-gold/20 animate-pulse rounded" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl overflow-hidden">
-              <div className="h-[220px] bg-darcare-gold/20 animate-pulse" />
+      <div className={cn("space-y-4", className)}>
+        <div className="grid grid-flow-col gap-4 auto-cols-[85%] sm:auto-cols-[45%] md:auto-cols-[30%]">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="rounded-lg overflow-hidden">
+              <Skeleton className="h-40 w-full" />
+              <div className="p-3 space-y-2">
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
             </div>
           ))}
         </div>
@@ -80,32 +47,34 @@ const RecommendationsList = () => {
     );
   }
 
+  if (isError || !recommendations || recommendations.length === 0) {
+    return (
+      <div className={cn("rounded-lg border p-6 text-center", className)}>
+        <p className="text-muted-foreground">{t("explore.noRecommendationsFound")}</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex-1"></div> {/* Empty div for spacing */}
-        <button 
-          className="text-darcare-gold text-sm flex items-center"
-          onClick={() => navigate('/explore')}
-        >
-          View All <ChevronRight size={16} />
-        </button>
-      </div>
-      
-      <div className="overflow-hidden">
-        <ScrollArea className="w-full pb-4">
-          <div className="flex gap-4 pb-1 pr-4">
-            {recommendations?.map((item) => (
+    <div className={className}>
+      <ScrollArea className="pb-4">
+        <div className="flex space-x-4 pb-4">
+          {recommendations.slice(0, MAX_RECOMMENDATIONS).map((recommendation) => {
+            const isFavorite = userFavorites.some(
+              (fav) => fav.recommendation_id === recommendation.id
+            );
+
+            return (
               <RecommendationCardHome
-                key={item.id}
-                item={item}
-                onSelect={() => navigate(`/explore/recommendations/${item.id}`)}
-                onToggleFavorite={() => handleToggleFavorite(item.id)}
+                key={recommendation.id}
+                recommendation={recommendation}
+                isFavorite={isFavorite}
+                userId={user?.id}
               />
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
+            );
+          })}
+        </div>
+      </ScrollArea>
     </div>
   );
 };
