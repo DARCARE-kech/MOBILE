@@ -65,7 +65,7 @@ const ExpandedWeatherDisplay = ({ onClose, className }: ExpandedWeatherDisplayPr
       )}>
         {/* Card header */}
         <div className="p-4 border-b border-primary/10 flex items-center justify-between">
-          <h3 className="text-base font-serif text-primary">Météo Marrakech</h3>
+          <h3 className="text-base font-serif text-primary">Weather Marrakech</h3>
           <Button 
             variant="ghost" 
             size="sm"
