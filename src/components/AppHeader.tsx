@@ -13,7 +13,7 @@ export interface AppHeaderProps {
   children?: React.ReactNode;
   onBack?: () => void;
   rightContent?: React.ReactNode;
-   // Added prop to accept drawer content
+  drawerContent?: React.ReactNode;// Added prop to accept drawer content
 }
 
 const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: AppHeaderProps) => {
@@ -52,9 +52,9 @@ const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: App
           >
             <ArrowLeft size={20} />
           </Button>
-        ) : drawerContent ? (
+      
           <div>{drawerContent}</div>
-        ) : null}
+        
         {displayTitle && (
           <h1 className={cn("font-serif text-darcare-gold", isHome ? "text-2xl" : "text-xl")}>
             {displayTitle}
