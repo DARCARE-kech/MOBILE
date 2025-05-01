@@ -40,10 +40,7 @@ export const UserInfoBlock = ({
         </Avatar>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
-              <p className="text-darcare-beige/70 text-sm">{email}</p>
-            </div>
+            <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
             <div className="flex gap-2">
               {villaNumber && checkIn && checkOut && onViewStay && (
                 <Button 
