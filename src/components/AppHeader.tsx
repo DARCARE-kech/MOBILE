@@ -53,7 +53,7 @@ const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: App
             <ArrowLeft size={20} />
           </Button>
         ) : drawerContent ? (
-          <div>{drawerContent}</div>
+          drawerContent
         ) : null}
         
         {displayTitle && (
