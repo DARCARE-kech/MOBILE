@@ -5,9 +5,9 @@ import BottomNavigation from "@/components/BottomNavigation";
 import CurrentStay from "@/components/CurrentStay";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrentStay } from "@/hooks/useCurrentStay";
-import { WeatherDisplay } from "@/components/WeatherDisplay";
-import { RecommendationsList } from "@/components/RecommendationsList";
-import { ServicesList } from "@/components/ServicesList";
+import WeatherDisplay from "@/components/WeatherDisplay";
+import RecommendationsList from "@/components/RecommendationsList";
+import ServicesList from "@/components/ServicesList";
 import { useTranslation } from "react-i18next";
 import DrawerMenu from "@/components/DrawerMenu";
 
@@ -25,7 +25,6 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-background">
       <MainHeader 
         title="DarCare" 
-        showDrawerButton 
         drawerContent={<DrawerMenu />}
       />
       
@@ -44,14 +43,17 @@ const Home: React.FC = () => {
             <h2 className="font-serif text-xl text-primary mb-4">
               {t('home.quickServices')}
             </h2>
-            <ServicesList limit={3} />
+            <ServicesList 
+              services={[]} 
+              isLoading={false} 
+            />
           </div>
           
           <div className="mt-8">
             <h2 className="font-serif text-xl text-primary mb-4">
               {t('home.exploreMarrakech')}
             </h2>
-            <RecommendationsList limit={3} />
+            <RecommendationsList />
           </div>
         </div>
       </div>
