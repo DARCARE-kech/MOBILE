@@ -69,11 +69,14 @@ const Home: React.FC = () => {
         
         <div className="p-4">
           <div className="mt-8">
-            
+            <div className="flex justify-between items-center mb-4">
               <h2 className="font-serif text-xl text-primary">
                 {t('services.todaySchedule')}
               </h2>
-            
+              <span className="text-sm text-darcare-gold">
+                {t('common.viewAll')}
+              </span>
+            </div>
             <ServicesList 
               services={serviceRequests || []} 
               isLoading={isRequestsLoading} 
@@ -81,11 +84,14 @@ const Home: React.FC = () => {
           </div>
           
           <div className="mt-8">
-            
+            <div className="flex justify-between items-center mb-4">
               <h2 className="font-serif text-xl text-primary">
                 {t('explore.marrakechHighlights')}
               </h2>
-           
+              <span className="text-sm text-darcare-gold">
+                {t('common.viewAll')}
+              </span>
+            </div>
             <RecommendationsList />
           </div>
         </div>
