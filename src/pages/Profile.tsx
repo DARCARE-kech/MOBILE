@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import DrawerMenu from '@/components/DrawerMenu';
 
 const ProfilePage: React.FC = () => {
   const { profile, currentStay, isLoading, updateProfile, handleLogout } = useUserProfile();
@@ -45,10 +44,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader 
-        title={t('profile.personalInfo')} 
-        drawerContent={<DrawerMenu />}
-      />
+      <AppHeader title={t('profile.personalInfo')} />
       
       <div className="pt-16 pb-24">
         <div className="p-4 space-y-6">

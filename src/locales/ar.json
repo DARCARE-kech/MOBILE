@@ -1,10 +1,6 @@
-
 {
   "common": {
     "back": "عودة",
-    "menu": "القائمة",
-    "favorites": "المفضلة",
-    "notifications": "الإشعارات",
     "save": "حفظ",
     "cancel": "إلغاء",
     "submit": "إرسال",
@@ -27,12 +23,7 @@
     "yes": "نعم",
     "no": "لا",
     "hour": "ساعة",
-    "minute": "دقيقة",
-    "viewAll": "عرض الكل",
-    "addedToFavorites": "تمت الإضافة إلى المفضلة",
-    "removedFromFavorites": "تمت الإزالة من المفضلة",
-    "confirmLogout": "تأكيد تسجيل الخروج",
-    "logoutConfirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟ ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك."
+    "minute": "دقيقة"
   },
   "navigation": {
     "home": "الرئيسية",
@@ -40,10 +31,7 @@
     "explore": "استكشاف",
     "chatbot": "المساعد",
     "profile": "الملف الشخصي",
-    "notifications": "الإشعارات",
-    "shop": "المتجر",
-    "chatWithUs": "الدردشة معنا",
-    "assistant": "المساعد الذكي"
+    "notifications": "الإشعارات"
   },
   "home": {
     "welcomeBack": "مرحبًا بعودتك",
@@ -51,10 +39,7 @@
     "currentWeather": "الطقس الحالي",
     "upcomingServices": "الخدمات القادمة",
     "exploreDestination": "استكشاف الوجهة",
-    "viewAll": "عرض الكل",
-    "quickServices": "خدمات سريعة",
-    "exploreMarrakech": "استكشف مراكش",
-    "welcome": "مرحبًا بك في دار كير"
+    "viewAll": "عرض الكل"
   },
   "services": {
     "reserve": "حجز",
@@ -127,59 +112,12 @@
     "requestUpdatedDesc": "تم تحديث طلب الخدمة الخاص بك.",
     "requestErrorDesc": "خطأ في معالجة طلبك. الرجاء المحاولة مرة أخرى.",
     "estimatedDuration": "المدة التقديرية",
-    "todaySchedule": "جدول اليوم",
-    "noActivitiesScheduled": "لا توجد أنشطة مجدولة",
-    "noRequestsYet": "لا توجد طلبات بعد؟ دعنا نعتني بك.",
-    "loading": "جاري تحميل الجدول",
-    "loadingDescription": "يرجى الانتظار بينما نقوم بجلب جدولك...",
-    "staffLabel": "الموظفين",
-    "noTimeSpecified": "الوقت غير محدد",
-    "untitled": "خدمة بدون عنوان",
-    "title": "الخدمات",
     "status": {
       "pending": "قيد الانتظار",
       "approved": "تمت الموافقة",
-      "active": "نشط",
       "in_progress": "قيد التنفيذ",
       "completed": "مكتمل",
       "cancelled": "ملغى"
-    },
-    "options": {
-      "urgency": {
-        "low": "أولوية منخفضة",
-        "medium": "أولوية متوسطة",
-        "high": "أولوية عالية"
-      },
-      "vehicleType": {
-        "sedan": "سيدان",
-        "suv": "دفع رباعي",
-        "van": "حافلة صغيرة",
-        "luxury": "سيارة فاخرة"
-      },
-      "cleaningType": {
-        "standard": "تنظيف عادي",
-        "deep": "تنظيف عميق",
-        "quick": "تنظيف سريع"
-      },
-      "maintenanceType": {
-        "plumbing": "سباكة",
-        "electrical": "كهرباء",
-        "furniture": "أثاث",
-        "appliance": "أجهزة",
-        "other": "أخرى"
-      },
-      "frequency": {
-        "once": "مرة واحدة",
-        "daily": "يومي",
-        "weekly": "أسبوعي"
-      }
-    },
-    "rooms": {
-      "bedroom": "غرفة النوم",
-      "bathroom": "الحمام",
-      "kitchen": "المطبخ",
-      "livingRoom": "غرفة المعيشة",
-      "outdoor": "المنطقة الخارجية"
     }
   },
   "explore": {
@@ -203,8 +141,6 @@
     "info": "معلومات",
     "map": "الخريطة",
     "reservationAvailable": "الحجز متاح",
-    "marrakechHighlights": "أبرز معالم مراكش",
-    "title": "استكشاف",
     "categories": {
       "restaurant": "مطعم",
       "attraction": "وجهة سياحية",
@@ -223,25 +159,10 @@
       "beach": "شاطئ",
       "museum": "متحف",
       "gallery": "معرض فني",
-      "other": "أخرى",
-      "culture": "ثقافة",
-      "wellness": "العافية"
-    },
-    "tags": {
-      "fineDining": "مطاعم فاخرة",
-      "familyFriendly": "مناسب للعائلات",
-      "historical": "تاريخي",
-      "outdoor": "أماكن خارجية",
-      "luxury": "فاخر",
-      "localCuisine": "مطبخ محلي",
-      "popularSpot": "مكان شهير",
-      "romantic": "رومانسي",
-      "hidden": "جوهرة مخفية",
-      "mustSee": "لا يفوت"
+      "other": "أخرى"
     }
   },
   "shop": {
-    "title": "متجر الفخامة",
     "cart": "عربة التسوق",
     "continueShopping": "مواصلة التسوق",
     "emptyCart": "عربة التسوق فارغة",
@@ -253,21 +174,7 @@
     "orderSubmitted": "تم تقديم الطلب",
     "orderChargedToRoom": "سيتم إضافة العناصر إلى حساب غرفتك.",
     "quantity": "الكمية",
-    "price": "السعر",
-    "searchProducts": "البحث عن منتجات...",
-    "allProducts": "جميع المنتجات",
-    "noProductsFound": "لم يتم العثور على منتجات",
-    "noProductsAvailable": "لا توجد منتجات متاحة",
-    "addToCart": "إضافة إلى السلة",
-    "addedToCart": "تمت الإضافة إلى السلة",
-    "categories": {
-      "groceries": "بقالة",
-      "drinks": "مشروبات",
-      "snacks": "وجبات خفيفة",
-      "hygiene": "النظافة",
-      "local": "تخصصات محلية",
-      "essentials": "الأساسيات"
-    }
+    "price": "السعر"
   },
   "chatbot": {
     "newChat": "محادثة جديدة",
@@ -324,58 +231,14 @@
     "confirmNewPassword": "أكد كلمة المرور الجديدة",
     "passwordUpdated": "تم تحديث كلمة المرور",
     "passwordUpdatedMessage": "تم تحديث كلمة المرور الخاصة بك بنجاح",
-    "passwordChangeFailedMessage": "فشل تحديث كلمة المرور الخاصة بك",
-    "accountSettings": "إعدادات الحساب",
-    "userRole": {
-      "guest": "ضيف",
-      "admin": "مدير",
-      "staff": "طاقم العمل"
-    }
+    "passwordChangeFailedMessage": "فشل تحديث كلمة المرور الخاصة بك"
   },
   "notifications": {
-    "noNotifications": "لا توجد إشعارات حتى الآن",
-    "categories": {
-      "service": "خدمة",
-      "booking": "حجز",
-      "system": "النظام",
-      "payment": "دفع",
-      "special": "خاص"
-    }
+    "noNotifications": "لا توجد إشعارات حتى الآن"
   },
   "languages": {
     "en": "الإنجليزية",
     "fr": "الفرنسية",
     "ar": "العربية"
-  },
-  "weather": {
-    "clear": "صافٍ",
-    "cloudy": "غائم",
-    "rainy": "ماطر",
-    "sunny": "مشمس",
-    "partlyCloudy": "غائم جزئياً",
-    "stormy": "عاصف",
-    "windy": "عاصف",
-    "feelsLike": "يشعر وكأنه",
-    "precipitation": "هطول الأمطار",
-    "humidity": "الرطوبة",
-    "wind": "الرياح",
-    "forecast": "التوقعات"
-  },
-  "auth": {
-    "signIn": "تسجيل الدخول",
-    "signUp": "إنشاء حساب",
-    "email": "البريد الإلكتروني",
-    "password": "كلمة المرور",
-    "forgotPassword": "نسيت كلمة المرور؟",
-    "signInRequired": "تسجيل الدخول مطلوب",
-    "pleaseSignIn": "يرجى تسجيل الدخول للمتابعة",
-    "createAccount": "إنشاء حساب",
-    "alreadyHaveAccount": "لديك حساب بالفعل؟",
-    "dontHaveAccount": "ليس لديك حساب؟",
-    "resetPassword": "إعادة تعيين كلمة المرور",
-    "resetInstructions": "أدخل بريدك الإلكتروني وسنرسل لك تعليمات لإعادة تعيين كلمة المرور",
-    "resetLinkSent": "تم إرسال رابط إعادة التعيين",
-    "checkEmail": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة التعيين",
-    "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صالحة"
   }
 }

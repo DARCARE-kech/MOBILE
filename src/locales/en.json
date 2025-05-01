@@ -29,9 +29,7 @@
     "hour": "hour",
     "minute": "minute",
     "addedToFavorites": "Added to favorites",
-    "removedFromFavorites": "Removed from favorites",
-    "confirmLogout": "Confirm Logout",
-    "logoutConfirmation": "Are you sure you want to log out? You'll need to sign in again to access your account."
+    "removedFromFavorites": "Removed from favorites"
   },
   "auth": {
     "signIn": "Sign In",
@@ -147,43 +145,6 @@
       "in_progress": "In Progress",
       "completed": "Completed",
       "cancelled": "Cancelled"
-    },
-    "options": {
-      "urgency": {
-        "low": "Low Priority",
-        "medium": "Medium Priority",
-        "high": "High Priority"
-      },
-      "vehicleType": {
-        "sedan": "Sedan",
-        "suv": "SUV",
-        "van": "Van",
-        "luxury": "Luxury Vehicle"
-      },
-      "cleaningType": {
-        "standard": "Standard Cleaning",
-        "deep": "Deep Cleaning",
-        "quick": "Quick Refresh"
-      },
-      "maintenanceType": {
-        "plumbing": "Plumbing",
-        "electrical": "Electrical",
-        "furniture": "Furniture",
-        "appliance": "Appliance",
-        "other": "Other"
-      },
-      "frequency": {
-        "once": "One Time",
-        "daily": "Daily",
-        "weekly": "Weekly"
-      }
-    },
-    "rooms": {
-      "bedroom": "Bedroom",
-      "bathroom": "Bathroom",
-      "kitchen": "Kitchen",
-      "livingRoom": "Living Room",
-      "outdoor": "Outdoor Area"
     }
   },
   "explore": {
@@ -228,19 +189,7 @@
     "sortBy": "Sort By",
     "info": "Info",
     "map": "Map",
-    "reservationAvailable": "Reservation Available",
-    "tags": {
-      "fineDining": "Fine Dining",
-      "familyFriendly": "Family Friendly",
-      "historical": "Historical",
-      "outdoor": "Outdoor",
-      "luxury": "Luxury",
-      "localCuisine": "Local Cuisine",
-      "popularSpot": "Popular Spot",
-      "romantic": "Romantic",
-      "hidden": "Hidden Gem",
-      "mustSee": "Must See"
-    }
+    "reservationAvailable": "Reservation Available"
   },
   "navigation": {
     "home": "Home",
@@ -250,9 +199,7 @@
     "chat": "Chat",
     "chatbot": "Assistant",
     "notifications": "Notifications",
-    "shop": "Shop",
-    "chatWithUs": "Chat with Us",
-    "assistant": "AI Assistant"
+    "shop": "Shop"
   },
   "shop": {
     "title": "Luxury Shop",
@@ -321,7 +268,6 @@
     "profileUpdatedMessage": "Your profile has been successfully updated",
     "updateFailedMessage": "Failed to update your profile",
     "accountSecurity": "Account Security",
-    "accountSettings": "Account Settings",
     "changePassword": "Change Password",
     "lastChanged": "Last changed {{days}} days ago",
     "twoFactorAuth": "Two-Factor Authentication",
@@ -339,40 +285,14 @@
     "confirmNewPassword": "Confirm your new password",
     "passwordUpdated": "Password Updated",
     "passwordUpdatedMessage": "Your password has been successfully updated",
-    "passwordChangeFailedMessage": "Failed to update your password",
-    "userRole": {
-      "guest": "Guest",
-      "admin": "Administrator",
-      "staff": "Staff"
-    }
+    "passwordChangeFailedMessage": "Failed to update your password"
   },
   "notifications": {
-    "noNotifications": "No notifications yet",
-    "categories": {
-      "service": "Service",
-      "booking": "Booking",
-      "system": "System",
-      "payment": "Payment",
-      "special": "Special"
-    }
+    "noNotifications": "No notifications yet"
   },
   "languages": {
     "en": "English",
     "fr": "French",
     "ar": "Arabic"
-  },
-  "weather": {
-    "clear": "Clear",
-    "cloudy": "Cloudy",
-    "rainy": "Rainy",
-    "sunny": "Sunny",
-    "partlyCloudy": "Partly Cloudy",
-    "stormy": "Stormy",
-    "windy": "Windy",
-    "feelsLike": "Feels like",
-    "precipitation": "Precipitation",
-    "humidity": "Humidity",
-    "wind": "Wind",
-    "forecast": "Forecast"
   }
 }

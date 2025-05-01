@@ -44,8 +44,8 @@ const Home: React.FC = () => {
       return (data || []).map(item => ({
         ...item,
         // Convert status to a valid enum value or default to "pending"
-        status: (item.status === "pending" || item.status === "active" || 
-               item.status === "completed" || item.status === "cancelled") 
+        status: item.status === "pending" || item.status === "active" || 
+               item.status === "completed" || item.status === "cancelled" 
                ? item.status : "pending"
       }));
     },
@@ -73,9 +73,6 @@ const Home: React.FC = () => {
               <h2 className="font-serif text-xl text-primary">
                 {t('services.todaySchedule')}
               </h2>
-              <span className="text-sm text-darcare-gold">
-                {t('common.viewAll')}
-              </span>
             </div>
             <ServicesList 
               services={serviceRequests || []} 
@@ -88,9 +85,6 @@ const Home: React.FC = () => {
               <h2 className="font-serif text-xl text-primary">
                 {t('explore.marrakechHighlights')}
               </h2>
-              <span className="text-sm text-darcare-gold">
-                {t('common.viewAll')}
-              </span>
             </div>
             <RecommendationsList />
           </div>

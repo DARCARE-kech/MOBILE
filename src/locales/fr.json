@@ -1,10 +1,6 @@
-
 {
   "common": {
     "back": "Retour",
-    "menu": "Menu",
-    "favorites": "Favoris",
-    "notifications": "Notifications",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "submit": "Soumettre",
@@ -27,12 +23,7 @@
     "yes": "Oui",
     "no": "Non",
     "hour": "heure",
-    "minute": "minute",
-    "viewAll": "Voir tout",
-    "addedToFavorites": "Ajouté aux favoris",
-    "removedFromFavorites": "Retiré des favoris",
-    "confirmLogout": "Confirmer la déconnexion",
-    "logoutConfirmation": "Êtes-vous sûr de vouloir vous déconnecter? Vous devrez vous reconnecter pour accéder à votre compte."
+    "minute": "minute"
   },
   "navigation": {
     "home": "Accueil",
@@ -40,10 +31,7 @@
     "explore": "Explorer",
     "chatbot": "Assistant",
     "profile": "Profil",
-    "notifications": "Notifications",
-    "shop": "Boutique",
-    "chatWithUs": "Discuter avec nous",
-    "assistant": "Assistant IA"
+    "notifications": "Notifications"
   },
   "home": {
     "welcomeBack": "Bienvenue",
@@ -51,10 +39,7 @@
     "currentWeather": "Météo Actuelle",
     "upcomingServices": "Services à Venir",
     "exploreDestination": "Explorer la Destination",
-    "viewAll": "Voir Tout",
-    "quickServices": "Services Rapides",
-    "exploreMarrakech": "Explorer Marrakech",
-    "welcome": "Bienvenue à DarCare"
+    "viewAll": "Voir Tout"
   },
   "services": {
     "reserve": "Réserver",
@@ -127,59 +112,12 @@
     "requestUpdatedDesc": "Votre demande de service a été mise à jour.",
     "requestErrorDesc": "Erreur lors du traitement de votre demande. Veuillez réessayer.",
     "estimatedDuration": "Durée Estimée",
-    "todaySchedule": "Programme du jour",
-    "noActivitiesScheduled": "Aucune activité programmée",
-    "noRequestsYet": "Pas encore de demandes? Laissez-nous prendre soin de vous.",
-    "loading": "Chargement du programme",
-    "loadingDescription": "Veuillez patienter pendant que nous récupérons votre programme...",
-    "staffLabel": "Personnel",
-    "noTimeSpecified": "Heure non spécifiée",
-    "untitled": "Service sans titre",
-    "title": "Services",
     "status": {
       "pending": "En Attente",
       "approved": "Approuvé",
-      "active": "Actif",
       "in_progress": "En Cours",
       "completed": "Terminé",
       "cancelled": "Annulé"
-    },
-    "options": {
-      "urgency": {
-        "low": "Priorité basse",
-        "medium": "Priorité moyenne",
-        "high": "Priorité haute"
-      },
-      "vehicleType": {
-        "sedan": "Berline",
-        "suv": "SUV",
-        "van": "Minibus",
-        "luxury": "Véhicule de luxe"
-      },
-      "cleaningType": {
-        "standard": "Nettoyage standard",
-        "deep": "Nettoyage en profondeur",
-        "quick": "Rafraîchissement rapide"
-      },
-      "maintenanceType": {
-        "plumbing": "Plomberie",
-        "electrical": "Électricité",
-        "furniture": "Mobilier",
-        "appliance": "Électroménager",
-        "other": "Autre"
-      },
-      "frequency": {
-        "once": "Une fois",
-        "daily": "Quotidien",
-        "weekly": "Hebdomadaire"
-      }
-    },
-    "rooms": {
-      "bedroom": "Chambre",
-      "bathroom": "Salle de bain",
-      "kitchen": "Cuisine",
-      "livingRoom": "Salon",
-      "outdoor": "Espace extérieur"
     }
   },
   "explore": {
@@ -203,8 +141,6 @@
     "info": "Info",
     "map": "Carte",
     "reservationAvailable": "Réservation Disponible",
-    "marrakechHighlights": "Points forts de Marrakech",
-    "title": "Explorer",
     "categories": {
       "restaurant": "Restaurant",
       "attraction": "Attraction",
@@ -223,21 +159,7 @@
       "beach": "Plage",
       "museum": "Musée",
       "gallery": "Galerie",
-      "other": "Autre",
-      "culture": "Culture",
-      "wellness": "Bien-être"
-    },
-    "tags": {
-      "fineDining": "Haute Gastronomie",
-      "familyFriendly": "Familial",
-      "historical": "Historique",
-      "outdoor": "Plein air",
-      "luxury": "Luxe",
-      "localCuisine": "Cuisine locale",
-      "popularSpot": "Endroit populaire",
-      "romantic": "Romantique",
-      "hidden": "Pépite cachée",
-      "mustSee": "Incontournable"
+      "other": "Autre"
     }
   },
   "shop": {
@@ -324,58 +246,14 @@
     "confirmNewPassword": "Confirmez votre nouveau mot de passe",
     "passwordUpdated": "Mot de Passe Mis à Jour",
     "passwordUpdatedMessage": "Votre mot de passe a été mis à jour avec succès",
-    "passwordChangeFailedMessage": "Échec de la mise à jour de votre mot de passe",
-    "accountSettings": "Paramètres du compte",
-    "userRole": {
-      "guest": "Invité",
-      "admin": "Administrateur",
-      "staff": "Personnel"
-    }
+    "passwordChangeFailedMessage": "Échec de la mise à jour de votre mot de passe"
   },
   "notifications": {
-    "noNotifications": "Pas de notifications pour le moment",
-    "categories": {
-      "service": "Service",
-      "booking": "Réservation",
-      "system": "Système",
-      "payment": "Paiement",
-      "special": "Spécial"
-    }
+    "noNotifications": "Pas de notifications pour le moment"
   },
   "languages": {
     "en": "Anglais",
     "fr": "Français",
     "ar": "Arabe"
-  },
-  "weather": {
-    "clear": "Dégagé",
-    "cloudy": "Nuageux",
-    "rainy": "Pluvieux",
-    "sunny": "Ensoleillé",
-    "partlyCloudy": "Partiellement Nuageux",
-    "stormy": "Orageux",
-    "windy": "Venteux",
-    "feelsLike": "Ressenti",
-    "precipitation": "Précipitations",
-    "humidity": "Humidité",
-    "wind": "Vent",
-    "forecast": "Prévisions"
-  },
-  "auth": {
-    "signIn": "Connexion",
-    "signUp": "Inscription",
-    "email": "Email",
-    "password": "Mot de passe",
-    "forgotPassword": "Mot de passe oublié?",
-    "signInRequired": "Connexion requise",
-    "pleaseSignIn": "Veuillez vous connecter pour continuer",
-    "createAccount": "Créer un compte",
-    "alreadyHaveAccount": "Vous avez déjà un compte?",
-    "dontHaveAccount": "Vous n'avez pas de compte?",
-    "resetPassword": "Réinitialiser le mot de passe",
-    "resetInstructions": "Entrez votre email et nous vous enverrons les instructions pour réinitialiser votre mot de passe",
-    "resetLinkSent": "Lien de réinitialisation envoyé",
-    "checkEmail": "Vérifiez votre email pour un lien de réinitialisation",
-    "invalidCredentials": "Email ou mot de passe invalide"
   }
 }
