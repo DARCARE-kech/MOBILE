@@ -74,7 +74,7 @@ const Home: React.FC = () => {
           />
         </div>
         
-        <div className="mt-8">
+        <div className="p-4">
           <RecommendationsList />
         </div>
       </div>
