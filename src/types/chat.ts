@@ -1,3 +1,6 @@
+
+import { Enums } from '@/integrations/supabase/types';
+
 export interface ChatSession {
   id: string;
   user_id: string;
