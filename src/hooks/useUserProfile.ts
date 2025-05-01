@@ -5,7 +5,7 @@ import { useProfileData } from "./useProfileData";
 import { useCurrentStay } from "./useCurrentStay";
 import { useProfileMutations } from "./useProfileMutations";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export const useUserProfile = () => {
   const { user, signOut } = useAuth();
