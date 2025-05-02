@@ -7,7 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 const RecommendationsList = () => {
@@ -93,15 +93,16 @@ const RecommendationsList = () => {
       </div>
       
       <div className="overflow-hidden">
-        <ScrollArea className="w-full pb-4">
-          <div className="flex gap-4 pb-1 pr-4">
+        <ScrollArea className="w-full pb-4" orientation="horizontal">
+          <div className="flex gap-4 pb-4 pr-4 snap-x snap-mandatory">
             {recommendations?.map((item) => (
-              <RecommendationCardHome
-                key={item.id}
-                item={item}
-                onSelect={() => navigate(`/explore/recommendations/${item.id}`)}
-                onToggleFavorite={() => handleToggleFavorite(item.id)}
-              />
+              <div key={item.id} className="snap-center">
+                <RecommendationCardHome
+                  item={item}
+                  onSelect={() => navigate(`/explore/recommendations/${item.id}`)}
+                  onToggleFavorite={() => handleToggleFavorite(item.id)}
+                />
+              </div>
             ))}
           </div>
         </ScrollArea>

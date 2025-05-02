@@ -116,7 +116,7 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={t('services.bookSpace')} onBack={() => navigate('/services')} />
-        <div className="pt-16">
+        <div className="pt-20">
           <BookSpaceService />
         </div>
         <BottomNavigation activeTab="services" />
@@ -128,7 +128,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={t('services.shop')} onBack={() => navigate('/services')} />
-        <ShopService />
+        <div className="pt-20">
+          <ShopService />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -138,7 +140,9 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="flex justify-center items-center h-screen bg-darcare-navy">
         <MainHeader title={t('common.loading')} onBack={() => navigate('/services')} />
-        <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        <div className="pt-20">
+          <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+        </div>
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -157,7 +161,7 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
-        <div className="pt-16">
+        <div className="pt-20">
           <LaundryService 
             serviceData={serviceDetails || undefined} 
             existingRequest={existingRequest}
@@ -171,7 +175,7 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
-        <div className="pt-16">
+        <div className="pt-20">
           <CleaningService 
             serviceData={serviceDetails || undefined}
             existingRequest={existingRequest}
@@ -185,7 +189,7 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
-        <div className="pt-16">
+        <div className="pt-20">
           <MaintenanceService 
             serviceData={serviceDetails || undefined}
             existingRequest={existingRequest}
@@ -199,7 +203,7 @@ const ServiceDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
-        <div className="pt-16">
+        <div className="pt-20">
           <TransportService 
             serviceData={serviceDetails || undefined}
             existingRequest={existingRequest}

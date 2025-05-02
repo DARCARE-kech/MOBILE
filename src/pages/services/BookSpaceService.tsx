@@ -58,7 +58,7 @@ const BookSpaceService = () => {
           title={t('services.bookSpace', 'Book a Space')}
           onBack={() => navigate('/services/spaces')}
         />
-        <div className="flex justify-center items-center h-[80vh] pt-16">
+        <div className="flex justify-center items-center h-[80vh] pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
         <BottomNavigation activeTab="services" />
@@ -80,7 +80,7 @@ const BookSpaceService = () => {
         onBack={() => navigate('/services/spaces')}
       />
 
-      <div className="p-4 space-y-5 pb-24 pt-16">
+      <div className="p-4 space-y-5 pb-24 pt-20">
         {/* Space Image and Description */}
         <LuxuryCard className="overflow-hidden">
           <div className="w-full aspect-[16/9] bg-darcare-navy/80">

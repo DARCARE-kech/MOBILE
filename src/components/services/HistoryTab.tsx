@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Clock, User } from 'lucide-react';
+import { Loader2, Clock, User, Pencil, Trash2, Eye } from 'lucide-react';
 import { getStaffAssignmentsForRequest, getServiceRatingsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
 import StatusBadge from '@/components/StatusBadge';
@@ -14,6 +14,17 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Service {
   id: string;
@@ -42,6 +53,9 @@ const HistoryTab: React.FC = () => {
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [requestToDelete, setRequestToDelete] = React.useState<string | null>(null);
   
   const { data: history, isLoading, error } = useQuery({
     queryKey: ['service-history', user?.id],
@@ -81,8 +95,48 @@ const HistoryTab: React.FC = () => {
     enabled: !!user?.id
   });
 
+  // Mutation to delete a service request
+  const deleteMutation = useMutation({
+    mutationFn: async (requestId: string) => {
+      const { error } = await supabase
+        .from('service_requests')
+        .delete()
+        .eq('id', requestId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Request deleted",
+        description: "The service request has been removed from your history",
+      });
+      queryClient.invalidateQueries({ queryKey: ['service-history'] });
+      setRequestToDelete(null);
+    },
+    onError: (error) => {
+      console.error('Error deleting request:', error);
+      toast({
+        title: "Error",
+        description: "Could not delete the request. Please try again.",
+        variant: "destructive",
+      });
+      setRequestToDelete(null);
+    }
+  });
+
   const handleRequestClick = (requestId: string) => {
     navigate(`/services/requests/${requestId}`);
+  };
+
+  const handleDeleteRequest = (requestId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRequestToDelete(requestId);
+  };
+
+  const confirmDelete = () => {
+    if (requestToDelete) {
+      deleteMutation.mutate(requestToDelete);
+    }
   };
 
   if (isLoading) {
@@ -131,69 +185,133 @@ const HistoryTab: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 p-2">
-      {history?.map(record => (
-        <div 
-          key={record.id} 
-          className="request-card cursor-pointer hover:shadow-md transition-all duration-200"
-          onClick={() => handleRequestClick(record.id)}
-        >
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className={cn(
-                "font-serif font-medium",
-                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-              )}>
-                {record.services?.name}
-              </h3>
-              
-              <div className="flex items-center gap-2 mt-2">
-                <div className={cn(
-                  "flex items-center gap-1.5 text-xs",
-                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+    <>
+      <div className="space-y-4 p-2">
+        {history?.map(record => (
+          <div 
+            key={record.id} 
+            className="request-card cursor-pointer hover:shadow-md transition-all duration-200"
+            onClick={() => handleRequestClick(record.id)}
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className={cn(
+                  "font-serif font-medium",
+                  isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
                 )}>
-                  <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
-                  <span>
-                    {record.preferred_time 
-                      ? format(new Date(record.preferred_time), 'PPP p') 
-                      : t('services.unscheduled')}
-                  </span>
+                  {record.services?.name}
+                </h3>
+                
+                <div className="flex items-center gap-2 mt-2">
+                  <div className={cn(
+                    "flex items-center gap-1.5 text-xs",
+                    isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                  )}>
+                    <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                    <span>
+                      {record.preferred_time 
+                        ? format(new Date(record.preferred_time), 'PPP p') 
+                        : t('services.unscheduled')}
+                    </span>
+                  </div>
                 </div>
+                
+                {record.staff_assignments && record.staff_assignments.length > 0 && (
+                  <div className={cn(
+                    "flex items-center gap-1.5 text-xs mt-1.5",
+                    isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                  )}>
+                    <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                    <span>
+                      {record.staff_assignments[0].staff_name || t('services.assigned')}
+                    </span>
+                  </div>
+                )}
               </div>
               
-              {record.staff_assignments && record.staff_assignments.length > 0 && (
-                <div className={cn(
-                  "flex items-center gap-1.5 text-xs mt-1.5",
+              <StatusBadge status={record.status || 'completed'} />
+            </div>
+
+            {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
+              <div className={cn(
+                "mt-3 pt-3 border-t flex items-center",
+                isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
+              )}>
+                <RatingStars rating={record.service_ratings[0].rating} />
+                <span className={cn(
+                  "text-sm ml-2",
                   isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
                 )}>
-                  <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
-                  <span>
-                    {record.staff_assignments[0].staff_name || t('services.assigned')}
-                  </span>
-                </div>
-              )}
-            </div>
+                  {t('services.rated')}
+                </span>
+              </div>
+            )}
             
-            <StatusBadge status={record.status || 'completed'} />
-          </div>
-
-          {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
             <div className={cn(
-              "mt-3 pt-3 border-t flex items-center",
+              "mt-3 pt-3 border-t flex justify-end gap-2",
               isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
             )}>
-              <RatingStars rating={record.service_ratings[0].rating} />
-              <span className={cn(
-                "text-sm ml-2",
-                isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
-              )}>
-                {t('services.rated')}
-              </span>
+              <Button
+                variant="ghost" 
+                size="sm"
+                className={cn(
+                  "h-8 w-8 p-0",
+                  isDarkMode 
+                    ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
+                    : "text-darcare-deepGold hover:bg-darcare-deepGold/10"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRequestClick(record.id);
+                }}
+              >
+                <Eye className="h-4 w-4" />
+                <span className="sr-only">View</span>
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="sm"
+                className={cn(
+                  "h-8 w-8 p-0",
+                  isDarkMode 
+                    ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
+                    : "text-red-500 hover:bg-red-500/10"
+                )}
+                onClick={(e) => handleDeleteRequest(record.id, e)}
+              >
+                <Trash2 className="h-4 w-4" />
+                <span className="sr-only">Delete</span>
+              </Button>
             </div>
-          )}
-        </div>
-      ))}
-    </div>
+          </div>
+        ))}
+      </div>
+      
+      <AlertDialog open={!!requestToDelete} onOpenChange={() => setRequestToDelete(null)}>
+        <AlertDialogContent className={isDarkMode ? "bg-darcare-navy border-darcare-gold/20" : ""}>
+          <AlertDialogHeader>
+            <AlertDialogTitle className={isDarkMode ? "text-darcare-gold" : ""}>
+              {t('services.confirmDelete', 'Confirm Deletion')}
+            </AlertDialogTitle>
+            <AlertDialogDescription className={isDarkMode ? "text-darcare-beige/70" : ""}>
+              {t('services.deleteHistoryWarning', 'Are you sure you want to delete this service request from your history? This action cannot be undone.')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className={isDarkMode ? "text-darcare-beige bg-darcare-navy/50 border-darcare-gold/20 hover:bg-darcare-navy/70" : ""}>
+              {t('common.cancel', 'Cancel')}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-500 text-white hover:bg-red-600"
+              onClick={confirmDelete}
+            >
+              {t('common.delete', 'Delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
