@@ -50,12 +50,12 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
       {/* Image */}
       <div className="aspect-video relative">
         <img 
-          src={recommendation.image_url || getFallbackImage(recommendation.title, recommendation.id)}
+          src={recommendation.image_url || getFallbackImage(recommendation.title, 0)}
           alt={recommendation.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = getFallbackImage(recommendation.title, recommendation.id);
+            target.src = getFallbackImage(recommendation.title, 0);
           }}
         />
         {user && (

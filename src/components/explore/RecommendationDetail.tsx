@@ -129,12 +129,12 @@ const RecommendationDetail: React.FC = () => {
       {/* Header Image */}
       <div className="relative h-64 w-full">
         <img 
-          src={recommendation.image_url || getFallbackImage(recommendation.title, recommendation.id)}
+          src={recommendation.image_url || getFallbackImage(recommendation.title, 0)}
           alt={recommendation.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = getFallbackImage(recommendation.title, recommendation.id);
+            target.src = getFallbackImage(recommendation.title, 0);
           }}
         />
         
