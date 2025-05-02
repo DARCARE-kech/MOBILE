@@ -123,7 +123,7 @@ const BookSpaceService = () => {
         {selectedSpace.rules && (
           <LuxuryCard>
             <FormSectionTitle 
-              title={t('services.rulesAndGuidelines', 'Rules & Guidelines')} 
+              title={t('services.rulesAndGuidelines', 'Rules and Guidelines')} 
               icon={<Info className="w-5 h-5" />}
               rawKeys={true}
             />
