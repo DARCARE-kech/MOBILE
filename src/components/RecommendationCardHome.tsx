@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Heart, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getFallbackImage } from "@/utils/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
