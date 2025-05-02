@@ -1,33 +1,40 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Star, MapPin, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Recommendation } from '@/types/recommendation';
 import { getFallbackImage } from '@/utils/imageUtils';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
+  onSelect?: (id: string) => void;
 }
 
-export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation }) => {
+export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation, onSelect }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const handleToggleFavorite = (e: React.MouseEvent) => {
-     e.stopPropagation();
-     
-     // Update UI immediately for responsive feel
-     setIsFavorite(!isFavorite);
-     
-     if (onToggleFavorite) {
-       onToggleFavorite(recommendation.id);
-     }
+  const [isFavorite, setIsFavorite] = useState(recommendation.is_favorite || false);
+  const { user } = useAuth();
 
-  const handleRecommendationClick = () => {
+  // Update local state when prop changes
+  useEffect(() => {
+    setIsFavorite(recommendation.is_favorite || false);
+  }, [recommendation.is_favorite]);
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Update UI immediately for responsive feel
+    setIsFavorite(!isFavorite);
+  };
+
+  const handleClick = () => {
     if (onSelect) {
       onSelect(recommendation.id);
     } else {
@@ -52,16 +59,24 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
           }}
         />
         {user && (
-           <Button
-             variant="ghost"
-             size="icon"
-             className={cn(
-               "absolute top-2 right-2 rounded-full",
-               isDarkMode
-                 ? "bg-darcare-navy/80 hover:bg-darcare-navy text-darcare-gold"
-                 : "bg-white/80 hover:bg-white text-darcare-deepGold"
-             )}
-             onClick={handleToggleFavorite}
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "absolute top-2 right-2 rounded-full",
+              "bg-darcare-navy/80 hover:bg-darcare-navy text-darcare-gold"
+            )}
+            onClick={handleToggleFavorite}
+          >
+            <Heart
+              size={18}
+              className={cn(
+                "transition-colors",
+                isFavorite ? "fill-current" : ""
+              )}
+            />
+          </Button>
+        )}
         
         {/* Category badge */}
         {recommendation.category && (
@@ -71,23 +86,6 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             {t(`explore.categories.${recommendation.category.toLowerCase()}`)}
           </Badge>
         )}
-        
-        {/* Favorite button */}
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite();
-          }}
-          className="absolute top-2 right-2 p-1.5 rounded-full bg-black/30 backdrop-blur-sm transition-colors hover:bg-black/50"
-        >
-          <Heart 
-            size={18} 
-            className={cn(
-              "transition-colors",
-              isFavorite ? "fill-red-500 text-red-500" : "text-white"
-            )} 
-          />
-        </button>
       </div>
       
       {/* Content */}
@@ -114,8 +112,6 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
               )}
             </span>
           </div>
-          
-          
         </div>
       </div>
     </Card>

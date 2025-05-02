@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MapPin, Phone, Mail, Clock, Star, Heart, ArrowLeft, Info, Map } from 'lucide-react';
@@ -8,17 +8,20 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useFavorite } from '@/hooks/useFavorite';
 import { Recommendation } from '@/types/recommendation';
 import { supabase } from '@/integrations/supabase/client';
 import { getFallbackImage } from '@/utils/imageUtils';
-import RecommendationMap from './RecommendationMap';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
+import { RecommendationMap } from './RecommendationMap';
 
 const RecommendationDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   
   // Try to get recommendation from location state first
   const initialRecommendation = location.state?.recommendation as Recommendation | undefined;
@@ -31,17 +34,69 @@ const RecommendationDetail: React.FC = () => {
       
       const { data, error } = await supabase
         .from('recommendations')
-        .select('*, reviews(rating, comment, user_name), favorites(*)')
+        .select(`
+          *,
+          reviews(id, rating, comment, created_at, user_id),
+          favorites(id, user_id)
+        `)
         .eq('id', id)
         .single();
       
       if (error) throw error;
-      return data as Recommendation;
+      
+      // Format the data to match our Recommendation type
+      const formattedRecommendation: Recommendation = {
+        ...data,
+        rating: data.reviews?.length 
+          ? data.reviews.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / data.reviews.length 
+          : 0,
+        review_count: data.reviews?.length || 0,
+        is_favorite: data.favorites?.some((f: any) => f.user_id === user?.id) || false,
+        reviews: data.reviews || []
+      };
+      
+      return formattedRecommendation;
     },
     initialData: initialRecommendation
   });
 
-  const { toggleFavorite, isFavorite } = useFavorite(recommendation);
+  const [isFavorite, setIsFavorite] = useState(recommendation?.is_favorite || false);
+
+  const toggleFavorite = async () => {
+    if (!user) {
+      toast({
+        title: t('common.signInRequired'),
+        description: t('explore.signInToFavorite'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Optimistically update UI
+      setIsFavorite(!isFavorite);
+      
+      if (isFavorite) {
+        await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('recommendation_id', id);
+      } else {
+        await supabase
+          .from('favorites')
+          .insert({ user_id: user.id, recommendation_id: id });
+      }
+    } catch (error) {
+      // Revert UI on error
+      setIsFavorite(isFavorite);
+      toast({
+        title: t('common.error'),
+        description: t('explore.favoriteUpdateError'),
+        variant: "destructive",
+      });
+    }
+  };
   
   if (isLoading) {
     return (
@@ -98,7 +153,7 @@ const RecommendationDetail: React.FC = () => {
           variant="ghost" 
           size="icon"
           className="absolute top-4 right-4 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40"
-          onClick={() => toggleFavorite()}
+          onClick={toggleFavorite}
         >
           <Heart 
             className={cn(
@@ -167,13 +222,7 @@ const RecommendationDetail: React.FC = () => {
                       <span>{recommendation.contact_phone}</span>
                     </div>
                   )}
-                  {recommendation.email && (
-                    <div className="flex items-center text-darcare-beige/80">
-                      <Mail className="h-4 w-4 text-darcare-gold mr-2 flex-shrink-0" />
-                      <span>{recommendation.email}</span>
-                    </div>
-                  )}
-                  {!recommendation.contact_phone && !recommendation.email && (
+                  {!recommendation.contact_phone && (
                     <p className="text-darcare-beige/60 text-sm">{t('common.notAvailable')}</p>
                   )}
                 </div>
@@ -211,13 +260,7 @@ const RecommendationDetail: React.FC = () => {
             
             <TabsContent value="map" className="py-4">
               {recommendation.latitude && recommendation.longitude ? (
-                <div className="h-64 rounded-lg overflow-hidden">
-                  <RecommendationMap 
-                    latitude={recommendation.latitude} 
-                    longitude={recommendation.longitude}
-                    title={recommendation.title}
-                  />
-                </div>
+                <RecommendationMap recommendation={recommendation} />
               ) : (
                 <div className="h-64 rounded-lg bg-darcare-navy/50 border border-darcare-gold/10 flex items-center justify-center">
                   <p className="text-darcare-beige/60">{t('explore.noCoordinatesProvided')}</p>
@@ -226,11 +269,11 @@ const RecommendationDetail: React.FC = () => {
             </TabsContent>
           </Tabs>
           
-          {recommendation.has_reservation && (
+          {recommendation.site && (
             <Button 
               className="mt-6 w-full bg-darcare-gold hover:bg-darcare-gold/80 text-darcare-navy font-medium"
             >
-              {t('explore.makeReservation')}
+              {t('explore.visitWebsite')}
             </Button>
           )}
         </div>
