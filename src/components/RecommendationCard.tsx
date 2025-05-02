@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "./ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { Recommendation } from "@/types/recommendation";
 import { isValidCategory } from "@/utils/recommendationCategories";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -27,6 +28,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
+  const { t } = useTranslation();
   const fallbackImage = getFallbackImage(item.title, 0);
   const imageSource = (!imageError && item.image_url) ? item.image_url : fallbackImage;
 
@@ -140,7 +142,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
             isDarkMode ? "text-darcare-beige" : "text-darcare-deepGold"
           )}
         >
-          {displayCategory}
+          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
         </Badge>
         <div className="flex items-center justify-between text-sm">
           {item.location && (
@@ -163,7 +165,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
           className="w-full text-primary hover:text-primary hover:bg-primary/10 border-primary/30"
           onClick={handleCardClick}
         >
-          View Details
+          {t('explore.viewDetails')}
         </Button>
       </div>
     </div>

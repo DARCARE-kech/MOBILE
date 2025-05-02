@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { getFallbackImage } from "@/utils/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 import type { Recommendation } from "@/types/recommendation";
 
 interface RecommendationCardHomeProps {
@@ -18,6 +19,7 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
   const [isFavorite, setIsFavorite] = useState(item.is_favorite || false);
   const { user } = useAuth();
   const { isDarkMode } = useTheme();
+  const { t } = useTranslation();
   
   // Update local state when prop changes
   useEffect(() => {
@@ -68,6 +70,12 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
       
       <div className="p-4 space-y-2">
         <h3 className="font-serif font-medium text-darcare-gold line-clamp-1">{item.title}</h3>
+        
+        {item.category && (
+          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
+            {t(`explore.categories.${item.category.toLowerCase()}`)}
+          </Badge>
+        )}
         
         <p className="text-sm text-darcare-beige/80 line-clamp-2">
           {item.description || "Discover this amazing place in Marrakech"}

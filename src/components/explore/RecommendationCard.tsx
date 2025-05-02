@@ -58,6 +58,9 @@ export const RecommendationCard = ({
   // Use fallback image if none provided
   const imageUrl = recommendation.image_url || getFallbackImage(recommendation.title, 0);
   
+  // Get the category for display, ensuring it's properly translated
+  const displayCategory = recommendation.category?.toLowerCase() || 'other';
+  
   return (
     <Card 
       className={cn(
@@ -108,7 +111,7 @@ export const RecommendationCard = ({
               isDarkMode ? "text-darcare-beige" : "text-darcare-deepGold"
             )}
           >
-            {t(`explore.categories.${recommendation.category?.toLowerCase() || 'other'}`)}
+            {t(`explore.categories.${displayCategory}`)}
           </Badge>
           
           {recommendation.rating > 0 && (
