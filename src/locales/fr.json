@@ -72,6 +72,8 @@
     "maintenance": "Maintenance",
     "transport": "Transport",
     "shop": "Boutique",
+     "notesSubtitle": "Notes supplémentaires",
+    "notesPlaceholder": "Ajoutez ici des informations complémentaires...",
     "details": "Détails du Service",
     "preferredTime": "Heure Préférée",
     "preferredDate": "Date Préférée",
@@ -289,7 +291,9 @@
     "confirmNewPassword": "Confirmez votre nouveau mot de passe",
     "passwordUpdated": "Mot de Passe Mis à Jour",
     "passwordUpdatedMessage": "Votre mot de passe a été mis à jour avec succès",
-    "passwordChangeFailedMessage": "Échec de la mise à jour de votre mot de passe"
+    "passwordChangeFailedMessage": "Échec de la mise à jour de votre mot de passe",
+    "notifications": "Notifications",
+    "accountSettings": "Paramètres du compte"
   },
   "notifications": {
     "noNotifications": "Pas de notifications pour le moment"

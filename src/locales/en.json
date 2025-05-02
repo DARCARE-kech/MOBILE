@@ -146,6 +146,8 @@
     "updateBooking": "Update Booking",
     "confirmDelete": "Confirm Deletion",
     "deleteHistoryWarning": "Are you sure you want to delete this service request from your history? This action cannot be undone.",
+    "notesSubtitle": "Additional Notes",
+    "notesPlaceholder": "Add any extra information here...",
     "status": {
       "pending": "Pending",
       "approved": "Approved",
@@ -311,7 +313,9 @@
     "confirmNewPassword": "Confirm your new password",
     "passwordUpdated": "Password Updated",
     "passwordUpdatedMessage": "Your password has been successfully updated",
-    "passwordChangeFailedMessage": "Failed to update your password"
+    "passwordChangeFailedMessage": "Failed to update your password",
+    "notifications": "Notifications",
+    "accountSettings": "Account Settings"
   },
   "notifications": {
     "noNotifications": "No notifications yet"

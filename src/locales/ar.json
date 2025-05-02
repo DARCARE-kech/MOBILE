@@ -119,6 +119,8 @@
     "requestUpdatedDesc": "تم تحديث طلب الخدمة الخاص بك.",
     "requestErrorDesc": "خطأ في معالجة طلبك. الرجاء المحاولة مرة أخرى.",
     "estimatedDuration": "المدة التقديرية",
+    "notesSubtitle": "ملاحظات إضافية",
+    "notesPlaceholder": "أضف أي معلومات إضافية هنا...",
     "status": {
       "pending": "قيد الانتظار",
       "approved": "تمت الموافقة",
@@ -238,7 +240,9 @@
     "confirmNewPassword": "أكد كلمة المرور الجديدة",
     "passwordUpdated": "تم تحديث كلمة المرور",
     "passwordUpdatedMessage": "تم تحديث كلمة المرور الخاصة بك بنجاح",
-    "passwordChangeFailedMessage": "فشل تحديث كلمة المرور الخاصة بك"
+    "passwordChangeFailedMessage": "فشل تحديث كلمة المرور الخاصة بك",
+    "notifications": "الإشعارات",
+    "accountSettings": "إعدادات الحساب"
   },
   "notifications": {
     "noNotifications": "لا توجد إشعارات حتى الآن"
