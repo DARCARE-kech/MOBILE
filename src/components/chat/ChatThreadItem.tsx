@@ -5,6 +5,7 @@ import { Pencil, Trash2, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { ChatThread } from '@/types/chat';
+import { cn } from '@/lib/utils';
 
 interface ChatThreadItemProps {
   thread: ChatThread;
@@ -47,9 +48,11 @@ const ChatThreadItem = ({
             />
           ) : (
             <>
-              <h3 className="text-darcare-gold font-medium mb-1">{thread.title}</h3>
+              <h3 className="text-darcare-gold font-medium mb-1">
+                {thread.title || `Conversation ${new Date(thread.created_at || '').toLocaleDateString()}`}
+              </h3>
               <p className="text-darcare-beige/70 text-sm">
-                {format(new Date(thread.updated_at || thread.created_at), 'MMM d, yyyy • HH:mm')}
+                {format(new Date(thread.updated_at || thread.created_at || ''), 'MMM d, yyyy • HH:mm')}
               </p>
             </>
           )}

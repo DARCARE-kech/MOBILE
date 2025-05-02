@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,59 +9,29 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAssistant } from '@/hooks/useAssistant';
-import Message from '@/components/chat/Message';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import Message from '@/components/chat/Message';
+import useChatbot from '@/hooks/useChatbot';
 
 const ChatbotPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const { messages, sendMessage, isLoading, threadId } = useAssistant();
   const { t } = useTranslation();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const [initializing, setInitializing] = useState(true);
-
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
   // Parse thread ID from URL if present
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const threadParam = queryParams.get('thread');
-    
-    if (threadParam && user) {
-      // If thread ID is in URL, need to verify it belongs to user
-      const checkThreadOwnership = async () => {
-        try {
-          const { data, error } = await supabase
-            .from('chat_threads')
-            .select('thread_id')
-            .eq('thread_id', threadParam)
-            .eq('user_id', user.id)
-            .single();
-          
-          if (error || !data) {
-            console.error("Thread ownership verification failed:", error);
-            toast({
-              title: 'Error',
-              description: 'Could not access the requested conversation.',
-              variant: 'destructive'
-            });
-            // Redirect to main chatbot page without thread param
-            navigate('/chatbot', { replace: true });
-          }
-        } catch (error) {
-          console.error("Thread verification error:", error);
-        } finally {
-          setInitializing(false);
-        }
-      };
-      
-      checkThreadOwnership();
-    } else {
-      setInitializing(false);
-    }
-  }, [location.search, user, navigate]);
+  const queryParams = new URLSearchParams(location.search);
+  const threadParam = queryParams.get('thread');
+  
+  const { 
+    messages, 
+    isLoading, 
+    sendMessage, 
+    initializeThread, 
+    currentThread
+  } = useChatbot(threadParam || undefined);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -92,15 +62,12 @@ const ChatbotPage: React.FC = () => {
     }
   };
 
-  // Show loading state while initializing thread management
-  if (initializing) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
-        <p className="text-darcare-beige mt-4">Connecting to assistant...</p>
-      </div>
-    );
-  }
+  // Initialize thread on component mount
+  useEffect(() => {
+    if (user) {
+      initializeThread(threadParam || undefined);
+    }
+  }, [user, threadParam, initializeThread]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
@@ -155,7 +122,7 @@ const ChatbotPage: React.FC = () => {
             {isLoading && messages.length > 0 && (
               <div className="flex items-center gap-2 text-darcare-beige/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>DarCare Assistant is thinking...</span>
+                <span>Assistant is thinking...</span>
               </div>
             )}
             <div ref={messagesEndRef} />

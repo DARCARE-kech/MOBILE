@@ -1,20 +1,23 @@
 
-import { Plus } from 'lucide-react';
+import { MessageSquarePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface NewChatButtonProps {
   onClick: () => void;
 }
 
-const NewChatButton = ({ onClick }: NewChatButtonProps) => {
+const NewChatButton: React.FC<NewChatButtonProps> = ({ onClick }) => {
+  const { t } = useTranslation();
+  
   return (
-    <div className="fixed right-6 bottom-24 z-40">
-      <Button 
-        size="icon" 
+    <div className="fixed right-6 bottom-24">
+      <Button
+        className="h-14 w-14 rounded-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 shadow-lg"
         onClick={onClick}
-        className="w-14 h-14 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all hover:scale-105"
       >
-        <Plus size={24} />
+        <MessageSquarePlus className="h-6 w-6" />
+        <span className="sr-only">{t('chatbot.newChat')}</span>
       </Button>
     </div>
   );

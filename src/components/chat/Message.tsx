@@ -1,16 +1,16 @@
 
 import React from 'react';
-import { AssistantMessage } from '@/types/chat';
+import { ChatMessage } from '@/types/chat';
 import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
 import { User, Bot } from 'lucide-react';
 
 export interface MessageProps {
-  message: AssistantMessage;
+  message: ChatMessage;
 }
 
 const Message: React.FC<MessageProps> = ({ message }) => {
-  const isUser = message.role === 'user';
+  const isUser = message.sender === 'user';
   
   return (
     <div className={`flex items-start gap-3 mb-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
