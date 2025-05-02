@@ -1,3 +1,4 @@
+
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRecommendations } from "@/hooks/useRecommendations";
@@ -93,9 +94,9 @@ const RecommendationsList = () => {
       
       <div className="overflow-hidden">
         <ScrollArea className="w-full pb-4">
-          <div className="flex gap-4 pb-4 pr-4 snap-x snap-mandatory">
+          <div className="flex gap-4 pb-4 pr-4 snap-x snap-mandatory overflow-x-auto">
             {recommendations?.map((item) => (
-              <div key={item.id} className="snap-center">
+              <div key={item.id} className="snap-center min-w-[260px] w-[260px]">
                 <RecommendationCardHome
                   item={item}
                   onSelect={() => navigate(`/explore/recommendations/${item.id}`)}

@@ -3,120 +3,156 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Users } from 'lucide-react';
-import { getFallbackImage } from '@/utils/imageUtils';
 import AppHeader from '@/components/AppHeader';
 import BottomNavigation from '@/components/BottomNavigation';
-import { cn } from '@/lib/utils';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Card } from '@/components/ui/card';
+import { Loader2, Users, Clock } from 'lucide-react';
+import { getFallbackImage } from '@/utils/imageUtils';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
+import DrawerMenu from '@/components/DrawerMenu';
+
+interface Space {
+  id: string;
+  name: string;
+  description: string;
+  capacity?: number;
+  image_url?: string;
+  rules?: string;
+}
 
 const SpacesListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
   const { t } = useTranslation();
-
+  const { isDarkMode } = useTheme();
+  
   const { data: spaces, isLoading, error } = useQuery({
     queryKey: ['spaces'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('spaces')
-        .select('*');
-      
+        .select('*')
+        .order('name');
+        
       if (error) throw error;
-      return data;
-    }
+      return data as Space[];
+    },
   });
-
+  
   if (isLoading) {
     return (
-      <div className="bg-darcare-navy min-h-screen">
-        <AppHeader title={t('services.bookSpace', 'Book a Space')} onBack={() => navigate('/services')} />
-        <div className="flex justify-center items-center h-64 pt-16">
-          <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
-        </div>
-        <BottomNavigation activeTab="services" />
-      </div>
-    );
-  }
-
-  if (error || !spaces) {
-    return (
-      <div className="bg-darcare-navy min-h-screen">
-        <AppHeader title={t('services.bookSpace', 'Book a Space')} onBack={() => navigate('/services')} />
-        <div className="p-4 text-destructive pt-16">
-          {t('common.errorLoading', 'Error loading spaces. Please try again later.')}
-        </div>
-        <BottomNavigation activeTab="services" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-darcare-navy min-h-screen pb-24">
-      <AppHeader title={t('services.bookSpace', 'Book a Space')} onBack={() => navigate('/services')} />
-      
-      <div className="p-4 pt-16">
-        <div className="mb-6">
-          <h2 className="text-darcare-gold font-serif text-xl">
-            {t('services.availableSpaces', 'Available Spaces')}
-          </h2>
-          <p className="text-darcare-beige/70">
-            {t('services.selectSpaceToReserve', 'Select a space to reserve')}
-          </p>
+      <div className="min-h-screen bg-background">
+        <AppHeader
+          title={t('services.bookSpace', 'Book a Space')}
+          onBack={() => navigate('/services')}
+          drawerContent={<DrawerMenu />}
+        />
+        
+        <div className="flex justify-center items-center h-[80vh]">
+          <Loader2 className={cn(
+            "h-8 w-8 animate-spin",
+            isDarkMode ? "text-darcare-gold" : "text-secondary"
+          )} />
         </div>
         
-        <div className="space-y-4">
-          {spaces.map((space, index) => (
-            <div 
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  }
+  
+  if (error || !spaces) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader
+          title={t('services.bookSpace', 'Book a Space')}
+          onBack={() => navigate('/services')}
+          drawerContent={<DrawerMenu />}
+        />
+        
+        <div className="p-4 pt-24 pb-24 text-destructive">
+          {t('common.error')}: {t('common.fetchDataError')}
+        </div>
+        
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  }
+  
+  return (
+    <div className="min-h-screen bg-background">
+      <AppHeader
+        title={t('services.bookSpace', 'Book a Space')}
+        onBack={() => navigate('/services')}
+        drawerContent={<DrawerMenu />}
+      />
+      
+      <div className="p-4 pt-24 pb-24">
+        <h1 className={cn(
+          "text-xl font-serif mb-4",
+          isDarkMode ? "text-darcare-gold" : "text-primary"
+        )}>
+          {t('services.availableSpaces', 'Available Spaces')}
+        </h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {spaces.map((space) => (
+            <Card 
               key={space.id}
               className={cn(
-                "flex border border-darcare-gold/20 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-all duration-200",
+                "overflow-hidden cursor-pointer transition-all hover:shadow-md",
                 isDarkMode 
-                  ? "bg-[#1C1F2A] hover:shadow-darcare-gold/10" 
-                  : "bg-white hover:shadow-darcare-deepGold/10"
+                  ? "bg-darcare-navy border-darcare-gold/10 hover:border-darcare-gold/30" 
+                  : "bg-white border-primary/10 hover:border-primary/30"
               )}
               onClick={() => navigate(`/services/space/${space.id}`)}
             >
-              {/* Image on the left */}
-              <div className="w-1/3 min-w-[100px] h-32">
-                <img 
-                  src={space.image_url || getFallbackImage(space.name, index)}
+              <div className="w-full h-40 overflow-hidden">
+                <img
+                  src={space.image_url || getFallbackImage(space.name, 0)}
                   alt={space.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform hover:scale-105"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = getFallbackImage(space.name, index);
+                    target.src = getFallbackImage(space.name, 0);
                   }}
                 />
               </div>
               
-              {/* Content on the right */}
-              <div className="p-3 flex flex-col justify-between w-2/3">
-                <div>
-                  <h3 className={cn(
-                    "font-serif text-lg mb-1 line-clamp-1",
-                    isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-                  )}>
-                    {space.name}
-                  </h3>
+              <div className="p-4">
+                <h3 className={cn(
+                  "font-serif text-lg mb-2",
+                  isDarkMode ? "text-darcare-gold" : "text-primary"
+                )}>
+                  {space.name}
+                </h3>
+                
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  {space.capacity && (
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <Users size={14} className={isDarkMode ? "text-darcare-gold/70" : "text-secondary/70"} />
+                      <span className={isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"}>
+                        {t('services.capacity')}: {space.capacity}
+                      </span>
+                    </div>
+                  )}
                   
-                  <div className="flex items-center gap-1 text-sm mb-1">
-                    <Users size={14} className={isDarkMode ? "text-darcare-gold/70" : "text-darcare-deepGold/70"} />
-                    <span className={isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"}>
-                      {t('services.capacity', 'Capacity')}: {space.capacity || t('common.notSpecified', 'Not specified')}
+                  <div className="flex items-center gap-1.5 text-sm ml-auto">
+                    <Clock size={14} className={isDarkMode ? "text-darcare-gold/70" : "text-secondary/70"} />
+                    <span className={isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"}>
+                      {t('services.available')}
                     </span>
                   </div>
-                  
-                  <p className={cn(
-                    "text-xs line-clamp-2",
-                    isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
-                  )}>
-                    {space.description}
-                  </p>
                 </div>
+                
+                <p className={cn(
+                  "text-sm line-clamp-2",
+                  isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+                )}>
+                  {space.description}
+                </p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

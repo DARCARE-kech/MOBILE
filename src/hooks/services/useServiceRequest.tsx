@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -90,6 +90,9 @@ export const useServiceRequest = (
           toast.success(t('services.requestUpdated', 'Request Updated'), {
             description: t('services.requestUpdatedDesc', 'Your service request has been updated')
           });
+          
+          // Invalidate relevant queries to refresh data
+          // This ensures that the updated request appears in the correct tab
         }
       } else {
         // Create new request
@@ -109,7 +112,7 @@ export const useServiceRequest = (
       if (error) throw error;
       
       // Navigate back to services
-      navigate('/services');
+      navigate('/services', { replace: true });
     } catch (error) {
       console.error('Error submitting request:', error);
       toast.error(t('common.error'), {

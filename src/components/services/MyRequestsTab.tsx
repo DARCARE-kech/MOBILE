@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -44,6 +44,7 @@ interface ServiceRequest {
   created_at: string | null;
   services: Service | null;
   staff_assignments: StaffAssignment[] | null;
+  space_id?: string | null;
 }
 
 const MyRequestsTab: React.FC = () => {
@@ -123,14 +124,25 @@ const MyRequestsTab: React.FC = () => {
 
   const handleEditRequest = (request: ServiceRequest, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!request.service_id) return;
     
-    navigate(`/services/${request.service_id}`, { 
-      state: { 
-        editMode: true,
-        requestId: request.id
-      }
-    });
+    // Handle navigation based on service type or space_id
+    if (request.space_id) {
+      // If it's a space booking request
+      navigate(`/services/space/${request.space_id}`, {
+        state: {
+          editMode: true,
+          requestId: request.id
+        }
+      });
+    } else if (request.service_id) {
+      // For regular service requests
+      navigate(`/services/${request.service_id}`, {
+        state: {
+          editMode: true,
+          requestId: request.id
+        }
+      });
+    }
   };
 
   const handleDeleteRequest = (requestId: string, e: React.MouseEvent) => {
@@ -195,85 +207,94 @@ const MyRequestsTab: React.FC = () => {
 
   return (
     <>
-      <div className="space-y-4 p-2">
+      <div className="space-y-2 p-2">
         {requests?.map(request => (
           <div 
             key={request.id} 
-            className="request-card cursor-pointer hover:shadow-md transition-all duration-200"
+            className={cn(
+              "request-card cursor-pointer transition-all duration-200 p-3 rounded-lg border",
+              isDarkMode 
+                ? "border-darcare-gold/10 hover:border-darcare-gold/20 bg-darcare-navy/60" 
+                : "border-primary/5 hover:border-primary/10 bg-card shadow-sm"
+            )}
             onClick={() => handleRequestClick(request.id)}
           >
-            <div className="flex justify-between items-start">
-              <div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
                 <h3 className={cn(
-                  "font-serif font-medium",
+                  "font-medium truncate",
                   isDarkMode ? "text-darcare-gold" : "text-primary"
                 )}>
                   {request.services?.name}
                 </h3>
                 
-                <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-2 mt-1">
                   <div className={cn(
-                    "flex items-center gap-1.5 text-xs",
+                    "flex items-center gap-1 text-xs",
                     isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
                   )}>
-                    <Clock size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                    <span>
+                    <Clock size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
+                    <span className="truncate">
                       {request.preferred_time 
-                        ? format(new Date(request.preferred_time), 'PPP p') 
+                        ? format(new Date(request.preferred_time), 'MMM d, p') 
                         : t('services.unscheduled')}
                     </span>
                   </div>
                 </div>
-                
-                {request.staff_assignments && request.staff_assignments.length > 0 && (
-                  <div className={cn(
-                    "flex items-center gap-1.5 text-xs mt-1.5",
-                    isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
-                  )}>
-                    <User size={14} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                    <span>
-                      {request.staff_assignments[0].staff_name || t('services.assigned')}
-                    </span>
-                  </div>
-                )}
               </div>
               
               <StatusBadge status={request.status || 'pending'} />
             </div>
             
             <div className={cn(
-              "mt-3 pt-3 border-t flex justify-end gap-2",
+              "mt-2 pt-2 border-t flex justify-between items-center",
               isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
             )}>
-              <Button
-                variant="ghost" 
-                size="sm"
-                className={cn(
-                  "h-8 w-8 p-0",
-                  isDarkMode 
-                    ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
-                    : "text-secondary hover:bg-secondary/10"
-                )}
-                onClick={(e) => handleEditRequest(request, e)}
-              >
-                <Pencil className="h-4 w-4" />
-                <span className="sr-only">Edit</span>
-              </Button>
+              {request.staff_assignments && request.staff_assignments.length > 0 ? (
+                <div className={cn(
+                  "flex items-center gap-1 text-xs",
+                  isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+                )}>
+                  <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
+                  <span className="truncate">
+                    {request.staff_assignments[0].staff_name || t('services.assigned')}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex-1"></div>
+              )}
               
-              <Button
-                variant="ghost" 
-                size="sm"
-                className={cn(
-                  "h-8 w-8 p-0",
-                  isDarkMode 
-                    ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
-                    : "text-red-500 hover:bg-red-500/10"
-                )}
-                onClick={(e) => handleDeleteRequest(request.id, e)}
-              >
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">Delete</span>
-              </Button>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost" 
+                  size="sm"
+                  className={cn(
+                    "h-7 w-7 p-0",
+                    isDarkMode 
+                      ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
+                      : "text-secondary hover:bg-secondary/10"
+                  )}
+                  onClick={(e) => handleEditRequest(request, e)}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  <span className="sr-only">Edit</span>
+                </Button>
+                
+                <Button
+                  variant="ghost" 
+                  size="sm"
+                  className={cn(
+                    "h-7 w-7 p-0",
+                    isDarkMode 
+                      ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
+                      : "text-red-500 hover:bg-red-500/10"
+                  )}
+                  onClick={(e) => handleDeleteRequest(request.id, e)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span className="sr-only">Delete</span>
+                </Button>
+              </div>
             </div>
           </div>
         ))}

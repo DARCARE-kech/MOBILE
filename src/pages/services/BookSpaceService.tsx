@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { CalendarClock, Info, PenLine, Users } from 'lucide-react';
+import { CalendarClock, Info, PenLine, Users, Loader2 } from 'lucide-react';
 import { Form } from '@/components/ui/form';
 import { useSpaceBooking } from '@/hooks/useSpaceBooking';
 import { SpaceRules } from '@/components/services/space-booking/SpaceRules';
@@ -18,14 +18,18 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { LuxuryCard } from '@/components/ui/luxury-card';
 import { useTranslation } from 'react-i18next';
-import { Loader2 } from 'lucide-react';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
 
 const BookSpaceService = () => {
   const navigate = useNavigate();
   const { id: spaceId } = useParams();
+  const location = useLocation();
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
+  
+  // Check for edit mode from location state
+  const editMode = location.state?.editMode === true;
+  const requestId = location.state?.requestId;
 
   const {
     form,
@@ -35,7 +39,7 @@ const BookSpaceService = () => {
     peopleCount,
     setPeopleCount,
     handleSubmit
-  } = useSpaceBooking();
+  } = useSpaceBooking(requestId);
 
   const { data: spaces, isLoading } = useQuery({
     queryKey: ['spaces'],
@@ -67,7 +71,8 @@ const BookSpaceService = () => {
   }
 
   const onSubmit = async (values: any) => {
-    const success = await handleSubmit(values, selectedSpace.id);
+    // For edit mode, we need to pass the requestId
+    const success = await handleSubmit(values, selectedSpace.id, editMode, requestId);
     if (success) {
       navigate('/services');
     }
@@ -76,7 +81,7 @@ const BookSpaceService = () => {
   return (
     <div className="bg-darcare-navy min-h-screen pb-20">
       <AppHeader
-        title={selectedSpace.name}
+        title={editMode ? t('services.updateBooking', 'Update Booking') : selectedSpace.name}
         onBack={() => navigate('/services/spaces')}
       />
 
@@ -168,7 +173,7 @@ const BookSpaceService = () => {
             </LuxuryCard>
 
             <div className="pt-4 pb-16">
-              <BookingSubmitButton isSubmitting={isSubmitting} />
+              <BookingSubmitButton isSubmitting={isSubmitting} isEditing={editMode} />
             </div>
           </form>
         </Form>
