@@ -5,7 +5,7 @@ import { Star, MapPin, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { useFavorite } from '@/hooks/useFavorite';
+
 import { Card } from '@/components/ui/card';
 import { Recommendation } from '@/types/recommendation';
 import { getFallbackImage } from '@/utils/imageUtils';
@@ -17,10 +17,22 @@ interface RecommendationCardProps {
 export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { toggleFavorite, isFavorite } = useFavorite(recommendation);
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+     e.stopPropagation();
+     
+     // Update UI immediately for responsive feel
+     setIsFavorite(!isFavorite);
+     
+     if (onToggleFavorite) {
+       onToggleFavorite(recommendation.id);
+     }
 
-  const handleClick = () => {
-    navigate(`/explore/${recommendation.id}`, { state: { recommendation } });
+  const handleRecommendationClick = () => {
+    if (onSelect) {
+      onSelect(recommendation.id);
+    } else {
+      navigate(`/explore/recommendations/${recommendation.id}`);
+    }
   };
 
   return (
@@ -39,6 +51,17 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             target.src = getFallbackImage(recommendation.title, recommendation.id);
           }}
         />
+        {user && (
+           <Button
+             variant="ghost"
+             size="icon"
+             className={cn(
+               "absolute top-2 right-2 rounded-full",
+               isDarkMode
+                 ? "bg-darcare-navy/80 hover:bg-darcare-navy text-darcare-gold"
+                 : "bg-white/80 hover:bg-white text-darcare-deepGold"
+             )}
+             onClick={handleToggleFavorite}
         
         {/* Category badge */}
         {recommendation.category && (
@@ -92,14 +115,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             </span>
           </div>
           
-          {recommendation.has_reservation && (
-            <Badge 
-              variant="outline" 
-              className="text-xs border-green-500/30 text-green-400"
-            >
-              {t('explore.reservationAvailable')}
-            </Badge>
-          )}
+          
         </div>
       </div>
     </Card>
