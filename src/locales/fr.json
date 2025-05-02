@@ -67,6 +67,8 @@
     "history": "Historique",
     "book": "Réserver",
     "request": "Demander",
+      "capacity": "Capacité",
+    "available": "Disponible",
     "spaces": "Espaces",
     "cleaning": "Nettoyage",
     "maintenance": "Maintenance",

@@ -77,6 +77,8 @@
     "untitled": "Untitled Service",
     "unassigned": "Not yet assigned",
     "book": "Book",
+      "capacity": "Capacity",
+    "available": "Available",
     "request": "Request",
     "spaces": "Spaces",
     "cleaning": "Cleaning",
