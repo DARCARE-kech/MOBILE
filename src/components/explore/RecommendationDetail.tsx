@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { MapPin, Phone, Mail, Clock, Star, Heart, ArrowLeft, Info, Map } from 'lucide-react';
+import { MapPin, Phone, Clock, Star, Heart, ArrowLeft, Info, Map } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -50,14 +50,12 @@ const RecommendationDetail: React.FC = () => {
         image_url: data.image_url || null,
         contact_phone: data.contact_phone || null,
         site: data.site || null,
-        email: data.email || null,
         opening_hours: data.opening_hours || null,
         address: data.address || null,
         tags: data.tags || [],
         rating: 0,
         review_count: 0,
         is_favorite: data.favorites?.length > 0,
-        has_reservation: data.has_reservation || false,
         reviews: []
       };
       
@@ -192,13 +190,7 @@ const RecommendationDetail: React.FC = () => {
                       <span>{recommendation.contact_phone}</span>
                     </div>
                   )}
-                  {recommendation.email && (
-                    <div className="flex items-center text-darcare-beige/80">
-                      <Mail className="h-4 w-4 text-darcare-gold mr-2 flex-shrink-0" />
-                      <span>{recommendation.email}</span>
-                    </div>
-                  )}
-                  {!recommendation.contact_phone && !recommendation.email && (
+                  {!recommendation.contact_phone && (
                     <p className="text-darcare-beige/60 text-sm">{t('common.notAvailable')}</p>
                   )}
                 </div>
@@ -238,8 +230,8 @@ const RecommendationDetail: React.FC = () => {
               {recommendation.latitude && recommendation.longitude ? (
                 <div className="h-64 rounded-lg overflow-hidden">
                   <RecommendationMap 
-                    latitude={recommendation.latitude} 
-                    longitude={recommendation.longitude}
+                    lat={recommendation.latitude} 
+                    lng={recommendation.longitude}
                     title={recommendation.title}
                   />
                 </div>
@@ -251,13 +243,11 @@ const RecommendationDetail: React.FC = () => {
             </TabsContent>
           </Tabs>
           
-          {recommendation.has_reservation && (
-            <Button 
-              className="mt-6 w-full bg-darcare-gold hover:bg-darcare-gold/80 text-darcare-navy font-medium"
-            >
-              {t('explore.makeReservation')}
-            </Button>
-          )}
+          <Button 
+            className="mt-6 w-full bg-darcare-gold hover:bg-darcare-gold/80 text-darcare-navy font-medium"
+          >
+            {t('explore.makeReservation')}
+          </Button>
         </div>
       </div>
     </div>
