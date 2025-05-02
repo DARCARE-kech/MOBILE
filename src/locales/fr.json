@@ -1,13 +1,18 @@
+
 {
   "common": {
     "back": "Retour",
-    "save": "Enregistrer",
-    "cancel": "Annuler",
-    "submit": "Soumettre",
+    "menu": "Menu",
+    "favorites": "Favoris",
+    "notifications": "Notifications",
+    "viewAll": "Voir Tout",
+    "error": "Une erreur est survenue",
     "loading": "Chargement...",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
     "search": "Rechercher",
     "logout": "Déconnexion",
-    "error": "Une erreur est survenue",
     "notFound": "Non trouvé",
     "update": "Mettre à jour",
     "optional": "Optionnel",
@@ -23,7 +28,10 @@
     "yes": "Oui",
     "no": "Non",
     "hour": "heure",
-    "minute": "minute"
+    "minute": "minute",
+    "delete": "Supprimer",
+    "tryAgain": "Réessayer",
+    "errorOccurred": "Une erreur s'est produite"
   },
   "navigation": {
     "home": "Accueil",
@@ -31,7 +39,10 @@
     "explore": "Explorer",
     "chatbot": "Assistant",
     "profile": "Profil",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "shop": "Boutique",
+    "chat": "Chat",
+    "chatWithUs": "Chattez avec nous"
   },
   "home": {
     "welcomeBack": "Bienvenue",
@@ -39,7 +50,10 @@
     "currentWeather": "Météo Actuelle",
     "upcomingServices": "Services à Venir",
     "exploreDestination": "Explorer la Destination",
-    "viewAll": "Voir Tout"
+    "viewAll": "Voir Tout",
+    "quickServices": "Services Rapides",
+    "exploreMarrakech": "Explorer Marrakech",
+    "welcome": "Bienvenue sur DarCare"
   },
   "services": {
     "reserve": "Réserver",
@@ -73,6 +87,7 @@
     "submittedOn": "Soumis le",
     "scheduledFor": "Programmé pour",
     "noActiveRequests": "Aucune demande active",
+    "noHistoryYet": "Aucun service terminé dans votre historique",
     "switchToReserveTab": "Passez à l'onglet 'Réserver' pour demander un service",
     "cleaningType": "Type de Nettoyage",
     "selectRooms": "Sélectionner les Pièces",
@@ -112,12 +127,26 @@
     "requestUpdatedDesc": "Votre demande de service a été mise à jour.",
     "requestErrorDesc": "Erreur lors du traitement de votre demande. Veuillez réessayer.",
     "estimatedDuration": "Durée Estimée",
+    "title": "Services",
+    "todaySchedule": "Programme du Jour",
+    "noActivitiesScheduled": "Aucune Activité Programmée",
+    "noRequestsYet": "Pas encore de demandes ? Laissez-nous prendre soin de vous.",
+    "loading": "Chargement du Programme",
+    "loadingDescription": "Veuillez patienter pendant que nous récupérons votre programme...",
+    "staffLabel": "Personnel",
+    "noTimeSpecified": "Heure non spécifiée",
+    "untitled": "Service Sans Titre",
+    "confirmBooking": "Confirmer la Réservation",
+    "updateBooking": "Mettre à Jour la Réservation",
+    "confirmDelete": "Confirmer la Suppression",
+    "deleteHistoryWarning": "Êtes-vous sûr de vouloir supprimer cette demande de service de votre historique ? Cette action ne peut pas être annulée.",
     "status": {
       "pending": "En Attente",
       "approved": "Approuvé",
       "in_progress": "En Cours",
       "completed": "Terminé",
-      "cancelled": "Annulé"
+      "cancelled": "Annulé",
+      "active": "Actif"
     }
   },
   "explore": {
@@ -141,6 +170,12 @@
     "info": "Info",
     "map": "Carte",
     "reservationAvailable": "Réservation Disponible",
+    "title": "Explorer",
+    "marrakechHighlights": "Points Forts de Marrakech",
+    "locationNotAvailable": "Informations de localisation non disponibles",
+    "noCoordinatesProvided": "Aucune coordonnée fournie pour cet emplacement",
+    "somethingWentWrong": "Une erreur s'est produite",
+    "couldNotLoadRecommendation": "Impossible de charger les détails de la recommandation",
     "categories": {
       "restaurant": "Restaurant",
       "attraction": "Attraction",
@@ -159,7 +194,9 @@
       "beach": "Plage",
       "museum": "Musée",
       "gallery": "Galerie",
-      "other": "Autre"
+      "other": "Autre",
+      "culture": "Culture",
+      "wellness": "Bien-être"
     }
   },
   "shop": {
@@ -255,5 +292,22 @@
     "en": "Anglais",
     "fr": "Français",
     "ar": "Arabe"
+  },
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "signInRequired": "Connexion Requise",
+    "pleaseSignIn": "Veuillez vous connecter pour continuer",
+    "createAccount": "Créer un Compte",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "resetPassword": "Réinitialiser le Mot de Passe",
+    "resetInstructions": "Entrez votre email et nous vous enverrons des instructions pour réinitialiser votre mot de passe",
+    "resetLinkSent": "Lien de réinitialisation envoyé",
+    "checkEmail": "Vérifiez votre email pour un lien de réinitialisation",
+    "invalidCredentials": "Email ou mot de passe invalide"
   }
 }
