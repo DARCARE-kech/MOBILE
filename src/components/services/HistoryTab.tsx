@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -228,7 +227,7 @@ const HistoryTab: React.FC = () => {
 
             {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
               <div className="mt-1.5 flex items-center">
-                <RatingStars rating={record.service_ratings[0].rating || 0} size="sm" />
+                <RatingStars rating={Number(record.service_ratings[0].rating || 0)} size="sm" />
               </div>
             )}
             
