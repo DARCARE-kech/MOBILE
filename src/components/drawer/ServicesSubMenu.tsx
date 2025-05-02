@@ -9,34 +9,49 @@ interface ServicesSubMenuProps {
   expanded: boolean;
   onToggle?: () => void;
 }
+
 const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle }) => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const handleServiceClick = (name: string) => {
-    const nameLower = name.toLowerCase();
-
-    if (nameLower.includes('shop')) {
-      navigate('/services/shop'); // logique fixe inchangée
-    } else if (nameLower.includes('book space')) {
-      navigate('/services/spaces');
-    } else {
-      navigate(`/services/${nameLower}`);
-    }
-
-    if (onToggle) {
-      onToggle();
-    }
-  };
-
+  
   const serviceSubitems = [
-    { icon: <MessageCircle size={18} />, label: t('services.cleaning'), name: 'Cleaning' },
-    { icon: <Wrench size={18} />, label: t('services.maintenance'), name: 'Maintenance' },
-    { icon: <Car size={18} />, label: t('services.transport'), name: 'Transport' },
-    { icon: <Waves size={18} />, label: t('services.laundry'), name: 'Laundry' },
-    { icon: <CalendarRange size={18} />, label: t('services.bookSpace'), name: 'Book Space' },
-    { icon: <ShoppingBag size={18} />, label: t('services.shop'), name: 'Shop' } // logique fixe conservée
+    { 
+      icon: <MessageCircle size={18} />, 
+      label: t('services.cleaning'), 
+      path: "/services/cleaning",
+      action: () => navigate('/services/cleaning')
+    },
+    { 
+      icon: <Wrench size={18} />, 
+      label: t('services.maintenance'), 
+      path: "/services/maintenance",
+      action: () => navigate('/services/maintenance')
+    },
+    { 
+      icon: <Car size={18} />, 
+      label: t('services.transport'), 
+      path: "/services/transport",
+      action: () => navigate('/services/transport')
+    },
+    { 
+      icon: <Waves size={18} />, 
+      label: t('services.laundry'), 
+      path: "/services/laundry",
+      action: () => navigate('/services/laundry')
+    },
+    { 
+      icon: <CalendarRange size={18} />, 
+      label: t('services.bookSpace'), 
+      path: "/services/spaces",
+      action: () => navigate('/services/book-space')
+    },
+    { 
+      icon: <ShoppingBag size={18} />, 
+      label: t('services.shop'), 
+      path: "/services/shop",
+      action: () => navigate('/services/shop')
+    },
   ];
 
   return (
@@ -46,10 +61,7 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
       "duration-300 ease-in-out"
     )}>
       {serviceSubitems.map((item, index) => {
-        const isActive =
-          location.pathname.includes(item.name.toLowerCase()) ||
-          (item.name.toLowerCase().includes('shop') && location.pathname === '/services/shop');
-
+        const isActive = location.pathname === item.path;
         return (
           <div
             key={index}
@@ -62,7 +74,12 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
                 : "text-darcare-beige"
             )}
             style={{ animationDelay: `${index * 50}ms` }}
-            onClick={() => handleServiceClick(item.name)}
+            onClick={() => {
+              item.action();
+              if (onToggle) {
+                onToggle();
+              }
+            }}
           >
             <span className={cn(
               "transition-colors duration-200",
@@ -77,6 +94,5 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
     </div>
   );
 };
-
 
 export default ServicesSubMenu;
