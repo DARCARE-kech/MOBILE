@@ -1,4 +1,3 @@
-
 {
   "common": {
     "back": "Retour",
@@ -71,8 +70,9 @@
     "cleaning": "Nettoyage",
     "maintenance": "Maintenance",
     "transport": "Transport",
+    "laundry": "Blanchisserie",
     "shop": "Boutique",
-     "notesSubtitle": "Notes supplémentaires",
+    "notesSubtitle": "Notes supplémentaires",
     "notesPlaceholder": "Ajoutez ici des informations complémentaires...",
     "details": "Détails du Service",
     "preferredTime": "Heure Préférée",

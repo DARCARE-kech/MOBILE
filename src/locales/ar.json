@@ -1,4 +1,3 @@
-
 {
   "common": {
     "back": "عودة",
@@ -58,6 +57,7 @@
     "cleaning": "تنظيف",
     "maintenance": "صيانة",
     "transport": "نقل",
+    "laundry": "غسيل",
     "shop": "متجر",
     "details": "تفاصيل الخدمة",
     "preferredTime": "الوقت المفضل",
@@ -85,7 +85,7 @@
     "selectRooms": "اختيار الغرف",
     "roomsSubtitle": "اختر المناطق التي تحتاج إلى تنظيف",
     "maintenanceType": "نوع الصيانة",
-    "urgency": "الأولوية",
+    "urgency": "ا��أولوية",
     "uploadImage": "تحميل صورة",
     "imageHelp": "التقط صورة للمشكلة إن أمكن",
     "vehicleType": "نوع المركبة",
