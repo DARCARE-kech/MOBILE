@@ -92,7 +92,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             </span>
           </div>
           
-          {recommendation.has_reservation && (
+          {recommendation.site && (
             <Badge 
               variant="outline" 
               className="text-xs border-green-500/30 text-green-400"
