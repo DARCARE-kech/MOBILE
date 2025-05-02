@@ -1,39 +1,56 @@
 
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { MessageCircle, Wrench, Car, CalendarRange } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { MessageCircle, Wrench, Car, CalendarRange, ShoppingBag, Waves } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 interface ServicesSubMenuProps {
   expanded: boolean;
-  onToggle?: () => void; // Added onToggle as optional prop
+  onToggle?: () => void;
 }
 
 const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   
   const serviceSubitems = [
     { 
       icon: <MessageCircle size={18} />, 
       label: t('services.cleaning'), 
-      path: "/services/cleaning" 
+      path: "/services/cleaning",
+      action: () => navigate('/services/cleaning')
     },
     { 
       icon: <Wrench size={18} />, 
       label: t('services.maintenance'), 
-      path: "/services/maintenance" 
+      path: "/services/maintenance",
+      action: () => navigate('/services/maintenance')
     },
     { 
       icon: <Car size={18} />, 
       label: t('services.transport'), 
-      path: "/services/transport" 
+      path: "/services/transport",
+      action: () => navigate('/services/transport')
+    },
+    { 
+      icon: <Waves size={18} />, 
+      label: t('services.laundry'), 
+      path: "/services/laundry",
+      action: () => navigate('/services/laundry')
     },
     { 
       icon: <CalendarRange size={18} />, 
       label: t('services.bookSpace'), 
-      path: "/services/spaces" 
+      path: "/services/spaces",
+      action: () => navigate('/services/book-space')
+    },
+    { 
+      icon: <ShoppingBag size={18} />, 
+      label: t('services.shop'), 
+      path: "/services/shop",
+      action: () => navigate('/services/shop')
     },
   ];
 
@@ -46,11 +63,10 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
       {serviceSubitems.map((item, index) => {
         const isActive = location.pathname === item.path;
         return (
-          <Link
+          <div
             key={index}
-            to={item.path}
             className={cn(
-              "flex items-center gap-3 py-2 px-4 text-sm rounded-lg transition-all duration-200",
+              "flex items-center gap-3 py-2 px-4 text-sm rounded-lg transition-all duration-200 cursor-pointer",
               "hover:bg-darcare-gold/10 hover:text-darcare-gold",
               "animate-fade-in",
               isActive 
@@ -58,6 +74,12 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
                 : "text-darcare-beige"
             )}
             style={{ animationDelay: `${index * 50}ms` }}
+            onClick={() => {
+              item.action();
+              if (onToggle) {
+                onToggle();
+              }
+            }}
           >
             <span className={cn(
               "transition-colors duration-200",
@@ -66,7 +88,7 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
               {item.icon}
             </span>
             <span>{item.label}</span>
-          </Link>
+          </div>
         );
       })}
     </div>
