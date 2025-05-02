@@ -57,8 +57,36 @@ const FavoritesPage = () => {
     retryDelay: 500
   });
 
-  const handleCardClick = (id: string) => {
-    navigate(`/explore/recommendations/${id}`);
+  const handleToggleFavorite = async (id: string) => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to manage favorites",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await supabase
+        .from('favorites')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('recommendation_id', id);
+
+      // Refresh the favorites list after deletion
+      refetch();
+
+      toast({
+        title: "Removed from favorites",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not update favorites",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
@@ -98,6 +126,8 @@ const FavoritesPage = () => {
               <RecommendationCard 
                 key={item.id} 
                 recommendation={item}
+                onToggleFavorite={handleToggleFavorite}
+                onSelect={(id) => navigate(`/explore/recommendations/${id}`)}
               />
             ))}
           </div>

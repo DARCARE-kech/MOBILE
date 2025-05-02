@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { MapPin, Phone, Clock, Star, Heart, ArrowLeft, Info, Map } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Star, Heart, ArrowLeft, Info, Map } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +12,7 @@ import { useFavorite } from '@/hooks/useFavorite';
 import { Recommendation } from '@/types/recommendation';
 import { supabase } from '@/integrations/supabase/client';
 import { getFallbackImage } from '@/utils/imageUtils';
-import { RecommendationMap } from './RecommendationMap';
+import RecommendationMap from './RecommendationMap';
 
 const RecommendationDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,35 +31,12 @@ const RecommendationDetail: React.FC = () => {
       
       const { data, error } = await supabase
         .from('recommendations')
-        .select('*, reviews(id, rating, comment, created_at, user_id), favorites(*)')
+        .select('*, reviews(rating, comment, user_name), favorites(*)')
         .eq('id', id)
         .single();
       
       if (error) throw error;
-      
-      // Transform the raw data into the expected Recommendation type
-      const formattedRecommendation: Recommendation = {
-        ...data,
-        id: data.id,
-        title: data.title,
-        description: data.description || null,
-        category: data.category || null,
-        location: data.location || null,
-        latitude: data.latitude || null,
-        longitude: data.longitude || null,
-        image_url: data.image_url || null,
-        contact_phone: data.contact_phone || null,
-        site: data.site || null,
-        opening_hours: data.opening_hours || null,
-        address: data.address || null,
-        tags: data.tags || [],
-        rating: 0,
-        review_count: 0,
-        is_favorite: data.favorites?.length > 0,
-        reviews: []
-      };
-      
-      return formattedRecommendation;
+      return data as Recommendation;
     },
     initialData: initialRecommendation
   });
@@ -97,12 +74,12 @@ const RecommendationDetail: React.FC = () => {
       {/* Header Image */}
       <div className="relative h-64 w-full">
         <img 
-          src={recommendation.image_url || getFallbackImage(recommendation.title, parseInt(recommendation.id) || 0)}
+          src={recommendation.image_url || getFallbackImage(recommendation.title, recommendation.id)}
           alt={recommendation.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = getFallbackImage(recommendation.title, parseInt(recommendation.id) || 0);
+            target.src = getFallbackImage(recommendation.title, recommendation.id);
           }}
         />
         
@@ -140,7 +117,7 @@ const RecommendationDetail: React.FC = () => {
               <Badge 
                 className="mb-2 bg-darcare-navy/80 text-darcare-gold border-darcare-gold/30"
               >
-                {recommendation.category ? t(`explore.categories.${recommendation.category.toLowerCase()}`) : t('explore.categories.other')}
+                {t(`explore.categories.${recommendation.category?.toLowerCase()}`)}
               </Badge>
               <h1 className="text-darcare-gold text-2xl font-serif">{recommendation.title}</h1>
             </div>
@@ -190,7 +167,13 @@ const RecommendationDetail: React.FC = () => {
                       <span>{recommendation.contact_phone}</span>
                     </div>
                   )}
-                  {!recommendation.contact_phone && (
+                  {recommendation.email && (
+                    <div className="flex items-center text-darcare-beige/80">
+                      <Mail className="h-4 w-4 text-darcare-gold mr-2 flex-shrink-0" />
+                      <span>{recommendation.email}</span>
+                    </div>
+                  )}
+                  {!recommendation.contact_phone && !recommendation.email && (
                     <p className="text-darcare-beige/60 text-sm">{t('common.notAvailable')}</p>
                   )}
                 </div>
@@ -230,8 +213,8 @@ const RecommendationDetail: React.FC = () => {
               {recommendation.latitude && recommendation.longitude ? (
                 <div className="h-64 rounded-lg overflow-hidden">
                   <RecommendationMap 
-                    lat={recommendation.latitude} 
-                    lng={recommendation.longitude}
+                    latitude={recommendation.latitude} 
+                    longitude={recommendation.longitude}
                     title={recommendation.title}
                   />
                 </div>
@@ -243,11 +226,13 @@ const RecommendationDetail: React.FC = () => {
             </TabsContent>
           </Tabs>
           
-          <Button 
-            className="mt-6 w-full bg-darcare-gold hover:bg-darcare-gold/80 text-darcare-navy font-medium"
-          >
-            {t('explore.makeReservation')}
-          </Button>
+          {recommendation.has_reservation && (
+            <Button 
+              className="mt-6 w-full bg-darcare-gold hover:bg-darcare-gold/80 text-darcare-navy font-medium"
+            >
+              {t('explore.makeReservation')}
+            </Button>
+          )}
         </div>
       </div>
     </div>

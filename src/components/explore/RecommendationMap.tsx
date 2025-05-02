@@ -1,59 +1,61 @@
 
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useEffect, useRef } from "react";
+import type { Recommendation } from "@/types/recommendation";
 import L from 'leaflet';
-import type { Recommendation } from '@/types/recommendation';
+import 'leaflet/dist/leaflet.css';
+import { useTranslation } from "react-i18next";
 
-// Fix for Leaflet default marker icons
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
-
-export interface RecommendationMapProps {
-  lat?: number;
-  lng?: number;
-  title?: string;
-  recommendation?: Recommendation;
+interface RecommendationMapProps {
+  recommendation: Recommendation;
 }
 
-export const RecommendationMap: React.FC<RecommendationMapProps> = ({ 
-  lat, 
-  lng, 
-  title,
-  recommendation 
-}) => {
-  // Handle data from either direct props or recommendation object
-  const latitude = lat || recommendation?.latitude || 0;
-  const longitude = lng || recommendation?.longitude || 0;
-  const displayTitle = title || recommendation?.title || '';
+export const RecommendationMap = ({ recommendation }: RecommendationMapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
-  // Handle null coordinates
-  if (!latitude || !longitude) {
+  useEffect(() => {
+    if (!mapRef.current || !recommendation.latitude || !recommendation.longitude) return;
+
+    // Initialize the map
+    const map = L.map(mapRef.current).setView(
+      [recommendation.latitude, recommendation.longitude],
+      15
+    );
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add a marker at the recommendation location
+    L.marker([recommendation.latitude, recommendation.longitude])
+      .addTo(map)
+      .bindPopup(recommendation.title);
+
+    // Add zoom controls
+    map.zoomControl.setPosition('topright');
+
+    // Cleanup
+    return () => {
+      map.remove();
+    };
+  }, [recommendation.latitude, recommendation.longitude, recommendation.title]);
+
+  if (!recommendation.latitude || !recommendation.longitude) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-gray-100 text-gray-600">
-        No location data available
+      <div className="text-darcare-beige text-center py-8 h-[400px] flex items-center justify-center border border-darcare-gold/20 rounded-xl">
+        <div>
+          <p className="mb-2">{t('explore.locationNotAvailable')}</p>
+          <p className="text-sm text-darcare-gold/70">{t('explore.noCoordinatesProvided')}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <MapContainer 
-      center={[latitude, longitude]} 
-      zoom={15} 
-      style={{ height: '100%', width: '100%' }}
-      scrollWheelZoom={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker position={[latitude, longitude]}>
-        <Popup>{displayTitle}</Popup>
-      </Marker>
-    </MapContainer>
+    <div 
+      ref={mapRef} 
+      className="w-full h-[400px] rounded-xl overflow-hidden border border-darcare-gold/20"
+    />
   );
 };

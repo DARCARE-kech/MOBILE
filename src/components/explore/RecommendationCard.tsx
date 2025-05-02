@@ -31,12 +31,12 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
       {/* Image */}
       <div className="aspect-video relative">
         <img 
-          src={recommendation.image_url || getFallbackImage(recommendation.title, parseInt(recommendation.id) || 0)}
+          src={recommendation.image_url || getFallbackImage(recommendation.title, recommendation.id)}
           alt={recommendation.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = getFallbackImage(recommendation.title, parseInt(recommendation.id) || 0);
+            target.src = getFallbackImage(recommendation.title, recommendation.id);
           }}
         />
         
@@ -84,7 +84,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             <Star size={16} className="text-yellow-400 fill-yellow-400" />
             <span className="text-darcare-beige">
               {recommendation.rating?.toFixed(1) || "N/A"} 
-              {recommendation.review_count && recommendation.review_count > 0 && (
+              {recommendation.review_count > 0 && (
                 <span className="text-darcare-beige/60 text-xs ml-1">
                   ({recommendation.review_count})
                 </span>
@@ -92,8 +92,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             </span>
           </div>
           
-          {/* Optional reservation badge - removed has_reservation condition */}
-          {recommendation.site && (
+          {recommendation.has_reservation && (
             <Badge 
               variant="outline" 
               className="text-xs border-green-500/30 text-green-400"
