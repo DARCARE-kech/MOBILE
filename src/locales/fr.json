@@ -186,26 +186,16 @@
     "somethingWentWrong": "Une erreur s'est produite",
     "couldNotLoadRecommendation": "Impossible de charger les détails de la recommandation",
     "categories": {
-      "restaurant": "Restaurant",
-      "attraction": "Attraction",
-      "shopping": "Shopping",
-      "activities": "Activités",
+      "other": "Autre",
       "events": "Événements",
       "dining": "Restauration",
-      "excursion": "Excursion",
-      "entertainment": "Divertissement",
-      "spa": "Spa & Bien-être",
-      "landmark": "Site Remarquable",
-      "fitness": "Fitness",
-      "nightlife": "Vie Nocturne",
-      "cultural": "Culturel",
-      "outdoor": "Plein Air",
-      "beach": "Plage",
-      "museum": "Musée",
-      "gallery": "Galerie",
-      "other": "Autre",
+      "attraction": "Attraction",
+      "experience": "Expérience",
+      "spa": "Spa",
+      "shopping": "Shopping",
       "culture": "Culture",
-      "wellness": "Bien-être"
+      "restaurant": "Restaurant",
+      "excursion": "Excursion"
     }
   },
   "shop": {

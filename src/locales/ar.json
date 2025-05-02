@@ -152,24 +152,16 @@
     "map": "الخريطة",
     "reservationAvailable": "الحجز متاح",
     "categories": {
-      "restaurant": "مطعم",
-      "attraction": "وجهة سياحية",
-      "shopping": "تسوق",
-      "activities": "أنشطة",
+      "other": "أخرى",
       "events": "فعاليات",
       "dining": "تناول الطعام",
-      "excursion": "رحلة",
-      "entertainment": "ترفيه",
-      "spa": "سبا",
-      "landmark": "معلم سياحي",
-      "fitness": "لياقة بدنية",
-      "nightlife": "حياة ليلية",
-      "cultural": "ثقافي",
-      "outdoor": "أنشطة خارجية",
-      "beach": "شاطئ",
-      "museum": "متحف",
-      "gallery": "معرض فني",
-      "other": "أخرى"
+      "attraction": "معلم سياحي",
+      "experience": "تجربة",
+      "spa": "منتجع صحي",
+      "shopping": "تسوق",
+      "culture": "ثقافة",
+      "restaurant": "مطعم",
+      "excursion": "رحلة"
     }
   },
   "shop": {
