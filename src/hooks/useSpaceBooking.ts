@@ -58,8 +58,11 @@ export const useSpaceBooking = (requestId?: string) => {
         }
         
         // Set people count if available
-        if (data.selected_options && data.selected_options.peopleCount) {
-          setPeopleCount(Number(data.selected_options.peopleCount) || 1);
+        if (data.selected_options && typeof data.selected_options === 'object' && data.selected_options !== null) {
+          const options = data.selected_options as Record<string, any>;
+          if (options.peopleCount) {
+            setPeopleCount(Number(options.peopleCount) || 1);
+          }
         }
         
       } catch (error) {
