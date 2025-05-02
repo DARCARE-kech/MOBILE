@@ -12,7 +12,7 @@ import { useFavorite } from '@/hooks/useFavorite';
 import { Recommendation } from '@/types/recommendation';
 import { supabase } from '@/integrations/supabase/client';
 import { getFallbackImage } from '@/utils/imageUtils';
-import RecommendationMap from './RecommendationMap';
+import { RecommendationMap } from './RecommendationMap';
 
 const RecommendationDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,12 +31,37 @@ const RecommendationDetail: React.FC = () => {
       
       const { data, error } = await supabase
         .from('recommendations')
-        .select('*, reviews(rating, comment, user_name), favorites(*)')
+        .select('*, reviews(id, rating, comment, created_at, user_id), favorites(*)')
         .eq('id', id)
         .single();
       
       if (error) throw error;
-      return data as Recommendation;
+      
+      // Transform the raw data into the expected Recommendation type
+      const formattedRecommendation: Recommendation = {
+        ...data,
+        id: data.id,
+        title: data.title,
+        description: data.description || null,
+        category: data.category || null,
+        location: data.location || null,
+        latitude: data.latitude || null,
+        longitude: data.longitude || null,
+        image_url: data.image_url || null,
+        contact_phone: data.contact_phone || null,
+        site: data.site || null,
+        email: data.email || null,
+        opening_hours: data.opening_hours || null,
+        address: data.address || null,
+        tags: data.tags || [],
+        rating: 0,
+        review_count: 0,
+        is_favorite: data.favorites?.length > 0,
+        has_reservation: data.has_reservation || false,
+        reviews: []
+      };
+      
+      return formattedRecommendation;
     },
     initialData: initialRecommendation
   });
@@ -74,12 +99,12 @@ const RecommendationDetail: React.FC = () => {
       {/* Header Image */}
       <div className="relative h-64 w-full">
         <img 
-          src={recommendation.image_url || getFallbackImage(recommendation.title, recommendation.id)}
+          src={recommendation.image_url || getFallbackImage(recommendation.title, parseInt(recommendation.id) || 0)}
           alt={recommendation.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = getFallbackImage(recommendation.title, recommendation.id);
+            target.src = getFallbackImage(recommendation.title, parseInt(recommendation.id) || 0);
           }}
         />
         
@@ -117,7 +142,7 @@ const RecommendationDetail: React.FC = () => {
               <Badge 
                 className="mb-2 bg-darcare-navy/80 text-darcare-gold border-darcare-gold/30"
               >
-                {t(`explore.categories.${recommendation.category?.toLowerCase()}`)}
+                {recommendation.category ? t(`explore.categories.${recommendation.category.toLowerCase()}`) : t('explore.categories.other')}
               </Badge>
               <h1 className="text-darcare-gold text-2xl font-serif">{recommendation.title}</h1>
             </div>
