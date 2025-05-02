@@ -92,8 +92,8 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommen
             </span>
           </div>
           
-          {/* Only show if reservation is available - this is optional */}
-          {recommendation.has_reservation && (
+          {/* Optional reservation badge - removed has_reservation condition */}
+          {recommendation.site && (
             <Badge 
               variant="outline" 
               className="text-xs border-green-500/30 text-green-400"
