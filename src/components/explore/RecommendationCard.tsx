@@ -97,18 +97,29 @@ export const RecommendationCard = ({
           </Button>
         )}
       </div>
-      <div className="p-4 space-y-2">
-        <h3 className="font-serif text-primary text-lg">{recommendation.title}</h3>
+      <div className="p-3">
+        <h3 className="font-serif text-lg text-darcare-gold mb-1 line-clamp-1">
+          {recommendation.title}
+        </h3>
         
-        <div className="flex items-center justify-end">
-          {recommendation.rating > 0 && (
-            <div className="flex items-center">
-              <Star size={16} className="text-primary fill-current mr-1" />
-              <span className="text-primary">{recommendation.rating.toFixed(1)}</span>
-            </div>
-          )}
+        <div className="flex items-center gap-1 text-darcare-beige/70 text-sm mb-2">
+          <MapPin size={14} />
+          <span className="line-clamp-1">{recommendation.address || t('explore.locationNotAvailable')}</span>
         </div>
-      </div>
+        
+        {/* Rating */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <Star size={16} className="text-yellow-400 fill-yellow-400" />
+            <span className="text-darcare-beige">
+              {recommendation.rating?.toFixed(1) || "N/A"} 
+              {recommendation.review_count > 0 && (
+                <span className="text-darcare-beige/60 text-xs ml-1">
+                  ({recommendation.review_count})
+                </span>
+              )}
+            </span>
+          </div>
     </Card>
   );
 };
