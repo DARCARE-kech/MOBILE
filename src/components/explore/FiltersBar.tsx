@@ -9,9 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
-import { RECOMMENDATION_CATEGORIES } from '@/utils/recommendationCategories';
 
 interface FiltersBarProps {
   selectedCategory: string | null;
@@ -61,30 +59,6 @@ export const FiltersBar = ({
           </Select>
         </div>
       </div>
-      
-      {showFilters && (
-        <div className="pt-3 border-t border-darcare-gold/20">
-          <h3 className="text-darcare-beige mb-2">{t('explore.categories')}</h3>
-          <div className="flex flex-wrap gap-2">
-            {RECOMMENDATION_CATEGORIES.map((category) => (
-              <Badge
-                key={category}
-                variant="outline"
-                className={`cursor-pointer border-darcare-gold/30 hover:border-darcare-gold transition-colors ${
-                  selectedCategory === category 
-                    ? 'bg-darcare-gold/20 text-darcare-gold' 
-                    : 'bg-transparent text-darcare-beige'
-                }`}
-                onClick={() => onCategoryChange(
-                  selectedCategory === category ? null : category
-                )}
-              >
-                {t(`explore.categories.${category.toLowerCase()}`)}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

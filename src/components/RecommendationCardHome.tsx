@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Heart, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getFallbackImage } from "@/utils/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,9 +35,6 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
 
   // Use image_url with fallback
   const imageUrl = item.image_url || getFallbackImage(item.title, 0);
-  
-  // Ensure category is valid and properly formatted for translation
-  const displayCategory = isValidCategory(item.category) ? item.category.toLowerCase() : 'other';
 
   return (
     <div 
@@ -75,12 +71,6 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
       
       <div className="p-4 space-y-2">
         <h3 className="font-serif font-medium text-darcare-gold line-clamp-1">{item.title}</h3>
-        
-        {item.category && (
-          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${displayCategory}`)}
-          </Badge>
-        )}
         
         <p className="text-sm text-darcare-beige/80 line-clamp-2">
           {item.description || "Discover this amazing place in Marrakech"}

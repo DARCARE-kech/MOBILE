@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { Heart, MapPin, Star } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn } from "@/lib/utils";
@@ -93,9 +92,6 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
     }
   };
 
-  // Use the validation function to ensure proper translation key
-  const displayCategory = isValidCategory(item.category) ? item.category.toLowerCase() : 'other';
-
   return (
     <div 
       className={cn(
@@ -136,15 +132,6 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
       </div>
       <div className="p-4 space-y-3">
         <h3 className="font-medium text-foreground line-clamp-1 font-serif">{item.title}</h3>
-        <Badge 
-          variant="outline" 
-          className={cn(
-            "bg-transparent border-primary/20 font-serif",
-            isDarkMode ? "text-darcare-beige" : "text-darcare-deepGold"
-          )}
-        >
-          {t(`explore.categories.${displayCategory}`)}
-        </Badge>
         <div className="flex items-center justify-between text-sm">
           {item.location && (
             <div className="flex items-center gap-1 text-foreground/80">

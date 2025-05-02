@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Heart, Star } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -59,11 +58,6 @@ export const RecommendationCard = ({
   // Use fallback image if none provided
   const imageUrl = recommendation.image_url || getFallbackImage(recommendation.title, 0);
   
-  // Get the category for display, ensuring it's properly translated
-  const displayCategory = isValidCategory(recommendation.category) 
-    ? recommendation.category.toLowerCase() 
-    : 'other';
-  
   return (
     <Card 
       className={cn(
@@ -106,17 +100,7 @@ export const RecommendationCard = ({
       <div className="p-4 space-y-2">
         <h3 className="font-serif text-primary text-lg">{recommendation.title}</h3>
         
-        <div className="flex items-center justify-between">
-          <Badge 
-            variant="outline" 
-            className={cn(
-              "bg-transparent border-primary/20",
-              isDarkMode ? "text-darcare-beige" : "text-darcare-deepGold"
-            )}
-          >
-            {t(`explore.categories.${displayCategory}`)}
-          </Badge>
-          
+        <div className="flex items-center justify-end">
           {recommendation.rating > 0 && (
             <div className="flex items-center">
               <Star size={16} className="text-primary fill-current mr-1" />

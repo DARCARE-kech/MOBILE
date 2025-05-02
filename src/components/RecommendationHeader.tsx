@@ -1,6 +1,5 @@
 
 import { Star, Heart } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
@@ -21,11 +20,6 @@ export const RecommendationHeader = ({
   const [imageError, setImageError] = useState(false);
   const fallbackImage = getFallbackImage(recommendation.title, 0);
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
-  
-  // Use the validation function to ensure proper translation key
-  const displayCategory = isValidCategory(recommendation.category) 
-    ? recommendation.category.toLowerCase() 
-    : 'other';
   
   return (
     <div className="space-y-4 pt-16">
@@ -53,9 +47,6 @@ export const RecommendationHeader = ({
         <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
         
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${displayCategory}`)}
-          </Badge>
           {recommendation.rating && recommendation.rating > 0 && (
             <div className="flex items-center gap-1 text-darcare-gold">
               <Star size={16} className="fill-current" />
