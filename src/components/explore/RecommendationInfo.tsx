@@ -1,6 +1,5 @@
 
 import { MapPin, Star, Clock, Phone, Globe } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
@@ -12,11 +11,6 @@ interface RecommendationInfoProps {
 
 export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) => {
   const { t } = useTranslation();
-
-  // Compute display category
-  const displayCategory = recommendation.category
-    ? recommendation.category
-    : "other";
 
   // Section visibility checks
   const hasContactOrLocation =
@@ -53,25 +47,7 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
 
   return (
     <div className="p-0">
-      {/* Section 1: Category & Rating */}
-      <div className="flex items-center gap-3 px-6 pt-6 pb-2">
-        <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
-        </Badge>
-        {recommendation.rating && recommendation.rating > 0 && (
-          <div className="flex items-center gap-1 text-darcare-gold">
-            <Star size={16} className="fill-current" />
-            <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
-            {recommendation.review_count ? (
-              <span className="text-darcare-beige/70 text-sm">
-                ({recommendation.review_count})
-              </span>
-            ) : null}
-          </div>
-        )}
-      </div>
-
-      {/* Section 2: Description */}
+      {/* Section 1: Description */}
       {recommendation.description && (
         <section className="px-6 pt-2 pb-4">
           <p className="text-lg font-serif text-darcare-beige leading-relaxed mb-0" style={{ wordBreak: 'break-word' }}>

@@ -19,6 +19,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { LuxuryCard } from '@/components/ui/luxury-card';
 import { useTranslation } from 'react-i18next';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import ServiceBanner from '@/components/services/ServiceBanner';
 
 const BookSpaceService = () => {
   const navigate = useNavigate();
@@ -88,16 +90,18 @@ const BookSpaceService = () => {
       <div className="p-4 space-y-5 pb-24 pt-20">
         {/* Space Image and Description */}
         <LuxuryCard className="overflow-hidden">
-          <div className="w-full aspect-[16/9] bg-darcare-navy/80">
-            <img
-              src={selectedSpace.image_url || getFallbackImage(selectedSpace.name, 0)}
-              alt={selectedSpace.name}
-              className="w-full h-full object-cover transition-all"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = getFallbackImage(selectedSpace.name, 0);
-              }}
-            />
+          <div className="w-full">
+            <AspectRatio ratio={16/9}>
+              <img
+                src={selectedSpace.image_url || getFallbackImage(selectedSpace.name, 0)}
+                alt={selectedSpace.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = getFallbackImage(selectedSpace.name, 0);
+                }}
+              />
+            </AspectRatio>
           </div>
           <div className="p-5">
             <h2 className="text-darcare-gold font-serif text-xl mb-2">
