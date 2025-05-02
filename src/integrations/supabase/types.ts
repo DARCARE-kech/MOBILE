@@ -39,38 +39,6 @@ export type Database = {
         }
         Relationships: []
       }
-      chat_messages: {
-        Row: {
-          content: string | null
-          created_at: string | null
-          id: string
-          sender: string | null
-          thread_id: string | null
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string | null
-          id?: string
-          sender?: string | null
-          thread_id?: string | null
-        }
-        Update: {
-          content?: string | null
-          created_at?: string | null
-          id?: string
-          sender?: string | null
-          thread_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "chat_threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       chat_threads: {
         Row: {
           created_at: string | null
