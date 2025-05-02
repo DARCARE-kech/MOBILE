@@ -177,7 +177,12 @@
       "gallery": "Gallery",
       "other": "Other",
       "events": "Events",
-      "dining": "Dining"
+      "dining": "Dining",
+      "attraction": "Attraction",
+      "experience": "Experience",
+      "spa": "Spa",
+      "restaurant": "Restaurant",
+      "excursion": "Excursion"
     },
     "marrakechHighlights": "Marrakech Highlights",
     "signInToSaveFavorites": "Please sign in to save favorites",
@@ -214,7 +219,13 @@
     "chatbot": "Assistant",
     "notifications": "Notifications",
     "shop": "Shop",
-    "chatWithUs": "Chat with us"
+    "chatWithUs": "Chat with us",
+    "requests": "My Requests",
+    "spaces": "Shared Spaces",
+    "favorites": "Favorites",
+    "assistant": "Assistant",
+    "bookSpace": "Book a Space",
+    "requestService": "Request a Service"
   },
   "shop": {
     "title": "Luxury Shop",

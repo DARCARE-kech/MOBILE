@@ -43,6 +43,12 @@
     "shop": "Boutique",
     "chat": "Chat",
     "chatWithUs": "Chattez avec nous"
+    "requests": "Mes demandes",
+    "spaces": "Espaces partagés",
+    "favorites": "Favoris",
+    "assistant": "Assistant",
+    "bookSpace": "Réserver un espace",
+    "requestService": "Demander un service"
   },
   "home": {
     "welcomeBack": "Bienvenue",

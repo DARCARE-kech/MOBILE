@@ -32,6 +32,12 @@
     "chatbot": "المساعد",
     "profile": "الملف الشخصي",
     "notifications": "الإشعارات"
+    "requests": "طلباتي",
+    "spaces": "المساحات المشتركة",
+    "favorites": "المفضلة",
+    "assistant": "المساعد",
+    "bookSpace": "حجز مساحة",
+    "requestService": "طلب خدمة"
   },
   "home": {
     "welcomeBack": "مرحبًا بعودتك",
@@ -150,7 +156,7 @@
       "dining": "تناول الطعام",
       "excursion": "رحلة",
       "entertainment": "ترفيه",
-      "spa": "سبا وعافية",
+      "spa": "سبا",
       "landmark": "معلم سياحي",
       "fitness": "لياقة بدنية",
       "nightlife": "حياة ليلية",
