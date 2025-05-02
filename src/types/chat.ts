@@ -1,4 +1,3 @@
-
 import { Enums } from '@/integrations/supabase/types';
 
 export interface ChatSession {
@@ -11,10 +10,11 @@ export interface ChatSession {
 
 export interface ChatMessage {
   id: string;
-  session_id: string;
-  user_id: string;
+  session_id?: string;
+  thread_id?: string; // Adding this optional property
+  user_id?: string;
   content: string;
-  sender: 'user' | 'bot' | 'admin';
+  sender: 'user' | 'bot' | 'assistant' | 'admin';
   timestamp: string;
   metadata?: Record<string, any>;
 }
@@ -86,5 +86,5 @@ export interface ChatThread {
   thread_id: string;
   created_at?: string;
   updated_at?: string;
-  title?: string; // Added the title property
+  title?: string;
 }

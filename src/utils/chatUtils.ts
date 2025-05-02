@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ChatMessage, ChatThread } from "@/types/chat";
 
@@ -5,7 +6,7 @@ import { ChatMessage, ChatThread } from "@/types/chat";
 export const formatChatMessage = (message: any): ChatMessage => {
   return {
     id: message.id,
-    thread_id: message.thread_id,
+    thread_id: message.thread_id, // This property is now properly defined in the interface
     content: message.content || "",
     sender: message.sender || "user",
     timestamp: message.created_at || new Date().toISOString()
