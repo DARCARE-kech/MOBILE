@@ -11,11 +11,7 @@ const MainNavigation: React.FC = () => {
   
   const mainMenuItems = [
     { icon: <Home size={20} />, label: t('navigation.home'), path: "/home" },
-    { 
-      icon: <ShoppingBag size={20} />, 
-      label: t('navigation.shop'), 
-      path: "/services/shop"
-    },
+    
     { 
       icon: <List size={20} />, 
       label: t('navigation.requests'), 
