@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import type { Recommendation } from "@/types/recommendation";
+import { isValidCategory } from "@/utils/recommendationCategories";
 
 interface RecommendationCardHomeProps {
   item: Recommendation;
@@ -35,6 +36,9 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
 
   // Use image_url with fallback
   const imageUrl = item.image_url || getFallbackImage(item.title, 0);
+  
+  // Ensure category is valid and properly formatted for translation
+  const displayCategory = isValidCategory(item.category) ? item.category.toLowerCase() : 'other';
 
   return (
     <div 
@@ -74,7 +78,7 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
         
         {item.category && (
           <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${item.category.toLowerCase()}`)}
+            {t(`explore.categories.${displayCategory}`)}
           </Badge>
         )}
         

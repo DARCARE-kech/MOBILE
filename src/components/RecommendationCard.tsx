@@ -93,7 +93,8 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
     }
   };
 
-  const displayCategory = isValidCategory(item.category) ? item.category : 'other';
+  // Use the validation function to ensure proper translation key
+  const displayCategory = isValidCategory(item.category) ? item.category.toLowerCase() : 'other';
 
   return (
     <div 
@@ -142,7 +143,7 @@ export const RecommendationCard = ({ item, onSelect, onToggleFavorite }: Recomme
             isDarkMode ? "text-darcare-beige" : "text-darcare-deepGold"
           )}
         >
-          {t(`explore.categories.${displayCategory.toLowerCase()}`)}
+          {t(`explore.categories.${displayCategory}`)}
         </Badge>
         <div className="flex items-center justify-between text-sm">
           {item.location && (

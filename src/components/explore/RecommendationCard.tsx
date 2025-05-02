@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { type Recommendation } from "@/types/recommendation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import { isValidCategory } from "@/utils/recommendationCategories";
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
@@ -59,7 +60,9 @@ export const RecommendationCard = ({
   const imageUrl = recommendation.image_url || getFallbackImage(recommendation.title, 0);
   
   // Get the category for display, ensuring it's properly translated
-  const displayCategory = recommendation.category?.toLowerCase() || 'other';
+  const displayCategory = isValidCategory(recommendation.category) 
+    ? recommendation.category.toLowerCase() 
+    : 'other';
   
   return (
     <Card 

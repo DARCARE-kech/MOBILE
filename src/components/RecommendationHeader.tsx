@@ -22,9 +22,9 @@ export const RecommendationHeader = ({
   const fallbackImage = getFallbackImage(recommendation.title, 0);
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
-  // Use the validation function
+  // Use the validation function to ensure proper translation key
   const displayCategory = isValidCategory(recommendation.category) 
-    ? recommendation.category 
+    ? recommendation.category.toLowerCase() 
     : 'other';
   
   return (
@@ -54,7 +54,7 @@ export const RecommendationHeader = ({
         
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${displayCategory.toLowerCase()}`)}
+            {t(`explore.categories.${displayCategory}`)}
           </Badge>
           {recommendation.rating && recommendation.rating > 0 && (
             <div className="flex items-center gap-1 text-darcare-gold">
