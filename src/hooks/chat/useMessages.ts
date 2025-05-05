@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatMessage } from "@/types/chat";
 import * as openaiClient from "@/utils/openaiClient";
-import { extractAssistantOutput, getThreadMessages } from "@/utils/chatUtils";
+import { extractAssistantOutput, getThreadMessages, saveChatMessage } from "@/utils/chatUtils";
 
 /**
  * Hook for managing chat messages
@@ -22,10 +22,16 @@ export const useMessages = () => {
   const loadMessages = useCallback(async (threadId: string) => {
     console.log(`Loading messages for thread ${threadId}`);
     try {
+      setIsLoading(true);
       const threadMessages = await getThreadMessages(threadId);
       console.log("Loaded messages:", threadMessages);
+      
       if (threadMessages && threadMessages.length > 0) {
         setMessages(threadMessages);
+        return threadMessages;
+      } else {
+        console.log("No messages found for thread, setting empty array");
+        setMessages([]);
       }
       return threadMessages;
     } catch (error) {
@@ -36,6 +42,8 @@ export const useMessages = () => {
         variant: "destructive"
       });
       return [];
+    } finally {
+      setIsLoading(false);
     }
   }, [toast]);
 
@@ -71,25 +79,19 @@ export const useMessages = () => {
         thread_id: threadId,
         content: content.trim(),
         sender: "user"
-      });
+      }).select().single();
       
       if (userMessageResult.error) {
         console.error("Error saving user message to Supabase:", userMessageResult.error);
         throw userMessageResult.error;
       }
       
-      console.log("User message saved to Supabase");
+      console.log("User message saved to Supabase:", userMessageResult.data);
       
       // Add user message immediately to state for instant display
-      const optimisticUserMessage: ChatMessage = {
-        id: `temp-${Date.now()}`,
-        thread_id: threadId,
-        content: content.trim(),
-        sender: "user",
-        created_at: new Date().toISOString()
-      };
+      const userMessage: ChatMessage = userMessageResult.data;
       
-      setMessages(prev => [...prev, optimisticUserMessage]);
+      setMessages(prev => [...prev, userMessage]);
 
       // Step 2: Add user message to OpenAI API
       console.log(`Adding message to OpenAI thread ${threadId}`);
@@ -146,7 +148,8 @@ export const useMessages = () => {
       const runStepsResponse = await openaiClient.getRunOutput(threadId, runResponse.id);
       console.log("Run steps response:", runStepsResponse);
       
-      const assistantContent = extractAssistantOutput(runStepsResponse);
+      // Extract the actual text content from the assistant's response
+      const assistantContent = await extractAssistantOutput(runStepsResponse, threadId);
       console.log("Extracted assistant content:", assistantContent);
 
       if (assistantContent) {
@@ -156,14 +159,18 @@ export const useMessages = () => {
           thread_id: threadId,
           content: assistantContent,
           sender: "assistant"
-        });
+        }).select().single();
         
         if (assistantMessageResult.error) {
           console.error("Error saving assistant message to Supabase:", assistantMessageResult.error);
           throw assistantMessageResult.error;
         }
         
-        console.log("Assistant message saved to Supabase");
+        console.log("Assistant message saved to Supabase:", assistantMessageResult.data);
+        
+        // Add assistant message to state
+        const assistantMessage: ChatMessage = assistantMessageResult.data;
+        setMessages(prev => [...prev, assistantMessage]);
       } else {
         console.error("No assistant content found");
         throw new Error("No assistant content found");
@@ -177,13 +184,6 @@ export const useMessages = () => {
         .eq("thread_id", threadId);
       console.log("Thread timestamp updated");
 
-      // Step 8: Reload messages from Supabase to ensure consistency
-      console.log("Reloading messages from Supabase");
-      const updatedMessages = await getThreadMessages(threadId);
-      console.log("Messages reloaded:", updatedMessages.length, "messages found");
-      if (updatedMessages && updatedMessages.length > 0) {
-        setMessages(updatedMessages);
-      }
     } catch (error) {
       console.error("Error sending message:", error);
       toast({

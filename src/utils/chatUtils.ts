@@ -46,11 +46,24 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       },
     });
 
-    const data = await response.json();
-    const contentBlock = data.content?.find((c: any) => c.type === "text");
-    const text = contentBlock?.text?.value || '';
+    if (!response.ok) {
+      console.error("Error fetching message from OpenAI:", await response.text());
+      throw new Error("Failed to fetch message content");
+    }
 
-    return text;
+    const data = await response.json();
+    console.log("Got full message data from OpenAI:", data);
+    
+    // Extract the text content from the response
+    if (data.content && Array.isArray(data.content)) {
+      const textContent = data.content.find((c: any) => c.type === "text");
+      const text = textContent?.text?.value || '';
+      console.log("Extracted text content:", text);
+      return text;
+    } else {
+      console.warn("Message content has unexpected format:", data);
+      return '';
+    }
   } catch (error) {
     console.error("Error extracting assistant output:", error);
     return '';
