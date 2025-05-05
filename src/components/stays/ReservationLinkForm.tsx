@@ -44,27 +44,24 @@ const ReservationLinkForm: React.FC<ReservationLinkFormProps> = ({ userId, refet
         .is('user_id', null)
         .single();
         
-      if (fetchError) {
-        // Check if it's a "not found" error or another type of error
-        if (fetchError.code === 'PGRST116') {
-          // Let's check if the reservation exists but is already linked
-          const { count } = await supabase
-            .from('stays')
-            .select('*', { count: 'exact', head: true })
-            .eq('reservation_number', reservationNumber.trim());
-            
-          if (count && count > 0) {
-            setError("This reservation is already linked to another account");
-          } else {
-            setError("Invalid reservation number");
-          }
-        } else {
-          // Some other error occurred
-          console.error('Error checking reservation:', fetchError);
-          setError("Error checking reservation");
-        }
-        setIsSubmitting(false);
-        return;
+      if (!stayData || fetchError) {
+  // Vérifie si la réservation existe mais déjà liée
+  const { count, error: countError } = await supabase
+    .from('stays')
+    .select('*', { count: 'exact', head: true })
+    .eq('reservation_number', reservationNumber.trim());
+
+  if (countError) {
+    console.error("Error checking reservation existence:", countError);
+    setError("Error checking reservation");
+  } else if (count && count > 0) {
+    setError("This reservation is already linked to another account");
+  } else {
+    setError("Invalid reservation number");
+  }
+
+  setIsSubmitting(false);
+  return;
       }
       
       // If we got here, we found a valid unlinked reservation
