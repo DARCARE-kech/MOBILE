@@ -144,25 +144,19 @@ export const getThreadMessages = async (threadId: string) => {
 };
 
 // Récupération du contenu de l'assistant après une exécution complète
-export const getRunOutput = async (threadId: string, runId: string) => {
-  console.log(`Getting run output for thread ${threadId}, run ${runId}`);
-  try {
-    const response = await fetch(
-      `${OPENAI_API_URL}/threads/${threadId}/runs/${runId}/output`, 
-      getOpenAIOptions()
-    );
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Error retrieving run output: Status ${response.status}`, errorText);
-      throw new Error(`Error retrieving run output: ${errorText}`);
+export const getRunOutput = async (threadId: string) => {
+  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+    headers: {
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+      'OpenAI-Beta': 'assistants=v2',
+      'Content-Type': 'application/json'
     }
-    
-    const data = await response.json();
-    console.log("Run output retrieved:", data);
-    return data;
-  } catch (error) {
-    console.error('Error getting OpenAI run output:', error);
-    throw error;
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch messages: ${await response.text()}`);
   }
+
+  const data = await response.json();
+  return data;
 };
