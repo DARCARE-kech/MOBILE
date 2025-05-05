@@ -11,6 +11,7 @@ export interface MessageProps {
 }
 
 const ChatMessageComponent: React.FC<MessageProps> = ({ message }) => {
+  console.log("Rendering ChatMessage component with message:", message);
   const { t } = useTranslation();
   const isUser = message.sender === 'user';
   

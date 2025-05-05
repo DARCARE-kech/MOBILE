@@ -14,9 +14,12 @@ import { useToast } from '@/components/ui/use-toast';
 import useChatbot from '@/hooks/useChatbot';
 
 const ChatbotPage: React.FC = () => {
+  console.log("Rendering ChatbotPage component");
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  console.log("Current user:", user);
+  
   const { t } = useTranslation();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -24,6 +27,7 @@ const ChatbotPage: React.FC = () => {
   // Parse thread ID from URL if present
   const queryParams = new URLSearchParams(location.search);
   const threadParam = queryParams.get('thread');
+  console.log("Thread param from URL:", threadParam);
   
   const { 
     messages, 
@@ -32,9 +36,14 @@ const ChatbotPage: React.FC = () => {
     initializeThread, 
     currentThread
   } = useChatbot(threadParam || undefined);
+  
+  console.log("Current messages:", messages);
+  console.log("isLoading:", isLoading);
+  console.log("currentThread:", currentThread);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
+    console.log("Messages changed, scrolling to bottom");
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -42,15 +51,22 @@ const ChatbotPage: React.FC = () => {
 
   // Redirect to auth if not logged in
   useEffect(() => {
+    console.log("Checking if user is logged in");
     if (!user) {
+      console.log("No user found, redirecting to auth");
       navigate('/auth');
     }
   }, [user, navigate]);
 
   const handleSend = async (content: string) => {
-    if (!content.trim()) return;
+    console.log(`handleSend called with content: ${content.substring(0, 50)}${content.length > 50 ? '...' : ''}`);
+    if (!content.trim()) {
+      console.log("Content is empty, not sending");
+      return;
+    }
     
     try {
+      console.log("Sending message");
       await sendMessage(content);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -64,8 +80,15 @@ const ChatbotPage: React.FC = () => {
 
   // Initialize thread on component mount
   useEffect(() => {
+    console.log("Thread initialization effect");
+    console.log("User:", user);
+    console.log("Thread param:", threadParam);
+    
     if (user) {
+      console.log("User is available, initializing thread");
       initializeThread(threadParam || undefined);
+    } else {
+      console.log("No user available, skipping thread initialization");
     }
   }, [user, threadParam, initializeThread]);
 

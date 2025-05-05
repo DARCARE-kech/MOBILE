@@ -17,15 +17,19 @@ const getOpenAIOptions = (body?: any) => ({
 
 // Création d'un nouveau thread OpenAI
 export const createThread = async () => {
+  console.log("Creating new OpenAI thread");
   try {
     const response = await fetch(`${OPENAI_API_URL}/threads`, getOpenAIOptions({}));
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`Error creating thread: Status ${response.status}`, errorText);
       throw new Error(`Error creating thread: ${errorText}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log("Thread created successfully:", data);
+    return data;
   } catch (error) {
     console.error('Error creating OpenAI thread:', error);
     throw error;
@@ -34,21 +38,28 @@ export const createThread = async () => {
 
 // Ajout d'un message à un thread existant
 export const addMessage = async (threadId: string, content: string) => {
+  console.log(`Adding message to thread ${threadId}:`, content.substring(0, 50) + (content.length > 50 ? '...' : ''));
   try {
+    const requestBody = {
+      role: 'user',
+      content
+    };
+    console.log("Request body:", requestBody);
+    
     const response = await fetch(
       `${OPENAI_API_URL}/threads/${threadId}/messages`, 
-      getOpenAIOptions({
-        role: 'user',
-        content
-      })
+      getOpenAIOptions(requestBody)
     );
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`Error adding message: Status ${response.status}`, errorText);
       throw new Error(`Error adding message: ${errorText}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log("Message added successfully:", data);
+    return data;
   } catch (error) {
     console.error('Error adding message to OpenAI thread:', error);
     throw error;
@@ -57,20 +68,27 @@ export const addMessage = async (threadId: string, content: string) => {
 
 // Exécution de l'assistant sur un thread
 export const runAssistant = async (threadId: string) => {
+  console.log(`Running assistant on thread ${threadId} with assistant ID ${OPENAI_ASSISTANT_ID}`);
   try {
+    const requestBody = {
+      assistant_id: OPENAI_ASSISTANT_ID
+    };
+    console.log("Request body:", requestBody);
+    
     const response = await fetch(
       `${OPENAI_API_URL}/threads/${threadId}/runs`, 
-      getOpenAIOptions({
-        assistant_id: OPENAI_ASSISTANT_ID
-      })
+      getOpenAIOptions(requestBody)
     );
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`Error running assistant: Status ${response.status}`, errorText);
       throw new Error(`Error running assistant: ${errorText}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log("Assistant run initiated successfully:", data);
+    return data;
   } catch (error) {
     console.error('Error running OpenAI assistant:', error);
     throw error;
@@ -79,6 +97,7 @@ export const runAssistant = async (threadId: string) => {
 
 // Vérification de l'état d'une exécution
 export const checkRunStatus = async (threadId: string, runId: string) => {
+  console.log(`Checking run status for thread ${threadId}, run ${runId}`);
   try {
     const response = await fetch(
       `${OPENAI_API_URL}/threads/${threadId}/runs/${runId}`, 
@@ -87,10 +106,13 @@ export const checkRunStatus = async (threadId: string, runId: string) => {
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`Error checking run status: Status ${response.status}`, errorText);
       throw new Error(`Error checking run status: ${errorText}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log("Run status:", data.status);
+    return data;
   } catch (error) {
     console.error('Error checking OpenAI run status:', error);
     throw error;
@@ -99,6 +121,7 @@ export const checkRunStatus = async (threadId: string, runId: string) => {
 
 // Récupération des messages d'un thread
 export const getThreadMessages = async (threadId: string) => {
+  console.log(`Getting messages for thread ${threadId}`);
   try {
     const response = await fetch(
       `${OPENAI_API_URL}/threads/${threadId}/messages`, 
@@ -107,10 +130,13 @@ export const getThreadMessages = async (threadId: string) => {
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`Error retrieving messages: Status ${response.status}`, errorText);
       throw new Error(`Error retrieving messages: ${errorText}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log(`Retrieved ${data.data?.length || 0} messages from OpenAI`);
+    return data;
   } catch (error) {
     console.error('Error getting OpenAI thread messages:', error);
     throw error;
