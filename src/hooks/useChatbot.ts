@@ -354,17 +354,18 @@ export const useChatbot = (initialThreadId?: string) => {
     console.log("currentThreadId =", currentThreadId);
     
     if (user?.id && !hasInitialized) {
-  console.log("Initializing only once");
-  loadThreads();
+      console.log("Initializing only once");
+      loadThreads();
 
-  if (initialThreadId) {
-    initializeThread(initialThreadId);
-  } else {
-    initializeThread();
-  }
+      if (initialThreadId) {
+        initializeThread(initialThreadId);
+      } else {
+        initializeThread();
+      }
 
-  setHasInitialized(true);
-}
+      setHasInitialized(true);
+    }
+  }, [user?.id, hasInitialized, initialThreadId, currentThreadId, loadThreads, initializeThread]);
 
   return {
     messages,
@@ -373,81 +374,10 @@ export const useChatbot = (initialThreadId?: string) => {
     isLoading,
     sendMessage,
     loadThreads,
-    switchThread: useCallback(async (threadId: string) => {
-      console.log("switchThread called with threadId:", threadId);
-      if (!user?.id) {
-        console.log("No user.id available, cannot switch thread");
-        return;
-      }
-      
-      try {
-        await initializeThread(threadId);
-      } catch (error) {
-        console.error("Error switching thread:", error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger cette conversation",
-          variant: "destructive"
-        });
-      }
-    }, [user?.id, initializeThread, toast]),
+    switchThread,
     initializeThread,
-    updateThreadTitle: useCallback(async (threadId: string, title: string) => {
-      console.log(`updateThreadTitle called with threadId: ${threadId}, title: ${title}`);
-      if (!title.trim()) {
-        console.log("Title is empty, not updating");
-        return false;
-      }
-      
-      try {
-        const success = await updateThreadTitle(threadId, title);
-        
-        if (success) {
-          console.log("Title updated successfully, reloading threads");
-          await loadThreads();
-          
-          if (currentThread?.thread_id === threadId) {
-            console.log("Updating current thread title in state");
-            setCurrentThread(prev => prev ? { ...prev, title } : null);
-          }
-        }
-        
-        return success;
-      } catch (error) {
-        console.error("Error updating thread title:", error);
-        return false;
-      }
-    }, [loadThreads, currentThread]),
-    deleteThread: useCallback(async (threadId: string) => {
-      console.log("deleteThread called with threadId:", threadId);
-      try {
-        console.log("Deleting thread from Supabase");
-        const { error } = await supabase
-          .from("chat_threads")
-          .delete()
-          .eq("thread_id", threadId);
-          
-        if (error) {
-          console.error("Error deleting thread:", error);
-          throw error;
-        }
-        
-        console.log("Thread deleted, reloading threads");
-        await loadThreads();
-        
-        if (currentThread?.thread_id === threadId) {
-          console.log("Deleted the current thread, resetting state");
-          setCurrentThread(null);
-          setCurrentThreadId(null);
-          setMessages([]);
-        }
-        
-        return true;
-      } catch (error) {
-        console.error("Error deleting thread:", error);
-        return false;
-      }
-    }, [loadThreads, currentThread])
+    updateThreadTitle: updateThreadTitleHandler,
+    deleteThread
   };
 };
 
