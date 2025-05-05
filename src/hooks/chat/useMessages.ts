@@ -1,11 +1,14 @@
-
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatMessage } from "@/types/chat";
 import * as openaiClient from "@/utils/openaiClient";
-import { extractAssistantOutput, getThreadMessages, saveChatMessage } from "@/utils/chatUtils";
+import { 
+  extractAssistantOutput,
+  getThreadMessages,
+  saveChatMessage
+} from "@/utils/chat";
 
 /**
  * Hook for managing chat messages

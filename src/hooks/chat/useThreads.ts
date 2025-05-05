@@ -1,10 +1,13 @@
-
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatThread } from "@/types/chat";
-import { getUserThreads, getOrCreateUserThread, updateThreadTitle as updateThreadTitleUtil } from "@/utils/chatUtils";
+import { 
+  getUserThreads, 
+  getOrCreateUserThread, 
+  updateThreadTitle as updateThreadTitleUtil 
+} from "@/utils/chat";
 
 /**
  * Hook for managing chat threads
