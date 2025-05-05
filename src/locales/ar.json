@@ -24,8 +24,54 @@
     "yes": "نعم",
     "no": "لا",
     "hour": "ساعة",
-    "minute": "دقيقة"
+    "minute": "دقيقة",
+    "error": "خطأ",
+     "success": "نجاح",
+     "cancel": "إلغاء",
+     "save": "حفظ",
+      "back": "رجوع",
+     "edit": "تعديل",
+     "delete": "حذف",
+     "view": "عرض",
+     "submit": "إرسال",
+     "continue": "متابعة",
+     "next": "التالي",
+     "previous": "السابق",
+     "required": "مطلوب",
+     "optional": "اختياري"
   },
+
+  "auth": {
+     "signIn": "تسجيل الدخول",
+     "signUp": "إنشاء حساب",
+     "signOut": "تسجيل الخروج",
+     "createAccount": "إنشاء حساب",
+     "forgotPassword": "نسيت كلمة المرور",
+     "resetPassword": "إعادة تعيين كلمة المرور",
+     "email": "البريد الإلكتروني",
+     "password": "كلمة المرور",
+     "newPassword": "كلمة المرور الجديدة",
+     "confirmPassword": "تأكيد كلمة المرور",
+     "fullName": "الاسم الكامل",
+     "accessServices": "الوصول إلى خدمات الفيلا الفاخرة",
+     "joinDarcare": "انضم إلى دار كير لإقامة استثنائية في مراكش",
+     "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+     "dontHaveAccount": "ليس لديك حساب؟",
+     "welcomeBack": "مرحبًا بعودتك!",
+     "signInSuccess": "تم تسجيل الدخول بنجاح",
+     "signupSuccess": "تم إنشاء الحساب بنجاح",
+     "signupFailed": "فشل التسجيل",
+     "signInFailed": "فشل تسجيل الدخول",
+     "emailConfirmationRequired": "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول.",
+     "emailNotConfirmed": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول",
+     "emailAlreadyRegistered": "هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول بدلاً من ذلك.",
+     "passwordRequirements": "كلمة المرور لا تلبي المتطلبات",
+     "invalidCredentials": "البريد الإلكتروني أو كلمة المرور التي أدخلتها غير صحيحة",
+     "invalidEmail": "عنوان بريد إلكتروني غير صالح",
+     "rateLimitExceeded": "محاولات تسجيل دخول كثيرة. يرجى المحاولة مرة أخرى لاحقًا.",
+     "passwordResetSent": "تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور",
+     "checkEmail": "يرجى التحقق من بريدك الإلكتروني"
+   },
   "navigation": {
     "home": "الرئيسية",
     "services": "الخدمات",
@@ -245,6 +291,9 @@
   "languages": {
     "en": "الإنجليزية",
     "fr": "الفرنسية",
-    "ar": "العربية"
+    "ar": "العربية",
+      "chat": "الدردشة",
+     "settings": "الإعدادات",
+     "notifications": "الإشعارات"
   }
 }
