@@ -32,7 +32,16 @@
     "removedFromFavorites": "Removed from favorites",
     "delete": "Delete",
     "tryAgain": "Try Again",
-    "errorOccurred": "An error occurred"
+    "errorOccurred": "An error occurred",
+      "view": "View",
+     "submit": "Submit",
+      "back": "Back",
+     "edit": "Edit",
+     "continue": "Continue",
+     "next": "Next",
+     "previous": "Previous",
+     "required": "Required",
+     "optional": "Optional"
   },
   "auth": {
     "signIn": "Sign In",
@@ -49,7 +58,16 @@
     "resetInstructions": "Enter your email and we'll send you instructions to reset your password",
     "resetLinkSent": "Reset link sent",
     "checkEmail": "Check your email for a reset link",
-    "invalidCredentials": "Invalid email or password"
+    "invalidCredentials": "Invalid email or password",
+      "signOut": "Sign Out",
+     "createAccount": "Create Account",
+     "forgotPassword": "Forgot Password",
+     "resetPassword": "Reset Password",
+    "newPassword": "New Password",
+     "confirmPassword": "Confirm Password",
+     "fullName": "Full Name",
+     "accessServices": "Access your luxury villa services",
+     "joinDarcare": "Join DarCare for an exceptional Marrakech stay",
   },
   "home": {
     "quickServices": "Quick Services",
@@ -199,7 +217,21 @@
     "locationNotAvailable": "Location information not available",
     "noCoordinatesProvided": "No coordinates provided for this location",
     "somethingWentWrong": "Something went wrong",
-    "couldNotLoadRecommendation": "Could not load recommendation details"
+    "couldNotLoadRecommendation": "Could not load recommendation details",
+    "welcomeBack": "Welcome back!",
+     "signInSuccess": "Successfully signed in",
+     "signupSuccess": "Account created successfully",
+     "signupFailed": "Sign-up failed",
+     "signInFailed": "Sign-in failed",
+     "emailConfirmationRequired": "Please check your email to confirm your account before signing in.",
+     "emailNotConfirmed": "Please confirm your email before signing in",
+     "emailAlreadyRegistered": "This email is already registered. Please sign in instead.",
+     "passwordRequirements": "Password doesn't meet requirements",
+     "invalidCredentials": "The email or password you entered is incorrect",
+     "invalidEmail": "Invalid email address",
+     "rateLimitExceeded": "Too many sign in attempts. Please try again later.",
+     "passwordResetSent": "Password reset email sent",
+     "checkEmail": "Please check your email"
   },
   "navigation": {
     "home": "Home",
@@ -312,6 +344,8 @@
   "languages": {
     "en": "English",
     "fr": "French",
-    "ar": "Arabic"
+    "ar": "Arabic",
+    "settings": "Settings",
+     "notifications": "Notifications"
   }
 }
