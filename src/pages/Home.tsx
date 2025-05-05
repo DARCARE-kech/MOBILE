@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import DrawerMenu from "@/components/DrawerMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import FloatingAction from "@/components/FloatingAction";
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -79,6 +80,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       
+      <FloatingAction />
       <BottomNavigation activeTab="home" />
     </div>
   );

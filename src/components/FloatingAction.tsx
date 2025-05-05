@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Plus, DoorOpen, Wrench, MessageCircle, X } from "lucide-react";
+import { Plus, DoorOpen, Wrench, MessageCircle, X, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -41,6 +41,12 @@ const FloatingAction: React.FC = () => {
       label: t('navigation.chatWithUs'),
       icon: <MessageCircle size={20} />,
       action: openWhatsApp,
+    },
+    {
+      id: "contact-admin",
+      label: t('navigation.contactAdmin', 'Contact Admin'),
+      icon: <User size={20} />,
+      action: () => navigate("/contact-admin"),
     },
   ];
 

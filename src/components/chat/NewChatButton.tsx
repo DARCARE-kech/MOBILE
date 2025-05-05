@@ -2,6 +2,7 @@
 import { MessageSquarePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 interface NewChatButtonProps {
   onClick: () => void;
@@ -9,9 +10,13 @@ interface NewChatButtonProps {
 
 const NewChatButton: React.FC<NewChatButtonProps> = ({ onClick }) => {
   const { t } = useTranslation();
+  const location = useLocation();
+  
+  // Check if we're on the home page to adjust position
+  const isHomePage = location.pathname === '/';
   
   return (
-    <div className="fixed right-6 bottom-24">
+    <div className={`fixed right-6 ${isHomePage ? 'bottom-36' : 'bottom-24'}`}>
       <Button
         className="h-14 w-14 rounded-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 shadow-lg"
         onClick={onClick}
