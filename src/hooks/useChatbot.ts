@@ -181,33 +181,19 @@ export const useChatbot = (initialThreadId?: string) => {
       }
 
       // Étape 4: Récupérer directement la réponse de l'assistant via Run output
-      console.log(`Getting run output for thread ${currentThreadId}`);
-      const runOutput = await openaiClient.getRunOutput(currentThreadId, runResponse.id);
-      
-      if (!runOutput) {
-        console.error("runOutput is undefined or null");
-        throw new Error("Failed to retrieve assistant response");
-      }
-      
-      console.log("Retrieved run output:", runOutput);
+      console.log(`Fetching assistant response via thread messages`);
+const messagesResponse = await openaiClient.getRunOutput(currentThreadId);
+const lastMessage = messagesResponse.data?.[0]; // Le dernier message = assistant
 
-      // Étape 5: Enregistrer les messages dans Supabase
-      // Enregistrer le message utilisateur
-      console.log(`Saving user message to Supabase, content: ${content.substring(0, 50)}${content.length > 50 ? '...' : ''}`);
-      await supabase.from("chat_messages").insert({
-        thread_id: currentThreadId,
-        content: content,
-        sender: "user"
-      });
-      console.log("User message saved to Supabase");
+if (!lastMessage) {
+  throw new Error("No assistant message found");
+}
 
-      // Extraire et enregistrer la réponse de l'assistant
-      const assistantOutput = runOutput.output?.find((o: any) => o.type === "message");
-      const contentBlock = assistantOutput?.content?.find((c: any) => c.type === "output_text");
-      const text = contentBlock?.text;
-      
-      console.log("Extracted assistant text:", text);
-      
+const contentBlock = lastMessage.content?.[0];
+const text = contentBlock?.text?.value || contentBlock?.text;
+
+console.log("Extracted assistant text:", text);
+
       if (text) {
         console.log(`Saving assistant message to Supabase, content: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`);
         await supabase.from("chat_messages").insert({
