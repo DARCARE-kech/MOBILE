@@ -5,7 +5,8 @@ import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
 import ChatInput from '@/components/chat/ChatInput';
-import ChatMessage from '@/components/chat/ChatMessage';
+import ChatMessageComponent from '@/components/chat/ChatMessage';
+
 import { ScrollArea } from '@/components/ui/scroll-area';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
@@ -131,10 +132,10 @@ const ChatbotPage: React.FC = () => {
           <div className="space-y-4">
             {messages?.length > 0 ? (
               messages.map((message) => (
-                <ChatMessage 
-                  key={message.id} 
-                  message={message}
-                />
+                <ChatMessageComponent
+      key={message.id}
+      message={message}
+    />
               ))
             ) : (
               <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
