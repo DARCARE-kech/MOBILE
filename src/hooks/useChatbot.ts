@@ -118,7 +118,16 @@ export const useChatbot = (initialThreadId?: string) => {
         .order("created_at", { ascending: true });
         
       if (error) throw error;
-      return data || [];
+      
+      // Fix: Map the database results to match the ChatMessage interface
+      // by using created_at as timestamp
+      return (data || []).map(message => ({
+        id: message.id,
+        thread_id: message.thread_id,
+        content: message.content || "",
+        sender: message.sender || "user",
+        timestamp: message.created_at || new Date().toISOString()
+      }));
     } catch (error) {
       console.error("Error getting thread messages:", error);
       return [];
