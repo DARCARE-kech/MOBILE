@@ -24,7 +24,9 @@ export const useMessages = () => {
     try {
       const threadMessages = await getThreadMessages(threadId);
       console.log("Loaded messages:", threadMessages);
-      setMessages(threadMessages);
+      if (threadMessages && threadMessages.length > 0) {
+        setMessages(threadMessages);
+      }
       return threadMessages;
     } catch (error) {
       console.error("Error loading messages:", error);
@@ -175,11 +177,13 @@ export const useMessages = () => {
         .eq("thread_id", threadId);
       console.log("Thread timestamp updated");
 
-      // Step 8: Reload messages from Supabase
+      // Step 8: Reload messages from Supabase to ensure consistency
       console.log("Reloading messages from Supabase");
       const updatedMessages = await getThreadMessages(threadId);
-      console.log("Messages reloaded:", updatedMessages);
-      setMessages(updatedMessages);
+      console.log("Messages reloaded:", updatedMessages.length, "messages found");
+      if (updatedMessages && updatedMessages.length > 0) {
+        setMessages(updatedMessages);
+      }
     } catch (error) {
       console.error("Error sending message:", error);
       toast({

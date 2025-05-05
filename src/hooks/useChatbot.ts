@@ -58,7 +58,8 @@ export const useChatbot = (initialThreadId?: string) => {
       
       if (thread) {
         // Load messages for this thread
-        await loadMessages(thread.thread_id);
+        const loadedMessages = await loadMessages(thread.thread_id);
+        console.log("Loaded messages in initializeThreadWithMessages:", loadedMessages ? loadedMessages.length : 0, "messages");
       }
     } catch (error) {
       console.error("Error initializing thread with messages:", error);
@@ -112,14 +113,17 @@ export const useChatbot = (initialThreadId?: string) => {
     console.log("user?.id =", user?.id);
     console.log("initialThreadId =", initialThreadId);
     console.log("currentThreadId =", currentThreadId);
+    console.log("hasInitialized =", hasInitialized);
     
     if (user?.id && !hasInitialized) {
       console.log("Initializing only once");
       loadThreads();
 
       if (initialThreadId) {
+        console.log("Initializing with provided threadId:", initialThreadId);
         initializeThreadWithMessages(initialThreadId);
       } else {
+        console.log("Initializing with no threadId provided");
         initializeThreadWithMessages();
       }
 

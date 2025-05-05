@@ -44,7 +44,7 @@ const ChatbotPage: React.FC = () => {
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
-    console.log("Messages changed, scrolling to bottom");
+    console.log("Messages changed, scrolling to bottom. Messages count:", messages?.length);
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -79,20 +79,6 @@ const ChatbotPage: React.FC = () => {
     }
   };
 
-  // Initialize thread on component mount
-  useEffect(() => {
-    console.log("Thread initialization effect");
-    console.log("User:", user);
-    console.log("Thread param:", threadParam);
-    
-    if (user) {
-      console.log("User is available, initializing thread");
-      initializeThread(threadParam || undefined);
-    } else {
-      console.log("No user available, skipping thread initialization");
-    }
-  }, [user, threadParam, initializeThread]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
       <MainHeader 
@@ -124,18 +110,18 @@ const ChatbotPage: React.FC = () => {
       <ScrollArea 
         className="flex-1 p-4 pt-20 pb-24"
       >
-        {isLoading && messages.length === 0 ? (
+        {isLoading && messages?.length === 0 ? (
           <div className="flex items-center justify-center h-40">
             <Loader2 className="h-6 w-6 animate-spin text-darcare-gold" />
           </div>
         ) : (
           <div className="space-y-4">
-            {messages?.length > 0 ? (
+            {messages && messages.length > 0 ? (
               messages.map((message) => (
                 <ChatMessageComponent
-      key={message.id}
-      message={message}
-    />
+                  key={message.id}
+                  message={message}
+                />
               ))
             ) : (
               <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
@@ -144,7 +130,7 @@ const ChatbotPage: React.FC = () => {
               </div>
             )}
             
-            {isLoading && messages.length > 0 && (
+            {isLoading && messages?.length > 0 && (
               <div className="flex items-center gap-2 text-darcare-beige/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>{t('chatbot.thinking')}</span>
