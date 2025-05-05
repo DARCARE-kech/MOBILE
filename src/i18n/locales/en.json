@@ -1,0 +1,18 @@
+
+{
+  "chatbot": {
+    "startConversation": "Start the conversation...",
+    "typeMessage": "Type your message...",
+    "sendMessage": "Send message",
+    "thinking": "Assistant is thinking...",
+    "history": "Conversation History",
+    "contactAdmin": "Contact Admin",
+    "newChat": "New conversation",
+    "userMessage": "Your message",
+    "assistantMessage": "Assistant's message",
+    "messageError": "Could not send your message.",
+    "noHistoryYet": "No conversation history yet",
+    "startNewChat": "Start a new chat to begin",
+    "messageInputLabel": "Message input field"
+  }
+}

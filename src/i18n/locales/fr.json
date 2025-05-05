@@ -1,0 +1,18 @@
+
+{
+  "chatbot": {
+    "startConversation": "Commencez la conversation...",
+    "typeMessage": "Écrivez votre message...",
+    "sendMessage": "Envoyer le message",
+    "thinking": "L'assistant réfléchit...",
+    "history": "Historique des conversations",
+    "contactAdmin": "Contacter un administrateur",
+    "newChat": "Nouvelle conversation",
+    "userMessage": "Votre message",
+    "assistantMessage": "Message de l'assistant",
+    "messageError": "Impossible d'envoyer votre message.",
+    "noHistoryYet": "Pas encore d'historique de conversation",
+    "startNewChat": "Commencez une nouvelle conversation",
+    "messageInputLabel": "Champ de saisie de message"
+  }
+}

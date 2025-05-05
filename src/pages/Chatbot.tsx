@@ -4,13 +4,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
-import MessageInput from '@/components/chat/MessageInput';
+import ChatInput from '@/components/chat/ChatInput';
+import ChatMessage from '@/components/chat/ChatMessage';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
-import Message from '@/components/chat/Message';
 import useChatbot from '@/hooks/useChatbot';
 
 const ChatbotPage: React.FC = () => {
@@ -56,7 +56,7 @@ const ChatbotPage: React.FC = () => {
       console.error('Error sending message:', error);
       toast({
         title: t('common.error'),
-        description: t('chatbot.messageError') || 'Could not send your message.',
+        description: t('chatbot.messageError'),
         variant: 'destructive'
       });
     }
@@ -72,7 +72,7 @@ const ChatbotPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
       <MainHeader 
-        title={t('navigation.chatbot') || "DarCare Assistant"}
+        title={t('navigation.chatbot')}
         onBack={() => navigate("/home")}
       >
         <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ const ChatbotPage: React.FC = () => {
             size="icon"
             onClick={() => navigate('/chat-history')}
             className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            title="Conversation History"
+            title={t('chatbot.history')}
           >
             <History className="h-5 w-5" />
           </Button>
@@ -90,6 +90,7 @@ const ChatbotPage: React.FC = () => {
             size="icon"
             onClick={() => navigate('/contact-admin')}
             className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+            title={t('chatbot.contactAdmin')}
           >
             <Mail className="h-5 w-5" />
           </Button>
@@ -106,23 +107,23 @@ const ChatbotPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {messages?.length > 0 ? (
-              messages.map((message, index) => (
-                <Message 
-                  key={message.id || index} 
+              messages.map((message) => (
+                <ChatMessage 
+                  key={message.id} 
                   message={message}
                 />
               ))
             ) : (
               <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
                 <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-                <p>{t('chatbot.startConversation') || "Start the conversation..."}</p>
+                <p>{t('chatbot.startConversation')}</p>
               </div>
             )}
             
             {isLoading && messages.length > 0 && (
               <div className="flex items-center gap-2 text-darcare-beige/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Assistant is thinking...</span>
+                <span>{t('chatbot.thinking')}</span>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -131,9 +132,10 @@ const ChatbotPage: React.FC = () => {
       </ScrollArea>
 
       <div className="fixed bottom-16 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20">
-        <MessageInput
+        <ChatInput
           onSend={handleSend}
           disabled={isLoading}
+          placeholder={t('chatbot.typeMessage')}
         />
       </div>
       
