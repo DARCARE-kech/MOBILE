@@ -120,12 +120,12 @@ export const useChatbot = (initialThreadId?: string) => {
       if (error) throw error;
       
       // Fix: Map the database results to match the ChatMessage interface
-      // by using created_at as timestamp
+      // Ensure sender is properly typed as "user" | "assistant" | "bot" | "admin"
       return (data || []).map(message => ({
         id: message.id,
         thread_id: message.thread_id,
         content: message.content || "",
-        sender: message.sender || "user",
+        sender: (message.sender as "user" | "assistant" | "bot" | "admin") || "user",
         timestamp: message.created_at || new Date().toISOString()
       }));
     } catch (error) {
