@@ -195,6 +195,7 @@ export const useMessages = () => {
   return {
     messages,
     isLoading,
+    setIsLoading,
     loadMessages,
     sendMessage,
     setMessages

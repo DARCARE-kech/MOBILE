@@ -34,7 +34,8 @@ export const useChatbot = (initialThreadId?: string) => {
     isLoading,
     loadMessages,
     sendMessage: sendMessageToThread,
-    setMessages
+    setMessages,
+    setIsLoading
   } = useMessages();
 
   /**
@@ -50,7 +51,7 @@ export const useChatbot = (initialThreadId?: string) => {
 
     try {
       // Set loading state
-      isLoading = true;
+      setIsLoading(true);
       
       // Initialize thread
       const thread = await initializeThread(threadIdToUse);
@@ -67,9 +68,9 @@ export const useChatbot = (initialThreadId?: string) => {
         variant: "destructive"
       });
     } finally {
-      isLoading = false;
+      setIsLoading(false);
     }
-  }, [user?.id, initializeThread, loadMessages, toast]);
+  }, [user?.id, initializeThread, loadMessages, toast, setIsLoading]);
 
   /**
    * Switch to another thread
