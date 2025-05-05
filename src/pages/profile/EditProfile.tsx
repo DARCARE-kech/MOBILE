@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import MainHeader from "@/components/MainHeader";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { ProfileForm, ProfileFormValues } from '@/components/profile/ProfileForm';

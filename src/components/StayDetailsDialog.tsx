@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar, Users, MapPin, Clock } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
-import { useTranslation } from 'react-i18next';
 
 type Stay = Tables<"stays">;
 
@@ -18,7 +17,6 @@ interface StayDetailsDialogProps {
 }
 
 const StayDetailsDialog: React.FC<StayDetailsDialogProps> = ({ stay }) => {
-  const { t } = useTranslation();
   const checkIn = new Date(stay.check_in || "");
   const checkOut = new Date(stay.check_out || "");
   const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
@@ -48,13 +46,13 @@ const StayDetailsDialog: React.FC<StayDetailsDialogProps> = ({ stay }) => {
                 day: 'numeric'
               })}
             </p>
-            <p className="text-sm text-darcare-beige/70">{nights} {t('stays.nights')}</p>
+            <p className="text-sm text-darcare-beige/70">{nights} nights</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <Users className="text-darcare-gold" size={18} />
-          <p className="text-darcare-white">{stay.guests} {t('stays.guests')}</p>
+          <p className="text-darcare-white">{stay.guests} Guests</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -65,8 +63,8 @@ const StayDetailsDialog: React.FC<StayDetailsDialogProps> = ({ stay }) => {
         <div className="flex items-center gap-3">
           <Clock className="text-darcare-gold" size={18} />
           <div>
-            <p className="text-darcare-white">{t('stays.checkIn')}: 3:00 PM</p>
-            <p className="text-darcare-white">{t('stays.checkOut')}: 11:00 AM</p>
+            <p className="text-darcare-white">Check-in: 3:00 PM</p>
+            <p className="text-darcare-white">Check-out: 11:00 AM</p>
           </div>
         </div>
       </div>

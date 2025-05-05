@@ -37,7 +37,7 @@ const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: App
 
   // Custom title for home page
   const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
-  const displayTitle = isHome ? t('common.appName') : title;
+  const displayTitle = isHome ? "DarCare" : title;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center bg-darcare-navy">

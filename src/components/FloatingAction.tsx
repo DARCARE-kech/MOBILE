@@ -44,7 +44,7 @@ const FloatingAction: React.FC = () => {
     },
     {
       id: "contact-admin",
-      label: t('navigation.contactAdmin'),
+      label: t('navigation.contactAdmin', 'Contact Admin'),
       icon: <User size={20} />,
       action: () => navigate("/contact-admin"),
     },
