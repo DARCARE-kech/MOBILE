@@ -89,7 +89,13 @@ export const useMessages = () => {
       console.log("User message saved to Supabase:", userMessageResult.data);
       
       // Add user message immediately to state for instant display
-      const userMessage: ChatMessage = userMessageResult.data;
+      const userMessage: ChatMessage = {
+        id: userMessageResult.data.id,
+        thread_id: userMessageResult.data.thread_id,
+        content: userMessageResult.data.content,
+        sender: userMessageResult.data.sender as "user" | "assistant" | "bot" | "admin",
+        created_at: userMessageResult.data.created_at || new Date().toISOString()
+      };
       
       setMessages(prev => [...prev, userMessage]);
 
@@ -169,7 +175,13 @@ export const useMessages = () => {
         console.log("Assistant message saved to Supabase:", assistantMessageResult.data);
         
         // Add assistant message to state
-        const assistantMessage: ChatMessage = assistantMessageResult.data;
+        const assistantMessage: ChatMessage = {
+          id: assistantMessageResult.data.id,
+          thread_id: assistantMessageResult.data.thread_id,
+          content: assistantMessageResult.data.content,
+          sender: assistantMessageResult.data.sender as "user" | "assistant" | "bot" | "admin",
+          created_at: assistantMessageResult.data.created_at || new Date().toISOString()
+        };
         setMessages(prev => [...prev, assistantMessage]);
       } else {
         console.error("No assistant content found");
