@@ -22,37 +22,41 @@ export const extractMessageContent = (message: any): string => {
  * @param output Output from OpenAI assistant run
  * @returns Extracted text or empty string if not found
  */
-export const extractAssistantOutput = (output: any): string => {
+export const extractAssistantOutput = async (output: any, threadId: string): Promise<string> => {
   console.log("Extracting assistant output:", output);
-  if (!output) return '';
-  
   try {
-    // Essayer de trouver un message dans les données retournées
-    if (output.data && Array.isArray(output.data)) {
-      // Trouver les étapes de type 'message_creation'
-      const messageStep = output.data.find((step: any) => 
-        step.type === 'message_creation' || 
-        step.step_details?.type === 'message_creation'
-      );
-      
-      if (messageStep?.step_details?.message_creation?.message_id) {
-        console.log("Found message ID in step:", messageStep.step_details.message_creation.message_id);
-        return messageStep.step_details.message_creation.message_id;
-      }
+    const messageStep = output?.data?.find(
+      (step: any) => step?.step_details?.message_creation?.message_id
+    );
+
+    const messageId = messageStep?.step_details?.message_creation?.message_id;
+
+    if (!messageId) {
+      console.warn("No assistant message ID found in step");
+      return '';
     }
-    
-    // Essayer de trouver directement dans l'output d'un run
-    const messageOutput = output?.output?.find((o: any) => o.type === "message");
-    const contentBlock = messageOutput?.content?.find((c: any) => c.type === "output_text");
-    const text = contentBlock?.text || '';
-    
-    console.log("Extracted assistant text:", text);
+
+    console.log("Fetching message content from OpenAI for ID:", messageId);
+
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
+      headers: {
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v2',
+      },
+    });
+
+    const data = await response.json();
+    const contentBlock = data.content?.find((c: any) => c.type === "text");
+    const text = contentBlock?.text?.value || '';
+
     return text;
   } catch (error) {
     console.error("Error extracting assistant output:", error);
     return '';
   }
 };
+
 
 /**
  * Enregistre un message dans la base de données Supabase
