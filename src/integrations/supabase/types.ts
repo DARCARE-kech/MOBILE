@@ -67,7 +67,7 @@ export type Database = {
             columns: ["thread_id"]
             isOneToOne: false
             referencedRelation: "chat_threads"
-            referencedColumns: ["id"]
+            referencedColumns: ["thread_id"]
           },
         ]
       }

@@ -27,7 +27,22 @@ export const extractAssistantOutput = (output: any): string => {
   if (!output) return '';
   
   try {
-    const messageOutput = output.output?.find((o: any) => o.type === "message");
+    // Essayer de trouver un message dans les données retournées
+    if (output.data && Array.isArray(output.data)) {
+      // Trouver les étapes de type 'message_creation'
+      const messageStep = output.data.find((step: any) => 
+        step.type === 'message_creation' || 
+        step.step_details?.type === 'message_creation'
+      );
+      
+      if (messageStep?.step_details?.message_creation?.message_id) {
+        console.log("Found message ID in step:", messageStep.step_details.message_creation.message_id);
+        return messageStep.step_details.message_creation.message_id;
+      }
+    }
+    
+    // Essayer de trouver directement dans l'output d'un run
+    const messageOutput = output?.output?.find((o: any) => o.type === "message");
     const contentBlock = messageOutput?.content?.find((c: any) => c.type === "output_text");
     const text = contentBlock?.text || '';
     
@@ -52,6 +67,12 @@ export const saveChatMessage = async (
   sender: 'user' | 'assistant'
 ) => {
   console.log(`Saving chat message: threadId=${threadId}, sender=${sender}, content length=${content.length}`);
+  
+  if (!threadId || !content || content.trim().length === 0) {
+    console.error("Invalid parameters for saveChatMessage:", { threadId, contentLength: content?.length, sender });
+    return null;
+  }
+  
   try {
     const { data, error } = await supabase
       .from("chat_messages")
@@ -81,20 +102,32 @@ export const saveChatMessage = async (
  * @returns Liste des messages du thread
  */
 export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]> => {
-  const { data, error } = await supabase
-    .from("chat_messages")
-    .select("*")
-    .eq("thread_id", threadId)
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    console.error("Error loading messages:", error);
+  console.log(`Getting messages for threadId=${threadId}`);
+  
+  if (!threadId) {
+    console.error("No threadId provided to getThreadMessages");
     return [];
   }
+  
+  try {
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .select("*")
+      .eq("thread_id", threadId)
+      .order("created_at", { ascending: true });
 
-  return data || [];
+    if (error) {
+      console.error("Error loading messages:", error);
+      return [];
+    }
+
+    console.log(`Retrieved ${data?.length || 0} messages from thread ${threadId}`);
+    return data || [];
+  } catch (error) {
+    console.error("Error in getThreadMessages:", error);
+    return [];
+  }
 };
-
 
 /**
  * Crée ou récupère un thread pour un utilisateur
