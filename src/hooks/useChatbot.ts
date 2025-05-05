@@ -1,11 +1,10 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatMessage, ChatThread } from "@/types/chat";
 import * as openaiClient from "@/utils/openaiClient";
-import { extractMessageContent, getThreadMessages, getUserThreads, getOrCreateUserThread, updateThreadTitle } from "@/utils/chatUtils";
+import { extractMessageContent, extractAssistantOutput, getThreadMessages, getUserThreads, getOrCreateUserThread, updateThreadTitle } from "@/utils/chatUtils";
 
 /**
  * Hook principal pour gérer la logique du chatbot
@@ -181,55 +180,47 @@ export const useChatbot = (initialThreadId?: string) => {
         throw new Error("Assistant response timed out");
       }
 
-      // Étape 4: Récupérer les messages du thread
-      console.log(`Getting messages for thread ${currentThreadId}`);
-      const threadMessagesResponse = await openaiClient.getThreadMessages(currentThreadId);
+      // Étape 4: Récupérer directement la réponse de l'assistant via Run output
+      console.log(`Getting run output for thread ${currentThreadId}`);
+      const runOutput = await openaiClient.getRunOutput(currentThreadId, runResponse.id);
       
-      if (!threadMessagesResponse || !threadMessagesResponse.data) {
-        console.error("threadMessagesResponse is missing or has no data:", threadMessagesResponse);
-        throw new Error("Failed to retrieve messages");
+      if (!runOutput) {
+        console.error("runOutput is undefined or null");
+        throw new Error("Failed to retrieve assistant response");
       }
       
-      console.log("Retrieved messages from thread:", threadMessagesResponse.data);
+      console.log("Retrieved run output:", runOutput);
 
-      // Étape 5: Extraire et traiter les messages de l'API
-      const userMessage = threadMessagesResponse.data.find(
-        (msg: any) => msg.role === "user" && 
-        msg.created_at === messageResponse.created_at
-      );
-      
-      const assistantMessage = threadMessagesResponse.data.find(
-        (msg: any) => msg.role === "assistant" && 
-        msg.run_id === runResponse.id
-      );
-      
-      console.log("Found user message:", userMessage);
-      console.log("Found assistant message:", assistantMessage);
+      // Étape 5: Enregistrer les messages dans Supabase
+      // Enregistrer le message utilisateur
+      console.log(`Saving user message to Supabase, content: ${content.substring(0, 50)}${content.length > 50 ? '...' : ''}`);
+      await supabase.from("chat_messages").insert({
+        thread_id: currentThreadId,
+        content: content,
+        sender: "user"
+      });
+      console.log("User message saved to Supabase");
 
-      // Étape 6: Enregistrer les messages dans Supabase
-      if (userMessage) {
-        const userContent = extractMessageContent(userMessage);
-        console.log(`Saving user message to Supabase, content: ${userContent.substring(0, 50)}${userContent.length > 50 ? '...' : ''}`);
+      // Extraire et enregistrer la réponse de l'assistant
+      const assistantOutput = runOutput.output?.find((o: any) => o.type === "message");
+      const contentBlock = assistantOutput?.content?.find((c: any) => c.type === "output_text");
+      const text = contentBlock?.text;
+      
+      console.log("Extracted assistant text:", text);
+      
+      if (text) {
+        console.log(`Saving assistant message to Supabase, content: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`);
         await supabase.from("chat_messages").insert({
           thread_id: currentThreadId,
-          content: userContent,
-          sender: "user"
-        });
-        console.log("User message saved to Supabase");
-      }
-
-      if (assistantMessage) {
-        const assistantContent = extractMessageContent(assistantMessage);
-        console.log(`Saving assistant message to Supabase, content: ${assistantContent.substring(0, 50)}${assistantContent.length > 50 ? '...' : ''}`);
-        await supabase.from("chat_messages").insert({
-          thread_id: currentThreadId,
-          content: assistantContent,
+          content: text,
           sender: "assistant"
         });
         console.log("Assistant message saved to Supabase");
+      } else {
+        console.error("No assistant text found in the response");
       }
 
-      // Étape 7: Mettre à jour la date du thread
+      // Étape 6: Mettre à jour la date du thread
       console.log("Updating thread timestamp");
       await supabase
         .from("chat_threads")
@@ -237,7 +228,7 @@ export const useChatbot = (initialThreadId?: string) => {
         .eq("thread_id", currentThreadId);
       console.log("Thread timestamp updated");
 
-      // Étape 8: Recharger les messages depuis Supabase
+      // Étape 7: Recharger les messages depuis Supabase
       console.log("Reloading messages from Supabase");
       const updatedMessages = await getThreadMessages(currentThreadId);
       console.log("Messages reloaded:", updatedMessages);

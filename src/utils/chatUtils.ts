@@ -18,6 +18,28 @@ export const extractMessageContent = (message: any): string => {
 };
 
 /**
+ * Extracts text from the assistant's run output
+ * @param output Output from OpenAI assistant run
+ * @returns Extracted text or empty string if not found
+ */
+export const extractAssistantOutput = (output: any): string => {
+  console.log("Extracting assistant output:", output);
+  if (!output) return '';
+  
+  try {
+    const messageOutput = output.output?.find((o: any) => o.type === "message");
+    const contentBlock = messageOutput?.content?.find((c: any) => c.type === "output_text");
+    const text = contentBlock?.text || '';
+    
+    console.log("Extracted assistant text:", text);
+    return text;
+  } catch (error) {
+    console.error("Error extracting assistant output:", error);
+    return '';
+  }
+};
+
+/**
  * Enregistre un message dans la base de données Supabase
  * @param threadId ID du thread
  * @param content Contenu du message
@@ -61,7 +83,7 @@ export const saveChatMessage = async (
 export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]> => {
   console.log(`Getting thread messages for threadId=${threadId}`);
   try {
-    // Use .eq instead of converting to UUID since thread_id is stored as text
+    // Important: thread_id is stored as text in the database, not as UUID
     const { data, error } = await supabase
       .from("chat_messages")
       .select("*")
