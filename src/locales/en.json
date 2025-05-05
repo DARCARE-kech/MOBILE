@@ -33,15 +33,16 @@
     "delete": "Delete",
     "tryAgain": "Try Again",
     "errorOccurred": "An error occurred",
-      "view": "View",
-     "submit": "Submit",
-      "back": "Back",
-     "edit": "Edit",
-     "continue": "Continue",
-     "next": "Next",
-     "previous": "Previous",
-     "required": "Required",
-     "optional": "Optional"
+    "view": "View",
+    "submit": "Submit",
+    "back": "Back",
+    "edit": "Edit",
+    "continue": "Continue",
+    "next": "Next",
+    "previous": "Previous",
+    "required": "Required",
+    "optional": "Optional",
+    "success": "Success"
   },
   "auth": {
     "signIn": "Sign In",
@@ -59,15 +60,29 @@
     "resetLinkSent": "Reset link sent",
     "checkEmail": "Check your email for a reset link",
     "invalidCredentials": "Invalid email or password",
-      "signOut": "Sign Out",
-     "createAccount": "Create Account",
-     "forgotPassword": "Forgot Password",
-     "resetPassword": "Reset Password",
+    "signOut": "Sign Out",
+    "createAccount": "Create Account",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
     "newPassword": "New Password",
-     "confirmPassword": "Confirm Password",
-     "fullName": "Full Name",
-     "accessServices": "Access your luxury villa services",
-     "joinDarcare": "Join DarCare for an exceptional Marrakech stay"
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "accessServices": "Access your luxury villa services",
+    "joinDarcare": "Join DarCare for an exceptional Marrakech stay",
+    "welcomeBack": "Welcome back!",
+    "signInSuccess": "Successfully signed in",
+    "signupSuccess": "Account created successfully",
+    "signupFailed": "Sign-up failed",
+    "signInFailed": "Sign-in failed",
+    "emailConfirmationRequired": "Please check your email to confirm your account before signing in.",
+    "emailNotConfirmed": "Please confirm your email before signing in",
+    "emailAlreadyRegistered": "This email is already registered. Please sign in instead.",
+    "passwordRequirements": "Password doesn't meet requirements",
+    "invalidCredentials": "The email or password you entered is incorrect",
+    "invalidEmail": "Invalid email address",
+    "rateLimitExceeded": "Too many sign in attempts. Please try again later.",
+    "passwordResetSent": "Password reset email sent",
+    "checkEmail": "Please check your email"
   },
   "home": {
     "quickServices": "Quick Services",
@@ -95,14 +110,14 @@
     "untitled": "Untitled Service",
     "unassigned": "Not yet assigned",
     "book": "Book",
-      "capacity": "Capacity",
+    "capacity": "Capacity",
     "available": "Available",
     "request": "Request",
     "spaces": "Spaces",
     "cleaning": "Cleaning",
     "maintenance": "Maintenance",
     "transport": "Transport",
-      "laundry": "Laundry",
+    "laundry": "Laundry",
     "shop": "Shop",
     "details": "Service Details",
     "preferredTime": "Preferred Time",
@@ -181,7 +196,6 @@
   "explore": {
     "title": "Explore",
     "categories": {
-      
       "other": "Other",
       "events": "Events",
       "dining": "Dining",
@@ -217,21 +231,7 @@
     "locationNotAvailable": "Location information not available",
     "noCoordinatesProvided": "No coordinates provided for this location",
     "somethingWentWrong": "Something went wrong",
-    "couldNotLoadRecommendation": "Could not load recommendation details",
-    "welcomeBack": "Welcome back!",
-     "signInSuccess": "Successfully signed in",
-     "signupSuccess": "Account created successfully",
-     "signupFailed": "Sign-up failed",
-     "signInFailed": "Sign-in failed",
-     "emailConfirmationRequired": "Please check your email to confirm your account before signing in.",
-     "emailNotConfirmed": "Please confirm your email before signing in",
-     "emailAlreadyRegistered": "This email is already registered. Please sign in instead.",
-     "passwordRequirements": "Password doesn't meet requirements",
-     "invalidCredentials": "The email or password you entered is incorrect",
-     "invalidEmail": "Invalid email address",
-     "rateLimitExceeded": "Too many sign in attempts. Please try again later.",
-     "passwordResetSent": "Password reset email sent",
-     "checkEmail": "Please check your email"
+    "couldNotLoadRecommendation": "Could not load recommendation details"
   },
   "navigation": {
     "home": "Home",
@@ -289,7 +289,18 @@
     "sendMessage": "Send Message",
     "askChatbot": "Ask Assistant",
     "startConversation": "Start a conversation with the AI assistant",
-    "aiResponse": "I'm your AI concierge. How can I help you today?"
+    "aiResponse": "I'm your AI concierge. How can I help you today?",
+    "noHistoryYet": "No conversation history yet",
+    "startNewChat": "Start a new chat to begin",
+    "messageError": "Could not send your message",
+    "thinking": "Assistant is thinking..."
+  },
+  "chat": {
+    "history": "Chat History",
+    "emptyTitleError": "Title cannot be empty",
+    "updateTitleError": "Could not update conversation title",
+    "deleteSuccess": "Conversation deleted successfully",
+    "deleteError": "Could not delete conversation"
   },
   "profile": {
     "preferences": "Preferences",
@@ -346,6 +357,6 @@
     "fr": "French",
     "ar": "Arabic",
     "settings": "Settings",
-     "notifications": "Notifications"
+    "notifications": "Notifications"
   }
 }

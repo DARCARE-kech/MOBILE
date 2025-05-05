@@ -4,7 +4,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
 // OpenAI API key from environment variables
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || "sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx";
-const OPENAI_ASSISTANT_ID = Deno.env.get('OPENAI_ASSISTANT_ID') || "asst_PFKqwI2J6PD7ymvDNtftLHEd";
+const OPENAI_ASSISTANT_ID = Deno.env.get('OPENAI_ASSISTANT_ID') || "asst_Yh87yZ3mNeMJS6W5TeVobQ1S";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,7 +31,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({})
       });
@@ -53,7 +53,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({
           role: 'user',
@@ -78,7 +78,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({
           assistant_id: OPENAI_ASSISTANT_ID
@@ -107,7 +107,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         }
       });
 
@@ -128,7 +128,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         }
       });
 

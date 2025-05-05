@@ -1,3 +1,4 @@
+
 import { Enums } from '@/integrations/supabase/types';
 
 export interface ChatSession {

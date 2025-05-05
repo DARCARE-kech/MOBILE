@@ -55,8 +55,8 @@ const ChatbotPage: React.FC = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
-        title: 'Error',
-        description: 'Could not send your message.',
+        title: t('common.error'),
+        description: t('chatbot.messageError') || 'Could not send your message.',
         variant: 'destructive'
       });
     }

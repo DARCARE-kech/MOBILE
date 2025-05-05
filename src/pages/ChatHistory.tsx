@@ -45,7 +45,7 @@ const ChatHistory: React.FC = () => {
     if (!editingTitle.trim()) {
       toast({
         title: t('common.error'),
-        description: t('chat.emptyTitleError', 'Title cannot be empty'),
+        description: t('chat.emptyTitleError') || 'Title cannot be empty',
         variant: 'destructive',
       });
       return;
@@ -63,8 +63,8 @@ const ChatHistory: React.FC = () => {
     } catch (error) {
       console.error("Error updating thread title:", error);
       toast({
-        title: 'Error',
-        description: 'Could not update conversation title.',
+        title: t('common.error'),
+        description: t('chat.updateTitleError') || 'Could not update conversation title.',
         variant: 'destructive'
       });
     }
@@ -77,8 +77,8 @@ const ChatHistory: React.FC = () => {
       
       if (success) {
         toast({
-          title: 'Success',
-          description: 'Conversation deleted successfully.',
+          title: t('common.success'),
+          description: t('chat.deleteSuccess') || 'Conversation deleted successfully.',
         });
       } else {
         throw new Error("Failed to delete thread");
@@ -86,8 +86,8 @@ const ChatHistory: React.FC = () => {
     } catch (error) {
       console.error("Error deleting thread:", error);
       toast({
-        title: 'Error',
-        description: 'Could not delete conversation.',
+        title: t('common.error'),
+        description: t('chat.deleteError') || 'Could not delete conversation.',
         variant: 'destructive'
       });
     } finally {
@@ -109,7 +109,7 @@ const ChatHistory: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('chat.history')} onBack={() => navigate('/chatbot')} />
+      <MainHeader title={t('chat.history') || "Chat History"} onBack={() => navigate('/chatbot')} />
       
       <ScrollArea className="flex-1 p-4 pb-24 pt-20">
         <div className="space-y-4">

@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || "sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,10 +17,6 @@ serve(async (req) => {
 
   try {
     const { thread_id, run_id } = await req.json();
-
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not set');
-    }
 
     if (!thread_id || !run_id) {
       throw new Error('thread_id and run_id are required');

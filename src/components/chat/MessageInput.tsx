@@ -3,6 +3,7 @@ import React, { useState, KeyboardEvent } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MessageInputProps {
   onSend: (message: string) => void;
@@ -11,6 +12,7 @@ interface MessageInputProps {
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) => {
   const [message, setMessage] = useState('');
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Type your message..."
+        placeholder={t('chatbot.typeMessage')}
         disabled={disabled}
         className="flex-1 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 rounded-full"
       />
