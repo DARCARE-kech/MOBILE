@@ -61,12 +61,12 @@ export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]
     if (error) throw error;
     
     return (data || []).map(message => ({
-      id: message.id,
-      thread_id: message.thread_id,
-      content: message.content || "",
-      sender: (message.sender as "user" | "assistant" | "bot" | "admin"),
-      timestamp: message.created_at || new Date().toISOString()
-    }));
+  id: message.id,
+  thread_id: message.thread_id,
+  content: message.content || "",
+  sender: message.sender === "tenant" ? "user" : message.sender,
+  timestamp: message.created_at || new Date().toISOString()
+}));
   } catch (error) {
     console.error("Error getting thread messages:", error);
     return [];
