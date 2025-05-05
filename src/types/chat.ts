@@ -12,11 +12,11 @@ export interface ChatSession {
 export interface ChatMessage {
   id: string;
   session_id?: string;
-  thread_id?: string; // Adding this optional property
+  thread_id?: string;
   user_id?: string;
   content: string;
-  sender: 'user' | 'bot' | 'assistant' | 'admin';
-  timestamp: string;
+  sender: 'user' | 'assistant' | 'bot' | 'admin';
+  created_at: string;
   metadata?: Record<string, any>;
 }
 

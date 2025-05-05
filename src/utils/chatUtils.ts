@@ -122,7 +122,17 @@ export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]
     }
 
     console.log(`Retrieved ${data?.length || 0} messages from thread ${threadId}`);
-    return data || [];
+    
+    // Transform database rows to ChatMessage type
+    const chatMessages: ChatMessage[] = data?.map(msg => ({
+      id: msg.id,
+      thread_id: msg.thread_id,
+      content: msg.content || '',
+      sender: msg.sender as 'user' | 'assistant' | 'bot' | 'admin',
+      created_at: msg.created_at || new Date().toISOString()
+    })) || [];
+    
+    return chatMessages;
   } catch (error) {
     console.error("Error in getThreadMessages:", error);
     return [];
