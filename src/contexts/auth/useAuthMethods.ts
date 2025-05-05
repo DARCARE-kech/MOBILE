@@ -1,13 +1,14 @@
-
 import { useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { UserProfile } from "./types";
+import { useTranslation } from "react-i18next";
 
 export const useAuthMethods = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const signUp = async (email: string, password: string, fullName: string) => {
     setIsLoading(true);
@@ -25,8 +26,8 @@ export const useAuthMethods = () => {
       if (error) throw error;
 
       toast({
-        title: "Account created successfully",
-        description: "A confirmation email has been sent to your email address. Please check your inbox and confirm your email before signing in.",
+        title: t("auth.signupSuccess"),
+        description: t("auth.emailConfirmationRequired"),
         duration: 8000,
       });
       
@@ -34,16 +35,16 @@ export const useAuthMethods = () => {
     } catch (error: any) {
       console.error("Error signing up:", error);
       
-      let errorMessage = "Failed to create account";
+      let errorMessage = t("auth.signupFailed");
       
       if (error.message.includes("User already registered")) {
-        errorMessage = "This email is already registered. Please sign in instead.";
+        errorMessage = t("auth.emailAlreadyRegistered");
       } else if (error.message.includes("Password")) {
-        errorMessage = error.message || "Password doesn't meet requirements";
+        errorMessage = error.message || t("auth.passwordRequirements");
       }
       
       toast({
-        title: "Sign-up failed",
+        title: t("auth.signupFailed"),
         description: errorMessage,
         variant: "destructive",
       });
@@ -64,34 +65,37 @@ export const useAuthMethods = () => {
       if (error) throw error;
 
       toast({
-        title: "Welcome back!",
-        description: "Successfully signed in",
+        title: t("auth.welcomeBack"),
+        description: t("auth.signInSuccess"),
       });
       
       return { success: true, data };
     } catch (error: any) {
       console.error("Error signing in:", error);
       
-      let errorTitle = "Sign-in failed";
-      let errorMessage = "Invalid email or password";
+      let errorCode = "";
+      let errorMessage = t("auth.invalidCredentials");
       
       // Check for specific error conditions
       if (error.message.includes("Email not confirmed")) {
-        errorTitle = "Email not confirmed";
-        errorMessage = "Please check your inbox and confirm your email before signing in";
+        errorCode = "email_not_confirmed";
+        errorMessage = t("auth.emailNotConfirmed");
       } else if (error.message.includes("Invalid login credentials")) {
-        errorMessage = "The email or password you entered is incorrect";
+        errorCode = "invalid_credentials";
+        errorMessage = t("auth.invalidCredentials");
       } else if (error.message.includes("rate limit")) {
-        errorMessage = "Too many sign in attempts. Please try again later.";
+        errorCode = "rate_limit";
+        errorMessage = t("auth.rateLimitExceeded");
       }
       
       toast({
-        title: errorTitle,
+        title: t("auth.signInFailed"),
         description: errorMessage,
         duration: 6000,
         variant: "destructive",
       });
-      throw error;
+      
+      throw { ...error, code: errorCode, message: errorMessage };
     } finally {
       setIsLoading(false);
     }

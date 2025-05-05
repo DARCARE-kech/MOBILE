@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
@@ -11,6 +10,7 @@ import AuthFooter from "@/components/auth/AuthFooter";
 import { validateEmail, validatePassword, validateName } from "@/utils/authValidation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,6 +24,7 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (user) {
@@ -56,8 +57,20 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        await signIn(email, password);
-        // Auth context will handle navigation on successful login
+        try {
+          await signIn(email, password);
+          // Auth context will handle navigation on successful login
+        } catch (error: any) {
+          // Handle specific error types from signIn
+          if (error.code === "email_not_confirmed") {
+            setEmailError(t("auth.emailNotConfirmed"));
+          } else if (error.code === "invalid_credentials") {
+            setPasswordError(t("auth.invalidCredentials"));
+          } else {
+            // Generic error handling as fallback
+            setEmailError(error.message || t("auth.signInFailed"));
+          }
+        }
       } else {
         const result = await signUp(email, password, name);
         if (result.success) {
@@ -65,10 +78,14 @@ const Auth = () => {
           setIsLogin(true);
           // Clear form fields
           setPassword("");
+          
+          // Toast notification is already handled in the useAuthMethods
         }
       }
-    } catch (error) {
-      // Error handled in auth context
+    } catch (error: any) {
+      // Error handling for signup is already in useAuthMethods
+      // Adding this catch block just to be safe
+      console.error("Auth error:", error);
     }
   };
 
@@ -93,15 +110,15 @@ const Auth = () => {
             "font-serif text-3xl mb-3 text-center tracking-wide",
             isDarkMode ? "text-darcare-gold" : "text-primary"
           )}>
-            {isLogin ? "Sign In" : "Create Account"}
+            {isLogin ? t("auth.signIn") : t("auth.createAccount")}
           </h1>
           <p className={cn(
             "text-center mb-10",
             isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
           )}>
             {isLogin
-              ? "Access your luxury villa services"
-              : "Join DarCare for an exceptional Marrakech stay"}
+              ? t("auth.accessServices")
+              : t("auth.joinDarcare")}
           </p>
           
           <AuthTabs isLogin={isLogin} setIsLogin={setIsLogin} />
