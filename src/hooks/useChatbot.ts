@@ -20,6 +20,7 @@ export const useChatbot = (initialThreadId?: string) => {
   const [currentThread, setCurrentThread] = useState<ChatThread | null>(null);
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(initialThreadId || null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   /**
    * Charge les threads de l'utilisateur
@@ -352,23 +353,18 @@ export const useChatbot = (initialThreadId?: string) => {
     console.log("initialThreadId =", initialThreadId);
     console.log("currentThreadId =", currentThreadId);
     
-    if (user?.id) {
-      console.log("User is available, loading threads");
-      loadThreads();
-      
-      if (initialThreadId) {
-        console.log("initialThreadId is provided, initializing with it");
-        initializeThread(initialThreadId);
-      } else if (!currentThreadId) {
-        console.log("No currentThreadId, initializing a new thread");
-        initializeThread();
-      } else {
-        console.log("currentThreadId is already set, no need to initialize");
-      }
-    } else {
-      console.log("No user available, skipping initialization");
-    }
-  }, [user?.id, initialThreadId, loadThreads, initializeThread, currentThreadId]);
+    if (user?.id && !hasInitialized) {
+  console.log("Initializing only once");
+  loadThreads();
+
+  if (initialThreadId) {
+    initializeThread(initialThreadId);
+  } else {
+    initializeThread();
+  }
+
+  setHasInitialized(true);
+}
 
   return {
     messages,
