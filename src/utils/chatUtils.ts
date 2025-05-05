@@ -81,34 +81,20 @@ export const saveChatMessage = async (
  * @returns Liste des messages du thread
  */
 export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]> => {
-  console.log(`Getting thread messages for threadId=${threadId}`);
-  try {
-    // Important: thread_id is stored as text in the database, not as UUID
-    const { data, error } = await supabase
-      .from("chat_messages")
-      .select("*")
-      .eq("thread_id", threadId)
-      .order("created_at", { ascending: true });
-      
-    if (error) {
-      console.error("Error getting thread messages:", error);
-      throw error;
-    }
-    
-    console.log(`Retrieved ${data?.length || 0} messages for thread ${threadId}`);
-    
-    return (data || []).map(message => ({
-      id: message.id,
-      thread_id: message.thread_id,
-      content: message.content || "",
-      sender: message.sender === "user" ? "user" : "assistant" as "user" | "assistant" | "bot" | "admin",
-      timestamp: message.created_at || new Date().toISOString()
-    }));
-  } catch (error) {
-    console.error("Error getting thread messages:", error);
+  const { data, error } = await supabase
+    .from("chat_messages")
+    .select("*")
+    .eq("thread_id", threadId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Error loading messages:", error);
     return [];
   }
+
+  return data || [];
 };
+
 
 /**
  * Crée ou récupère un thread pour un utilisateur
