@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -108,14 +109,14 @@ export const useAuthMethods = () => {
       if (error) throw error;
       
       toast({
-        title: "Signed out",
-        description: "You have been successfully signed out",
+        title: t("auth.signOut"),
+        description: t("auth.signOutSuccess", "You have been successfully signed out"),
       });
     } catch (error: any) {
       console.error("Error signing out:", error);
       toast({
-        title: "Error",
-        description: "Failed to sign out",
+        title: t("common.error"),
+        description: t("auth.signOutFailed", "Failed to sign out"),
         variant: "destructive",
       });
     } finally {
@@ -133,8 +134,8 @@ export const useAuthMethods = () => {
       if (error) throw error;
       
       toast({
-        title: "Password reset email sent",
-        description: "Check your inbox for instructions to reset your password",
+        title: t("auth.passwordResetSent"),
+        description: t("auth.checkEmail"),
         duration: 8000,
       });
       
@@ -142,8 +143,8 @@ export const useAuthMethods = () => {
     } catch (error: any) {
       console.error("Error sending password reset:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to send password reset email",
+        title: t("common.error"),
+        description: error.message || t("auth.passwordResetFailed", "Failed to send password reset email"),
         variant: "destructive",
       });
       return false;

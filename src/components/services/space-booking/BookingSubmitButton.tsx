@@ -32,12 +32,12 @@ export const BookingSubmitButton: React.FC<BookingSubmitButtonProps> = ({
       {isSubmitting ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          {t('common.processing', 'Processing...')}
+          {t('common.processing')}
         </>
       ) : isEditing ? (
-        t('services.updateBooking', 'Update Booking')
+        t('services.updateBooking')
       ) : (
-        t('services.confirmBooking', 'Confirm Booking')
+        t('services.confirmBooking')
       )}
     </Button>
   );

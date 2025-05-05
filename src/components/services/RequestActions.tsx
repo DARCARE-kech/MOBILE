@@ -45,7 +45,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({
         onClick={handleEdit}
       >
         <Pencil className="h-4 w-4 mr-2" />
-        {t('common.modify', 'Modify')}
+        {t('common.modify')}
       </Button>
       
       <Button
@@ -55,7 +55,7 @@ const RequestActions: React.FC<RequestActionsProps> = ({
         disabled={isSubmitting}
       >
         <X className="h-4 w-4 mr-2" />
-        {isSubmitting ? t('common.processing', 'Processing...') : t('common.cancel', 'Cancel')}
+        {isSubmitting ? t('common.processing') : t('common.cancel')}
       </Button>
     </div>
   );

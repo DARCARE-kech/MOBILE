@@ -19,7 +19,7 @@ export const SpecialRequests: React.FC<SpecialRequestsProps> = ({ form }) => {
   return (
     <div className="mt-6">
       <FormSectionTitle 
-        title={t('services.specialRequests', 'Special Requests')} 
+        title={t('services.specialRequests')} 
         icon={<Pencil className="w-5 h-5" />}
       />
       
@@ -30,7 +30,7 @@ export const SpecialRequests: React.FC<SpecialRequestsProps> = ({ form }) => {
           <FormItem className="mt-2">
             <FormControl>
               <Textarea
-                placeholder={t('services.specialRequestsPlaceholder', 'Any special requirements or requests...')}
+                placeholder={t('services.specialRequestsPlaceholder')}
                 className={cn(
                   "min-h-[100px] border resize-none",
                   isDarkMode 

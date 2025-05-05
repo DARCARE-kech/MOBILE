@@ -35,7 +35,7 @@ export const DateTimeSelector = ({
           <FormItem>
             <div className="flex items-center justify-between mb-1">
               <FormLabel className={isDarkMode ? "text-darcare-beige" : "text-darcare-charcoal"}>
-                {t('services.selectDate', 'Select Date')}
+                {t('spaces.selectDate')}
               </FormLabel>
             </div>
             <div>
@@ -58,7 +58,7 @@ export const DateTimeSelector = ({
                       {field.value ? (
                         format(field.value, 'PPP')
                       ) : (
-                        <span className="opacity-50">{t('services.pickDate', 'Pick a date')}</span>
+                        <span className="opacity-50">{t('services.pickDate')}</span>
                       )}
                     </Button>
                   </FormControl>
@@ -82,7 +82,7 @@ export const DateTimeSelector = ({
 
       <div className="space-y-1">
         <FormLabel className={isDarkMode ? "text-darcare-beige" : "text-darcare-charcoal"}>
-          {t('services.selectTime', 'Select Time')}
+          {t('spaces.selectTime')}
         </FormLabel>
         <TimeSelector
           selectedTime={selectedTime}
@@ -92,7 +92,7 @@ export const DateTimeSelector = ({
         />
         {!selectedTime && form.formState.isSubmitted && (
           <p className="text-sm text-red-500 mt-1">
-            {t('services.timeRequired', 'Please select a time')}
+            {t('services.timeRequired')}
           </p>
         )}
       </div>

@@ -6,6 +6,7 @@ import ReservationLinkForm from "./stays/ReservationLinkForm";
 import StayDetails from "./stays/StayDetails";
 import { Skeleton } from "./ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 type Stay = Tables<"stays">;
 
@@ -23,18 +24,19 @@ const CurrentStay: React.FC<CurrentStayProps> = ({
   isLoading = false
 }) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isLinkingReservation, setIsLinkingReservation] = useState(false);
   
   useEffect(() => {
     // If we just got a currentStay after not having one, show a success toast
     if (currentStay && isLinkingReservation) {
       toast({
-        title: "Reservation linked successfully",
-        description: `Your stay at ${currentStay.villa_number} has been linked to your account.`,
+        title: t('stays.reservationLinked'),
+        description: t('stays.stayDetails', {villa: currentStay.villa_number}),
       });
       setIsLinkingReservation(false);
     }
-  }, [currentStay, isLinkingReservation, toast]);
+  }, [currentStay, isLinkingReservation, toast, t]);
 
   if (isLoading) {
     return (
