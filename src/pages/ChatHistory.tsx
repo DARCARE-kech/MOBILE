@@ -149,7 +149,7 @@ const handleDelete = async (threadId: string) => {
           ) : (
             threads.map((thread) => (
               <ChatThreadItem
-                key={thread.id}
+                key={thread.thread_id}
                 thread={thread}
                 editingId={editingId}
                 editingTitle={editingTitle}
