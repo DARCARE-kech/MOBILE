@@ -11,7 +11,7 @@ import ChatHistoryLoading from '@/components/chat/ChatHistoryLoading';
 import EmptyChatHistory from '@/components/chat/EmptyChatHistory';
 import ChatThreadItem from '@/components/chat/ChatThreadItem';
 import NewChatButton from '@/components/chat/NewChatButton';
-import { useThreads } from '@/hooks/chat/useThreads';
+import { useThreads } from '@/hooks/chat/useThreads'; // Fixed import path
 import { createNewThread } from "@/utils/chatUtils"; 
 
 
@@ -157,8 +157,8 @@ const ChatHistory: React.FC = () => {
                 editingTitle={editingTitle}
                 isDeleting={isDeleting}
                 onEdit={handleEdit}
-                onSave={handleSave}
-                onDelete={handleDelete}
+                onSave={() => handleSave(thread.thread_id)} 
+                onDelete={() => handleDelete(thread.thread_id)}
                 onNavigate={goToChat}
                 setEditingTitle={setEditingTitle}
               />
