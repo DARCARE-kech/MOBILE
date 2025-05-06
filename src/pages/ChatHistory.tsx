@@ -11,7 +11,8 @@ import ChatHistoryLoading from '@/components/chat/ChatHistoryLoading';
 import EmptyChatHistory from '@/components/chat/EmptyChatHistory';
 import ChatThreadItem from '@/components/chat/ChatThreadItem';
 import NewChatButton from '@/components/chat/NewChatButton';
-import useChatbot from '@/hooks/useChatbot';
+import { useThreads } from '@/hooks/useThreads';
+
 
 const ChatHistory: React.FC = () => {
   const navigate = useNavigate();
@@ -22,18 +23,16 @@ const ChatHistory: React.FC = () => {
   const [editingTitle, setEditingTitle] = useState('');
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   
-  const { 
-    threads,
-    currentThread,
-    currentThreadId,
-    loadThreads,
-    initializeThread,
-    updateThreadTitle,
-    deleteThread,
-    setCurrentThread,
-    setCurrentThreadId,
-    isLoading 
-  } = useChatbot();
+  const {
+  threads,
+  loadThreads,
+  initializeThread,
+  updateThreadTitle,
+  deleteThread,
+  currentThread,
+  setCurrentThread
+} = useThreads();
+
 
   useEffect(() => {
     if (user) {
