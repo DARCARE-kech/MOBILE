@@ -40,22 +40,28 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
       headers: {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        'Authorization': Bearer sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx,
         'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2',
       },
     });
 
     const data = await response.json();
-    const contentBlock = data.content?.find((c: any) => c.type === "text");
-    const text = typeof contentBlock?.text === "string"
-  ? contentBlock.text
-  : contentBlock?.text?.value || '';
+    console.log("Message content response:", data);
 
-    console.log("Resolved assistant text content:", text);
+    const contentBlock = data.content?.find(
+      (c: any) => c.type === "text" || c.type === "output_text"
+    );
 
+    let text = '';
 
+    if (typeof contentBlock?.text === 'string') {
+      text = contentBlock.text;
+    } else if (typeof contentBlock?.text?.value === 'string') {
+      text = contentBlock.text.value;
+    }
 
+    console.log("Extracted assistant message text:", text);
     return text;
   } catch (error) {
     console.error("Error extracting assistant output:", error);
