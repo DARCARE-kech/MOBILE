@@ -11,7 +11,7 @@ import ChatHistoryLoading from '@/components/chat/ChatHistoryLoading';
 import EmptyChatHistory from '@/components/chat/EmptyChatHistory';
 import ChatThreadItem from '@/components/chat/ChatThreadItem';
 import NewChatButton from '@/components/chat/NewChatButton';
-import { useThreads } from '@/hooks/chat/useThreads'; // Fixed import path
+import { useThreads } from '@/hooks/chat/useThreads';
 import { createNewThread } from "@/utils/chatUtils"; 
 
 
@@ -115,17 +115,6 @@ const ChatHistory: React.FC = () => {
       setIsDeleting(null);
     }
   };
-
-  const testDirectUpdate = async () => {
-  const { error } = await supabase
-    .from("chat_threads")
-    .update({ title: "TEST DIRECT UPDATE" })
-    .eq("thread_id", "6c27c78c-8761-4667-985d-4ea35ebda55a");
-
-  if (error) console.error("❌ Supabase direct update error:", error);
-  else console.log("✅ Direct update OK");
-};
-
 
   const handleCreateNewChat = async () => {
     if (!user?.id) return;

@@ -96,25 +96,25 @@ export const useThreads = () => {
   /**
    * Updates the title of a thread
    */
-  export const updateThreadTitle = async (threadId: string, title: string) => {
-  console.log(`Updating title for threadId=${threadId} to "${title}"`);
-  try {
-    const { error } = await supabase
-      .from("chat_threads")
-      .update({ title, updated_at: new Date().toISOString() })
-      .eq("thread_id", threadId);
-    
-    if (error) {
+  const updateThreadTitle = async (threadId: string, title: string) => {
+    console.log(`Updating title for threadId=${threadId} to "${title}"`);
+    try {
+      const { error } = await supabase
+        .from("chat_threads")
+        .update({ title, updated_at: new Date().toISOString() })
+        .eq("thread_id", threadId);
+      
+      if (error) {
+        console.error("Error updating thread title:", error);
+        throw error;
+      }
+      console.log("Thread title updated successfully");
+      return true;
+    } catch (error) {
       console.error("Error updating thread title:", error);
-      throw error;
+      return false;
     }
-    console.log("Thread title updated successfully");
-    return true;
-  } catch (error) {
-    console.error("Error updating thread title:", error);
-    return false;
-  }
-};
+  };
 
   /**
    * Deletes a thread

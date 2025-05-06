@@ -1,4 +1,3 @@
-
 import { ChatMessage } from "@/types/chat";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -320,3 +319,22 @@ export const getUserThreads = async (userId: string) => {
  * @param title Nouveau titre
  * @returns Succès ou échec de la mise à jour
  */
+export const updateThreadTitle = async (threadId: string, title: string) => {
+  console.log(`External updateThreadTitle utility called with threadId=${threadId}, title="${title}"`);
+  try {
+    const { error } = await supabase
+      .from("chat_threads")
+      .update({ title, updated_at: new Date().toISOString() })
+      .eq("thread_id", threadId);
+    
+    if (error) {
+      console.error("Error updating thread title:", error);
+      throw error;
+    }
+    console.log("Thread title updated successfully in Supabase");
+    return true;
+  } catch (error) {
+    console.error("Error updating thread title:", error);
+    return false;
+  }
+};
