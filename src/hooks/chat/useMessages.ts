@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatMessage } from "@/types/chat";
 import * as openaiClient from "@/utils/openaiClient";
-import { extractAssistantOutput, getThreadMessages, saveChatMessage } from "@/utils/chatUtils";
+import { extractAssistantOutput, getThreadMessages } from "@/utils/chatUtils";
 
 /**
  * Hook for managing chat messages
@@ -67,7 +67,16 @@ export const useMessages = () => {
 
       // Step 1: Save user message to Supabase
       console.log("Saving user message to Supabase");
-      await saveChatMessage(threadId, content.trim(), "user");
+      const userMessageResult = await supabase.from("chat_messages").insert({
+        thread_id: threadId,
+        content: content.trim(),
+        sender: "user"
+      });
+      
+      if (userMessageResult.error) {
+        console.error("Error saving user message to Supabase:", userMessageResult.error);
+        throw userMessageResult.error;
+      }
       
       console.log("User message saved to Supabase");
       
@@ -137,15 +146,22 @@ export const useMessages = () => {
       const runStepsResponse = await openaiClient.getRunOutput(threadId, runResponse.id);
       console.log("Run steps response:", runStepsResponse);
       
-      // The argument was missing here - adding the threadId
-      const assistantContent = await extractAssistantOutput(runStepsResponse, threadId);
+      const assistantContent = extractAssistantOutput(runStepsResponse);
       console.log("Extracted assistant content:", assistantContent);
 
       if (assistantContent) {
         // Step 6: Save assistant's response to Supabase
         console.log("Saving assistant message to Supabase");
-        // Fix here - await the result and make sure assistantContent is a string
-        await saveChatMessage(threadId, assistantContent, "assistant");
+        const assistantMessageResult = await supabase.from("chat_messages").insert({
+          thread_id: threadId,
+          content: assistantContent,
+          sender: "assistant"
+        });
+        
+        if (assistantMessageResult.error) {
+          console.error("Error saving assistant message to Supabase:", assistantMessageResult.error);
+          throw assistantMessageResult.error;
+        }
         
         console.log("Assistant message saved to Supabase");
       } else {
