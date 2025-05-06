@@ -108,7 +108,7 @@ const ChatbotPage: React.FC = () => {
       </MainHeader>
       
       <ScrollArea 
-        className="flex-1 p-4 pt-20 pb-24"
+        className="flex-1 p-4 pt-20 pb-36"
       >
         {isLoading && messages?.length === 0 ? (
           <div className="flex items-center justify-center h-40">
