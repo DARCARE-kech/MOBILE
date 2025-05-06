@@ -42,6 +42,14 @@ serve(async (req) => {
 
     const { data } = await response.json();
     console.log(`Successfully retrieved ${data.length} messages`);
+
+    if (data?.length) {
+  const latest = data.find((msg) => msg.role === 'assistant');
+  if (latest) {
+    console.log("Dernier message assistant brut :", JSON.stringify(latest, null, 2));
+  }
+}
+
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
