@@ -96,63 +96,58 @@ export const useThreads = () => {
   /**
    * Updates the title of a thread
    */
-  const updateThreadTitle = useCallback(async (threadId: string, title: string) => {
-    console.log(`updateThreadTitle called with threadId: ${threadId}, title: ${title}`);
-    if (!title.trim()) {
-      console.log("Title is empty, not updating");
-      return false;
-    }
+  export const updateThreadTitle = async (threadId: string, title: string) => {
+  console.log(`Updating title for threadId=${threadId} to "${title}"`);
+  try {
+    const { error } = await supabase
+      .from("chat_threads")
+      .update({ title, updated_at: new Date().toISOString() })
+      .eq("thread_id", threadId);
     
-    try {
-      const success = await updateThreadTitleUtil(threadId, title);
-      
-      if (success) {
-        console.log("Title updated successfully, reloading threads");
-        await loadThreads();
-        
-        if (currentThread?.thread_id === threadId) {
-          console.log("Updating current thread title in state");
-          setCurrentThread(prev => prev ? { ...prev, title } : null);
-        }
-      }
-      
-      return success;
-    } catch (error) {
+    if (error) {
       console.error("Error updating thread title:", error);
-      return false;
+      throw error;
     }
-  }, [loadThreads, currentThread]);
+    console.log("Thread title updated successfully");
+    return true;
+  } catch (error) {
+    console.error("Error updating thread title:", error);
+    return false;
+  }
+};
 
   /**
    * Deletes a thread
    */
   const deleteThread = useCallback(async (threadId: string) => {
-  console.log("deleteThread called with threadId:", threadId);
-  try {
-    const { error } = await supabase
-      .from("chat_threads")
-      .delete()
-      .eq("thread_id", threadId); 
-
-    if (error) {
+    console.log("deleteThread called with threadId:", threadId);
+    try {
+      console.log("Deleting thread from Supabase");
+      const { error } = await supabase
+        .from("chat_threads")
+        .delete()
+        .eq("thread_id", threadId);
+        
+      if (error) {
+        console.error("Error deleting thread:", error);
+        throw error;
+      }
+      
+      console.log("Thread deleted, reloading threads");
+      await loadThreads();
+      
+      if (currentThread?.thread_id === threadId) {
+        console.log("Deleted the current thread, resetting state");
+        setCurrentThread(null);
+        setCurrentThreadId(null);
+      }
+      
+      return true;
+    } catch (error) {
       console.error("Error deleting thread:", error);
-      throw error;
+      return false;
     }
-
-    await loadThreads();
-
-    if (currentThread?.thread_id === threadId) {
-      setCurrentThread(null);
-      setCurrentThreadId(null);
-    }
-
-    return true;
-  } catch (error) {
-    console.error("Error deleting thread:", error);
-    return false;
-  }
-}, [loadThreads, currentThread]);
-
+  }, [loadThreads, currentThread]);
 
   return {
     threads,
