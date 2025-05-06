@@ -127,34 +127,32 @@ export const useThreads = () => {
    * Deletes a thread
    */
   const deleteThread = useCallback(async (threadId: string) => {
-    console.log("deleteThread called with threadId:", threadId);
-    try {
-      console.log("Deleting thread from Supabase");
-      const { error } = await supabase
-        .from("chat_threads")
-        .delete()
-        .eq("thread_id", threadId);
-        
-      if (error) {
-        console.error("Error deleting thread:", error);
-        throw error;
-      }
-      
-      console.log("Thread deleted, reloading threads");
-      await loadThreads();
-      
-      if (currentThread?.thread_id === threadId) {
-        console.log("Deleted the current thread, resetting state");
-        setCurrentThread(null);
-        setCurrentThreadId(null);
-      }
-      
-      return true;
-    } catch (error) {
+  console.log("deleteThread called with threadId:", threadId);
+  try {
+    const { error } = await supabase
+      .from("chat_threads")
+      .delete()
+      .eq("thread_id", threadId); 
+
+    if (error) {
       console.error("Error deleting thread:", error);
-      return false;
+      throw error;
     }
-  }, [loadThreads, currentThread]);
+
+    await loadThreads();
+
+    if (currentThread?.thread_id === threadId) {
+      setCurrentThread(null);
+      setCurrentThreadId(null);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting thread:", error);
+    return false;
+  }
+}, [loadThreads, currentThread]);
+
 
   return {
     threads,
