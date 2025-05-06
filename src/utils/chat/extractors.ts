@@ -23,21 +23,12 @@ export const extractMessageContent = (message: any): string => {
  */
 export const extractAssistantOutput = async (output: any, threadId: string): Promise<string> => {
   console.log("Extracting assistant output:", output);
+  
   try {
-    const messageStep = output?.data?.find(
-      (step: any) => step?.step_details?.message_creation?.message_id
-    );
-
-    const messageId = messageStep?.step_details?.message_creation?.message_id;
-
-    if (!messageId) {
-      console.warn("No assistant message ID found in step");
-      return '';
-    }
-
-    console.log("Fetching message content from OpenAI for ID:", messageId);
-
-    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
+    // Instead of looking for specific step details, we'll get the latest messages
+    console.log("Fetching latest messages from thread:", threadId);
+    
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
       headers: {
         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
@@ -46,21 +37,32 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
     });
 
     if (!response.ok) {
-      console.error("Error fetching message from OpenAI:", await response.text());
-      throw new Error("Failed to fetch message content");
+      console.error("Error fetching messages from OpenAI:", await response.text());
+      throw new Error("Failed to fetch messages");
     }
 
-    const data = await response.json();
-    console.log("Got full message data from OpenAI:", data);
+    const messagesData = await response.json();
+    console.log("Got thread messages from OpenAI:", messagesData);
+    
+    // Find the latest assistant message
+    const assistantMessages = messagesData.data.filter((msg: any) => msg.role === 'assistant');
+    
+    if (!assistantMessages || assistantMessages.length === 0) {
+      console.error("No assistant messages found in thread");
+      return '';
+    }
+    
+    // Get the most recent assistant message (first in the array as they're sorted by created_at in descending order)
+    const latestMessage = assistantMessages[0];
     
     // Extract the text content from the response
-    if (data.content && Array.isArray(data.content)) {
-      const textContent = data.content.find((c: any) => c.type === "text");
+    if (latestMessage.content && Array.isArray(latestMessage.content)) {
+      const textContent = latestMessage.content.find((c: any) => c.type === "text");
       const text = textContent?.text?.value || '';
-      console.log("Extracted text content:", text);
+      console.log("Extracted assistant message text:", text);
       return text;
     } else {
-      console.warn("Message content has unexpected format:", data);
+      console.warn("Message content has unexpected format:", latestMessage);
       return '';
     }
   } catch (error) {

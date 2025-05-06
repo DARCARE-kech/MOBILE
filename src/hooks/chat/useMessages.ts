@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -157,7 +158,7 @@ export const useMessages = () => {
       const runStepsResponse = await openaiClient.getRunOutput(threadId, runResponse.id);
       console.log("Run steps response:", runStepsResponse);
       
-      // Extract the actual text content from the assistant's response
+      // Extract the actual text content from the assistant's response using our improved extractor
       const assistantContent = await extractAssistantOutput(runStepsResponse, threadId);
       console.log("Extracted assistant content:", assistantContent);
 

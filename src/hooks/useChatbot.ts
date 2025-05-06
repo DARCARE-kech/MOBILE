@@ -57,9 +57,9 @@ export const useChatbot = (initialThreadId?: string) => {
       const thread = await initializeThread(threadIdToUse);
       
       if (thread) {
+        console.log("Thread initialized, loading messages for thread:", thread.thread_id);
         // Load messages for this thread
-        const loadedMessages = await loadMessages(thread.thread_id);
-        console.log("Loaded messages in initializeThreadWithMessages:", loadedMessages ? loadedMessages.length : 0, "messages");
+        await loadMessages(thread.thread_id);
       }
     } catch (error) {
       console.error("Error initializing thread with messages:", error);
@@ -84,6 +84,7 @@ export const useChatbot = (initialThreadId?: string) => {
     }
     
     try {
+      setIsLoading(true);
       await initializeThreadWithMessages(threadId);
     } catch (error) {
       console.error("Error switching thread:", error);
@@ -92,13 +93,16 @@ export const useChatbot = (initialThreadId?: string) => {
         description: "Impossible de charger cette conversation",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
-  }, [user?.id, initializeThreadWithMessages, toast]);
+  }, [user?.id, initializeThreadWithMessages, toast, setIsLoading]);
 
   /**
    * Send a message in the current thread
    */
   const sendMessage = useCallback(async (content: string) => {
+    console.log("sendMessage called with content:", content.substring(0, 30) + "...");
     if (!currentThreadId) {
       console.error("No currentThreadId available");
       return;
@@ -122,8 +126,8 @@ export const useChatbot = (initialThreadId?: string) => {
       if (initialThreadId) {
         console.log("Initializing with provided threadId:", initialThreadId);
         initializeThreadWithMessages(initialThreadId);
-      } else {
-        console.log("Initializing with no threadId provided");
+      } else if (!currentThreadId) {
+        console.log("No currentThreadId, initializing with no threadId");
         initializeThreadWithMessages();
       }
 
