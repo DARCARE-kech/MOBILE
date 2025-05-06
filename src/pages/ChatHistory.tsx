@@ -46,89 +46,91 @@ const ChatHistory: React.FC = () => {
   }, [user, loadThreads]);
 
   const handleEdit = (threadId: string, currentTitle: string) => {
-  setEditingId(threadId);
-  setEditingTitle(currentTitle);
-};
+    setEditingId(threadId);
+    setEditingTitle(currentTitle);
+  };
 
   const handleSave = async (threadId: string) => {
-  if (!editingTitle.trim()) {
-    toast({
-      title: t('common.error'),
-      description: t('chat.emptyTitleError') || 'Title cannot be empty',
-      variant: 'destructive',
-    });
-    return;
-  }
-
-  try {
-    const success = await updateThreadTitle(threadId, editingTitle);
-
-    if (success) {
-      // ✅ Mise à jour locale pour éviter l’attente de loadThreads
-      const updatedThreads = threads.map(thread =>
-        thread.thread_id === threadId ? { ...thread, title: editingTitle } : thread
-      );
-      setEditingId(null);
-      setEditingTitle('');
-      setThreads(updatedThreads); // <- à condition que setThreads soit exposé par ton hook
-    } else {
-      throw new Error("Failed to update title");
-    }
-  } catch (error) {
-    console.error("Error updating thread title:", error);
-    toast({
-      title: t('common.error'),
-      description: t('chat.updateTitleError') || 'Could not update conversation title.',
-      variant: 'destructive',
-    });
-  }
-};
-
-const handleDelete = async (threadId: string) => {
-  setIsDeleting(threadId);
-
-  try {
-    const success = await deleteThread(threadId);
-
-    if (success) {
+    if (!editingTitle.trim()) {
       toast({
-        title: t('common.success'),
-        description: t('chat.deleteSuccess') || 'Conversation deleted successfully.',
+        title: t('common.error'),
+        description: t('chat.emptyTitleError') || 'Title cannot be empty',
+        variant: 'destructive',
       });
-
-      // ✅ Mise à jour locale immédiate
-      const remainingThreads = threads.filter(t => t.thread_id !== threadId);
-      setThreads(remainingThreads); // <- à condition que setThreads soit disponible
-    } else {
-      throw new Error("Failed to delete thread");
+      return;
     }
-  } catch (error) {
-    console.error("Error deleting thread:", error);
-    toast({
-      title: t('common.error'),
-      description: t('chat.deleteError') || 'Could not delete conversation.',
-      variant: 'destructive',
-    });
-  } finally {
-    setIsDeleting(null);
-  }
-};
 
- const handleCreateNewChat = async () => {
-  if (!user?.id) return;
-  try {
-    const newThread = await createNewThread(user.id);
-    if (newThread?.thread_id) {
-      navigate(`/chatbot?thread=${newThread.thread_id}`);
+    try {
+      const success = await updateThreadTitle(threadId, editingTitle);
+
+      if (success) {
+        // Immediately update local state for better UX
+        const updatedThreads = threads.map(thread =>
+          thread.thread_id === threadId ? { ...thread, title: editingTitle } : thread
+        );
+        setEditingId(null);
+        setEditingTitle('');
+        setThreads(updatedThreads); // Update local state with new thread titles
+        console.log("Thread title updated in UI:", threadId, editingTitle);
+      } else {
+        throw new Error("Failed to update title");
+      }
+    } catch (error) {
+      console.error("Error updating thread title:", error);
+      toast({
+        title: t('common.error'),
+        description: t('chat.updateTitleError') || 'Could not update conversation title.',
+        variant: 'destructive',
+      });
     }
-  } catch (error) {
-    toast({
-      title: "Erreur",
-      description: "Impossible de créer une nouvelle conversation.",
-      variant: "destructive"
-    });
-  }
-};
+  };
+
+  const handleDelete = async (threadId: string) => {
+    setIsDeleting(threadId);
+
+    try {
+      const success = await deleteThread(threadId);
+
+      if (success) {
+        toast({
+          title: t('common.success'),
+          description: t('chat.deleteSuccess') || 'Conversation deleted successfully.',
+        });
+
+        // Immediately update local state by filtering out the deleted thread
+        const remainingThreads = threads.filter(thread => thread.thread_id !== threadId);
+        setThreads(remainingThreads);
+        console.log("Thread removed from UI:", threadId);
+      } else {
+        throw new Error("Failed to delete thread");
+      }
+    } catch (error) {
+      console.error("Error deleting thread:", error);
+      toast({
+        title: t('common.error'),
+        description: t('chat.deleteError') || 'Could not delete conversation.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  const handleCreateNewChat = async () => {
+    if (!user?.id) return;
+    try {
+      const newThread = await createNewThread(user.id);
+      if (newThread?.thread_id) {
+        navigate(`/chatbot?thread=${newThread.thread_id}`);
+      }
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer une nouvelle conversation.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const goToChat = (threadId: string) => {
     navigate(`/chatbot?thread=${threadId}`);
