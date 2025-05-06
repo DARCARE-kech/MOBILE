@@ -141,13 +141,13 @@ const ChatbotPage: React.FC = () => {
         )}
       </ScrollArea>
 
-      <div className="fixed bottom-16 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20">
-        <ChatInput
-          onSend={handleSend}
-          disabled={isLoading}
-          placeholder={t('chatbot.typeMessage')}
-        />
-      </div>
+      <div className="fixed bottom-20 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20 z-20">
+  <ChatInput
+    onSend={handleSend}
+    disabled={isLoading}
+    placeholder={t('chatbot.typeMessage')}
+  />
+</div>
       
       <BottomNavigation activeTab="chatbot" />
     </div>
