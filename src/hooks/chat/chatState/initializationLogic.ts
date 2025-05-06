@@ -19,7 +19,7 @@ export const useInitializationLogic = (
     
     if (!user?.id) {
       console.log("No user.id available, cannot initialize thread");
-      return;
+      return null;
     }
 
     try {
@@ -29,10 +29,14 @@ export const useInitializationLogic = (
       // Initialize thread
       const thread = await initializeThread(threadIdToUse);
       
-      if (thread) {
+      if (thread && thread.thread_id) {
         console.log("Thread initialized, loading messages for thread:", thread.thread_id);
         // Load messages for this thread
         await loadMessages(thread.thread_id);
+        return thread;
+      } else {
+        console.error("Thread initialization failed or thread has no thread_id");
+        return null;
       }
     } catch (error) {
       console.error("Error initializing thread with messages:", error);
@@ -41,6 +45,7 @@ export const useInitializationLogic = (
         description: "Impossible d'initialiser la conversation",
         variant: "destructive"
       });
+      return null;
     } finally {
       setIsLoading(false);
     }

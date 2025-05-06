@@ -53,10 +53,25 @@ export const useChatbot = (initialThreadId?: string) => {
     setIsLoading
   );
 
-  const { sendMessage } = useMessageOperations(
-    currentThreadId,
-    sendMessageToThread
-  );
+  // Wrap sendMessage to ensure we always have a valid threadId
+  const sendMessage = useCallback(async (content: string) => {
+    console.log("useChatbot.sendMessage called with content:", content.substring(0, 30) + "...");
+    console.log("Current threadId:", currentThreadId);
+    
+    if (!currentThreadId) {
+      console.log("No currentThreadId available, initializing thread first");
+      const thread = await initializeThreadWithMessages();
+      if (thread && thread.thread_id) {
+        console.log("Thread initialized, now sending message with threadId:", thread.thread_id);
+        await sendMessageToThread(content, thread.thread_id);
+      } else {
+        console.error("Failed to initialize thread, cannot send message");
+      }
+    } else {
+      console.log("Using existing threadId for message:", currentThreadId);
+      await sendMessageToThread(content, currentThreadId);
+    }
+  }, [currentThreadId, initializeThreadWithMessages, sendMessageToThread]);
 
   // Initialize on component mount
   useEffect(() => {

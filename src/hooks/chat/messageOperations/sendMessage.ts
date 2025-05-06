@@ -146,6 +146,7 @@ export const useSendMessage = (
           sender: assistantMessageResult.data.sender as "user" | "assistant" | "bot" | "admin",
           created_at: assistantMessageResult.data.created_at || new Date().toISOString()
         };
+        
         setMessages(prev => [...prev, assistantMessage]);
       } else {
         console.error("No assistant content found");

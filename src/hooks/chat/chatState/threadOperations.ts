@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ChatThread } from "@/types/chat";
 
 export const useThreadOperations = (
-  initializeThreadWithMessages: (threadIdToUse?: string) => Promise<void>,
+  initializeThreadWithMessages: (threadIdToUse?: string) => Promise<any>,
   setIsLoading: (loading: boolean) => void
 ) => {
   const { user } = useAuth();
@@ -23,7 +23,17 @@ export const useThreadOperations = (
     
     try {
       setIsLoading(true);
-      await initializeThreadWithMessages(threadId);
+      const thread = await initializeThreadWithMessages(threadId);
+      console.log("Switched to thread:", thread);
+      
+      if (!thread) {
+        console.error("Failed to switch thread, no thread returned");
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger cette conversation",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       console.error("Error switching thread:", error);
       toast({

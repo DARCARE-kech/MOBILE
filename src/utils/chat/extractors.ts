@@ -25,10 +25,10 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
   console.log("Extracting assistant output:", output);
   
   try {
-    // Instead of looking for specific step details, we'll get the latest messages
+    // Fetch the latest messages from thread
     console.log("Fetching latest messages from thread:", threadId);
     
-    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages?limit=1`, {
       headers: {
         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       return '';
     }
     
-    // Get the most recent assistant message (first in the array as they're sorted by created_at in descending order)
+    // Get the most recent assistant message
     const latestMessage = assistantMessages[0];
     
     // Extract the text content from the response

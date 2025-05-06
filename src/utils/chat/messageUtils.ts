@@ -66,7 +66,7 @@ export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]
 
     if (error) {
       console.error("Error loading messages:", error);
-      return [];
+      throw error;
     }
 
     console.log(`Retrieved ${data?.length || 0} messages from thread ${threadId}`);

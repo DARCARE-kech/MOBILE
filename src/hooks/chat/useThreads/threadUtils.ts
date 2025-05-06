@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,6 +20,14 @@ export const useThreads = (): UseThreadsReturnType => {
   const [threads, setThreads] = useState<ChatThread[]>([]);
   const [currentThread, setCurrentThread] = useState<ChatThread | null>(null);
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
+
+  // Synchronize currentThreadId whenever currentThread changes
+  useEffect(() => {
+    if (currentThread?.thread_id && currentThreadId !== currentThread.thread_id) {
+      console.log("Updating currentThreadId based on currentThread", currentThread.thread_id);
+      setCurrentThreadId(currentThread.thread_id);
+    }
+  }, [currentThread, currentThreadId]);
 
   /**
    * Loads all threads for the current user
@@ -69,7 +77,7 @@ export const useThreads = (): UseThreadsReturnType => {
           .eq("thread_id", threadIdToUse)
           .single();
 
-        if (error || !data) {
+        if (error) {
           console.error("Error finding thread:", error);
           throw new Error("Thread not found");
         }
@@ -82,9 +90,15 @@ export const useThreads = (): UseThreadsReturnType => {
         console.log("Got or created thread:", thread);
       }
 
+      if (!thread || !thread.thread_id) {
+        console.error("Thread is invalid or missing thread_id:", thread);
+        throw new Error("Invalid thread data");
+      }
+
       setCurrentThread(thread);
       setCurrentThreadId(thread.thread_id);
       console.log("Current thread set to:", thread);
+      console.log("Current threadId set to:", thread.thread_id);
       
       return thread;
     } catch (error) {
