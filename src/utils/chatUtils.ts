@@ -48,6 +48,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const data = await response.json();
     console.log("Message content response:", data);
+     console.log("📩 Full message response from OpenAI:", JSON.stringify(data, null, 2));
 
     const contentBlock = data.content?.find(
       (c: any) => c.type === "text" || c.type === "output_text"
@@ -57,13 +58,17 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       console.warn("No text block found in message content");
       return '';
     }
+    console.log("🧩 Extracted contentBlock:", contentBlock);
 
     // Handle both formats
     if (typeof contentBlock.text === 'string') {
+      console.log("✅ Assistant message (plain string):", contentBlock.text);
+      
       return contentBlock.text;
     }
 
     if (contentBlock.text?.value) {
+      console.log("✅ Assistant message (rich object):", contentBlock.text.value);
       return contentBlock.text.value;
     }
 
@@ -72,6 +77,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
     console.error("Error extracting assistant output:", error);
     return '';
   }
+  
 };
 
 
