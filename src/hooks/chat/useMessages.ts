@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { ChatMessage } from "@/types/chat";
 import * as openaiClient from "@/utils/openaiClient";
-import { extractAssistantOutput, getThreadMessages, saveChatMessage } from "@/utils/chatUtils";
+import { extractAssistantOutput, getThreadMessages } from "@/utils/chatUtils";
 
 /**
  * Hook for managing chat messages
@@ -65,19 +65,24 @@ export const useMessages = () => {
     try {
       setIsLoading(true);
 
-      // Step 1: Save user message to Supabase using the helper function
+      // Step 1: Save user message to Supabase
       console.log("Saving user message to Supabase");
-      const userMessage = await saveChatMessage(threadId, content.trim(), "user");
+      const userMessageResult = await supabase.from("chat_messages").insert({
+        thread_id: threadId,
+        content: content.trim(),
+        sender: "user"
+      });
       
-      if (!userMessage) {
-        throw new Error("Failed to save user message");
+      if (userMessageResult.error) {
+        console.error("Error saving user message to Supabase:", userMessageResult.error);
+        throw userMessageResult.error;
       }
       
-      console.log("User message saved to Supabase:", userMessage);
+      console.log("User message saved to Supabase");
       
       // Add user message immediately to state for instant display
       const optimisticUserMessage: ChatMessage = {
-        id: userMessage.id || `temp-${Date.now()}`,
+        id: `temp-${Date.now()}`,
         thread_id: threadId,
         content: content.trim(),
         sender: "user",
@@ -141,32 +146,24 @@ export const useMessages = () => {
       const runStepsResponse = await openaiClient.getRunOutput(threadId, runResponse.id);
       console.log("Run steps response:", runStepsResponse);
       
-      // Extract assistant content with the fixed function
-      const assistantContent = await extractAssistantOutput(runStepsResponse);
+      const assistantContent = extractAssistantOutput(runStepsResponse);
       console.log("Extracted assistant content:", assistantContent);
 
       if (assistantContent) {
-        // Step 6: Save assistant's response to Supabase using the helper function
+        // Step 6: Save assistant's response to Supabase
         console.log("Saving assistant message to Supabase");
-        const assistantMessage = await saveChatMessage(threadId, assistantContent, "assistant");
-        
-        if (!assistantMessage) {
-          console.error("Failed to save assistant message");
-          throw new Error("Failed to save assistant message");
-        }
-        
-        console.log("Assistant message saved to Supabase:", assistantMessage);
-        
-        // Add assistant message to state for display
-        const newAssistantMessage: ChatMessage = {
-          id: assistantMessage.id || `temp-${Date.now()}`,
+        const assistantMessageResult = await supabase.from("chat_messages").insert({
           thread_id: threadId,
           content: assistantContent,
-          sender: "assistant",
-          created_at: new Date().toISOString()
-        };
+          sender: "assistant"
+        });
         
-        setMessages(prev => [...prev, newAssistantMessage]);
+        if (assistantMessageResult.error) {
+          console.error("Error saving assistant message to Supabase:", assistantMessageResult.error);
+          throw assistantMessageResult.error;
+        }
+        
+        console.log("Assistant message saved to Supabase");
       } else {
         console.error("No assistant content found");
         throw new Error("No assistant content found");

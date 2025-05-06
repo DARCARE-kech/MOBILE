@@ -40,27 +40,18 @@ serve(async (req) => {
       throw new Error(error.error?.message || 'Failed to fetch messages');
     }
 
-    const data = await response.json();
-    console.log(`Successfully retrieved ${data.data.length} messages`);
+    const { data } = await response.json();
+    console.log(`Successfully retrieved ${data.length} messages`);
 
-    // Log the latest assistant message for debugging
-    if (data?.data?.length) {
-      const latest = data.data.find((msg) => msg.role === 'assistant');
-      if (latest) {
-        console.log("Latest assistant message (raw):", JSON.stringify(latest, null, 2));
-        
-        // Try to parse the content
-        if (latest.content && Array.isArray(latest.content)) {
-          console.log("Content structure:", latest.content.map(item => ({
-            type: item.type,
-            hasText: !!item.text,
-            textValue: item.text?.value ? item.text.value.substring(0, 50) + "..." : "none"
-          })));
-        }
-      }
-    }
+    if (data?.length) {
+  const latest = data.find((msg) => msg.role === 'assistant');
+  if (latest) {
+    console.log("Dernier message assistant brut :", JSON.stringify(latest, null, 2));
+  }
+}
+
     
-    return new Response(JSON.stringify(data.data), {
+    return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
