@@ -84,7 +84,6 @@ export const extractAssistantOutput = async (output: any): Promise<string> => {
   }
 };
 
-
 /**
  * Enregistre un message dans la base de données Supabase
  * @param threadId ID du thread
@@ -153,6 +152,7 @@ export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]
     }
 
     console.log(`Retrieved ${data?.length || 0} messages from thread ${threadId}`);
+    console.log("Messages data:", data);
     
     // Transform database rows to ChatMessage type
     const chatMessages: ChatMessage[] = data?.map(msg => ({

@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -140,7 +141,7 @@ export const useMessages = () => {
       const runStepsResponse = await openaiClient.getRunOutput(threadId, runResponse.id);
       console.log("Run steps response:", runStepsResponse);
       
-      // Extract assistant content with the fixed function (no threadId parameter needed anymore)
+      // Extract assistant content with the fixed function
       const assistantContent = await extractAssistantOutput(runStepsResponse);
       console.log("Extracted assistant content:", assistantContent);
 
@@ -155,6 +156,17 @@ export const useMessages = () => {
         }
         
         console.log("Assistant message saved to Supabase:", assistantMessage);
+        
+        // Add assistant message to state for display
+        const newAssistantMessage: ChatMessage = {
+          id: assistantMessage.id || `temp-${Date.now()}`,
+          thread_id: threadId,
+          content: assistantContent,
+          sender: "assistant",
+          created_at: new Date().toISOString()
+        };
+        
+        setMessages(prev => [...prev, newAssistantMessage]);
       } else {
         console.error("No assistant content found");
         throw new Error("No assistant content found");
