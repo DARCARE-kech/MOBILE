@@ -165,6 +165,7 @@ export const useThreads = () => {
     updateThreadTitle,
     deleteThread,
     setCurrentThread,
+    setThreads,
     setCurrentThreadId
   };
 };
