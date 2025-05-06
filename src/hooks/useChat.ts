@@ -106,7 +106,7 @@ export const useChat = (threadId?: string) => {
   });
 
   const sendMessage = useMutation({
-    mutationFn: async ({ content, role = 'user' }: { content: string; role?: 'user' | 'assistant' | 'admin' }) => {
+    mutationFn: async ({ content, role = 'user' }: { content: string; role?: 'user' | 'assistant'  }) => {
       if (!user?.id) throw new Error("User not authenticated");
       
       // If no current thread, create one
