@@ -31,6 +31,7 @@ const ChatHistory: React.FC = () => {
     updateThreadTitle,
     deleteThread,
     currentThread,
+    setThreads,
     setCurrentThread,
   } = useThreads();
 
@@ -44,64 +45,74 @@ const ChatHistory: React.FC = () => {
     }
   }, [user, loadThreads]);
 
-  const handleEdit = (id: string, currentTitle: string) => {
-    setEditingId(id);
-    setEditingTitle(currentTitle);
-  };
+  const handleEdit = (threadId: string, currentTitle: string) => {
+  setEditingId(threadId);
+  setEditingTitle(currentTitle);
+};
 
-  const handleSave = async (id: string) => {
-    if (!editingTitle.trim()) {
-      toast({
-        title: t('common.error'),
-        description: t('chat.emptyTitleError') || 'Title cannot be empty',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    try {
-      const success = await updateThreadTitle(id, editingTitle);
-      
-      if (success) {
-        setEditingId(null);
-        setEditingTitle('');
-      } else {
-        throw new Error("Failed to update title");
-      }
-    } catch (error) {
-      console.error("Error updating thread title:", error);
-      toast({
-        title: t('common.error'),
-        description: t('chat.updateTitleError') || 'Could not update conversation title.',
-        variant: 'destructive'
-      });
-    }
-  };
+  const handleSave = async (threadId: string) => {
+  if (!editingTitle.trim()) {
+    toast({
+      title: t('common.error'),
+      description: t('chat.emptyTitleError') || 'Title cannot be empty',
+      variant: 'destructive',
+    });
+    return;
+  }
 
-  const handleDelete = async (id: string) => {
-    setIsDeleting(id);
-    try {
-      const success = await deleteThread(id);
-      
-      if (success) {
-        toast({
-          title: t('common.success'),
-          description: t('chat.deleteSuccess') || 'Conversation deleted successfully.',
-        });
-      } else {
-        throw new Error("Failed to delete thread");
-      }
-    } catch (error) {
-      console.error("Error deleting thread:", error);
-      toast({
-        title: t('common.error'),
-        description: t('chat.deleteError') || 'Could not delete conversation.',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsDeleting(null);
+  try {
+    const success = await updateThreadTitle(threadId, editingTitle);
+
+    if (success) {
+      // ✅ Mise à jour locale pour éviter l’attente de loadThreads
+      const updatedThreads = threads.map(thread =>
+        thread.thread_id === threadId ? { ...thread, title: editingTitle } : thread
+      );
+      setEditingId(null);
+      setEditingTitle('');
+      setThreads(updatedThreads); // <- à condition que setThreads soit exposé par ton hook
+    } else {
+      throw new Error("Failed to update title");
     }
-  };
+  } catch (error) {
+    console.error("Error updating thread title:", error);
+    toast({
+      title: t('common.error'),
+      description: t('chat.updateTitleError') || 'Could not update conversation title.',
+      variant: 'destructive',
+    });
+  }
+};
+
+const handleDelete = async (threadId: string) => {
+  setIsDeleting(threadId);
+
+  try {
+    const success = await deleteThread(threadId);
+
+    if (success) {
+      toast({
+        title: t('common.success'),
+        description: t('chat.deleteSuccess') || 'Conversation deleted successfully.',
+      });
+
+      // ✅ Mise à jour locale immédiate
+      const remainingThreads = threads.filter(t => t.thread_id !== threadId);
+      setThreads(remainingThreads); // <- à condition que setThreads soit disponible
+    } else {
+      throw new Error("Failed to delete thread");
+    }
+  } catch (error) {
+    console.error("Error deleting thread:", error);
+    toast({
+      title: t('common.error'),
+      description: t('chat.deleteError') || 'Could not delete conversation.',
+      variant: 'destructive',
+    });
+  } finally {
+    setIsDeleting(null);
+  }
+};
 
  const handleCreateNewChat = async () => {
   if (!user?.id) return;
