@@ -242,6 +242,51 @@ export const getOrCreateUserThread = async (userId: string) => {
     throw error;
   }
 };
+export const createNewThread = async (userId: string) => {
+  console.log("Creating a brand new thread for user:", userId);
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/threads', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx`,
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v2'
+      },
+      body: JSON.stringify({})
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`OpenAI thread creation failed: ${errorText}`);
+    }
+
+    const openaiThread = await response.json();
+    console.log("✅ Created OpenAI thread:", openaiThread);
+
+    const { data, error } = await supabase
+      .from("chat_threads")
+      .insert({
+        user_id: userId,
+        thread_id: openaiThread.id,
+        title: "Nouvelle conversation"
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("❌ Error saving thread to DB:", error);
+      throw error;
+    }
+
+    console.log("✅ Thread saved to Supabase:", data);
+    return data;
+  } catch (err) {
+    console.error("❌ Failed to create new thread:", err);
+    throw err;
+  }
+};
+
 
 /**
  * Récupère tous les threads d'un utilisateur

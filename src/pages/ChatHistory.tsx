@@ -12,6 +12,7 @@ import EmptyChatHistory from '@/components/chat/EmptyChatHistory';
 import ChatThreadItem from '@/components/chat/ChatThreadItem';
 import NewChatButton from '@/components/chat/NewChatButton';
 import { useThreads } from '@/hooks/chat/useThreads'; // Fixed import path
+import { createNewThread } from "@/utils/chatUtils"; 
 
 
 const ChatHistory: React.FC = () => {
@@ -102,10 +103,19 @@ const ChatHistory: React.FC = () => {
     }
   };
 
-  const handleCreateNewChat = async () => {
-  const newThread = await initializeThread();
-  if (newThread?.thread_id) {
-    navigate(`/chatbot?thread=${newThread.thread_id}`);
+ const handleCreateNewChat = async () => {
+  if (!user?.id) return;
+  try {
+    const newThread = await createNewThread(user.id);
+    if (newThread?.thread_id) {
+      navigate(`/chatbot?thread=${newThread.thread_id}`);
+    }
+  } catch (error) {
+    toast({
+      title: "Erreur",
+      description: "Impossible de créer une nouvelle conversation.",
+      variant: "destructive"
+    });
   }
 };
 
