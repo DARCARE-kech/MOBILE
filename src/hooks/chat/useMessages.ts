@@ -146,7 +146,8 @@ export const useMessages = () => {
       const runStepsResponse = await openaiClient.getRunOutput(threadId, runResponse.id);
       console.log("Run steps response:", runStepsResponse);
       
-      const assistantContent = extractAssistantOutput(runStepsResponse);
+      const assistantContent = await extractAssistantOutput(runStepsResponse, threadId);
+
       console.log("Extracted assistant content:", assistantContent);
 
       if (assistantContent) {
