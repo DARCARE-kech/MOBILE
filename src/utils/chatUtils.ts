@@ -2,9 +2,6 @@
 import { ChatMessage } from "@/types/chat";
 import { supabase } from "@/integrations/supabase/client";
 
-// Clé API OpenAI stockée dans une constante pour l'environnement frontend
-const OPENAI_API_KEY = 'sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx';
-
 /**
  * Extrait le contenu textuel d'un message OpenAI
  * @param message Message retourné par l'API OpenAI
@@ -39,11 +36,9 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       return '';
     }
 
-    console.log("Fetching message content from OpenAI for ID:", messageId);
-
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2',
       },
@@ -51,31 +46,26 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const data = await response.json();
     console.log("Message content response:", data);
-    
-    // Log du contenu brut du message pour débogage
-    console.log("Raw assistant message content:", JSON.stringify(data.content, null, 2));
 
-    // Améliorons l'extraction du texte pour gérer différents formats de réponse
-    if (!data.content || !Array.isArray(data.content) || data.content.length === 0) {
-      console.warn("No valid content found in assistant message");
+    const contentBlock = data.content?.find(
+      (c: any) => c.type === "text" || c.type === "output_text"
+    );
+
+    if (!contentBlock) {
+      console.warn("No text block found in message content");
       return '';
     }
 
-    let extractedText = '';
-
-    // Parcourir tous les blocs de contenu (il peut y en avoir plusieurs)
-    for (const contentBlock of data.content) {
-      if (contentBlock.type === "text") {
-        if (typeof contentBlock.text === 'string') {
-          extractedText += contentBlock.text;
-        } else if (contentBlock.text?.value) {
-          extractedText += contentBlock.text.value;
-        }
-      }
+    // Handle both formats
+    if (typeof contentBlock.text === 'string') {
+      return contentBlock.text;
     }
 
-    console.log("Extracted assistant message text:", extractedText);
-    return extractedText || '';
+    if (contentBlock.text?.value) {
+      return contentBlock.text.value;
+    }
+
+    return '';
   } catch (error) {
     console.error("Error extracting assistant output:", error);
     return '';
@@ -200,7 +190,7 @@ export const getOrCreateUserThread = async (userId: string) => {
     const response = await fetch('https://api.openai.com/v1/threads', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx`,
         'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2'
       },
