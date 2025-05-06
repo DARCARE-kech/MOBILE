@@ -22,7 +22,7 @@ export const extractMessageContent = (message: any): string => {
  * @param output Output from OpenAI assistant run
  * @returns Extracted text or empty string if not found
  */
-export const extractAssistantOutput = async (output: any, threadId: string): Promise<string> => {
+export const extractAssistantOutput = async (output: any): Promise<string> => {
   console.log("Extracting assistant output:", output);
   try {
     const messageStep = output?.data?.find(
@@ -36,36 +36,48 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       return '';
     }
 
+    // Use a constant for the API key instead of process.env
+    const OPENAI_API_KEY = 'sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx';
+    const threadId = messageStep?.step_details?.message_creation?.thread_id || output?.thread_id;
+
+    if (!threadId) {
+      console.warn("No thread ID found");
+      return '';
+    }
+
+    console.log(`Fetching message ${messageId} from thread ${threadId}`);
+
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
       headers: {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2',
       },
     });
 
     const data = await response.json();
-    console.log("Message content response:", data);
+    console.log("Message content response (raw):", JSON.stringify(data, null, 2));
 
-    const contentBlock = data.content?.find(
-      (c: any) => c.type === "text" || c.type === "output_text"
-    );
-
-    if (!contentBlock) {
-      console.warn("No text block found in message content");
+    // Enhanced content extraction logic to handle different response formats
+    if (!data.content || !Array.isArray(data.content) || data.content.length === 0) {
+      console.warn("No content found in message response");
       return '';
     }
 
-    // Handle both formats
-    if (typeof contentBlock.text === 'string') {
-      return contentBlock.text;
+    // Try to extract text from various possible formats
+    let extractedText = '';
+    for (const contentItem of data.content) {
+      if (contentItem.type === "text" && typeof contentItem.text === 'string') {
+        extractedText += contentItem.text;
+      } else if (contentItem.type === "text" && contentItem.text?.value) {
+        extractedText += contentItem.text.value;
+      } else if (contentItem.type === "output_text" && contentItem.text?.value) {
+        extractedText += contentItem.text.value;
+      }
     }
 
-    if (contentBlock.text?.value) {
-      return contentBlock.text.value;
-    }
-
-    return '';
+    console.log("Extracted content:", extractedText);
+    return extractedText || '';
   } catch (error) {
     console.error("Error extracting assistant output:", error);
     return '';
