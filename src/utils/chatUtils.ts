@@ -29,6 +29,8 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       (step: any) => step?.step_details?.message_creation?.message_id
     );
 
+    const OPENAI_API_KEY = 'sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx';
+
     const messageId = messageStep?.step_details?.message_creation?.message_id;
 
     if (!messageId) {
@@ -38,7 +40,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
       headers: {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2',
       },
