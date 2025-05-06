@@ -40,7 +40,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
       headers: {
-        'Authorization': Bearer sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx,
+        'Authorization': `Bearer sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx`,
         'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2',
       },
