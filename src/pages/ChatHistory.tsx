@@ -103,20 +103,11 @@ const ChatHistory: React.FC = () => {
   };
 
   const handleCreateNewChat = async () => {
-    try {
-      const newThread = await initializeThread();
-      if (newThread?.thread_id) {
-        navigate(`/chatbot?thread=${newThread.thread_id}`);
-      }
-    } catch (error) {
-      console.error("Erreur lors de la création de la conversation :", error);
-      toast({
-        title: t('common.error'),
-        description: t('chat.creationError') || "Impossible de créer une nouvelle conversation",
-        variant: 'destructive'
-      });
-    }
-  };
+  const newThread = await initializeThread();
+  if (newThread?.thread_id) {
+    navigate(`/chatbot?thread=${newThread.thread_id}`);
+  }
+};
 
   const goToChat = (threadId: string) => {
     navigate(`/chatbot?thread=${threadId}`);
