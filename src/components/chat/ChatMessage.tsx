@@ -18,9 +18,9 @@ const ChatMessageComponent: React.FC<MessageProps> = ({ message }) => {
   return (
     <div className={`flex items-start gap-3 mb-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
       {!isUser && (
-        <Avatar className="bg-darcare-gold/20 border border-darcare-gold/30 text-darcare-gold h-8 w-8">
-          <Bot className="h-4 w-4" />
-        </Avatar>
+        <Avatar className="bg-darcare-gold/20 border border-darcare-gold/30 text-darcare-gold h-8 w-8 flex items-center justify-center">
+  <Bot className="h-4 w-4" />
+</Avatar>
       )}
       
       <div
@@ -36,9 +36,10 @@ const ChatMessageComponent: React.FC<MessageProps> = ({ message }) => {
       </div>
       
       {isUser && (
-        <Avatar className="bg-darcare-gold text-darcare-navy h-8 w-8">
-          <User className="h-4 w-4" />
-        </Avatar>
+        <Avatar className="bg-darcare-gold text-darcare-navy h-8 w-8 flex items-center justify-center">
+  <User className="h-4 w-4" />
+</Avatar>
+
       )}
     </div>
   );
