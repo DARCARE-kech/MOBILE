@@ -132,7 +132,7 @@ export const getThreadMessages = async (threadId: string): Promise<ChatMessage[]
       id: msg.id,
       thread_id: msg.thread_id,
       content: msg.content || '',
-      sender: msg.sender as 'user' | 'assistant' | 'bot' | 'admin',
+      sender: msg.sender as 'user' | 'assistant',
       created_at: msg.created_at || new Date().toISOString()
     })) || [];
     
