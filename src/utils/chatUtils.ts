@@ -47,15 +47,21 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
     });
 
     const data = await response.json();
-    const contentBlock = data.content?.find((c: any) => c.type === "text");
-    const text = typeof contentBlock?.text === "string"
-  ? contentBlock.text
-  : contentBlock?.text?.value || '';
+    console.log("Message content response:", data);
 
-    console.log("Resolved assistant text content:", text);
+    const contentBlock = data.content?.find(
+      (c: any) => c.type === "text" || c.type === "output_text"
+    );
 
+    let text = '';
 
+    if (typeof contentBlock?.text === 'string') {
+      text = contentBlock.text;
+    } else if (typeof contentBlock?.text?.value === 'string') {
+      text = contentBlock.text.value;
+    }
 
+    console.log("Extracted assistant message text:", text);
     return text;
   } catch (error) {
     console.error("Error extracting assistant output:", error);
