@@ -48,7 +48,13 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const data = await response.json();
     const contentBlock = data.content?.find((c: any) => c.type === "text");
-    const text = contentBlock?.text?.value || '';
+    const text = typeof contentBlock?.text === "string"
+  ? contentBlock.text
+  : contentBlock?.text?.value || '';
+
+    console.log("Resolved assistant text content:", text);
+
+
 
     return text;
   } catch (error) {
