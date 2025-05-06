@@ -11,7 +11,7 @@ import ChatHistoryLoading from '@/components/chat/ChatHistoryLoading';
 import EmptyChatHistory from '@/components/chat/EmptyChatHistory';
 import ChatThreadItem from '@/components/chat/ChatThreadItem';
 import NewChatButton from '@/components/chat/NewChatButton';
-import { useThreads } from '@/hooks/useThreads';
+import { useThreads } from '@/hooks/chat/useThreads'; // Fixed import path
 
 
 const ChatHistory: React.FC = () => {
@@ -24,19 +24,22 @@ const ChatHistory: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   
   const {
-  threads,
-  loadThreads,
-  initializeThread,
-  updateThreadTitle,
-  deleteThread,
-  currentThread,
-  setCurrentThread
-} = useThreads();
+    threads,
+    loadThreads,
+    initializeThread,
+    updateThreadTitle,
+    deleteThread,
+    currentThread,
+    setCurrentThread,
+  } = useThreads();
 
+  // Add a local isLoading state if it's not provided by useThreads
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
-      loadThreads();
+      setIsLoading(true);
+      loadThreads().finally(() => setIsLoading(false));
     }
   }, [user, loadThreads]);
 
@@ -100,22 +103,21 @@ const ChatHistory: React.FC = () => {
   };
 
   const handleCreateNewChat = async () => {
-  try {
-    const newThread = await initializeThread(); // useChatbot hook
-    if (newThread?.thread_id) {
-      navigate(`/chatbot?thread=${newThread.thread_id}`);
+    try {
+      const newThread = await initializeThread();
+      if (newThread?.thread_id) {
+        navigate(`/chatbot?thread=${newThread.thread_id}`);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création de la conversation :", error);
+      toast({
+        title: t('common.error'),
+        description: t('chat.creationError') || "Impossible de créer une nouvelle conversation",
+        variant: 'destructive'
+      });
     }
-  } catch (error) {
-    console.error("Erreur lors de la création de la conversation :", error);
-    toast({
-      title: t('common.error'),
-      description: t('chat.creationError') || "Impossible de créer une nouvelle conversation",
-      variant: 'destructive'
-    });
-  }
-};
+  };
 
-  
   const goToChat = (threadId: string) => {
     navigate(`/chatbot?thread=${threadId}`);
   };
