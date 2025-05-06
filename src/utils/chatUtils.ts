@@ -38,6 +38,11 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
       return '';
     }
 
+    if (!threadId || !messageId) {
+  console.error("❌ Problème : threadId ou messageId manquant", { threadId, messageId });
+  return '';
+}
+
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
