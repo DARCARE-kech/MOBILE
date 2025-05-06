@@ -4,9 +4,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThreads } from "./chat/useThreads";
 import { useMessages } from "./chat/useMessages";
-import { useThreadOperations } from "./chat/chatState/threadOperations";
-import { useMessageOperations } from "./chat/chatState/messageOperations";
-import { useInitializationLogic } from "./chat/chatState/initializationLogic";
 
 /**
  * Main hook for managing chatbot logic
@@ -16,6 +13,7 @@ export const useChatbot = (initialThreadId?: string) => {
   const { user } = useAuth();
   console.log("Current user:", user);
   
+  const { toast } = useToast();
   const [hasInitialized, setHasInitialized] = useState(false);
   
   // Get threads and messages functionality from separate hooks
@@ -40,38 +38,74 @@ export const useChatbot = (initialThreadId?: string) => {
     setIsLoading
   } = useMessages();
 
-  // Initialize the composed hooks
-  const { initializeThreadWithMessages } = useInitializationLogic(
-    user,
-    initializeThread,
-    loadMessages,
-    setIsLoading
-  );
-
-  const { switchThread } = useThreadOperations(
-    initializeThreadWithMessages,
-    setIsLoading
-  );
-
-  // Wrap sendMessage to ensure we always have a valid threadId
-  const sendMessage = useCallback(async (content: string) => {
-    console.log("useChatbot.sendMessage called with content:", content.substring(0, 30) + "...");
-    console.log("Current threadId:", currentThreadId);
+  /**
+   * Initialize a thread and load its messages
+   */
+  const initializeThreadWithMessages = useCallback(async (threadIdToUse?: string) => {
+    console.log("initializeThreadWithMessages called with threadIdToUse =", threadIdToUse);
     
-    if (!currentThreadId) {
-      console.log("No currentThreadId available, initializing thread first");
-      const thread = await initializeThreadWithMessages();
-      if (thread && thread.thread_id) {
-        console.log("Thread initialized, now sending message with threadId:", thread.thread_id);
-        await sendMessageToThread(content, thread.thread_id);
-      } else {
-        console.error("Failed to initialize thread, cannot send message");
-      }
-    } else {
-      console.log("Using existing threadId for message:", currentThreadId);
-      await sendMessageToThread(content, currentThreadId);
+    if (!user?.id) {
+      console.log("No user.id available, cannot initialize thread");
+      return;
     }
-  }, [currentThreadId, initializeThreadWithMessages, sendMessageToThread]);
+
+    try {
+      // Set loading state
+      setIsLoading(true);
+      
+      // Initialize thread
+      const thread = await initializeThread(threadIdToUse);
+      
+      if (thread) {
+        // Load messages for this thread
+        const loadedMessages = await loadMessages(thread.thread_id);
+        console.log("Loaded messages in initializeThreadWithMessages:", loadedMessages ? loadedMessages.length : 0, "messages");
+      }
+    } catch (error) {
+      console.error("Error initializing thread with messages:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'initialiser la conversation",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.id, initializeThread, loadMessages, toast, setIsLoading]);
+
+  /**
+   * Switch to another thread
+   */
+  const switchThread = useCallback(async (threadId: string) => {
+    console.log("switchThread called with threadId:", threadId);
+    if (!user?.id) {
+      console.log("No user.id available, cannot switch thread");
+      return;
+    }
+    
+    try {
+      await initializeThreadWithMessages(threadId);
+    } catch (error) {
+      console.error("Error switching thread:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger cette conversation",
+        variant: "destructive"
+      });
+    }
+  }, [user?.id, initializeThreadWithMessages, toast]);
+
+  /**
+   * Send a message in the current thread
+   */
+  const sendMessage = useCallback(async (content: string) => {
+    if (!currentThreadId) {
+      console.error("No currentThreadId available");
+      return;
+    }
+    
+    await sendMessageToThread(content, currentThreadId);
+  }, [currentThreadId, sendMessageToThread]);
 
   // Initialize on component mount
   useEffect(() => {
@@ -88,8 +122,8 @@ export const useChatbot = (initialThreadId?: string) => {
       if (initialThreadId) {
         console.log("Initializing with provided threadId:", initialThreadId);
         initializeThreadWithMessages(initialThreadId);
-      } else if (!currentThreadId) {
-        console.log("No currentThreadId, initializing with no threadId");
+      } else {
+        console.log("Initializing with no threadId provided");
         initializeThreadWithMessages();
       }
 

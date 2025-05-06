@@ -38,7 +38,7 @@ const ChatbotPage: React.FC = () => {
     currentThread
   } = useChatbot(threadParam || undefined);
   
-  console.log("Current messages:", messages?.length, messages);
+  console.log("Current messages:", messages);
   console.log("isLoading:", isLoading);
   console.log("currentThread:", currentThread);
 
@@ -78,16 +78,6 @@ const ChatbotPage: React.FC = () => {
       });
     }
   };
-
-  // Debug message list
-  useEffect(() => {
-    if (messages) {
-      console.log(`Current messages in chatbot (${messages.length}):`);
-      messages.forEach((msg, idx) => {
-        console.log(`[${idx}] ${msg.sender}: ${msg.content.substring(0, 30)}...`);
-      });
-    }
-  }, [messages]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-darcare-navy to-darcare-navy/90 flex flex-col">
