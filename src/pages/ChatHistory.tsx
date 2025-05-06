@@ -23,10 +23,15 @@ const ChatHistory: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   
   const { 
-    threads, 
-    loadThreads, 
-    updateThreadTitle, 
-    deleteThread, 
+    threads,
+    currentThread,
+    currentThreadId,
+    loadThreads,
+    initializeThread,
+    updateThreadTitle,
+    deleteThread,
+    setCurrentThread,
+    setCurrentThreadId,
     isLoading 
   } = useChatbot();
 
