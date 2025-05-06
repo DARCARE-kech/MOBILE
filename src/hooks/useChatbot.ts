@@ -1,8 +1,12 @@
+
 import { useCallback, useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThreads } from "./chat/useThreads";
 import { useMessages } from "./chat/useMessages";
+import { useThreadOperations } from "./chat/chatState/threadOperations";
+import { useMessageOperations } from "./chat/chatState/messageOperations";
+import { useInitializationLogic } from "./chat/chatState/initializationLogic";
 
 /**
  * Main hook for managing chatbot logic
@@ -12,7 +16,6 @@ export const useChatbot = (initialThreadId?: string) => {
   const { user } = useAuth();
   console.log("Current user:", user);
   
-  const { toast } = useToast();
   const [hasInitialized, setHasInitialized] = useState(false);
   
   // Get threads and messages functionality from separate hooks
@@ -37,78 +40,23 @@ export const useChatbot = (initialThreadId?: string) => {
     setIsLoading
   } = useMessages();
 
-  /**
-   * Initialize a thread and load its messages
-   */
-  const initializeThreadWithMessages = useCallback(async (threadIdToUse?: string) => {
-    console.log("initializeThreadWithMessages called with threadIdToUse =", threadIdToUse);
-    
-    if (!user?.id) {
-      console.log("No user.id available, cannot initialize thread");
-      return;
-    }
+  // Initialize the composed hooks
+  const { initializeThreadWithMessages } = useInitializationLogic(
+    user,
+    initializeThread,
+    loadMessages,
+    setIsLoading
+  );
 
-    try {
-      // Set loading state
-      setIsLoading(true);
-      
-      // Initialize thread
-      const thread = await initializeThread(threadIdToUse);
-      
-      if (thread) {
-        console.log("Thread initialized, loading messages for thread:", thread.thread_id);
-        // Load messages for this thread
-        await loadMessages(thread.thread_id);
-      }
-    } catch (error) {
-      console.error("Error initializing thread with messages:", error);
-      toast({
-        title: "Erreur",
-        description: "Impossible d'initialiser la conversation",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id, initializeThread, loadMessages, toast, setIsLoading]);
+  const { switchThread } = useThreadOperations(
+    initializeThreadWithMessages,
+    setIsLoading
+  );
 
-  /**
-   * Switch to another thread
-   */
-  const switchThread = useCallback(async (threadId: string) => {
-    console.log("switchThread called with threadId:", threadId);
-    if (!user?.id) {
-      console.log("No user.id available, cannot switch thread");
-      return;
-    }
-    
-    try {
-      setIsLoading(true);
-      await initializeThreadWithMessages(threadId);
-    } catch (error) {
-      console.error("Error switching thread:", error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger cette conversation",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id, initializeThreadWithMessages, toast, setIsLoading]);
-
-  /**
-   * Send a message in the current thread
-   */
-  const sendMessage = useCallback(async (content: string) => {
-    console.log("sendMessage called with content:", content.substring(0, 30) + "...");
-    if (!currentThreadId) {
-      console.error("No currentThreadId available");
-      return;
-    }
-    
-    await sendMessageToThread(content, currentThreadId);
-  }, [currentThreadId, sendMessageToThread]);
+  const { sendMessage } = useMessageOperations(
+    currentThreadId,
+    sendMessageToThread
+  );
 
   // Initialize on component mount
   useEffect(() => {
