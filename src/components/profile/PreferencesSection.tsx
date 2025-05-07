@@ -60,19 +60,7 @@ export const PreferencesSection = ({
           }
         />
         
-        {darkMode !== undefined && (
-          <PreferenceItem
-            icon={<Moon className="h-5 w-5 text-darcare-gold" />}
-            label={t('profile.darkMode')}
-            control={
-              <Switch 
-                checked={darkMode} 
-                onCheckedChange={handleDarkModeChange}
-                className="data-[state=checked]:bg-darcare-gold" 
-              />
-            }
-          />
-        )}
+       
       </div>
     </Card>
   );
