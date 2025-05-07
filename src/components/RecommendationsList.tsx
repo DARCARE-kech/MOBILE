@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 const RecommendationsList = () => {
   const { data: recommendations, isLoading, refetch } = useRecommendations();
@@ -16,6 +17,8 @@ const RecommendationsList = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   
   const handleToggleFavorite = async (id: string) => {
     if (!user) {
@@ -83,15 +86,18 @@ const RecommendationsList = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-serif text-darcare-gold">Marrakech Highlights</h2>
+        <h2 className="text-xl font-serif text-darcare-gold">
+  {t("recommendations.title", "Marrakech Highlights")}
+</h2>
         <button 
           className="text-darcare-gold text-sm flex items-center"
           onClick={() => navigate('/explore')}
         >
-          View All <ChevronRight size={16} />
+           {t("recommendations.viewAll", "View All")}  <ChevronRight size={16} />
         </button>
       </div>
-      
+
+      <ScrollArea className="w-full pb-4">
       <div className="overflow-hidden">
         <ScrollArea className="w-full pb-4">
           <div className="flex gap-6 pb-4 pr-4 snap-x snap-mandatory overflow-x-auto">
