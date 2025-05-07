@@ -69,7 +69,7 @@ export const UserInfoBlock = ({
           {villaNumber && (
             <div className="mt-3 bg-darcare-navy/40 rounded-md p-2 border border-darcare-gold/10">
               <p className="text-sm text-darcare-beige">
-                {t('profile.villa')} {villaNumber}
+                {villaNumber}
                 {checkIn && checkOut && (
                   <span className="block text-darcare-beige/50 text-xs mt-1">
                     {format(new Date(checkIn), 'MMM d')} - {format(new Date(checkOut), 'MMM d, yyyy')}
