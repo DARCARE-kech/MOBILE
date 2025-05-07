@@ -80,7 +80,7 @@ const StayDetailsPage: React.FC = () => {
           <h2 className={cn(
             "text-2xl font-serif mb-4",
             isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>Villa {currentStay.villa_number}</h2>
+          )}> {currentStay.villa_number}</h2>
           
           <div className="space-y-4">
             <div className="flex items-center gap-3">
