@@ -69,7 +69,7 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
         )}>
           <div className="flex items-center gap-2 text-foreground">
             <Users size={16} className="text-primary" />
-            <span>{guestCount} {guestCount === 1 ? 'Guest' : 'Guests'}</span>
+            <span>{guestCount} {guestCount === 1 ? t('stay.guest') : t('stay.guests')}</span>
           </div>
           <button 
             className="text-primary flex items-center gap-1 hover:text-primary/80 transition-colors"

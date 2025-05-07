@@ -153,9 +153,9 @@ const StayDetailsPage: React.FC = () => {
             <li>• Private Pool</li>
             <li>• 24/7 Concierge</li>
             <li>• Daily Housekeeping</li>
-            <li>• Complimentary Breakfast</li>
+            
             <li>• High-Speed WiFi</li>
-            <li>• Premium Entertainment System</li>
+          
           </ul>
         </Card>
         
