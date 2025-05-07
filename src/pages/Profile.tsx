@@ -67,7 +67,7 @@ const ProfilePage: React.FC = () => {
           {/* Preferences Section */}
           <PreferencesSection
             language={profile?.language || 'en'}
-            darkMode={profile?.dark_mode || false}
+           
             onUpdatePreference={handlePreferenceUpdate}
           />
 
