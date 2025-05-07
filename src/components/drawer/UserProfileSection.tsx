@@ -60,7 +60,7 @@ const UserProfileSection: React.FC<UserProfileSectionProps> = ({ getInitials }) 
           </h3>
           {currentStay && (
             <p className="text-darcare-beige/70 text-sm">
-              Villa {currentStay.villa_number}
+              {currentStay.villa_number}
             </p>
           )}
         </div>
