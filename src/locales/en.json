@@ -193,6 +193,14 @@
       "cancelled": "Cancelled"
     }
   },
+
+  
+"recommendations": {
+  "title": "Marrakech Highlights",
+  "viewAll": "View All"
+},
+
+  
   "explore": {
     "title": "Explore",
     "categories": {

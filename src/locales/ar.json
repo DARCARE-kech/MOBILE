@@ -85,6 +85,12 @@
     "bookSpace": "حجز مساحة",
     "requestService": "طلب خدمة"
   },
+
+  "recommendations": {
+  "title": "أبرز معالم مراكش",
+  "viewAll": "عرض الكل"
+},
+  
   "home": {
     "welcomeBack": "مرحبًا بعودتك",
     "yourStay": "إقامتك",

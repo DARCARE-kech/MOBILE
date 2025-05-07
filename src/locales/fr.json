@@ -103,6 +103,12 @@
     "exploreMarrakech": "Explorer Marrakech",
     "welcome": "Bienvenue sur DarCare"
   },
+
+  "recommendations": {
+  "title": "À ne pas manquer à Marrakech",
+  "viewAll": "Voir tout"
+},
+  
   "services": {
     "reserve": "Réserver",
     "requests": "Mes Demandes",
