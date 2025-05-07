@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import type { Tables } from "@/integrations/supabase/types";
+import { useTranslation } from "react-i18next";
+
 
 type Stay = Tables<"stays">;
 
@@ -15,6 +17,8 @@ interface StayDetailsProps {
 const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
+  const { t } = useTranslation();
+
   
   const checkIn = new Date(currentStay.check_in || "");
   const checkOut = new Date(currentStay.check_out || "");
