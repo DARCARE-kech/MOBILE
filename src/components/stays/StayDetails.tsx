@@ -18,7 +18,8 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
   
   const checkIn = new Date(currentStay.check_in || "");
   const checkOut = new Date(currentStay.check_out || "");
-  const guestCount = currentStay.guests || 2;
+  const guestCount = typeof currentStay.guests === 'number' ? currentStay.guests : 0;
+
 
   return (
     <div className={cn(
@@ -69,7 +70,11 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
         )}>
           <div className="flex items-center gap-2 text-foreground">
             <Users size={16} className="text-primary" />
-            <span>{guestCount} {guestCount === 1 ? t('stay.guest') : t('stay.guests')}</span>
+            <span>
+  {guestCount === 0
+    ? 'No guest'
+    : `${guestCount} ${guestCount === 1 ? 'Guest' : 'Guests'}`}
+</span>
           </div>
           <button 
             className="text-primary flex items-center gap-1 hover:text-primary/80 transition-colors"
