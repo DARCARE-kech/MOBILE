@@ -79,6 +79,14 @@ const RequestDetailPage = () => {
     ? request.service_ratings[0] 
     : null;
   
+  // Determine service name, handling the "Book Space" special case
+  let serviceName = request.services?.name || '';
+  
+  // If this is a space booking with no service name, use a default name
+  if (request.space_id && (!serviceName || serviceName.trim() === '')) {
+    serviceName = t('services.bookSpace', 'Book Space');
+  }
+  
   return (
     <div className="bg-darcare-navy min-h-screen pb-24">
       <MainHeader 
@@ -90,7 +98,7 @@ const RequestDetailPage = () => {
       <div className="p-4 space-y-6 pt-24"> {/* Increased padding-top to prevent header overlap */}
         <div className="luxury-card">
           <RequestDetailHeader
-            serviceName={request.services?.name || ''}
+            serviceName={serviceName}
             status={request.status}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
@@ -104,6 +112,7 @@ const RequestDetailPage = () => {
             selectedOptions={selectedOptions}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
+            spaceId={request.space_id}
           />
         </div>
         

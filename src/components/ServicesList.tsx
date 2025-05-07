@@ -17,6 +17,7 @@ interface Service {
   services?: {
     name?: string;
   } | null;
+  space_id?: string | null;
 }
 
 interface ServicesListProps {
@@ -73,8 +74,18 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
       
       <div className="space-y-3">
         {services.map((service) => {
-          // Extract service name from nested objects or fallback
-          const serviceName = service.services?.name || service.title || t('services.untitled');
+          // Get service name from services object or title property
+          let serviceName = service.services?.name || service.title;
+          
+          // Handle space booking requests specifically
+          if (!serviceName && service.space_id) {
+            serviceName = t('services.bookSpace', 'Book Space');
+          }
+          
+          // Fallback if still no service name
+          if (!serviceName) {
+            serviceName = t('services.untitled');
+          }
           
           // Format time or use placeholder
           const formattedTime = service.preferred_time 

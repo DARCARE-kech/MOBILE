@@ -14,6 +14,7 @@ interface RequestDetailsContentProps {
   selectedOptions: Record<string, any> | null;
   preferredTime: string | null;
   createdAt: string | null;
+  spaceId?: string | null;
 }
 
 const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
@@ -24,25 +25,28 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   selectedOptions,
   preferredTime,
   createdAt,
+  spaceId,
 }) => {
   const { t } = useTranslation();
   
-  // Fetch space details if space_id is present in parsedNote
+  // Fetch space details if space_id is present (either from props or parsedNote)
+  const finalSpaceId = spaceId || parsedNote?.space_id;
+  
   const { data: spaceData } = useQuery({
-    queryKey: ['space', parsedNote?.space_id],
+    queryKey: ['space', finalSpaceId],
     queryFn: async () => {
-      if (!parsedNote?.space_id) return null;
+      if (!finalSpaceId) return null;
       
       const { data, error } = await supabase
         .from('spaces')
         .select('name')
-        .eq('id', parsedNote.space_id)
+        .eq('id', finalSpaceId)
         .single();
       
       if (error) throw error;
       return data;
     },
-    enabled: !!parsedNote?.space_id
+    enabled: !!finalSpaceId
   });
 
   // Format the date and time for display
@@ -89,20 +93,22 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       </div>
       
       {/* For space bookings, show space details */}
-      {parsedNote?.space_id && (
+      {(finalSpaceId || parsedNote?.people) && (
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-darcare-gold uppercase">
             {t('services.spaceDetails', 'Space Details')}
           </h3>
           
-          <div className="flex justify-between">
-            <span className="text-darcare-beige/80">{t('services.spaceName', 'Space')}</span>
-            <span className="text-darcare-beige font-medium">
-              {spaceData?.name || t('common.loading')}
-            </span>
-          </div>
+          {finalSpaceId && (
+            <div className="flex justify-between">
+              <span className="text-darcare-beige/80">{t('services.spaceName', 'Space')}</span>
+              <span className="text-darcare-beige font-medium">
+                {spaceData?.name || t('common.loading')}
+              </span>
+            </div>
+          )}
           
-          {parsedNote.people && (
+          {parsedNote?.people && (
             <div className="flex justify-between">
               <span className="text-darcare-beige/80">{t('services.numberOfPeople', 'Number of People')}</span>
               <span className="text-darcare-beige font-medium">
