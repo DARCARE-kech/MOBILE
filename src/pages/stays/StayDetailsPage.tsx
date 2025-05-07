@@ -62,6 +62,8 @@ const StayDetailsPage: React.FC = () => {
   const checkInDate = new Date(currentStay.check_in);
   const checkOutDate = new Date(currentStay.check_out);
   const stayDuration = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 3600 * 24));
+  const guestCount = typeof currentStay.guests === 'number' ? currentStay.guests : 0;
+
 
   return (
     <div className={cn(
@@ -131,7 +133,12 @@ const StayDetailsPage: React.FC = () => {
                 "h-5 w-5",
                 isDarkMode ? "text-darcare-gold" : "text-secondary"
               )} />
-              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>2 Guests</span>
+              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>
+  {guestCount === 0 
+    ? "No guest" 
+    : `${guestCount} ${guestCount === 1 ? "Guest" : "Guests"}`}
+</span>
+
             </div>
           </div>
         </Card>
