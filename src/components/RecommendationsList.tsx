@@ -87,17 +87,16 @@ const RecommendationsList = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-serif text-darcare-gold">
-  {t("recommendations.title", "Marrakech Highlights")}
-</h2>
+          {t("recommendations.title", "Marrakech Highlights")}
+        </h2>
         <button 
           className="text-darcare-gold text-sm flex items-center"
           onClick={() => navigate('/explore')}
         >
-           {t("recommendations.viewAll", "View All")}  <ChevronRight size={16} />
+          {t("recommendations.viewAll", "View All")} <ChevronRight size={16} />
         </button>
       </div>
 
-      <ScrollArea className="w-full pb-4">
       <div className="overflow-hidden">
         <ScrollArea className="w-full pb-4">
           <div className="flex gap-6 pb-4 pr-4 snap-x snap-mandatory overflow-x-auto">
