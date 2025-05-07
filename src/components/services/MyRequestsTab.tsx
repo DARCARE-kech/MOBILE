@@ -208,11 +208,11 @@ const MyRequestsTab: React.FC = () => {
     <>
       <div className="space-y-2 p-2">
         {requests?.map(request => {
-          // Get service name from services object or title property
-          let serviceName = request.services?.name || request.title;
+          // Get service name - if there's a space_id but no service name, use "Book Space"
+          let serviceName = request.services?.name || "";
           
-          // Handle space booking requests specifically
-          if (!serviceName && request.space_id) {
+          // Use "Book Space" as the default title for space booking requests
+          if (request.space_id && !serviceName) {
             serviceName = t('services.bookSpace', 'Book Space');
           }
           

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -188,11 +189,11 @@ const HistoryTab: React.FC = () => {
     <>
       <div className="space-y-2 p-2">
         {history?.map(record => {
-          // Get service name from services object or title property
-          let serviceName = record.services?.name || record.title;
+          // Get service name - if there's a space_id but no service name, use "Book Space"
+          let serviceName = record.services?.name || "";
           
-          // Handle space booking requests specifically
-          if (!serviceName && record.space_id) {
+          // Use "Book Space" as the default title for space booking requests
+          if (record.space_id && !serviceName) {
             serviceName = t('services.bookSpace', 'Book Space');
           }
           
