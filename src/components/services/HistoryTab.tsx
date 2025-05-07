@@ -187,105 +187,126 @@ const HistoryTab: React.FC = () => {
   return (
     <>
       <div className="space-y-2 p-2">
-        {history?.map(record => (
-          <div 
-            key={record.id} 
-            className={cn(
-              "request-card cursor-pointer transition-all duration-200 p-3 rounded-lg border",
-              isDarkMode 
-                ? "border-darcare-gold/10 hover:border-darcare-gold/20 bg-darcare-navy/60" 
-                : "border-primary/5 hover:border-primary/10 bg-card shadow-sm"
-            )}
-            onClick={() => handleRequestClick(record.id)}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <h3 className={cn(
-                  "font-medium truncate",
-                  isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-                )}>
-                  {record.services?.name}
-                </h3>
+        {history?.map(record => {
+          // Get service name from services object or title property
+          let serviceName = record.services?.name || record.title;
+          
+          // Handle space booking requests specifically
+          if (!serviceName && record.space_id) {
+            serviceName = t('services.bookSpace', 'Book Space');
+          }
+          
+          // Fallback if still no service name
+          if (!serviceName) {
+            serviceName = t('services.untitled');
+          }
+          
+          return (
+            <div 
+              key={record.id} 
+              className={cn(
+                "request-card cursor-pointer transition-all duration-200 p-3 rounded-lg border",
+                isDarkMode 
+                  ? "border-darcare-gold/10 hover:border-darcare-gold/20 bg-darcare-navy/60" 
+                  : "border-primary/5 hover:border-primary/10 bg-card shadow-sm"
+              )}
+              onClick={() => handleRequestClick(record.id)}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className={cn(
+                    "font-medium truncate",
+                    isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+                  )}>
+                    {serviceName}
+                  </h3>
+                  
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className={cn(
+                      "flex items-center gap-1 text-xs",
+                      isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                    )}>
+                      <Clock size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                      <span className="truncate">
+                        {record.preferred_time 
+                          ? format(new Date(record.preferred_time), 'MMM d, p') 
+                          : t('services.unscheduled')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 
-                <div className="flex items-center gap-2 mt-1">
+                <StatusBadge status={record.status || 'completed'} />
+              </div>
+
+              {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
+                <div className="mt-1.5 flex items-center">
+                  <RatingStars rating={Number(record.service_ratings[0].rating || 0)} size="sm" />
+                </div>
+              )}
+              
+              <div className={cn(
+                "mt-2 pt-2 border-t flex justify-between items-center",
+                isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
+              )}>
+                {record.staff_assignments && record.staff_assignments.length > 0 ? (
                   <div className={cn(
                     "flex items-center gap-1 text-xs",
                     isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
                   )}>
-                    <Clock size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                    <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
                     <span className="truncate">
-                      {record.preferred_time 
-                        ? format(new Date(record.preferred_time), 'MMM d, p') 
-                        : t('services.unscheduled')}
+                      {record.staff_assignments[0].staff_name || t('services.unassigned')}
                     </span>
                   </div>
-                </div>
-              </div>
-              
-              <StatusBadge status={record.status || 'completed'} />
-            </div>
-
-            {record.status === 'completed' && record.service_ratings && record.service_ratings.length > 0 && (
-              <div className="mt-1.5 flex items-center">
-                <RatingStars rating={Number(record.service_ratings[0].rating || 0)} size="sm" />
-              </div>
-            )}
-            
-            <div className={cn(
-              "mt-2 pt-2 border-t flex justify-between items-center",
-              isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
-            )}>
-              {record.staff_assignments && record.staff_assignments.length > 0 ? (
-                <div className={cn(
-                  "flex items-center gap-1 text-xs",
-                  isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
-                )}>
-                  <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
-                  <span className="truncate">
-                    {record.staff_assignments[0].staff_name || t('services.assigned')}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex-1"></div>
-              )}
-              
-              <div className="flex gap-1">
-                <Button
-                  variant="ghost" 
-                  size="sm"
-                  className={cn(
-                    "h-7 w-7 p-0",
-                    isDarkMode 
-                      ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
-                      : "text-darcare-deepGold hover:bg-darcare-deepGold/10"
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRequestClick(record.id);
-                  }}
-                >
-                  <Eye className="h-3.5 w-3.5" />
-                  <span className="sr-only">View</span>
-                </Button>
+                ) : (
+                  <div className={cn(
+                    "flex items-center gap-1 text-xs",
+                    isDarkMode ? "text-darcare-beige/70" : "text-darcare-charcoal/70"
+                  )}>
+                    <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-darcare-deepGold/70"} />
+                    <span className="truncate">{t('services.unassigned')}</span>
+                  </div>
+                )}
                 
-                <Button
-                  variant="ghost" 
-                  size="sm"
-                  className={cn(
-                    "h-7 w-7 p-0",
-                    isDarkMode 
-                      ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
-                      : "text-red-500 hover:bg-red-500/10"
-                  )}
-                  onClick={(e) => handleDeleteRequest(record.id, e)}
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  <span className="sr-only">Delete</span>
-                </Button>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost" 
+                    size="sm"
+                    className={cn(
+                      "h-7 w-7 p-0",
+                      isDarkMode 
+                        ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
+                        : "text-darcare-deepGold hover:bg-darcare-deepGold/10"
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRequestClick(record.id);
+                    }}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                    <span className="sr-only">View</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost" 
+                    size="sm"
+                    className={cn(
+                      "h-7 w-7 p-0",
+                      isDarkMode 
+                        ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
+                        : "text-red-500 hover:bg-red-500/10"
+                    )}
+                    onClick={(e) => handleDeleteRequest(record.id, e)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    <span className="sr-only">Delete</span>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       
       <AlertDialog open={!!requestToDelete} onOpenChange={() => setRequestToDelete(null)}>
