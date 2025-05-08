@@ -14,7 +14,7 @@ interface ServiceHeaderProps {
 }
 
 const ServiceHeader: React.FC<ServiceHeaderProps> = ({ 
-  title, 
+  title={t(title, title)},
   showBackButton = false,
   rightComponent,
   showWeather = false
