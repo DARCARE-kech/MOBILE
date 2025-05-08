@@ -41,14 +41,14 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
   };
 
   const serviceSubitems = (services || []).map((service) => {
-    const category = service.category?.toLowerCase();
-    const icon = iconMap[category] || <MessageCircle size={18}>;
+    const category = service.category?.toLowerCase() || '';
+    const icon = iconMap[category] || <MessageCircle size={18} />;
     const label = t(`services.${category}`, service.name);
-
-    const path =
-      category === "book-space" ? "/services/spaces" :
-      category === "shop" ? "/services/shop" :
-      `/services/${service.id}`;
+    const path = category === "book-space"
+      ? "/services/spaces"
+      : category === "shop"
+      ? "/services/shop"
+      : `/services/${service.id}`;
 
     return {
       icon,
@@ -80,7 +80,7 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
             style={{ animationDelay: `${index * 50}ms` }}
             onClick={() => {
               item.action();
-              onToggle?.();
+              if (onToggle) onToggle();
             }}
           >
             <span className={cn(
