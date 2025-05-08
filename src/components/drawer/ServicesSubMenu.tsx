@@ -1,9 +1,13 @@
-
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageCircle, Wrench, Car, CalendarRange, ShoppingBag, Waves } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import {
+  MessageCircle, Wrench, Car,
+  CalendarRange, ShoppingBag, Waves
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ServicesSubMenuProps {
   expanded: boolean;
@@ -14,45 +18,45 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  
-  const serviceSubitems = [
-    { 
-      icon: <MessageCircle size={18} />, 
-      label: t('services.cleaning'), 
-      path: "/services/cleaning",
-      action: () => navigate('/services/cleaning')
-    },
-    { 
-      icon: <Wrench size={18} />, 
-      label: t('services.maintenance'), 
-      path: "/services/maintenance",
-      action: () => navigate('/services/maintenance')
-    },
-    { 
-      icon: <Car size={18} />, 
-      label: t('services.transport'), 
-      path: "/services/transport",
-      action: () => navigate('/services/transport')
-    },
-    { 
-      icon: <Waves size={18} />, 
-      label: t('services.laundry'), 
-      path: "/services/laundry",
-      action: () => navigate('/services/laundry')
-    },
-    { 
-      icon: <CalendarRange size={18} />, 
-      label: t('services.bookSpace'), 
-      path: "/services/spaces",
-      action: () => navigate('/services/book-space')
-    },
-    { 
-      icon: <ShoppingBag size={18} />, 
-      label: t('services.shop'), 
-      path: "/services/shop",
-      action: () => navigate('/services/shop')
-    },
-  ];
+
+  // Fetch services from Supabase
+  const { data: services } = useQuery({
+    queryKey: ['services'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('services')
+        .select('id, name, category');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const iconMap: Record<string, JSX.Element> = {
+    cleaning: <MessageCircle size={18} />,
+    maintenance: <Wrench size={18} />,
+    transport: <Car size={18} />,
+    laundry: <Waves size={18} />,
+    "book-space": <CalendarRange size={18} />,
+    shop: <ShoppingBag size={18} />,
+  };
+
+  const serviceSubitems = (services || []).map((service) => {
+    const category = service.category?.toLowerCase();
+    const icon = iconMap[category] || <MessageCircle size={18}>;
+    const label = t(`services.${category}`, service.name);
+
+    const path =
+      category === "book-space" ? "/services/spaces" :
+      category === "shop" ? "/services/shop" :
+      `/services/${service.id}`;
+
+    return {
+      icon,
+      label,
+      path,
+      action: () => navigate(path)
+    };
+  });
 
   return (
     <div className={cn(
@@ -69,16 +73,14 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
               "flex items-center gap-3 py-2 px-4 text-sm rounded-lg transition-all duration-200 cursor-pointer",
               "hover:bg-darcare-gold/10 hover:text-darcare-gold",
               "animate-fade-in",
-              isActive 
-                ? "bg-darcare-gold/20 text-darcare-gold font-medium" 
+              isActive
+                ? "bg-darcare-gold/20 text-darcare-gold font-medium"
                 : "text-darcare-beige"
             )}
             style={{ animationDelay: `${index * 50}ms` }}
             onClick={() => {
               item.action();
-              if (onToggle) {
-                onToggle();
-              }
+              onToggle?.();
             }}
           >
             <span className={cn(
