@@ -19,9 +19,7 @@ const NoteField: React.FC<NoteFieldProps> = ({ form }) => {
       name="note"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-darcare-beige">
-            {t('services.additionalNotes')}
-          </FormLabel>
+          
           <FormControl>
             <Textarea
               placeholder={t('services.notesPlaceholder')}
