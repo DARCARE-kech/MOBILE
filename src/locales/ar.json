@@ -187,6 +187,19 @@
   "requestUpdated": "تم تحديث الطلب",
   "requestUpdatedDesc": "تم تحديث طلب التنظيف الخاص بك.",
   "requestErrorDesc": "حدث خطأ أثناء معالجة الطلب. يرجى المحاولة مرة أخرى.",
+   "cleaningTypes": {
+  "standard cleaning": "تنظيف عادي",
+  "deep cleaning": "تنظيف عميق",
+  "premium cleaning": "تنظيف فاخر"
+},
+"roomLabels": {
+  "bedroom": "غرفة النوم",
+  "kitchen": "المطبخ",
+  "bathroom": "الحمام",
+  "balcony": "الشرفة",
+  "all_areas": "كل الغرف"
+},
+
 
 
     "status": {
