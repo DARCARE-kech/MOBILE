@@ -175,6 +175,20 @@
     "estimatedDuration": "المدة التقديرية",
     "notesSubtitle": "ملاحظات إضافية",
     "notesPlaceholder": "أضف أي معلومات إضافية هنا...",
+
+  "cleaningType": "نوع التنظيف",
+  "selectRooms": "اختر الغرف",
+  "roomsSubtitle": "اختر المناطق التي تحتاج إلى تنظيف",
+  "loginRequired": "يجب تسجيل الدخول لإرسال طلب الخدمة.",
+  "sendRequest": "إرسال الطلب",
+  "updateRequest": "تحديث الطلب",
+  "requestSubmitted": "تم إرسال الطلب",
+  "requestSubmittedDesc": "تم إرسال طلب التنظيف الخاص بك بنجاح.",
+  "requestUpdated": "تم تحديث الطلب",
+  "requestUpdatedDesc": "تم تحديث طلب التنظيف الخاص بك.",
+  "requestErrorDesc": "حدث خطأ أثناء معالجة الطلب. يرجى المحاولة مرة أخرى.",
+
+
     "status": {
       "pending": "قيد الانتظار",
       "approved": "تمت الموافقة",
