@@ -61,7 +61,10 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
         <Card className={cn(
           "mb-4 border-darcare-gold/20 bg-gradient-to-r from-darcare-navy to-darcare-navy/80 p-4 text-darcare-beige",
         )}>
-          <p className="text-sm">{instructions}</p>
+          <p className="text-sm">
+  {t(`services.instructions.${serviceName}`, instructions)}
+</p>
+
         </Card>
       )}
       

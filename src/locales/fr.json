@@ -218,6 +218,14 @@
   "shop": "Boutique",
   "bookSpace": "Réserver un espace"
 },
+"instructions": {
+  "cleaning": "Veuillez choisir le type de nettoyage et les pièces à nettoyer.",
+  "maintenance": "Décrivez le problème et l'heure souhaitée pour l’intervention.",
+  "transport": "Indiquez l’heure de prise en charge et vos préférences de transport.",
+  "laundry": "Sélectionnez les services de blanchisserie et les tissus spéciaux si nécessaire.",
+  "bookSpace": "Choisissez la date et l'heure de votre réservation d'espace."
+},
+
 
     "status": {
       "pending": "En Attente",

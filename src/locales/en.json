@@ -203,6 +203,14 @@
   "shop": "Shop",
   "bookSpace": "Book a Space"
 },
+"instructions": {
+  "cleaning": "Please choose the type of cleaning and the rooms to be cleaned.",
+  "maintenance": "Describe the issue and preferred time for maintenance.",
+  "transport": "Specify the pickup time and additional transport preferences.",
+  "laundry": "Select the laundry services and specify fabric types if needed.",
+  "bookSpace": "Choose the date and time for your space reservation."
+},
+
 
     "status": {
       "pending": "Pending",
