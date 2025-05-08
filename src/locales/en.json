@@ -195,19 +195,6 @@
   "requestUpdated": "Request Updated",
   "requestUpdatedDesc": "Your cleaning request has been updated.",
   "requestErrorDesc": "There was an error processing your request. Please try again.",
-  "cleaningTypes": {
-  "standard cleaning": "Standard Cleaning",
-  "deep cleaning": "Deep Cleaning",
-  "premium cleaning": "Premium Cleaning"
-},
-"roomLabels": {
-  "bedroom": "Bedroom",
-  "kitchen": "Kitchen",
-  "bathroom": "Bathroom",
-  "balcony": "Balcony",
-  "all_areas": "All Areas"
-},
-
     "status": {
       "pending": "Pending",
       "approved": "Approved",

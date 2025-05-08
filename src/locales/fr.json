@@ -210,19 +210,6 @@
   "requestUpdated": "Demande mise à jour",
   "requestUpdatedDesc": "Votre demande de nettoyage a été mise à jour.",
   "requestErrorDesc": "Une erreur est survenue lors de l'envoi de la demande.",
-      "cleaningTypes": {
-  "standard cleaning": "Nettoyage standard",
-  "deep cleaning": "Nettoyage en profondeur",
-  "premium cleaning": "Nettoyage premium"
-},
-"roomLabels": {
-  "bedroom": "Chambre",
-  "kitchen": "Cuisine",
-  "bathroom": "Salle de bain",
-  "balcony": "Balcon",
-  "all_areas": "Toutes les pièces"
-},
-
     "status": {
       "pending": "En Attente",
       "approved": "Approuvé",

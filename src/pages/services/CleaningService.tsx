@@ -46,21 +46,9 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Safely access optional_fields from serviceData
   const optionalFields = serviceData?.optional_fields || {};
   const cleaningTypes = optionalFields.cleaning_types || ["standard cleaning", "deep cleaning", "premium cleaning"];
-  const roomOptions = optionalFields.rooms || ["bedroom", "kitchen", "bathroom", "balcony", "all_areas"];
-
-  
-  const translatedCleaningTypes = cleaningTypes.map(type => ({
-  key: type,
-  label: t(`services.cleaningTypes.${type}`, type),
-}));
-
-  const translatedRoomOptions = roomOptions.map(room => ({
-  key: room,
-  label: t(`services.roomLabels.${room}`, room),
-}));
+  const roomOptions = optionalFields.rooms || ["bedroom", "kitchen", "bathroom", "balcony", "all areas"];
   
   // Extract date and time from existingRequest if in edit mode
   const getDefaultDate = (): Date => {
@@ -223,7 +211,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
               fieldType="radio"
               name="cleaningType"
               label={t('services.cleaningType', 'Cleaning Type')}
-              options={translatedCleaningTypes}
+              options={cleaningTypes}
               icon={<Home className="h-5 w-5" />}
             />
             
@@ -233,7 +221,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
               fieldType="checkbox"
               name="rooms"
               label={t('services.selectRooms', 'Select Rooms')}
-              options={translatedRoomOptions}
+              options={roomOptions}
               icon={<Bed className="h-5 w-5" />}
               subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
             />
