@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -44,11 +45,11 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
     const category = service.category?.toLowerCase() || '';
     const icon = iconMap[category] || <MessageCircle size={18} />;
     const label = t(`services.${category}`, service.name);
-    const path = category === "book-space"
-      ? "/services/spaces"
-      : category === "shop"
-      ? "/services/shop"
-      : `/services/${service.id}`;
+
+    const path =
+      category === "book-space" ? "/services/spaces" :
+      category === "shop" ? "/services/shop" :
+      `/services/${service.id}`;
 
     return {
       icon,
