@@ -14,7 +14,7 @@ interface ServiceHeaderProps {
 }
 
 const ServiceHeader: React.FC<ServiceHeaderProps> = ({ 
-  title={t(title, title)},
+  title,
   showBackButton = false,
   rightComponent,
   showWeather = false
@@ -22,9 +22,12 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
   
+  // Translate title if needed
+  const translatedTitle = t(`services.labels.${title}`, title);
+  
   return (
     <AppHeader 
-      title={title}
+      title={translatedTitle}
       rightContent={rightComponent}
       onBack={showBackButton ? () => navigate('/services') : undefined}
       drawerContent={!showBackButton ? <DrawerMenu /> : undefined}
