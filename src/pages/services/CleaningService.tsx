@@ -45,7 +45,8 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const cleaningTypes = optionalFields.cleaning_types || ["standard cleaning", "deep cleaning", "premium cleaning"];
+  const optionalFields = serviceData?.optional_fields || {};
+const cleaningTypes = optionalFields.cleaning_types || ["standard cleaning", "deep cleaning", "premium cleaning"];
 const roomOptions = optionalFields.rooms || ["bedroom", "kitchen", "bathroom", "balcony", "all_areas"];
 
   
