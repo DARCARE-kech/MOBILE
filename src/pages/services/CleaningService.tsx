@@ -45,10 +45,19 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const optionalFields = serviceData?.optional_fields || {};
   const cleaningTypes = optionalFields.cleaning_types || ["standard cleaning", "deep cleaning", "premium cleaning"];
-  const roomOptions = optionalFields.rooms || ["bedroom", "kitchen", "bathroom", "balcony", "all areas"];
+const roomOptions = optionalFields.rooms || ["bedroom", "kitchen", "bathroom", "balcony", "all_areas"];
+
+  
+  const translatedCleaningTypes = cleaningTypes.map(type => ({
+  key: type,
+  label: t(`services.cleaningTypes.${type}`, type),
+}));
+
+  const translatedRoomOptions = roomOptions.map(room => ({
+  key: room,
+  label: t(`services.roomLabels.${room}`, room),
+}));
   
   // Extract date and time from existingRequest if in edit mode
   const getDefaultDate = (): Date => {
@@ -207,24 +216,26 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Cleaning Type Option */}
             <OptionField
-              form={form}
-              fieldType="radio"
-              name="cleaningType"
-              label={t('services.cleaningType', 'Cleaning Type')}
-              options={cleaningTypes}
-              icon={<Home className="h-5 w-5" />}
-            />
+  form={form}
+  fieldType="radio"
+  name="cleaningType"
+  label={t('services.cleaningType', 'Cleaning Type')}
+  options={translatedCleaningTypes} // ✅ Correct
+  icon={<Home className="h-5 w-5" />}
+/>
+
             
             {/* Rooms Selection */}
             <OptionField
-              form={form}
-              fieldType="checkbox"
-              name="rooms"
-              label={t('services.selectRooms', 'Select Rooms')}
-              options={roomOptions}
-              icon={<Bed className="h-5 w-5" />}
-              subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
-            />
+  form={form}
+  fieldType="checkbox"
+  name="rooms"
+  label={t('services.selectRooms', 'Select Rooms')}
+  options={translatedRoomOptions} // ✅ Correct
+  icon={<Bed className="h-5 w-5" />}
+  subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
+/>
+
             
             {/* Date and Time Selection */}
             <DateTimePickerSection form={form} />
