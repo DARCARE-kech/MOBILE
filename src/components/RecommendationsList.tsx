@@ -97,8 +97,8 @@ const RecommendationsList = () => {
         </button>
       </div>
 
-      <div className="overflow-hidden">
-        <ScrollArea className="w-full pb-4">
+       <div className="overflow-x-auto">
+       
           <div className="flex gap-10 pb-4 pr-4 snap-x snap-mandatory overflow-x-auto">
             {recommendations?.map((item) => (
               <div key={item.id} className="snap-center min-w-[260px] w-[260px] first:ml-1">
@@ -110,7 +110,7 @@ const RecommendationsList = () => {
               </div>
             ))}
           </div>
-        </ScrollArea>
+        
       </div>
     </div>
   );
