@@ -30,14 +30,7 @@ export const FiltersBar = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Button
-          variant="ghost"
-          onClick={() => setShowFilters(!showFilters)}
-          className="text-darcare-beige hover:text-darcare-gold px-0"
-        >
-          <Filter className="h-4 w-4 mr-2" />
-          {t('explore.filters')}
-        </Button>
+        
         
         <div className="flex items-center">
           <span className="text-darcare-beige/50 text-sm mr-2">{t('explore.sortBy')}:</span>
