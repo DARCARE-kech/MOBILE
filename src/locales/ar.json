@@ -102,6 +102,12 @@
   "services": {
     "reserve": "حجز",
     "requests": "طلباتي",
+      "cleaning": "تنظيف",
+  "maintenance": "صيانة",
+  "transport": "نقل",
+  "laundry": "غسيل",
+  "shop": "تسوق",
+  "bookSpace": "حجز مساحة",
     "history": "التاريخ",
     "book": "حجز",
     "capacity": "السعة",
