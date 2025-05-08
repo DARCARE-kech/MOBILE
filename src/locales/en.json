@@ -195,6 +195,15 @@
   "requestUpdated": "Request Updated",
   "requestUpdatedDesc": "Your cleaning request has been updated.",
   "requestErrorDesc": "There was an error processing your request. Please try again.",
+  "labels": {
+  "cleaning": "Cleaning",
+  "maintenance": "Maintenance",
+  "transport": "Transport",
+  "laundry": "Laundry",
+  "shop": "Shop",
+  "bookSpace": "Book a Space"
+},
+
     "status": {
       "pending": "Pending",
       "approved": "Approved",

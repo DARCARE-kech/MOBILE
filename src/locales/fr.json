@@ -210,6 +210,15 @@
   "requestUpdated": "Demande mise à jour",
   "requestUpdatedDesc": "Votre demande de nettoyage a été mise à jour.",
   "requestErrorDesc": "Une erreur est survenue lors de l'envoi de la demande.",
+    "labels": {
+  "cleaning": "Nettoyage",
+  "maintenance": "Maintenance",
+  "transport": "Transport",
+  "laundry": "Blanchisserie",
+  "shop": "Boutique",
+  "bookSpace": "Réserver un espace"
+},
+
     "status": {
       "pending": "En Attente",
       "approved": "Approuvé",

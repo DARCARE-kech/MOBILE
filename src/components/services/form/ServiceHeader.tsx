@@ -53,7 +53,9 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
   
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-serif text-darcare-gold mb-4">{formatFieldKey(serviceName)}</h1>
+      <h1 className="text-2xl font-serif text-darcare-gold mb-4">
+  {t(`services.labels.${serviceName}`, formatFieldKey(serviceName))}
+</h1>
       
       {instructions && (
         <Card className={cn(
