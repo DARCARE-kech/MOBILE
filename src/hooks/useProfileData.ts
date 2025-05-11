@@ -47,8 +47,8 @@ export const useProfileData = (userId: string | undefined) => {
         notifications_enabled: data.notifications_enabled,
         terms_accepted: data.terms_accepted,
         terms_accepted_at: data.terms_accepted_at,
-        // Map phone to phone_number if it exists in the data
-        phone_number: data.phone_number || data.phone || null,
+        // Only use phone_number from data, as 'phone' field no longer exists
+        phone_number: data.phone_number || null,
         whatsapp_number: data.whatsapp_number || null,
         role: data.role,
         created_at: data.created_at
