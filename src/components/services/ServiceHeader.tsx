@@ -23,11 +23,6 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({
 const labelKeys = t('services.labels', { returnObjects: true }) as Record<string, string>;
 const translatedTitle = title in labelKeys ? t(`services.labels.${title}`) : title;
 
-  console.log('🧪 Looking for key:', `services.labels.${title}`);
-console.log('📦 Available labels:', t('services.labels', { returnObjects: true }));
-
-
-  
   return (
     <AppHeader 
       title={translatedTitle}

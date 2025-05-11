@@ -32,9 +32,7 @@ const FormSectionTitle: React.FC<FormSectionTitleProps> = ({
         {icon && <div className="text-darcare-gold">{icon}</div>}
         <h3 className="text-darcare-gold font-serif text-lg">{displayTitle}</h3>
       </div>
-      {displaySubtitle && (
-        <p className="text-darcare-beige/70 text-sm">{displaySubtitle}</p>
-      )}
+      
     </div>
   );
 };
