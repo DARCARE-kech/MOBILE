@@ -29,15 +29,7 @@ i18n
     returnNull: false,
     returnEmptyString: false,
     keySeparator: '.',
-    debug: process.env.NODE_ENV === 'development',
-    react: {
-      transSupportBasicHtmlNodes: true,
-      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'em', 'span'],
-      transWrapTextNodes: '',
-      useSuspense: false,
-      defaultTransParent: 'span',
-      transWithoutKey: false
-    }
+    debug: process.env.NODE_ENV === 'development'
   });
 
 // Add debugging for i18n
