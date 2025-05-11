@@ -19,11 +19,10 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({
   rightComponent,
   showWeather = false
 }) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  // Translate title if needed
-const translatedTitle = t(`services.labels.${title}`, title);
+const labelKeys = t('services.labels', { returnObjects: true }) as Record<string, string>;
+const translatedTitle = title in labelKeys ? t(`services.labels.${title}`) : title;
+
 
   
   return (
