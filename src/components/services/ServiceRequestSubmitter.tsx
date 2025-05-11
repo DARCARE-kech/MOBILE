@@ -25,7 +25,7 @@ export const useServiceSubmitter = ({
   const { t } = useTranslation();
   const { user } = useAuth();
   const { category, option, tripType } = serviceState;
-
+  
   const handleSubmitRequest = async (formData: ServiceFormData) => {
     if (!user) {
       toast.error(t('common.error'), {
@@ -45,17 +45,23 @@ export const useServiceSubmitter = ({
         tripType: tripType
       };
 
-      console.log('Submitting service request with service_id:', service?.id);
+      // S'assurer que service_id est correctement défini
+      console.log('Submitting service request with service:', service);
+      console.log('Service ID used for submission:', service?.id);
+
+      if (!service?.id) {
+        console.error('Warning: service_id is undefined - this will cause naming issues in My Requests');
+      }
 
       // Insert request into database
       const { error } = await supabase
         .from('service_requests')
         .insert({
-          service_id: service?.id, // S'assurer que service_id est inclus
-          profile_id: user.id, // S'assurer que profile_id est égal à user_id
+          service_id: service?.id, // Garantir que service_id est inclus
+          profile_id: user.id, // S'assurer que profile_id est inclus
           user_id: user.id,
           preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-          note: formData.note || null, // S'assurer que note est inclus
+          note: formData.note || null, // S'assurer que note est incluse
           selected_options: selectedOptions
         });
       

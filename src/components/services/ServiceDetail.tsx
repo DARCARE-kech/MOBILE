@@ -48,6 +48,9 @@ const ServiceDetail: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [existingRequest, setExistingRequest] = useState<ServiceRequestType | null>(null);
   
+  // Log le paramètre ID pour débogage
+  console.log("Current service ID from URL:", id);
+  
   // Check if we're in edit mode based on location state
   useEffect(() => {
     const state = location.state as { editMode?: boolean; requestId?: string } | undefined;
@@ -75,13 +78,24 @@ const ServiceDetail: React.FC = () => {
   const { data: service, isLoading: isLoadingService, error: serviceError } = useQuery({
     queryKey: ['service', id],
     queryFn: async () => {
+      if (id === 'book-space' || id === 'shop') {
+        console.log("Special service ID detected, skipping fetch");
+        return null;
+      }
+      
+      console.log("Fetching service with ID:", id);
       const { data, error } = await supabase
         .from('services')
         .select('*')
         .eq('id', id)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching service:", error);
+        throw error;
+      }
+      
+      console.log("Service data fetched:", data);
       return data as ServiceType;
     },
     enabled: !!id && id !== 'book-space' && id !== 'shop'
@@ -91,7 +105,12 @@ const ServiceDetail: React.FC = () => {
   const { data: serviceDetails, isLoading: isLoadingDetails } = useQuery({
     queryKey: ['service-details', id, service?.name],
     queryFn: async () => {
-      if (!service) return null;
+      if (!service) {
+        console.log("No service data available, skipping details fetch");
+        return null;
+      }
+      
+      console.log("Fetching service details for service ID:", service.id);
       
       // For all standard services, we now query the unified service_details table
       const { data, error } = await supabase
@@ -103,6 +122,13 @@ const ServiceDetail: React.FC = () => {
       if (error) {
         console.error(`Error fetching service details:`, error);
         return null;
+      }
+      
+      console.log("Service details fetched:", data);
+      
+      // Ajouter le service_id au serviceDetails s'il existe
+      if (data && service?.id) {
+        data.service_id = service.id;
       }
       
       return data as ServiceDetailType;
@@ -155,6 +181,16 @@ const ServiceDetail: React.FC = () => {
   
   const serviceNameLower = service?.name.toLowerCase();
   const pageTitle = editMode ? t('services.editRequest') : service.name;
+
+  // Log service_id avant de le passer au composant
+  console.log("Service ID passing to component:", service.id);
+  console.log("ServiceDetails with service_id:", serviceDetails);
+  
+  // Assurez-vous que serviceDetails inclut service_id avant de le passer aux composants
+  const enhancedServiceDetails = serviceDetails ? {
+    ...serviceDetails,
+    service_id: service.id 
+  } : { service_id: service.id } as ServiceDetailType;
   
   // Pass serviceDetails and existingRequest to the specific service component
   if (serviceNameLower?.includes('laundry')) {
@@ -163,7 +199,7 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <LaundryService 
-            serviceData={serviceDetails || undefined} 
+            serviceData={enhancedServiceDetails} 
             existingRequest={existingRequest}
             editMode={editMode}
           />
@@ -177,7 +213,7 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <CleaningService 
-            serviceData={serviceDetails || undefined}
+            serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}
           />
@@ -191,7 +227,7 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <MaintenanceService 
-            serviceData={serviceDetails || undefined}
+            serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}
           />
@@ -205,7 +241,7 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <TransportService 
-            serviceData={serviceDetails || undefined}
+            serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}
           />

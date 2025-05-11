@@ -69,7 +69,13 @@ export const useServiceRequest = (
         tripType: tripType
       };
 
+      // S'assurer que le service_id est correctement défini et enregistré dans les logs
+      console.log('Service data being used:', service);
       console.log('Service ID being passed:', service?.id);
+
+      if (!service?.id) {
+        console.warn('service_id est undefined - cela causera des problèmes d\'affichage dans My Requests');
+      }
 
       // Prepare request data - s'assurer que service_id est toujours défini quand un service existe
       const requestData = {

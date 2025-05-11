@@ -26,6 +26,10 @@ const ServiceRequestForm: React.FC = () => {
     getServiceTitle
   } = useServiceRequestForForm();
   
+  // Log service information for debugging
+  console.log('Current service data in form:', service);
+  console.log('Service ID in form:', service?.id);
+  
   // Use our custom hook to handle form submission
   const { handleSubmitRequest } = useServiceSubmitter({
     service,

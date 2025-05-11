@@ -14,31 +14,37 @@ export function useServiceRequest(): UseServiceRequestResult {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Get serviceType from state
+  // Get serviceType and serviceId from state
   const serviceState = location.state as ServiceLocationState || {};
   const { serviceType, serviceId, category, option, tripType } = serviceState;
   
-  // Validate we have a serviceType
+  // Validate we have a serviceType or serviceId
   useEffect(() => {
     if (!serviceType && !serviceId) {
       navigate('/services');
     }
   }, [serviceType, serviceId, navigate]);
   
-  // Fetch service details based on the service type
+  // Fetch service details based on the service type or ID
   const { data: service, isLoading: isLoadingService } = useQuery({
     queryKey: ['service', serviceType, serviceId],
     queryFn: async () => {
       if (serviceId) {
+        console.log('Fetching service with ID:', serviceId);
         const { data, error } = await supabase
           .from('services')
           .select('*')
           .eq('id', serviceId)
           .single();
           
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching service by ID:', error);
+          throw error;
+        }
+        console.log('Service data fetched by ID:', data);
         return data;
-      } else {
+      } else if (serviceType) {
+        console.log('Fetching service with type:', serviceType);
         const { data, error } = await supabase
           .from('services')
           .select('*')
@@ -46,9 +52,16 @@ export function useServiceRequest(): UseServiceRequestResult {
           .limit(1)
           .single();
           
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching service by type:', error);
+          throw error;
+        }
+        console.log('Service data fetched by type:', data);
         return data;
       }
+      
+      console.warn('No serviceId or serviceType provided');
+      return null;
     },
     enabled: !!serviceType || !!serviceId
   });
@@ -57,7 +70,12 @@ export function useServiceRequest(): UseServiceRequestResult {
   const { data: serviceDetails, isLoading: isLoadingDetails } = useQuery({
     queryKey: ['service-details', service?.id],
     queryFn: async () => {
-      if (!service?.id) return null;
+      if (!service?.id) {
+        console.warn('No service ID available for fetching details');
+        return null;
+      }
+      
+      console.log('Fetching service details for ID:', service.id);
       
       const { data, error } = await supabase
         .from('service_details')
@@ -69,6 +87,8 @@ export function useServiceRequest(): UseServiceRequestResult {
         console.error('Error fetching service details:', error);
         return null;
       }
+      
+      console.log('Service details fetched:', data);
       
       // Ensure the optional_fields is correctly typed
       if (data && data.optional_fields) {

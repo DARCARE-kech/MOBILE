@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +40,10 @@ const TransportService: React.FC<TransportServiceProps> = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Log service data for debugging
+  console.log('TransportService - serviceData:', serviceData);
+  console.log('TransportService - service_id:', serviceData?.service_id);
   
   const optionalFields = serviceData?.optional_fields || {};
   const vehicleTypes = optionalFields.vehicle_types || ["van", "sedan", "luxury car", "motorbike"];
@@ -106,7 +111,12 @@ const TransportService: React.FC<TransportServiceProps> = ({
         parseInt(data.time.split(':')[1])
       ).toISOString();
 
+      // Vérification et log du service_id utilisé
       console.log('Using service_id:', serviceData?.service_id);
+      
+      if (!serviceData?.service_id) {
+        console.warn('Warning: service_id is undefined - this will cause naming issues in My Requests');
+      }
       
       const requestData = {
         service_id: serviceData?.service_id, // S'assurer que service_id est toujours inclus
@@ -168,6 +178,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
     }
   };
   
+  // Le reste du code reste inchangé
   return (
     <div className="p-4 pb-24">
       {/* Service Header with instructions */}
