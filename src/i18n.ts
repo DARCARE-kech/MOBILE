@@ -37,6 +37,7 @@ i18n
       transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'em', 'span'],
       // This ensures ReactNode compatibility
       transWrapTextNodes: '',
+      useSuspense: false // Disable Suspense for i18next
     }
   });
 

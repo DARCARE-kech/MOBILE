@@ -2,17 +2,11 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import './i18n'
+// Import i18n directly
+import i18n from './i18n'
 
-// Add debugging for i18n
-import i18n from 'i18next';
-
-i18n.on('initialized', () => {
-  console.log('i18n initialized with language:', i18n.language);
-});
-
-i18n.on('languageChanged', (lng) => {
-  console.log('Language changed to:', lng);
-});
+// No need for additional debugging setup since it's already in i18n.ts
+// The imported i18n object already has these event listeners attached
+// in the i18n.ts file
 
 createRoot(document.getElementById("root")!).render(<App />);
