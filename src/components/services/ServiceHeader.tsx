@@ -24,11 +24,6 @@ const key = title.toLowerCase();
 const labelKeys = t('services.labels', { returnObjects: true }) as Record<string, string>;
 const translatedTitle = key in labelKeys ? t(`services.labels.${key}`) : title;
 
-  console.log("🌐 Langue active :", i18n.language);
-console.log("🔑 Clé service :", rawKey);
-console.log("📦 Labels disponibles :", serviceLabels);
-console.log("✅ Titre affiché :", translatedTitle);
-  return (
     <AppHeader 
       title={translatedTitle}
       rightContent={rightComponent}
