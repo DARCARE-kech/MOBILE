@@ -39,6 +39,9 @@ const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: App
   const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
   const displayTitle = isHome ? "DarCare" : title;
 
+  console.log("🧪 AppHeader reçoit :", title);
+
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center bg-darcare-navy">
       <div className="flex items-center gap-3">
