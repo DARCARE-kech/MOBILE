@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -159,7 +158,7 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
       const selectedServices = Object.entries(data.services)
         .filter(([_, isSelected]) => isSelected)
         .map(([service]) => service);
-        
+      
       // Convert selected fabrics to a more concise format
       const selectedFabrics = Object.entries(data.specialFabrics)
         .filter(([_, isSelected]) => isSelected)
@@ -168,8 +167,9 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
       const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
+        profile_id: user.id, // Set profile_id equal to user_id
         preferred_time: isoDateTime,
-        note: data.note,
+        note: data.note || null, // Make sure note is included
         selected_options: {
           selectedServices,
           selectedFabrics,

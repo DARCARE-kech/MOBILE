@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { type ServiceFormData } from '@/hooks/services/types';
 import type { ServiceLocationState } from '@/hooks/services/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ServiceRequestSubmitterProps {
   service: any;
@@ -22,9 +23,17 @@ export const useServiceSubmitter = ({
 }: ServiceRequestSubmitterProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { category, option, tripType } = serviceState;
 
   const handleSubmitRequest = async (formData: ServiceFormData) => {
+    if (!user) {
+      toast.error(t('common.error'), {
+        description: t('common.loginRequired')
+      });
+      return;
+    }
+    
     onSubmitStart();
     
     try {
@@ -40,9 +49,11 @@ export const useServiceSubmitter = ({
       const { error } = await supabase
         .from('service_requests')
         .insert({
-          service_id: service?.id,
+          service_id: service?.id, // Make sure service_id is included
+          profile_id: user.id, // Set profile_id equal to user_id
+          user_id: user.id,
           preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-          note: formData.note,
+          note: formData.note || null, // Make sure note is included
           selected_options: selectedOptions
         });
       

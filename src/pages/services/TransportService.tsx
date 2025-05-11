@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -110,8 +109,9 @@ const TransportService: React.FC<TransportServiceProps> = ({
       const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
+        profile_id: user.id, // Set profile_id equal to user_id
         preferred_time: isoDateTime,
-        note: data.note,
+        note: data.note || null, // Make sure note is included
         selected_options: {
           vehicleType: data.vehicleType,
           driverLanguage: data.driverLanguage,

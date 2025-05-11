@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { useProfileData } from '@/hooks/useProfileData';
 
 export interface ServiceLocationState {
   category?: string;
@@ -45,6 +46,9 @@ export const useServiceRequest = (
   const { t } = useTranslation();
   const { user } = useAuth();
   const { category, option, tripType } = serviceState;
+  
+  // Fetch user profile data for getting profile_id
+  const { data: profileData } = useProfileData(user?.id);
 
   const handleSubmitRequest = async (formData: ServiceFormData, isEdit = false, requestId?: string) => {
     if (!user) {
@@ -67,10 +71,11 @@ export const useServiceRequest = (
 
       // Prepare request data
       const requestData = {
-        service_id: service?.id,
+        service_id: service?.id, // Make sure service_id is always included
         user_id: user.id,
+        profile_id: user.id, // Set profile_id equal to user_id
         preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-        note: formData.note || null,
+        note: formData.note || null, // Make sure note is always included
         selected_options: selectedOptions,
         status: isEdit ? undefined : 'pending' // Don't update status on edit
       };

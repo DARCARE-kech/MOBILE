@@ -103,9 +103,12 @@ export const useSpaceBooking = (requestId?: string) => {
       // Prepare the request data
       const requestData = {
         user_id: user.id,
+        profile_id: user.id, // Set profile_id equal to user_id
         space_id: spaceId,
+        // For space bookings, service_id is null (but explicitly set to null)
+        service_id: null,
         preferred_time: date.toISOString(),
-        note: values.specialRequests || null,
+        note: values.specialRequests || null, // Make sure note is included
         selected_options: {
           peopleCount,
           timeOfDay: selectedTime
