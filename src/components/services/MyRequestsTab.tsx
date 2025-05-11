@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -237,18 +236,21 @@ const MyRequestsTab: React.FC = () => {
     <>
       <div className="space-y-2 p-2">
         {requests.map(request => {
-          // Get service name - if there's a space_id but no service name, use "Book Space"
-          let serviceName = request.services?.name || "";
+          // Get service name - affichage selon le contexte (service ou espace)
+          let serviceName = "";
           
-          // Use "Book Space" as the default title for space booking requests
-          if (request.space_id && !serviceName) {
+          if (request.space_id) {
+            // Pour les réservations d'espace
             serviceName = t('services.bookSpace', 'Book Space');
-          }
-          
-          // Fallback if still no service name
-          if (!serviceName) {
+          } else if (request.services && request.services.name) {
+            // Pour les services standards avec un nom valide
+            serviceName = request.services.name;
+          } else {
+            // Fallback pour les services sans nom
             serviceName = t('services.untitled', 'Untitled Service');
           }
+          
+          console.log("Request:", request.id, "Service ID:", request.service_id, "Service Name:", serviceName);
           
           return (
             <div 

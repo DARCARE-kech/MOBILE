@@ -103,18 +103,20 @@ export const useSpaceBooking = (requestId?: string) => {
       // Prepare the request data
       const requestData = {
         user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
+        profile_id: user.id, // Définir profile_id égal à user_id
         space_id: spaceId,
-        // For space bookings, service_id is null (but explicitly set to null)
+        // Pour les réservations d'espace, service_id est explicitement null
         service_id: null,
         preferred_time: date.toISOString(),
-        note: values.specialRequests || null, // Make sure note is included
+        note: values.specialRequests || null, // S'assurer que note est incluse
         selected_options: {
           peopleCount,
           timeOfDay: selectedTime
         },
-        status: isEditing ? undefined : 'pending' // Don't update status if editing
+        status: isEditing ? undefined : 'pending' // Ne pas mettre à jour le statut si on modifie
       };
+
+      console.log('Submitting space booking with data:', requestData);
       
       let error;
       

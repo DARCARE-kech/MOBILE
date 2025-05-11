@@ -105,13 +105,15 @@ const TransportService: React.FC<TransportServiceProps> = ({
         parseInt(data.time.split(':')[0]),
         parseInt(data.time.split(':')[1])
       ).toISOString();
+
+      console.log('Using service_id:', serviceData?.service_id);
       
       const requestData = {
-        service_id: serviceData?.service_id,
+        service_id: serviceData?.service_id, // S'assurer que service_id est toujours inclus
         user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
+        profile_id: user.id, // Définir profile_id égal à user_id
         preferred_time: isoDateTime,
-        note: data.note || null, // Make sure note is included
+        note: data.note || null, // S'assurer que note est toujours incluse
         selected_options: {
           vehicleType: data.vehicleType,
           driverLanguage: data.driverLanguage,
@@ -119,6 +121,8 @@ const TransportService: React.FC<TransportServiceProps> = ({
           luggageSupport: data.luggageSupport
         }
       };
+
+      console.log('Submitting transport service request:', requestData);
       
       let error;
       

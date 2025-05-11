@@ -45,15 +45,17 @@ export const useServiceSubmitter = ({
         tripType: tripType
       };
 
+      console.log('Submitting service request with service_id:', service?.id);
+
       // Insert request into database
       const { error } = await supabase
         .from('service_requests')
         .insert({
-          service_id: service?.id, // Make sure service_id is included
-          profile_id: user.id, // Set profile_id equal to user_id
+          service_id: service?.id, // S'assurer que service_id est inclus
+          profile_id: user.id, // S'assurer que profile_id est égal à user_id
           user_id: user.id,
           preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-          note: formData.note || null, // Make sure note is included
+          note: formData.note || null, // S'assurer que note est inclus
           selected_options: selectedOptions
         });
       

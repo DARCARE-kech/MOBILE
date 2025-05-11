@@ -69,16 +69,20 @@ export const useServiceRequest = (
         tripType: tripType
       };
 
-      // Prepare request data
+      console.log('Service ID being passed:', service?.id);
+
+      // Prepare request data - s'assurer que service_id est toujours défini quand un service existe
       const requestData = {
-        service_id: service?.id, // Make sure service_id is always included
+        service_id: service?.id, // S'assurer que service_id est toujours inclus et correctement défini
         user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
+        profile_id: user.id, // Définir profile_id égal à user_id
         preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-        note: formData.note || null, // Make sure note is always included
+        note: formData.note || null, // S'assurer que note est toujours inclus
         selected_options: selectedOptions,
-        status: isEdit ? undefined : 'pending' // Don't update status on edit
+        status: isEdit ? undefined : 'pending' // Ne pas mettre à jour le statut lors d'une modification
       };
+      
+      console.log('Submitting request data:', requestData);
       
       let error;
       
@@ -95,9 +99,6 @@ export const useServiceRequest = (
           toast.success(t('services.requestUpdated', 'Request Updated'), {
             description: t('services.requestUpdatedDesc', 'Your service request has been updated')
           });
-          
-          // Invalidate relevant queries to refresh data
-          // This ensures that the updated request appears in the correct tab
         }
       } else {
         // Create new request

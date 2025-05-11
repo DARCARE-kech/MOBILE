@@ -75,6 +75,8 @@ const HistoryTab: React.FC = () => {
         .order('created_at', { ascending: false });
       
       if (historyError) throw historyError;
+
+      console.log("History data:", historyData);
       
       // For each request, fetch staff assignments and ratings separately using our helper functions
       const enhancedHistory = await Promise.all((historyData || []).map(async (record) => {
@@ -189,18 +191,21 @@ const HistoryTab: React.FC = () => {
     <>
       <div className="space-y-2 p-2">
         {history?.map(record => {
-          // Get service name - if there's a space_id but no service name, use "Book Space"
-          let serviceName = record.services?.name || "";
+          // Déterminer le nom du service en fonction du contexte
+          let serviceName = "";
           
-          // Use "Book Space" as the default title for space booking requests
-          if (record.space_id && !serviceName) {
+          if (record.space_id) {
+            // Pour les réservations d'espace
             serviceName = t('services.bookSpace', 'Book Space');
+          } else if (record.services?.name) {
+            // Pour les services standards avec un nom valide
+            serviceName = record.services.name;
+          } else {
+            // Fallback pour les services sans nom
+            serviceName = t('services.untitled', 'Untitled Service');
           }
           
-          // Fallback if still no service name
-          if (!serviceName) {
-            serviceName = t('services.untitled');
-          }
+          console.log("History record:", record.id, "Service ID:", record.service_id, "Service Name:", serviceName);
           
           return (
             <div 
