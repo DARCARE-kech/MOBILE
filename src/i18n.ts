@@ -37,7 +37,11 @@ i18n
       transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'em', 'span'],
       // This ensures ReactNode compatibility
       transWrapTextNodes: '',
-      useSuspense: false // Disable Suspense for i18next
+      useSuspense: false, // Disable Suspense for i18next
+      // Properly handle ReactNode conversion for TypeScript
+      defaultTransParent: 'span', // Wrapping element for translations
+      // Setting this to false helps with React 18+ TypeScript compatibility
+      transWithoutKey: false
     }
   });
 
@@ -60,5 +64,17 @@ i18n.on('languageChanged', (lng) => {
     document.body.classList.remove('rtl');
   }
 });
+
+// Add this declaration to fix compatibility issues between React and i18next
+declare module 'react-i18next' {
+  interface CustomTypeOptions {
+    // Custom resources type
+    resources: {
+      translation: typeof enTranslations;
+    };
+    // Force compatibility between React types and i18next children
+    reactI18nextChildren: React.ReactNode;
+  }
+}
 
 export default i18n;
