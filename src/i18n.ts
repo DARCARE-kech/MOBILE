@@ -29,15 +29,7 @@ i18n
     returnNull: false,
     returnEmptyString: false,
     keySeparator: '.',
-    debug: process.env.NODE_ENV === 'development',
-    
-    // Fix for TypeScript compatibility with React components
-    react: {
-      transSupportBasicHtmlNodes: true,
-      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'em', 'span'],
-      // This ensures ReactNode compatibility
-      transWrapTextNodes: '',
-    }
+    debug: process.env.NODE_ENV === 'development'
   });
 
 // Add debugging for i18n
