@@ -45,23 +45,23 @@ export const useServiceSubmitter = ({
         tripType: tripType
       };
 
-      // S'assurer que service_id est correctement défini
+      // Make sure service_id is properly defined
       console.log('Submitting service request with service:', service);
       console.log('Service ID used for submission:', service?.id);
 
       if (!service?.id) {
-        console.error('Warning: service_id is undefined - this will cause naming issues in My Requests');
+        console.warn('Warning: service_id is undefined - this will cause naming issues in My Requests');
       }
 
       // Insert request into database
       const { error } = await supabase
         .from('service_requests')
         .insert({
-          service_id: service?.id, // Garantir que service_id est inclus
-          profile_id: user.id, // S'assurer que profile_id est inclus
+          service_id: service?.id, // Ensure service_id is included
+          profile_id: user.id, // Ensure profile_id is included
           user_id: user.id,
           preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-          note: formData.note || null, // S'assurer que note est incluse
+          note: formData.note || null, // Ensure note is included
           selected_options: selectedOptions
         });
       

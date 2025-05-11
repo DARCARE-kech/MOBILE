@@ -16,8 +16,10 @@ interface Service {
   staff_assignments?: { staff_name?: string | null }[] | null;
   services?: {
     name?: string;
+    category?: string;
   } | null;
   space_id?: string | null;
+  service_id?: string | null;
 }
 
 interface ServicesListProps {
@@ -59,6 +61,8 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
     );
   }
 
+  console.log("Services to display on homepage:", services);
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -86,6 +90,8 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           if (!serviceName) {
             serviceName = t('services.untitled');
           }
+          
+          console.log("Rendering service:", service.id, "Name:", serviceName, "Service ID:", service.service_id);
           
           // Format time or use placeholder
           const formattedTime = service.preferred_time 

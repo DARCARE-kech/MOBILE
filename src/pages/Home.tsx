@@ -24,9 +24,11 @@ const Home: React.FC = () => {
   } = useCurrentStay(user?.id);
 
   const { data: serviceRequests, isLoading: isRequestsLoading } = useQuery({
-    queryKey: ['service-requests', user?.id],
+    queryKey: ['home-service-requests', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
+      
+      console.log("Fetching service requests for home page, user ID:", user.id);
       
       const { data, error } = await supabase
         .from('service_requests')
@@ -36,10 +38,16 @@ const Home: React.FC = () => {
           staff_assignments (staff_name)
         `)
         .eq('user_id', user.id)
+        .in('status', ['pending', 'in_progress', 'active'])
         .order('created_at', { ascending: false })
-        .limit(3);
+        .limit(5);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching service requests for home page:", error);
+        throw error;
+      }
+      
+      console.log("Service requests data fetched for home page:", data);
       
       // Convert to Service type with correct status handling
       return (data || []).map(item => ({

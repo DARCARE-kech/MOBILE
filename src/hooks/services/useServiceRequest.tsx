@@ -69,24 +69,29 @@ export const useServiceRequest = (
         tripType: tripType
       };
 
-      // S'assurer que le service_id est correctement défini et enregistré dans les logs
-      console.log('Service data being used:', service);
+      // Log service data to help with debugging
+      console.log('Service data being used in request submission:', service);
       console.log('Service ID being passed:', service?.id);
 
-      if (!service?.id) {
-        console.warn('service_id est undefined - cela causera des problèmes d\'affichage dans My Requests');
+      if (!service?.id && !serviceState.serviceType?.includes('space')) {
+        console.warn('Warning: service_id is undefined - may cause display issues in My Requests');
       }
 
-      // Prepare request data - s'assurer que service_id est toujours défini quand un service existe
-      const requestData = {
-        service_id: service?.id, // S'assurer que service_id est toujours inclus et correctement défini
+      // Prepare request data - ensure service_id is always defined when a service exists
+      const requestData: any = {
         user_id: user.id,
-        profile_id: user.id, // Définir profile_id égal à user_id
+        profile_id: user.id, // Set profile_id equal to user_id
         preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-        note: formData.note || null, // S'assurer que note est toujours inclus
+        note: formData.note || null, // Ensure note is always included
         selected_options: selectedOptions,
-        status: isEdit ? undefined : 'pending' // Ne pas mettre à jour le statut lors d'une modification
+        status: isEdit ? undefined : 'pending' // Don't update status during modification
       };
+      
+      // Only set service_id if it exists (for standard services)
+      // For Book Space services, service_id should be null
+      if (service?.id) {
+        requestData.service_id = service.id;
+      }
       
       console.log('Submitting request data:', requestData);
       
