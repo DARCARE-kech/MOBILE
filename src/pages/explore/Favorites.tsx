@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import { RecommendationCard } from "@/components/explore/RecommendationCard";
 import type { Recommendation } from "@/types/recommendation";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const FavoritesPage = () => {
   const { user } = useAuth();
