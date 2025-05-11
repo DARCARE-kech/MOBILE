@@ -8,10 +8,8 @@ declare module 'react-i18next' {
     children?: ReactNode;
   }
 
-  // Rather than just aliasing to ReactNode, we need to extend React's definitions
-  // to ensure full type compatibility across all component uses
-  export interface ReactI18NextChildren extends ReactNode {}
+  // Simply alias ReactI18NextChildren to ReactNode directly
+  export type ReactI18NextChildren = ReactNode;
   
-  // Ensure all iterables of ReactI18NextChildren are compatible with ReactNode
-  export interface Iterable<T extends ReactI18NextChildren> extends Iterable<ReactNode> {}
+  // No need to extend or modify Iterable, as ReactNode is already compatible
 }

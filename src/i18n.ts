@@ -37,7 +37,6 @@ i18n
       // This ensures ReactNode compatibility
       transWrapTextNodes: '',
       useSuspense: false,
-      // Properly handle ReactNode conversion for TypeScript
       defaultTransParent: 'span',
       // Setting this to false helps with React 18+ TypeScript compatibility
       transWithoutKey: false
