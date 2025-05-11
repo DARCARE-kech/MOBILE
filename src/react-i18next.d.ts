@@ -3,7 +3,10 @@ import 'react-i18next';
 import { ReactNode } from 'react';
 
 declare module 'react-i18next' {
-  // Extend the TransProps interface to match specific requirements
+  // Extend ReactI18NextChildren to be compatible with ReactNode
+  interface ReactI18NextChildren extends ReactNode {}
+
+  // Extend the TransProps interface
   interface TransProps {
     children?: ReactNode;
   }
