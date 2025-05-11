@@ -20,9 +20,9 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({
   showWeather = false
 }) => {
   const { t } = useTranslation();
+const key = title.toLowerCase();
 const labelKeys = t('services.labels', { returnObjects: true }) as Record<string, string>;
-const translatedTitle = title in labelKeys ? t(`services.labels.${title}`) : title;
-
+const translatedTitle = key in labelKeys ? t(`services.labels.${key}`) : title;
   return (
     <AppHeader 
       title={translatedTitle}
