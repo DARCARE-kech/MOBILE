@@ -30,11 +30,13 @@ i18n
     returnEmptyString: false,
     keySeparator: '.',
     debug: process.env.NODE_ENV === 'development',
+    
+    // Fix for TypeScript compatibility with React components
     react: {
-      // Using settings that are more compatible with TypeScript and React 18
       transSupportBasicHtmlNodes: true,
       transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'em', 'span'],
-      useSuspense: false
+      // This ensures ReactNode compatibility
+      transWrapTextNodes: '',
     }
   });
 
