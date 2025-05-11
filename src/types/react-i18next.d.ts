@@ -8,6 +8,6 @@ declare module 'react-i18next' {
     children?: ReactNode;
   }
 
-  // Ensure ReactI18NextChildren is compatible with ReactNode
+  // Make ReactI18NextChildren fully compatible with ReactNode
   export type ReactI18NextChildren = ReactNode;
 }
