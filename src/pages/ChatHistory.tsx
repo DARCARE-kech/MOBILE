@@ -15,6 +15,8 @@ import { useThreads } from '@/hooks/chat/useThreads'; // Fixed import path
 import { createNewThread } from "@/utils/chatUtils"; 
 
 
+
+
 const ChatHistory: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast(); 
@@ -142,7 +144,7 @@ const ChatHistory: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('chat.history') || "Chat History"} onBack={() => navigate('/chatbot')} />
+      <MainHeader title={t('chatbot.chatHistory')} onBack={() => navigate('/chatbot')} />
       
       <ScrollArea className="flex-1 p-4 pb-24 pt-20">
         <div className="space-y-4">
