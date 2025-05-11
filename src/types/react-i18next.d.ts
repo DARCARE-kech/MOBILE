@@ -8,8 +8,6 @@ declare module 'react-i18next' {
     children?: ReactNode;
   }
 
-  // Simply alias ReactI18NextChildren to ReactNode directly
+  // Define ReactI18NextChildren as directly extending ReactNode
   export type ReactI18NextChildren = ReactNode;
-  
-  // No need to extend or modify Iterable, as ReactNode is already compatible
 }
