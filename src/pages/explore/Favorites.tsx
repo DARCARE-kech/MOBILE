@@ -111,7 +111,7 @@ const FavoritesPage = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <Header title="Favorites" onBack={() => navigate('/explore')} />
+      <Header title={t('common.favorites')} onBack={() => navigate('/explore')} />
       
       <div className="p-4 pb-24">
         {!user ? (
