@@ -18,6 +18,9 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
   // Extract instructions and estimated duration
   const instructions = serviceDetail?.instructions || '';
   const estimatedDuration = serviceDetail?.default_duration || '';
+
+  console.log('🔍 Translated label:', t(`services.labels.${serviceName}`));
+  console.log('👉 Clé utilisée :', `services.labels.${serviceName}`);
   
   // Format duration from interval to readable format if needed
   const formatDuration = (duration: string) => {
