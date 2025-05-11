@@ -36,14 +36,26 @@ export const useProfileData = (userId: string | undefined) => {
 
       if (error) throw error;
       
-      // Combine auth user data with profile data
-      const profile = {
-        ...data,
-        email: authUserData?.user?.email || null
-      } as UserProfile;
-      
+      // Properly map database fields to UserProfile interface
+      const profile: UserProfile = {
+        id: data.id,
+        full_name: data.full_name,
+        email: authUserData?.user?.email || null,
+        avatar_url: data.avatar_url,
+        language: data.language,
+        dark_mode: data.dark_mode,
+        notifications_enabled: data.notifications_enabled,
+        terms_accepted: data.terms_accepted,
+        terms_accepted_at: data.terms_accepted_at,
+        // Map phone to phone_number if it exists in the data
+        phone_number: data.phone_number || data.phone || null,
+        whatsapp_number: data.whatsapp_number || null,
+        role: data.role,
+        created_at: data.created_at
+      };
+
       return profile;
     },
-    enabled: !!userId,
+    enabled: !!userId
   });
 };

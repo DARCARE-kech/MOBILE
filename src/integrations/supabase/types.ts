@@ -715,10 +715,11 @@ export type Database = {
           id: string
           language: string | null
           notifications_enabled: boolean | null
-          phone: string | null
+          phone_number: string | null
           role: string
           terms_accepted: boolean | null
           terms_accepted_at: string | null
+          whatsapp_number: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -729,10 +730,11 @@ export type Database = {
           id: string
           language?: string | null
           notifications_enabled?: boolean | null
-          phone?: string | null
+          phone_number?: string | null
           role: string
           terms_accepted?: boolean | null
           terms_accepted_at?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -743,10 +745,11 @@ export type Database = {
           id?: string
           language?: string | null
           notifications_enabled?: boolean | null
-          phone?: string | null
+          phone_number?: string | null
           role?: string
           terms_accepted?: boolean | null
           terms_accepted_at?: string | null
+          whatsapp_number?: string | null
         }
         Relationships: []
       }
