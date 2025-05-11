@@ -8,11 +8,13 @@ import { useToast } from "@/components/ui/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import { RecommendationCard } from "@/components/explore/RecommendationCard";
 import type { Recommendation } from "@/types/recommendation";
+import { useTranslation } from 'react-i18next';
 
 const FavoritesPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const { data: favorites, isLoading, refetch } = useQuery({
     queryKey: ['favorites', user?.id],
@@ -92,7 +94,7 @@ const FavoritesPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <Header title="Favorites" onBack={() => navigate('/explore')} />
+        <Header title={t('common.favorites')} onBack={() => navigate('/explore')} />
         <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="animate-pulse">
