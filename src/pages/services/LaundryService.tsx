@@ -226,7 +226,8 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
     <div className="p-4 pb-24">
       {/* Service Header with instructions */}
       <ServiceHeader 
-        serviceName={serviceData?.category || t('services.laundry')}
+        serviceName={t(`services.${serviceData?.category ?? 'laundry'}`)}
+
         serviceDetail={serviceData}
       />
       
