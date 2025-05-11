@@ -23,7 +23,7 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({
   const { t } = useTranslation();
   
   // Translate title if needed
-  const translatedTitle = t(`services.labels.${title}`, { defaultValue: title });
+  const translatedTitle = t(`services.labels.${title}`, title);
   
   return (
     <AppHeader 

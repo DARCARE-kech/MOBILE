@@ -15,10 +15,7 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
-          manager_id: string | null
           message: string
-          responded_at: string | null
-          response: string | null
           status: Database["public"]["Enums"]["admin_message_status"]
           user_id: string
         }
@@ -27,10 +24,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
-          manager_id?: string | null
           message: string
-          responded_at?: string | null
-          response?: string | null
           status?: Database["public"]["Enums"]["admin_message_status"]
           user_id: string
         }
@@ -39,36 +33,11 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
-          manager_id?: string | null
           message?: string
-          responded_at?: string | null
-          response?: string | null
           status?: Database["public"]["Enums"]["admin_message_status"]
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_messages_manager_id_fkey"
-            columns: ["manager_id"]
-            isOneToOne: false
-            referencedRelation: "tenant_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "admin_messages_manager_id_fkey"
-            columns: ["manager_id"]
-            isOneToOne: false
-            referencedRelation: "user_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "admin_messages_manager_id_fkey"
-            columns: ["manager_id"]
-            isOneToOne: false
-            referencedRelation: "view_all_staff"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       chat_messages: {
         Row: {
@@ -357,7 +326,6 @@ export type Database = {
           image_url: string | null
           note: string | null
           preferred_time: string | null
-          profile_id: string | null
           selected_options: Json | null
           service_id: string | null
           space_id: string | null
@@ -370,7 +338,6 @@ export type Database = {
           image_url?: string | null
           note?: string | null
           preferred_time?: string | null
-          profile_id?: string | null
           selected_options?: Json | null
           service_id?: string | null
           space_id?: string | null
@@ -383,7 +350,6 @@ export type Database = {
           image_url?: string | null
           note?: string | null
           preferred_time?: string | null
-          profile_id?: string | null
           selected_options?: Json | null
           service_id?: string | null
           space_id?: string | null
@@ -391,27 +357,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "fk_profile"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "tenant_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_profile"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "user_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_profile"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "view_all_staff"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "service_requests_service_id_fkey"
             columns: ["service_id"]
@@ -613,59 +558,6 @@ export type Database = {
           },
         ]
       }
-      staff_services: {
-        Row: {
-          created_at: string | null
-          id: string
-          service_id: string | null
-          staff_id: string | null
-          staff_name: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          service_id?: string | null
-          staff_id?: string | null
-          staff_name?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          service_id?: string | null
-          staff_id?: string | null
-          staff_name?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "staff_services_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "staff_services_staff_id_fkey"
-            columns: ["staff_id"]
-            isOneToOne: false
-            referencedRelation: "tenant_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "staff_services_staff_id_fkey"
-            columns: ["staff_id"]
-            isOneToOne: false
-            referencedRelation: "user_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "staff_services_staff_id_fkey"
-            columns: ["staff_id"]
-            isOneToOne: false
-            referencedRelation: "view_all_staff"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       stays: {
         Row: {
           check_in: string | null
@@ -715,7 +607,6 @@ export type Database = {
           id: string
           language: string | null
           notifications_enabled: boolean | null
-          phone: string | null
           role: string
           terms_accepted: boolean | null
           terms_accepted_at: string | null
@@ -729,7 +620,6 @@ export type Database = {
           id: string
           language?: string | null
           notifications_enabled?: boolean | null
-          phone?: string | null
           role: string
           terms_accepted?: boolean | null
           terms_accepted_at?: string | null
@@ -743,7 +633,6 @@ export type Database = {
           id?: string
           language?: string | null
           notifications_enabled?: boolean | null
-          phone?: string | null
           role?: string
           terms_accepted?: boolean | null
           terms_accepted_at?: string | null
@@ -752,54 +641,7 @@ export type Database = {
       }
     }
     Views: {
-      tenant_profiles: {
-        Row: {
-          avatar_url: string | null
-          email: string | null
-          full_name: string | null
-          id: string | null
-          phone: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          phone?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          phone?: string | null
-        }
-        Relationships: []
-      }
-      view_all_staff: {
-        Row: {
-          created_at: string | null
-          email: string | null
-          full_name: string | null
-          id: string | null
-          role: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          role?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          role?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       calculate_distance: {
@@ -846,7 +688,7 @@ export type Database = {
     }
     Enums: {
       admin_message_category: "report" | "external_request" | "issue" | "other"
-      admin_message_status: "unread" | "read" | "responded" | "in_progress"
+      admin_message_status: "unread" | "read" | "responded"
       sender_type: "user" | "bot" | "admin"
     }
     CompositeTypes: {
@@ -964,7 +806,7 @@ export const Constants = {
   public: {
     Enums: {
       admin_message_category: ["report", "external_request", "issue", "other"],
-      admin_message_status: ["unread", "read", "responded", "in_progress"],
+      admin_message_status: ["unread", "read", "responded"],
       sender_type: ["user", "bot", "admin"],
     },
   },

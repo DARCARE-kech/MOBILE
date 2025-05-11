@@ -44,21 +44,22 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   ];
 
   const handleAssistantClick = async () => {
-    if (!user?.id) return;
+  if (!user?.id) return;
 
-    try {
-      const newThread = await createNewThread(user.id);
-      if (newThread?.thread_id) {
-        navigate(`/chatbot?thread=${newThread.thread_id}`);
-      }
-    } catch (error) {
-      toast({
-        title: t('common.error'),
-        description: t('chat.messageError') || 'Could not start a new chat',
-        variant: 'destructive'
-      });
+  try {
+    const newThread = await createNewThread(user.id);
+    if (newThread?.thread_id) {
+      navigate(`/chatbot?thread=${newThread.thread_id}`);
     }
-  };
+  } catch (error) {
+    toast({
+      title: t('common.error'),
+      description: t('chat.messageError') || 'Could not start a new chat',
+      variant: 'destructive'
+    });
+  }
+};
+
 
   const handleTabChange = (path: string) => {
     navigate(path);
@@ -74,12 +75,13 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
             key={tab.id}
             className={`flex flex-col items-center ${tab.id === 'home' ? 'relative -mt-6' : ''}`}
             onClick={() => {
-              if (tab.id === 'chatbot') {
-                handleAssistantClick();
-              } else {
-                handleTabChange(tab.path);
-              }
-            }}
+  if (tab.id === 'chatbot') {
+    handleAssistantClick();
+  } else {
+    handleTabChange(tab.path);
+  }
+}}
+
           >
             {tab.id === 'home' ? (
               <div className="rounded-full p-4 border border-darcare-gold/30 bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 shadow-lg">

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,7 +12,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -61,9 +60,7 @@ const MyRequestsTab: React.FC = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error("User ID is required");
       
-      console.log("Fetching service requests for user:", user.id);
-      
-      // Fetch service requests with pending or in_progress status for the current user
+      // Fetch service requests with pending status for the current user
       const { data: requestsData, error: requestsError } = await supabase
         .from('service_requests')
         .select(`
@@ -74,14 +71,9 @@ const MyRequestsTab: React.FC = () => {
         .in('status', ['pending', 'in_progress'])
         .order('created_at', { ascending: false });
       
-      if (requestsError) {
-        console.error('Error fetching service requests:', requestsError);
-        throw requestsError;
-      }
+      if (requestsError) throw requestsError;
       
-      console.log("Service requests data:", requestsData);
-      
-      // For each request, fetch staff assignments separately using our helper function
+      // For each request, fetch staff assignments separately using our updated helper function
       const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
         const staffAssignments = await getStaffAssignmentsForRequest(request.id);
         
@@ -93,8 +85,7 @@ const MyRequestsTab: React.FC = () => {
       
       return enhancedRequests as ServiceRequest[];
     },
-    enabled: !!user?.id,
-    retry: 1
+    enabled: !!user?.id
   });
 
   // Mutation to delete a service request
@@ -109,8 +100,8 @@ const MyRequestsTab: React.FC = () => {
     },
     onSuccess: () => {
       toast({
-        title: t('services.requestDeleted', "Request deleted"),
-        description: t('services.requestDeletedDesc', "Your service request has been successfully deleted"),
+        title: "Request deleted",
+        description: "Your service request has been successfully deleted",
       });
       queryClient.invalidateQueries({ queryKey: ['my-service-requests'] });
       setRequestToDelete(null);
@@ -118,8 +109,8 @@ const MyRequestsTab: React.FC = () => {
     onError: (error) => {
       console.error('Error deleting request:', error);
       toast({
-        title: t('common.error', "Error"),
-        description: t('services.deleteErrorDesc', "Could not delete the request. Please try again."),
+        title: "Error",
+        description: "Could not delete the request. Please try again.",
         variant: "destructive",
       });
       setRequestToDelete(null);
@@ -175,48 +166,28 @@ const MyRequestsTab: React.FC = () => {
     );
   }
 
-  if (error) {
-    console.error("Error in MyRequestsTab:", error);
+  if (error || !requests) {
     return (
-      <div className="p-4 text-center">
-        <AlertTriangle className="mx-auto h-10 w-10 text-red-500 mb-4" />
-        <p className="text-lg font-medium mb-2">
-          {t('common.error', "Error")}
-        </p>
-        <p className={cn(
-          "mb-4",
-          isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
-        )}>
-          {t('common.fetchDataError', "Could not fetch your data. Please try again.")}
-        </p>
-        <Button 
-          onClick={() => queryClient.invalidateQueries({ queryKey: ['my-service-requests'] })}
-          className={cn(
-            isDarkMode
-              ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-              : "bg-secondary text-white hover:bg-secondary/90"
-          )}
-        >
-          {t('common.retry', "Retry")}
-        </Button>
+      <div className="p-4 text-destructive">
+        {t('common.error')} {t('common.fetchDataError')}
       </div>
     );
   }
 
-  if (!requests || requests.length === 0) {
+  if (requests.length === 0) {
     return (
       <div className="p-6 text-center">
         <AlertTriangle className="mx-auto h-10 w-10 text-darcare-gold/70 mb-4" />
         <p className={cn(
           isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
         )}>
-          {t('services.noActiveRequests', "You don't have any active requests")}
+          {t('services.noActiveRequests')}
         </p>
         <p className={cn(
           "mt-2 mb-6",
           isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
         )}>
-          {t('services.switchToReserveTab', "Switch to the Reserve tab to request a new service")}
+          {t('services.switchToReserveTab')}
         </p>
         
         <Button 
@@ -227,7 +198,7 @@ const MyRequestsTab: React.FC = () => {
               : "bg-secondary text-white hover:bg-secondary/90"
           )}
         >
-          {t('services.requestService', "Request a Service")}
+          Request a Service
         </Button>
       </div>
     );
@@ -236,7 +207,7 @@ const MyRequestsTab: React.FC = () => {
   return (
     <>
       <div className="space-y-2 p-2">
-        {requests.map(request => {
+        {requests?.map(request => {
           // Get service name - if there's a space_id but no service name, use "Book Space"
           let serviceName = request.services?.name || "";
           
@@ -247,7 +218,7 @@ const MyRequestsTab: React.FC = () => {
           
           // Fallback if still no service name
           if (!serviceName) {
-            serviceName = t('services.untitled', 'Untitled Service');
+            serviceName = t('services.untitled');
           }
           
           return (
@@ -279,7 +250,7 @@ const MyRequestsTab: React.FC = () => {
                       <span className="truncate">
                         {request.preferred_time 
                           ? format(new Date(request.preferred_time), 'MMM d, p') 
-                          : t('services.unscheduled', 'Unscheduled')}
+                          : t('services.unscheduled')}
                       </span>
                     </div>
                   </div>
@@ -299,7 +270,7 @@ const MyRequestsTab: React.FC = () => {
                   )}>
                     <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
                     <span className="truncate">
-                      {request.staff_assignments[0].staff_name || t('services.unassigned', 'Unassigned')}
+                      {request.staff_assignments[0].staff_name || t('services.unassigned')}
                     </span>
                   </div>
                 ) : (
@@ -308,7 +279,7 @@ const MyRequestsTab: React.FC = () => {
                     isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
                   )}>
                     <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                    <span className="truncate">{t('services.unassigned', 'Unassigned')}</span>
+                    <span className="truncate">{t('services.unassigned')}</span>
                   </div>
                 )}
                 
