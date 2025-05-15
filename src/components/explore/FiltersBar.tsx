@@ -30,7 +30,7 @@ export const FiltersBar = ({
   
   // Function to handle category selection
   const handleCategoryChange = (category: string) => {
-    onCategoryChange(category === '' ? null : category);
+    onCategoryChange(category === 'all' ? null : category);
   };
 
   return (
@@ -40,14 +40,14 @@ export const FiltersBar = ({
         <div className="flex items-center">
           <span className="text-darcare-beige/50 text-sm mr-2">{t('explore.category')}:</span>
           <Select
-            value={selectedCategory || ''}
+            value={selectedCategory || 'all'}
             onValueChange={handleCategoryChange}
           >
             <SelectTrigger className="w-[150px] bg-transparent border-darcare-gold/20 text-darcare-beige">
               <SelectValue placeholder={t('explore.allCategories')} />
             </SelectTrigger>
             <SelectContent className="bg-darcare-navy border-darcare-gold/20">
-              <SelectItem value="" className="text-darcare-beige hover:text-darcare-gold">
+              <SelectItem value="all" className="text-darcare-beige hover:text-darcare-gold">
                 {t('explore.allCategories')}
               </SelectItem>
               {RECOMMENDATION_CATEGORIES.map((category) => (
