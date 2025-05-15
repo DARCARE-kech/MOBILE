@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import type { ServiceDetail } from './types';
 
@@ -27,8 +28,8 @@ export const enhanceOptionalFields = (
   option?: string,
   tripType?: string
 ) => {
-  if (!serviceDetails?.optional_fields) {
-    // Handle Hair Salon service specially when no optional_fields are defined
+  if (!serviceDetails || !serviceDetails.optional_fields) {
+    // Default fields for Hair Salon service
     if (serviceDetails?.category === 'hair') {
       return {
         selectFields: [
@@ -53,7 +54,7 @@ export const enhanceOptionalFields = (
       };
     }
     
-    // Handle Kids Club service specially when no optional_fields are defined
+    // Default fields for Kids Club service
     if (serviceDetails?.category === 'kids') {
       return {
         selectFields: [
@@ -115,11 +116,13 @@ export const enhanceOptionalFields = (
 
 // Function to create a title based on the service type
 export const getServiceTitle = (service: any, serviceType?: string) => {
-  if (service) {
+  if (service?.name) {
     return service.name;
   }
   
   if (serviceType) {
+    if (serviceType === 'hair') return 'Hair Salon';
+    if (serviceType === 'kids') return 'Kids Club';
     return `${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)} Service`;
   }
   

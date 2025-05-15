@@ -36,6 +36,12 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
     serviceId
   };
   
+  // Update location object to include our props
+  const enhancedLocation = {
+    ...location,
+    state: locationState
+  };
+  
   // Use our custom hook to handle service data fetching
   const {
     serviceState,
@@ -48,9 +54,10 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
   
   // Log service information for debugging
   console.log('Current service data in form:', service);
-  console.log('Service ID in form:', service?.id);
+  console.log('Service ID in form:', service?.id || serviceId);
   console.log('Using provided serviceType:', serviceType);
   console.log('Using provided serviceId:', serviceId);
+  console.log('Service details in form:', serviceDetails);
   
   // Use our custom hook to handle form submission
   const { handleSubmitRequest } = useServiceSubmitter({
@@ -64,14 +71,20 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
     return <ServiceRequestLoader onBack={() => navigate(-1)} />;
   }
   
+  // Determine the service title
+  const serviceTitle = getServiceTitle() || 
+    (serviceType === 'hair' ? 'Hair Salon' : 
+     serviceType === 'kids' ? 'Kids Club' : 
+     'Service Request');
+  
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <ServiceRequestHeader serviceTitle={getServiceTitle() || (serviceType === 'hair' ? 'Hair Salon' : 'Kids Club')} />
+      <ServiceRequestHeader serviceTitle={serviceTitle} />
       <div className="pt-16 pb-20">
         <DynamicServiceForm 
           serviceId={serviceId || service?.id || ''}
           serviceType={serviceType || serviceState.serviceType || service?.name?.toLowerCase() || ''}
-          serviceName={service?.name || (serviceType === 'hair' ? 'Hair Salon' : 'Kids Club')}
+          serviceName={service?.name || serviceTitle}
           serviceImageUrl={service?.image_url}
           serviceDetails={serviceDetails}
           optionalFields={enhanceOptionalFields()}

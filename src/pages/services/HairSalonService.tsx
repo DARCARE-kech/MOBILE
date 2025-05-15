@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ServiceRequestForm from '@/pages/services/ServiceRequestForm';
 import ServiceHeader from '@/components/services/ServiceHeader';
@@ -18,7 +18,6 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
   editMode = false
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { t } = useTranslation();
   
   // Ensure serviceData includes service_id for correctly tracking the service

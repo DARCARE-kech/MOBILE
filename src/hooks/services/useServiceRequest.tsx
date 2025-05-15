@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { enhanceOptionalFields, getServiceTitle } from './serviceHelpers';
 import type { ServiceLocationState, UseServiceRequestResult, ServiceDetail } from './types';
+import { toast } from '@/components/ui/use-toast';
 
 /**
  * Hook for handling service requests form
@@ -39,6 +40,11 @@ export function useServiceRequest(): UseServiceRequestResult {
           
         if (error) {
           console.error('Error fetching service by ID:', error);
+          toast({
+            title: "Error fetching service",
+            description: error.message,
+            variant: "destructive"
+          });
           throw error;
         }
         console.log('Service data fetched by ID:', data);
@@ -54,6 +60,13 @@ export function useServiceRequest(): UseServiceRequestResult {
           
         if (error) {
           console.error('Error fetching service by type:', error);
+          // Instead of throwing, provide a fallback for known service types
+          if (serviceType === 'hair') {
+            return { name: 'Hair Salon', category: 'hair' };
+          }
+          if (serviceType === 'kids') {
+            return { name: 'Kids Club', category: 'kids' };
+          }
           throw error;
         }
         console.log('Service data fetched by type:', data);
@@ -68,26 +81,82 @@ export function useServiceRequest(): UseServiceRequestResult {
   
   // Fetch the detailed service options
   const { data: serviceDetails, isLoading: isLoadingDetails } = useQuery({
-    queryKey: ['service-details', service?.id],
+    queryKey: ['service-details', service?.id, serviceType],
     queryFn: async () => {
-      if (!service?.id) {
-        console.warn('No service ID available for fetching details');
+      // Special handling for service types without ID
+      if (!service?.id && (serviceType === 'hair' || serviceType === 'kids')) {
+        console.log(`Creating default service details for ${serviceType}`);
         
-        // For serviceType-based requests (like hair or kids), return category-specific details
+        // Return category-specific default details
         if (serviceType === 'hair') {
           return { 
             category: 'hair',
-            service_id: serviceId
+            service_id: serviceType,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'client_gender',
+                  label: 'Client Gender',
+                  options: ['Man', 'Woman']
+                },
+                {
+                  name: 'stylist_gender_preference',
+                  label: 'Stylist Gender Preference',
+                  options: ['Any', 'Male', 'Female']
+                }
+              ],
+              multiSelectFields: [
+                {
+                  name: 'services',
+                  label: 'Services',
+                  options: ['Haircut', 'Beard trim', 'Coloring', 'Blow dry', 'Shaving', 'Hair wash']
+                }
+              ]
+            }
           } as ServiceDetail;
         }
         
         if (serviceType === 'kids') {
           return { 
             category: 'kids',
-            service_id: serviceId
+            service_id: serviceType,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'age_range',
+                  label: 'Age Range',
+                  options: ['0-3', '4-7', '8-12']
+                },
+                {
+                  name: 'time_slot',
+                  label: 'Time Slot',
+                  options: ['Morning', 'Afternoon', 'Evening']
+                }
+              ],
+              numberFields: [
+                {
+                  name: 'number_of_children',
+                  label: 'Number of Children',
+                  min: 1,
+                  max: 10
+                }
+              ],
+              multiSelectFields: [
+                {
+                  name: 'activities',
+                  label: 'Activities',
+                  options: ['Drawing', 'Games', 'Storytelling', 'Outdoor play']
+                }
+              ]
+            }
           } as ServiceDetail;
         }
         
+        return null;
+      }
+      
+      if (!service?.id) {
+        console.warn('No service ID available for fetching details');
         return null;
       }
       
@@ -101,19 +170,74 @@ export function useServiceRequest(): UseServiceRequestResult {
         
       if (error) {
         console.error('Error fetching service details:', error);
+        toast({
+          title: "Error fetching service details",
+          description: error.message,
+          variant: "destructive"
+        });
         
         // Fallback to type-specific details if service details not found
         if (service.name?.toLowerCase().includes('hair')) {
           return { 
             category: 'hair',
-            service_id: service.id
+            service_id: service.id,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'client_gender',
+                  label: 'Client Gender',
+                  options: ['Man', 'Woman']
+                },
+                {
+                  name: 'stylist_gender_preference',
+                  label: 'Stylist Gender Preference',
+                  options: ['Any', 'Male', 'Female']
+                }
+              ],
+              multiSelectFields: [
+                {
+                  name: 'services',
+                  label: 'Services',
+                  options: ['Haircut', 'Beard trim', 'Coloring', 'Blow dry', 'Shaving', 'Hair wash']
+                }
+              ]
+            }
           } as ServiceDetail;
         }
         
         if (service.name?.toLowerCase().includes('kids')) {
           return { 
             category: 'kids',
-            service_id: service.id
+            service_id: service.id,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'age_range',
+                  label: 'Age Range',
+                  options: ['0-3', '4-7', '8-12']
+                },
+                {
+                  name: 'time_slot',
+                  label: 'Time Slot',
+                  options: ['Morning', 'Afternoon', 'Evening']
+                }
+              ],
+              numberFields: [
+                {
+                  name: 'number_of_children',
+                  label: 'Number of Children',
+                  min: 1,
+                  max: 10
+                }
+              ],
+              multiSelectFields: [
+                {
+                  name: 'activities',
+                  label: 'Activities',
+                  options: ['Drawing', 'Games', 'Storytelling', 'Outdoor play']
+                }
+              ]
+            }
           } as ServiceDetail;
         }
         
@@ -127,14 +251,64 @@ export function useServiceRequest(): UseServiceRequestResult {
         if (service.name?.toLowerCase().includes('hair')) {
           return { 
             category: 'hair',
-            service_id: service.id
+            service_id: service.id,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'client_gender',
+                  label: 'Client Gender',
+                  options: ['Man', 'Woman']
+                },
+                {
+                  name: 'stylist_gender_preference',
+                  label: 'Stylist Gender Preference',
+                  options: ['Any', 'Male', 'Female']
+                }
+              ],
+              multiSelectFields: [
+                {
+                  name: 'services',
+                  label: 'Services',
+                  options: ['Haircut', 'Beard trim', 'Coloring', 'Blow dry', 'Shaving', 'Hair wash']
+                }
+              ]
+            }
           } as ServiceDetail;
         }
         
         if (service.name?.toLowerCase().includes('kids')) {
           return { 
             category: 'kids',
-            service_id: service.id
+            service_id: service.id,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'age_range',
+                  label: 'Age Range',
+                  options: ['0-3', '4-7', '8-12']
+                },
+                {
+                  name: 'time_slot',
+                  label: 'Time Slot',
+                  options: ['Morning', 'Afternoon', 'Evening']
+                }
+              ],
+              numberFields: [
+                {
+                  name: 'number_of_children',
+                  label: 'Number of Children',
+                  min: 1,
+                  max: 10
+                }
+              ],
+              multiSelectFields: [
+                {
+                  name: 'activities',
+                  label: 'Activities',
+                  options: ['Drawing', 'Games', 'Storytelling', 'Outdoor play']
+                }
+              ]
+            }
           } as ServiceDetail;
         }
       }
@@ -151,7 +325,7 @@ export function useServiceRequest(): UseServiceRequestResult {
       
       return data as ServiceDetail;
     },
-    enabled: !!service?.id || serviceType === 'hair' || serviceType === 'kids'
+    enabled: !!(service?.id || serviceType === 'hair' || serviceType === 'kids')
   });
 
   return {

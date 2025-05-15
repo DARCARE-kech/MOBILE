@@ -15,6 +15,7 @@ import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
 import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
+import { toast } from '@/components/ui/use-toast';
 
 // Base service type
 type ServiceType = {
@@ -93,6 +94,11 @@ const ServiceDetail: React.FC = () => {
       
       if (error) {
         console.error("Error fetching service:", error);
+        toast({
+          title: "Error fetching service",
+          description: error.message,
+          variant: "destructive"
+        });
         throw error;
       }
       
@@ -140,6 +146,9 @@ const ServiceDetail: React.FC = () => {
         } else if (serviceNameLower.includes('kids')) {
           return { category: 'kids', service_id: service.id } as ServiceDetailType;
         }
+        
+        // For other services without data, return a basic structure
+        return { service_id: service.id } as ServiceDetailType;
       }
       
       console.log("Service details fetched:", data);
