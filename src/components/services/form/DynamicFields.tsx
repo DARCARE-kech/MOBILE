@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
@@ -7,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormData } from './formHelpers';
 
 interface DynamicFieldsProps {
@@ -19,6 +19,98 @@ const DynamicFields: React.FC<DynamicFieldsProps> = ({ form, optionalFields }) =
   
   return (
     <div className="space-y-4">
+      {/* Render dropdown/select fields if present */}
+      {optionalFields.selectFields && optionalFields.selectFields.map((field: any, index: number) => (
+        <FormField
+          key={`select-${index}`}
+          control={form.control}
+          name={field.name}
+          render={({ field: formField }) => (
+            <FormItem>
+              <FormLabel className="text-darcare-beige">{field.label}</FormLabel>
+              <Select 
+                onValueChange={formField.onChange} 
+                defaultValue={formField.value}
+              >
+                <FormControl>
+                  <SelectTrigger className="border-darcare-gold/30 bg-darcare-navy/50 focus:border-darcare-gold/50">
+                    <SelectValue placeholder={field.placeholder || `Select ${field.label}`} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-darcare-navy border-darcare-gold/30">
+                  {field.options.map((option: string, optionIndex: number) => (
+                    <SelectItem 
+                      key={`${field.name}-option-${optionIndex}`} 
+                      value={option}
+                      className="text-darcare-beige hover:bg-darcare-gold/10"
+                    >
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      ))}
+      
+      {/* Render number fields if present */}
+      {optionalFields.numberFields && optionalFields.numberFields.map((field: any, index: number) => (
+        <FormField
+          key={`number-${index}`}
+          control={form.control}
+          name={field.name}
+          render={({ field: formField }) => (
+            <FormItem>
+              <FormLabel className="text-darcare-beige">{field.label}</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  min={field.min || 0}
+                  max={field.max || 999}
+                  placeholder={field.placeholder || ""}
+                  className="border-darcare-gold/30 bg-darcare-navy/50 focus:border-darcare-gold/50"
+                  {...formField}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      ))}
+      
+      {/* Render multiselect/checkbox groups if present */}
+      {optionalFields.multiSelectFields && optionalFields.multiSelectFields.map((field: any, index: number) => (
+        <div key={`multi-${index}`} className="space-y-3">
+          <FormLabel className="text-darcare-gold font-serif">{field.label}</FormLabel>
+          {field.options.map((option: string, optionIndex: number) => {
+            const fieldName = `${field.name}.${option.replace(/\s+/g, '_').toLowerCase()}`;
+            
+            return (
+              <FormField
+                key={`${field.name}-option-${optionIndex}`}
+                control={form.control}
+                name={fieldName}
+                render={({ field: formField }) => (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={formField.value || false}
+                      onCheckedChange={formField.onChange}
+                      id={`${field.name}-${optionIndex}`}
+                      className="border-darcare-gold/50 data-[state=checked]:bg-darcare-gold data-[state=checked]:text-darcare-navy"
+                    />
+                    <Label htmlFor={`${field.name}-${optionIndex}`} className="text-darcare-beige">
+                      {option}
+                    </Label>
+                  </div>
+                )}
+              />
+            );
+          })}
+        </div>
+      ))}
+      
       {/* Render options as radio buttons if present */}
       {optionalFields.options && (
         <FormField

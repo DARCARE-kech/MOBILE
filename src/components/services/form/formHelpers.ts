@@ -7,6 +7,31 @@ export function generateDefaultValues(optionalFields: Record<string, any>): Reco
   
   if (!optionalFields) return defaults;
   
+  // Handle select fields (dropdowns)
+  if (optionalFields.selectFields) {
+    optionalFields.selectFields.forEach((field: any) => {
+      defaults[field.name] = field.defaultValue || '';
+    });
+  }
+  
+  // Handle number fields
+  if (optionalFields.numberFields) {
+    optionalFields.numberFields.forEach((field: any) => {
+      defaults[field.name] = field.defaultValue || '';
+    });
+  }
+  
+  // Handle multiselect fields (checkbox groups)
+  if (optionalFields.multiSelectFields) {
+    optionalFields.multiSelectFields.forEach((field: any) => {
+      const fieldDefaults: Record<string, boolean> = {};
+      field.options.forEach((opt: string) => {
+        fieldDefaults[opt.replace(/\s+/g, '_').toLowerCase()] = false;
+      });
+      defaults[field.name] = fieldDefaults;
+    });
+  }
+  
   // Handle options (single selection fields)
   if (optionalFields.options) {
     defaults.selectedOption = '';

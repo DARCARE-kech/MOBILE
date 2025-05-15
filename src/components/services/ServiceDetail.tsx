@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -9,6 +8,8 @@ import TransportService from '@/pages/services/TransportService';
 import BookSpaceService from '@/pages/services/BookSpaceService';
 import ShopService from '@/pages/services/ShopService';
 import LaundryService from '@/pages/services/LaundryService';
+import HairSalonService from '@/pages/services/HairSalonService';
+import KidsClubService from '@/pages/services/KidsClubService';
 import { Loader2 } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -138,6 +139,7 @@ const ServiceDetail: React.FC = () => {
   
   const isLoading = isLoadingService || isLoadingDetails;
   
+  // Special cases for shop and book-space
   if (id === 'book-space') {
     return (
       <div className="min-h-screen bg-darcare-navy">
@@ -241,6 +243,34 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <TransportService 
+            serviceData={enhancedServiceDetails}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
+        </div>
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  } else if (serviceNameLower?.includes('hair') || serviceNameLower?.includes('salon')) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <div className="pt-20">
+          <HairSalonService 
+            serviceData={enhancedServiceDetails}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
+        </div>
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  } else if (serviceNameLower?.includes('kids') || serviceNameLower?.includes('club')) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <div className="pt-20">
+          <KidsClubService 
             serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}

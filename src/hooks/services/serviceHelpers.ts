@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import type { ServiceDetail } from './types';
 
@@ -48,6 +49,63 @@ export const enhanceOptionalFields = (
   // Pre-select the trip type if provided
   if (tripType && enhanced.trip_types) {
     enhanced.selectedTripType = tripType;
+  }
+  
+  // Special processing for Hair Salon service
+  if (serviceDetails.category === 'hair' && !enhanced.selectFields) {
+    enhanced.selectFields = [
+      {
+        name: 'client_gender',
+        label: 'Client Gender',
+        options: ['Man', 'Woman']
+      },
+      {
+        name: 'stylist_gender_preference',
+        label: 'Stylist Gender Preference',
+        options: ['Any', 'Male', 'Female']
+      }
+    ];
+    
+    enhanced.multiSelectFields = [
+      {
+        name: 'services',
+        label: 'Services',
+        options: ['Haircut', 'Beard trim', 'Coloring', 'Blow dry', 'Shaving', 'Hair wash']
+      }
+    ];
+  }
+  
+  // Special processing for Kids Club service
+  if (serviceDetails.category === 'kids' && !enhanced.selectFields) {
+    enhanced.selectFields = [
+      {
+        name: 'age_range',
+        label: 'Age Range',
+        options: ['0-3', '4-7', '8-12']
+      },
+      {
+        name: 'time_slot',
+        label: 'Time Slot',
+        options: ['Morning', 'Afternoon', 'Evening']
+      }
+    ];
+    
+    enhanced.numberFields = [
+      {
+        name: 'number_of_children',
+        label: 'Number of Children',
+        min: 1,
+        max: 10
+      }
+    ];
+    
+    enhanced.multiSelectFields = [
+      {
+        name: 'activities',
+        label: 'Activities',
+        options: ['Drawing', 'Games', 'Storytelling', 'Outdoor play']
+      }
+    ];
   }
   
   return enhanced;

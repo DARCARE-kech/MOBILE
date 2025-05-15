@@ -1,0 +1,51 @@
+
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import ServiceRequestForm from '@/pages/services/ServiceRequestForm';
+import { useServiceRequest } from '@/hooks/useServiceRequest';
+import ServiceHeader from '@/components/services/ServiceHeader';
+import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
+
+interface KidsClubServiceProps {
+  serviceData: ServiceDetailType;
+  existingRequest?: any;
+  editMode?: boolean;
+}
+
+const KidsClubService: React.FC<KidsClubServiceProps> = ({
+  serviceData,
+  existingRequest,
+  editMode = false
+}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation();
+  
+  // Ensure serviceData includes service_id for correctly tracking the service
+  console.log("Kids Club service data:", serviceData);
+  
+  // Initialize request data state from location or default values
+  const serviceState = {
+    serviceType: 'kids',
+    serviceId: serviceData?.service_id,
+  };
+
+  return (
+    <div className="pb-20">
+      <ServiceHeader
+        serviceName="Kids Club"
+        serviceDetail={serviceData}
+      />
+      
+      <ServiceRequestForm
+        serviceType="kids"
+        serviceId={serviceData?.service_id}
+        existingRequest={existingRequest}
+        editMode={editMode}
+      />
+    </div>
+  );
+};
+
+export default KidsClubService;
