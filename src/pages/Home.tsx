@@ -40,7 +40,7 @@ const Home: React.FC = () => {
         .eq('user_id', user.id)
         .in('status', ['pending', 'in_progress', 'active'])
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(3);
       
       if (error) {
         console.error("Error fetching service requests for home page:", error);
