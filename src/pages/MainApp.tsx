@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -118,7 +117,7 @@ const MainApp: React.FC = () => {
       },
       {
         path: "/services/request-form",
-        element: <ProtectedRoute element={<ServiceRequestForm />} />,
+        element: <ProtectedRoute element={<ServiceRequestForm serviceType="general" />} />,
       },
       {
         path: "/services/space/:id",
