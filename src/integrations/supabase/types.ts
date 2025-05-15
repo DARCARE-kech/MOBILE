@@ -585,6 +585,7 @@ export type Database = {
         Row: {
           assigned_at: string | null
           id: string
+          phone_number: string | null
           request_id: string
           staff_id: string | null
           staff_name: string | null
@@ -592,6 +593,7 @@ export type Database = {
         Insert: {
           assigned_at?: string | null
           id?: string
+          phone_number?: string | null
           request_id: string
           staff_id?: string | null
           staff_name?: string | null
@@ -599,6 +601,7 @@ export type Database = {
         Update: {
           assigned_at?: string | null
           id?: string
+          phone_number?: string | null
           request_id?: string
           staff_id?: string | null
           staff_name?: string | null
@@ -616,23 +619,23 @@ export type Database = {
       staff_services: {
         Row: {
           created_at: string | null
-          id: string
+          phone_number: string | null
           service_id: string | null
-          staff_id: string | null
+          staff_id: string
           staff_name: string | null
         }
         Insert: {
           created_at?: string | null
-          id?: string
+          phone_number?: string | null
           service_id?: string | null
-          staff_id?: string | null
+          staff_id?: string
           staff_name?: string | null
         }
         Update: {
           created_at?: string | null
-          id?: string
+          phone_number?: string | null
           service_id?: string | null
-          staff_id?: string | null
+          staff_id?: string
           staff_name?: string | null
         }
         Relationships: [
@@ -641,27 +644,6 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "staff_services_staff_id_fkey"
-            columns: ["staff_id"]
-            isOneToOne: false
-            referencedRelation: "tenant_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "staff_services_staff_id_fkey"
-            columns: ["staff_id"]
-            isOneToOne: false
-            referencedRelation: "user_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "staff_services_staff_id_fkey"
-            columns: ["staff_id"]
-            isOneToOne: false
-            referencedRelation: "view_all_staff"
             referencedColumns: ["id"]
           },
         ]
