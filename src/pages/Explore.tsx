@@ -8,6 +8,7 @@ import { FiltersBar } from "@/components/explore/FiltersBar";
 import { useTranslation } from "react-i18next";
 import FloatingAction from "@/components/FloatingAction";
 import DrawerMenu from "@/components/DrawerMenu";
+import { type RecommendationCategory } from "@/utils/recommendationCategories";
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState("");

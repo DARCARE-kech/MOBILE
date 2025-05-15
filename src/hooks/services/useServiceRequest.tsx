@@ -1,144 +1,166 @@
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
-import { useProfileData } from '@/hooks/useProfileData';
+import { useEffect } from 'react';
+import { enhanceOptionalFields, getServiceTitle } from './serviceHelpers';
+import type { ServiceLocationState, UseServiceRequestResult, ServiceDetail } from './types';
 
-export interface ServiceLocationState {
-  category?: string;
-  option?: string;
-  tripType?: string;
-}
-
-export interface ServiceFormData {
-  preferredDate: string;
-  preferredTime: string;
-  selectedCategory?: string;
-  selectedOption?: string;
-  note?: string;
-  [key: string]: any;
-}
-
-export interface ServiceDetail {
-  id: string;
-  service_id: string;
-  category: string;
-  instructions?: string;
-  default_duration?: string;
-  optional_fields?: Record<string, any>;
-  price_range?: string;
-}
-
-export interface UseServiceRequestResult {
-  handleSubmitRequest: (formData: ServiceFormData, isEdit?: boolean, requestId?: string) => Promise<void>;
-  isSubmitting: boolean;
-}
-
-export const useServiceRequest = (
-  service: any,
-  serviceState: ServiceLocationState
-): UseServiceRequestResult => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+/**
+ * Hook for handling service requests form
+ * Fetches service data and manages form state
+ */
+export function useServiceRequest(): UseServiceRequestResult {
+  const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { user } = useAuth();
-  const { category, option, tripType } = serviceState;
   
-  // Fetch user profile data for getting profile_id
-  const { data: profileData } = useProfileData(user?.id);
-
-  const handleSubmitRequest = async (formData: ServiceFormData, isEdit = false, requestId?: string) => {
-    if (!user) {
-      toast.error(t('common.error'), {
-        description: t('common.loginRequired')
-      });
-      return;
+  // Get serviceType and serviceId from state
+  const serviceState = location.state as ServiceLocationState || {};
+  const { serviceType, serviceId, category, option, tripType } = serviceState;
+  
+  // Validate we have a serviceType or serviceId
+  useEffect(() => {
+    if (!serviceType && !serviceId) {
+      navigate('/services');
     }
-    
-    setIsSubmitting(true);
-    
-    try {
-      // Convert the form data to the structure needed for the service_requests table
-      const selectedOptions = {
-        ...formData,
-        category: category || formData.selectedCategory,
-        option: option || formData.selectedOption,
-        tripType: tripType
-      };
-
-      // Log service data to help with debugging
-      console.log('Service data being used in request submission:', service);
-      console.log('Service ID being passed:', service?.id);
-
-      if (!service?.id && !serviceState.serviceType?.includes('space')) {
-        console.warn('Warning: service_id is undefined - may cause display issues in My Requests');
-      }
-
-      // Prepare request data - ensure service_id is always defined when a service exists
-      const requestData: any = {
-        user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
-        preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-        note: formData.note || null, // Ensure note is always included
-        selected_options: selectedOptions,
-        status: isEdit ? undefined : 'pending' // Don't update status during modification
-      };
-      
-      // Only set service_id if it exists (for standard services)
-      // For Book Space services, service_id should be null
-      if (service?.id) {
-        requestData.service_id = service.id;
-      }
-      
-      console.log('Submitting request data:', requestData);
-      
-      let error;
-      
-      if (isEdit && requestId) {
-        // Update existing request
-        const { error: updateError } = await supabase
-          .from('service_requests')
-          .update(requestData)
-          .eq('id', requestId);
-        
-        error = updateError;
-        
-        if (!updateError) {
-          toast.success(t('services.requestUpdated', 'Request Updated'), {
-            description: t('services.requestUpdatedDesc', 'Your service request has been updated')
-          });
+  }, [serviceType, serviceId, navigate]);
+  
+  // Fetch service details based on the service type or ID
+  const { data: service, isLoading: isLoadingService } = useQuery({
+    queryKey: ['service', serviceType, serviceId],
+    queryFn: async () => {
+      if (serviceId) {
+        console.log('Fetching service with ID:', serviceId);
+        const { data, error } = await supabase
+          .from('services')
+          .select('*')
+          .eq('id', serviceId)
+          .single();
+          
+        if (error) {
+          console.error('Error fetching service by ID:', error);
+          throw error;
         }
-      } else {
-        // Create new request
-        const { error: insertError } = await supabase
-          .from('service_requests')
-          .insert(requestData);
+        console.log('Service data fetched by ID:', data);
+        return data;
+      } else if (serviceType) {
+        console.log('Fetching service with type:', serviceType);
+        const { data, error } = await supabase
+          .from('services')
+          .select('*')
+          .ilike('name', `%${serviceType}%`)
+          .limit(1)
+          .single();
+          
+        if (error) {
+          console.error('Error fetching service by type:', error);
+          throw error;
+        }
+        console.log('Service data fetched by type:', data);
+        return data;
+      }
+      
+      console.warn('No serviceId or serviceType provided');
+      return null;
+    },
+    enabled: !!serviceType || !!serviceId
+  });
+  
+  // Fetch the detailed service options
+  const { data: serviceDetails, isLoading: isLoadingDetails } = useQuery({
+    queryKey: ['service-details', service?.id],
+    queryFn: async () => {
+      if (!service?.id) {
+        console.warn('No service ID available for fetching details');
         
-        error = insertError;
+        // For serviceType-based requests (like hair or kids), return category-specific details
+        if (serviceType === 'hair') {
+          return { 
+            category: 'hair',
+            service_id: serviceId
+          } as ServiceDetail;
+        }
         
-        if (!insertError) {
-          toast.success(t('services.requestSubmitted', 'Request Submitted'), {
-            description: t('services.requestSubmittedDesc', 'Your service request has been submitted')
-          });
+        if (serviceType === 'kids') {
+          return { 
+            category: 'kids',
+            service_id: serviceId
+          } as ServiceDetail;
+        }
+        
+        return null;
+      }
+      
+      console.log('Fetching service details for ID:', service.id);
+      
+      const { data, error } = await supabase
+        .from('service_details')
+        .select('*')
+        .eq('service_id', service.id)
+        .maybeSingle();
+        
+      if (error) {
+        console.error('Error fetching service details:', error);
+        
+        // Fallback to type-specific details if service details not found
+        if (service.name?.toLowerCase().includes('hair')) {
+          return { 
+            category: 'hair',
+            service_id: service.id
+          } as ServiceDetail;
+        }
+        
+        if (service.name?.toLowerCase().includes('kids')) {
+          return { 
+            category: 'kids',
+            service_id: service.id
+          } as ServiceDetail;
+        }
+        
+        return null;
+      }
+      
+      if (!data) {
+        console.log('No service details found, using fallback');
+        
+        // Fallback based on service name
+        if (service.name?.toLowerCase().includes('hair')) {
+          return { 
+            category: 'hair',
+            service_id: service.id
+          } as ServiceDetail;
+        }
+        
+        if (service.name?.toLowerCase().includes('kids')) {
+          return { 
+            category: 'kids',
+            service_id: service.id
+          } as ServiceDetail;
         }
       }
       
-      if (error) throw error;
+      console.log('Service details fetched:', data);
       
-      // Navigate back to services
-      navigate('/services', { replace: true });
-    } catch (error) {
-      console.error('Error submitting request:', error);
-      toast.error(t('common.error'), {
-        description: t('services.requestErrorDesc', 'An error occurred while submitting your request')
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+      // Ensure the optional_fields is correctly typed
+      if (data && data.optional_fields) {
+        return {
+          ...data,
+          optional_fields: data.optional_fields as Record<string, any>
+        } as ServiceDetail;
+      }
+      
+      return data as ServiceDetail;
+    },
+    enabled: !!service?.id || serviceType === 'hair' || serviceType === 'kids'
+  });
+
+  return {
+    serviceState,
+    service,
+    serviceDetails,
+    isLoading: isLoadingService || isLoadingDetails,
+    // Create wrapper functions to access the utility functions with current state
+    enhanceOptionalFields: () => enhanceOptionalFields(serviceDetails, category, option, tripType),
+    getServiceTitle: () => getServiceTitle(service, serviceType)
   };
-
-  return { handleSubmitRequest, isSubmitting };
-};
+}

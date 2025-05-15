@@ -118,16 +118,33 @@ const ServiceDetail: React.FC = () => {
         .from('service_details')
         .select('*')
         .eq('service_id', service.id)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error(`Error fetching service details:`, error);
+        // Return minimal details with category derived from service name
+        const serviceNameLower = service.name.toLowerCase();
+        if (serviceNameLower.includes('hair')) {
+          return { category: 'hair', service_id: service.id } as ServiceDetailType;
+        } else if (serviceNameLower.includes('kids')) {
+          return { category: 'kids', service_id: service.id } as ServiceDetailType;
+        }
         return null;
+      }
+      
+      // If no data but we have specific services, provide default details
+      if (!data) {
+        const serviceNameLower = service.name.toLowerCase();
+        if (serviceNameLower.includes('hair')) {
+          return { category: 'hair', service_id: service.id } as ServiceDetailType;
+        } else if (serviceNameLower.includes('kids')) {
+          return { category: 'kids', service_id: service.id } as ServiceDetailType;
+        }
       }
       
       console.log("Service details fetched:", data);
       
-      // Ajouter le service_id au serviceDetails s'il existe
+      // Add the service_id to serviceDetails if it exists
       if (data && service?.id) {
         data.service_id = service.id;
       }
@@ -184,11 +201,11 @@ const ServiceDetail: React.FC = () => {
   const serviceNameLower = service?.name.toLowerCase();
   const pageTitle = editMode ? t('services.editRequest') : service.name;
 
-  // Log service_id avant de le passer au composant
+  // Log service_id before passing to component
   console.log("Service ID passing to component:", service.id);
   console.log("ServiceDetails with service_id:", serviceDetails);
   
-  // Assurez-vous que serviceDetails inclut service_id avant de le passer aux composants
+  // Ensure serviceDetails includes service_id before passing to components
   const enhancedServiceDetails = serviceDetails ? {
     ...serviceDetails,
     service_id: service.id 
