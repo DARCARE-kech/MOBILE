@@ -173,16 +173,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           "Sign In"
         )}
       </button>
-      <div className="text-center mt-6">
-        <p className={cn(
-          "text-sm",
-          isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
-        )}>
-          For testing:&nbsp;
-          <span className={isDarkMode ? "text-darcare-gold" : "text-secondary"}>ourhejji.lina@gmail.com</span> / 
-          <span className={isDarkMode ? "text-darcare-gold" : "text-secondary"}>linalina</span>
-        </p>
-      </div>
+
     </form>
   );
 };
