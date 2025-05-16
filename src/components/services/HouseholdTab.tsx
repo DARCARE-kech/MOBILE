@@ -49,11 +49,13 @@ const HouseholdTab: React.FC = () => {
         .order('name');
       
       if (error) throw error;
+      console.log('Household services fetched:', data);
       return data;
     }
   });
 
   const handleServiceClick = (id: string, name: string) => {
+    console.log('Navigating to service detail:', id, name);
     navigate(`/services/${id}`);
   };
 
@@ -79,8 +81,8 @@ const HouseholdTab: React.FC = () => {
             )}
             onClick={() => handleServiceClick(service.id, service.name)}
           >
-            {/* Image Section - Reduced height */}
-            <div className="aspect-[3/2] w-full">
+            {/* Image Section - Further reduced height */}
+            <div className="aspect-[16/10] w-full"> {/* More compact aspect ratio */}
               <img
                 src={service.image_url || getFallbackImage(service.name, 0)}
                 alt={service.name}
@@ -92,12 +94,12 @@ const HouseholdTab: React.FC = () => {
               />
             </div>
             
-            {/* Content Section - Reduced padding */}
-            <div className="p-2 relative">
+            {/* Content Section - Further reduced padding */}
+            <div className="p-1.5 relative"> {/* Smaller padding */}
               <div className="flex items-center mb-0.5">
                 <ServiceIcon category={service.category || ''} />
                 <h3 className={cn(
-                  "font-serif text-base line-clamp-1", // Smaller font
+                  "font-serif text-sm line-clamp-1", // Smaller font
                   isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
                 )}>
                   {service.name}
@@ -105,25 +107,25 @@ const HouseholdTab: React.FC = () => {
               </div>
               
               <p className={cn(
-                "text-xs line-clamp-1 mb-1 min-h-[1rem]", // Reduced line clamp and min height
+                "text-xs line-clamp-1 mb-0.5 min-h-[0.75rem]", // Smaller min height
                 isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
               )}>
                 {service.description}
               </p>
               
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-0.5"> {/* Reduced margin */}
                 {service.estimated_duration && (
                   <div className={cn(
                     "flex items-center gap-1 text-2xs", // Smaller text
                     isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
                   )}>
-                    <Clock size={12} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
+                    <Clock size={10} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
                     <span>{service.estimated_duration}</span>
                   </div>
                 )}
                 
                 <ChevronRight 
-                  size={14} // Smaller icon 
+                  size={12} // Smaller icon 
                   className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} 
                 />
               </div>

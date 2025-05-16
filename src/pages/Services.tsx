@@ -34,7 +34,7 @@ const ServicesPage: React.FC = () => {
       />
       
       <div className="pt-16 pb-20"> {/* Reduced top padding */}
-        <div className="px-2 mb-2"> {/* Reduced horizontal padding */}
+        <div className="px-2 mb-1"> {/* Further reduced horizontal padding and margin */}
           <Tabs 
             defaultValue="household" 
             value={activeTab} 
@@ -42,7 +42,7 @@ const ServicesPage: React.FC = () => {
             className="w-full"
           >
             <TabsList className={cn(
-              "w-full grid grid-cols-3 rounded-full p-0.5", // Smaller padding
+              "w-full grid grid-cols-3 rounded-full p-0.5", 
               isDarkMode 
                 ? "bg-white/5 backdrop-blur-sm" 
                 : "bg-white/80 border border-darcare-deepGold/10 shadow-sm"
@@ -50,7 +50,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="household"
                 className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200", // Smaller text
+                  "rounded-full text-xs font-medium transition-all duration-200", 
                   activeTab === "household" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -65,7 +65,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="lifestyle"
                 className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200", // Smaller text
+                  "rounded-full text-xs font-medium transition-all duration-200",
                   activeTab === "lifestyle" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -80,7 +80,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="requests"
                 className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200", // Smaller text
+                  "rounded-full text-xs font-medium transition-all duration-200", 
                   activeTab === "requests" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -94,7 +94,7 @@ const ServicesPage: React.FC = () => {
               </TabsTrigger>
             </TabsList>
 
-            <div className="mt-2"> {/* Reduced margin */}
+            <div className="mt-1"> {/* Further reduced margin */}
               <TabsContent value="household" className="mt-0">
                 <HouseholdTab />
               </TabsContent>

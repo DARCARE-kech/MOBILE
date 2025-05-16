@@ -16,7 +16,7 @@ const LIFESTYLE_CATEGORIES = ['hair', 'kids', 'book-space'];
 const ServiceIcon = ({ category, name }: { category: string | null, name: string }) => {
   const { isDarkMode } = useTheme();
   const iconClass = cn(
-    "w-4 h-4 mr-2", // Reducing icon size
+    "w-4 h-4 mr-2", // Smaller icon
     isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
   );
   
@@ -57,18 +57,44 @@ const LifestyleTab: React.FC = () => {
       }
       
       console.log('Lifestyle services fetched:', data);
+      
+      // Add a static "Book Space" service if it doesn't exist in the data
+      const bookSpaceExists = data?.some(service => 
+        service.category === 'book-space' || 
+        service.name?.toLowerCase().includes('book space')
+      );
+      
+      if (!bookSpaceExists) {
+        console.log('Adding static Book Space service');
+        const bookSpaceService = {
+          id: 'book-space',
+          name: 'Book Space',
+          description: 'Reserve spaces for your activities',
+          category: 'book-space',
+          image_url: null,
+          estimated_duration: null
+        };
+        return [...(data || []), bookSpaceService];
+      }
+      
       return data || [];
     }
   });
 
   const handleServiceClick = (id: string, name: string, category: string | null) => {
-    if (name.toLowerCase().includes('book space') || category === 'book-space') {
+    console.log('Clicked service:', id, name, category);
+    
+    if (category === 'book-space' || name.toLowerCase().includes('book space') || id === 'book-space') {
+      console.log('Navigating to spaces page');
       navigate('/services/spaces');
-    } else if (name.toLowerCase().includes('hair') || name.toLowerCase().includes('salon') || category === 'hair') {
+    } else if (category === 'hair' || name.toLowerCase().includes('hair') || name.toLowerCase().includes('salon')) {
+      console.log('Navigating to hair salon service');
       navigate(`/services/${id}`);
-    } else if (name.toLowerCase().includes('kids') || name.toLowerCase().includes('club') || category === 'kids') {
+    } else if (category === 'kids' || name.toLowerCase().includes('kids') || name.toLowerCase().includes('club')) {
+      console.log('Navigating to kids club service');
       navigate(`/services/${id}`);
     } else {
+      console.log('Navigating to generic service');
       navigate(`/services/${id}`);
     }
   };
@@ -105,8 +131,8 @@ const LifestyleTab: React.FC = () => {
             )}
             onClick={() => handleServiceClick(service.id, service.name, service.category)}
           >
-            {/* Image Section - Reduced height */}
-            <div className="aspect-[3/2] w-full">
+            {/* Image Section - Further reduced height */}
+            <div className="aspect-[16/10] w-full"> {/* More compact aspect ratio */}
               <img
                 src={service.image_url || getFallbackImage(service.name, 0)}
                 alt={service.name}
@@ -118,12 +144,12 @@ const LifestyleTab: React.FC = () => {
               />
             </div>
             
-            {/* Content Section - Reduced padding */}
-            <div className="p-2 relative">
+            {/* Content Section - Further reduced padding */}
+            <div className="p-1.5 relative"> {/* Smaller padding */}
               <div className="flex items-center mb-0.5">
                 <ServiceIcon category={service.category} name={service.name} />
                 <h3 className={cn(
-                  "font-serif text-base line-clamp-1", // Smaller font
+                  "font-serif text-sm line-clamp-1", // Smaller font
                   isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
                 )}>
                   {service.name}
@@ -131,25 +157,25 @@ const LifestyleTab: React.FC = () => {
               </div>
               
               <p className={cn(
-                "text-xs line-clamp-1 mb-1 min-h-[1rem]", // Reduced line clamp and min height
+                "text-xs line-clamp-1 mb-0.5 min-h-[0.75rem]", // Smaller min height
                 isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
               )}>
                 {service.description}
               </p>
               
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-0.5"> {/* Reduced margin */}
                 {service.estimated_duration && (
                   <div className={cn(
                     "flex items-center gap-1 text-2xs", // Smaller text
                     isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
                   )}>
-                    <Clock size={12} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
+                    <Clock size={10} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
                     <span>{service.estimated_duration}</span>
                   </div>
                 )}
                 
                 <ChevronRight 
-                  size={14} // Smaller icon
+                  size={12} // Smaller icon
                   className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} 
                 />
               </div>

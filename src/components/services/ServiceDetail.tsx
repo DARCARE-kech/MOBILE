@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -50,7 +51,6 @@ const ServiceDetail: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [existingRequest, setExistingRequest] = useState<ServiceRequestType | null>(null);
   
-  // Log le paramètre ID pour débogage
   console.log("Current service ID from URL:", id);
   
   // Check if we're in edit mode based on location state
