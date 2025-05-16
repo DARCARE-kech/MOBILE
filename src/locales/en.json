@@ -1,4 +1,3 @@
-
 {
   "common": {
     "back": "Back",
@@ -97,18 +96,18 @@
   "services": {
     "title": "Services",
     "reserve": "Reserve",
-    "requests": "Requests",
+    "requests": "My Requests",
     "history": "History",
     "todaySchedule": "Today's Schedule",
     "noActivitiesScheduled": "No Activities Scheduled",
-    "noRequestsYet": "No requests yet? Let us take care of you.",
+    "noRequestsYet": "You haven't made any service requests yet.",
     "requestService": "Request a Service",
-    "loading": "Loading Schedule",
-    "loadingDescription": "Please wait while we fetch your schedule...",
+    "loading": "Loading Services",
+    "loadingDescription": "Fetching your service requests...",
     "staffLabel": "Staff",
     "noTimeSpecified": "Time not specified",
     "untitled": "Untitled Service",
-    "unassigned": "Not yet assigned",
+    "unassigned": "Unassigned",
     "book": "Book",
     "capacity": "Capacity",
     "available": "Available",
@@ -143,7 +142,7 @@
   "laundry": "Laundry",
   "shop": "Shop",
   "bookSpace": "Book a Space",
-    "noActiveRequests": "No Active Requests",
+    "noActiveRequests": "You don't have any active requests",
     "noHistoryYet": "No completed services in your history yet",
     "switchToReserveTab": "Switch to the 'Reserve' tab to request a service",
     "cleaningType": "Cleaning Type",

@@ -1,7 +1,8 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Clock, User, Pencil, Trash2, AlertTriangle } from 'lucide-react';
+import { Loader2, Clock, User, Pencil, Trash2, AlertTriangle, History } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
 import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment } from '@/integrations/supabase/rpc';
@@ -54,15 +55,17 @@ const MyRequestsTab: React.FC = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [requestToDelete, setRequestToDelete] = React.useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   
   const { data: requests, isLoading, error } = useQuery({
-    queryKey: ['my-service-requests', user?.id],
+    queryKey: ['my-service-requests', user?.id, showHistory],
     queryFn: async () => {
       if (!user?.id) throw new Error("User ID is required");
       
       console.log("Fetching service requests for user:", user.id);
       
       // Fetch service requests with pending or in_progress status for the current user
+      // If showHistory is true, also fetch completed and cancelled requests
       const { data: requestsData, error: requestsError } = await supabase
         .from('service_requests')
         .select(`
@@ -70,7 +73,7 @@ const MyRequestsTab: React.FC = () => {
           services(*)
         `)
         .eq('user_id', user.id) // Filter by the current user's ID
-        .in('status', ['pending', 'in_progress'])
+        .in('status', showHistory ? ['pending', 'in_progress', 'completed', 'cancelled'] : ['pending', 'in_progress'])
         .order('created_at', { ascending: false });
       
       if (requestsError) {
@@ -163,6 +166,10 @@ const MyRequestsTab: React.FC = () => {
     }
   };
 
+  const toggleHistory = () => {
+    setShowHistory(!showHistory);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -202,154 +209,188 @@ const MyRequestsTab: React.FC = () => {
     );
   }
 
-  if (!requests || requests.length === 0) {
-    return (
-      <div className="p-6 text-center">
-        <AlertTriangle className="mx-auto h-10 w-10 text-darcare-gold/70 mb-4" />
-        <p className={cn(
-          isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
-        )}>
-          {t('services.noActiveRequests', "You don't have any active requests")}
-        </p>
-        <p className={cn(
-          "mt-2 mb-6",
-          isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
-        )}>
-          {t('services.switchToReserveTab', "Switch to the Reserve tab to request a new service")}
-        </p>
-        
-        <Button 
-          onClick={() => navigate('/services')} 
-          className={cn(
-            isDarkMode
-              ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-              : "bg-secondary text-white hover:bg-secondary/90"
-          )}
-        >
-          {t('services.requestService', "Request a Service")}
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <>
-      <div className="space-y-2 p-2">
-        {requests.map(request => {
-          // Get service name - affichage selon le contexte (service ou espace)
-          let serviceName = "";
+      <div className="flex justify-between items-center px-4 mb-3">
+        <h2 className={cn(
+          "text-lg font-serif",
+          isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+        )}>
+          {showHistory 
+            ? t('services.requestHistory', "Request History") 
+            : t('services.activeRequests', "Active Requests")}
+        </h2>
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={toggleHistory}
+          className={cn(
+            "flex items-center gap-1 border",
+            isDarkMode 
+              ? "text-darcare-beige border-darcare-gold/30 hover:bg-darcare-gold/10" 
+              : "text-darcare-charcoal border-darcare-deepGold/30 hover:bg-darcare-deepGold/10"
+          )}
+        >
+          <History size={14} /> 
+          {showHistory 
+            ? t('services.hideHistory', "Hide History") 
+            : t('services.viewHistory', "View History")}
+        </Button>
+      </div>
+      
+      {!requests || requests.length === 0 ? (
+        <div className="p-6 text-center">
+          <AlertTriangle className="mx-auto h-10 w-10 text-darcare-gold/70 mb-4" />
+          <p className={cn(
+            isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
+          )}>
+            {showHistory 
+              ? t('services.noHistoryRequests', "You don't have any completed requests") 
+              : t('services.noActiveRequests', "You don't have any active requests")}
+          </p>
+          <p className={cn(
+            "mt-2 mb-6",
+            isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
+          )}>
+            {showHistory
+              ? t('services.switchToActiveRequests', "Switch back to active requests")
+              : t('services.switchToReserveTab', "Switch to the Reserve tab to request a new service")}
+          </p>
           
-          if (request.space_id) {
-            // Pour les réservations d'espace
-            serviceName = t('services.bookSpace', 'Book Space');
-          } else if (request.services && request.services.name) {
-            // Pour les services standards avec un nom valide
-            serviceName = request.services.name;
-          } else {
-            // Fallback pour les services sans nom
-            serviceName = t('services.untitled', 'Untitled Service');
-          }
-          
-          console.log("Request:", request.id, "Service ID:", request.service_id, "Service Name:", serviceName);
-          
-          return (
-            <div 
-              key={request.id} 
+          {!showHistory && (
+            <Button 
+              onClick={() => navigate('/services')} 
               className={cn(
-                "request-card cursor-pointer transition-all duration-200 p-3 rounded-lg border",
-                isDarkMode 
-                  ? "border-darcare-gold/10 hover:border-darcare-gold/20 bg-darcare-navy/60" 
-                  : "border-primary/5 hover:border-primary/10 bg-card shadow-sm"
+                isDarkMode
+                  ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+                  : "bg-secondary text-white hover:bg-secondary/90"
               )}
-              onClick={() => handleRequestClick(request.id)}
             >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <h3 className={cn(
-                    "font-medium truncate",
-                    isDarkMode ? "text-darcare-gold" : "text-primary"
-                  )}>
-                    {serviceName}
-                  </h3>
+              {t('services.requestService', "Request a Service")}
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-2 p-2">
+          {requests.map(request => {
+            // Get service name - affichage selon le contexte (service ou espace)
+            let serviceName = "";
+            
+            if (request.space_id) {
+              // Pour les réservations d'espace
+              serviceName = t('services.bookSpace', 'Book Space');
+            } else if (request.services && request.services.name) {
+              // Pour les services standards avec un nom valide
+              serviceName = request.services.name;
+            } else {
+              // Fallback pour les services sans nom
+              serviceName = t('services.untitled', 'Untitled Service');
+            }
+            
+            console.log("Request:", request.id, "Service ID:", request.service_id, "Service Name:", serviceName);
+            
+            return (
+              <div 
+                key={request.id} 
+                className={cn(
+                  "request-card cursor-pointer transition-all duration-200 p-3 rounded-lg border",
+                  isDarkMode 
+                    ? "border-darcare-gold/10 hover:border-darcare-gold/20 bg-darcare-navy/60" 
+                    : "border-primary/5 hover:border-primary/10 bg-card shadow-sm"
+                )}
+                onClick={() => handleRequestClick(request.id)}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className={cn(
+                      "font-medium truncate",
+                      isDarkMode ? "text-darcare-gold" : "text-primary"
+                    )}>
+                      {serviceName}
+                    </h3>
+                    
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className={cn(
+                        "flex items-center gap-1 text-xs",
+                        isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+                      )}>
+                        <Clock size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
+                        <span className="truncate">
+                          {request.preferred_time 
+                            ? format(new Date(request.preferred_time), 'MMM d, p') 
+                            : t('services.unscheduled', 'Unscheduled')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                   
-                  <div className="flex items-center gap-2 mt-1">
+                  <StatusBadge status={request.status || 'pending'} />
+                </div>
+                
+                <div className={cn(
+                  "mt-2 pt-2 border-t flex justify-between items-center",
+                  isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
+                )}>
+                  {request.staff_assignments && request.staff_assignments.length > 0 ? (
                     <div className={cn(
                       "flex items-center gap-1 text-xs",
                       isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
                     )}>
-                      <Clock size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
+                      <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
                       <span className="truncate">
-                        {request.preferred_time 
-                          ? format(new Date(request.preferred_time), 'MMM d, p') 
-                          : t('services.unscheduled', 'Unscheduled')}
+                        {request.staff_assignments[0].staff_name || t('services.unassigned', 'Unassigned')}
                       </span>
                     </div>
-                  </div>
-                </div>
-                
-                <StatusBadge status={request.status || 'pending'} />
-              </div>
-              
-              <div className={cn(
-                "mt-2 pt-2 border-t flex justify-between items-center",
-                isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
-              )}>
-                {request.staff_assignments && request.staff_assignments.length > 0 ? (
-                  <div className={cn(
-                    "flex items-center gap-1 text-xs",
-                    isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
-                  )}>
-                    <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                    <span className="truncate">
-                      {request.staff_assignments[0].staff_name || t('services.unassigned', 'Unassigned')}
-                    </span>
-                  </div>
-                ) : (
-                  <div className={cn(
-                    "flex items-center gap-1 text-xs",
-                    isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
-                  )}>
-                    <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                    <span className="truncate">{t('services.unassigned', 'Unassigned')}</span>
-                  </div>
-                )}
-                
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost" 
-                    size="sm"
-                    className={cn(
-                      "h-7 w-7 p-0",
-                      isDarkMode 
-                        ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
-                        : "text-secondary hover:bg-secondary/10"
-                    )}
-                    onClick={(e) => handleEditRequest(request, e)}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                    <span className="sr-only">Edit</span>
-                  </Button>
+                  ) : (
+                    <div className={cn(
+                      "flex items-center gap-1 text-xs",
+                      isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+                    )}>
+                      <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
+                      <span className="truncate">{t('services.unassigned', 'Unassigned')}</span>
+                    </div>
+                  )}
                   
-                  <Button
-                    variant="ghost" 
-                    size="sm"
-                    className={cn(
-                      "h-7 w-7 p-0",
-                      isDarkMode 
-                        ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
-                        : "text-red-500 hover:bg-red-500/10"
-                    )}
-                    onClick={(e) => handleDeleteRequest(request.id, e)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                    <span className="sr-only">Delete</span>
-                  </Button>
+                  {/* Only show edit/delete buttons for pending or in_progress requests */}
+                  {(!request.status || request.status === 'pending' || request.status === 'in_progress') && (
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost" 
+                        size="sm"
+                        className={cn(
+                          "h-7 w-7 p-0",
+                          isDarkMode 
+                            ? "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold" 
+                            : "text-secondary hover:bg-secondary/10"
+                        )}
+                        onClick={(e) => handleEditRequest(request, e)}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        <span className="sr-only">Edit</span>
+                      </Button>
+                      
+                      <Button
+                        variant="ghost" 
+                        size="sm"
+                        className={cn(
+                          "h-7 w-7 p-0",
+                          isDarkMode 
+                            ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
+                            : "text-red-500 hover:bg-red-500/10"
+                        )}
+                        onClick={(e) => handleDeleteRequest(request.id, e)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span className="sr-only">Delete</span>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
       
       <AlertDialog open={!!requestToDelete} onOpenChange={() => setRequestToDelete(null)}>
         <AlertDialogContent className={isDarkMode ? "bg-darcare-navy border-darcare-gold/20" : ""}>
