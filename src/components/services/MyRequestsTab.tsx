@@ -64,8 +64,11 @@ const MyRequestsTab: React.FC = () => {
       
       console.log("Fetching service requests for user:", user.id);
       
-      // Fetch service requests with pending or in_progress status for the current user
-      // If showHistory is true, also fetch completed and cancelled requests
+      // Filter requests based on showHistory flag
+      const statusFilter = showHistory 
+        ? ['completed', 'cancelled'] // History view: only completed and cancelled
+        : ['pending', 'in_progress']; // Active view: only pending and in_progress
+      
       const { data: requestsData, error: requestsError } = await supabase
         .from('service_requests')
         .select(`
@@ -73,7 +76,7 @@ const MyRequestsTab: React.FC = () => {
           services(*)
         `)
         .eq('user_id', user.id) // Filter by the current user's ID
-        .in('status', showHistory ? ['pending', 'in_progress', 'completed', 'cancelled'] : ['pending', 'in_progress'])
+        .in('status', statusFilter)
         .order('created_at', { ascending: false });
       
       if (requestsError) {
@@ -273,21 +276,19 @@ const MyRequestsTab: React.FC = () => {
       ) : (
         <div className="space-y-2 p-2">
           {requests.map(request => {
-            // Get service name - affichage selon le contexte (service ou espace)
+            // Get service name based on context (service or space)
             let serviceName = "";
             
             if (request.space_id) {
-              // Pour les réservations d'espace
+              // For space reservations
               serviceName = t('services.bookSpace', 'Book Space');
             } else if (request.services && request.services.name) {
-              // Pour les services standards avec un nom valide
+              // For standard services with a valid name
               serviceName = request.services.name;
             } else {
-              // Fallback pour les services sans nom
+              // Fallback for services without a name
               serviceName = t('services.untitled', 'Untitled Service');
             }
-            
-            console.log("Request:", request.id, "Service ID:", request.service_id, "Service Name:", serviceName);
             
             return (
               <div 

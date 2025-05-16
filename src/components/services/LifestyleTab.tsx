@@ -9,14 +9,14 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { getFallbackImage } from '@/utils/imageUtils';
 
-// Lifestyle categories and services
+// Lifestyle categories
 const LIFESTYLE_CATEGORIES = ['hair', 'kids', 'book-space'];
 
 // Icon mapping for service types
 const ServiceIcon = ({ category, name }: { category: string | null, name: string }) => {
   const { isDarkMode } = useTheme();
   const iconClass = cn(
-    "w-5 h-5 mr-2",
+    "w-4 h-4 mr-2", // Reducing icon size
     isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
   );
   
@@ -43,32 +43,21 @@ const LifestyleTab: React.FC = () => {
   const { data: services, isLoading } = useQuery({
     queryKey: ['lifestyle-services'],
     queryFn: async () => {
-      // Try to find services by category first
-      const { data: categoryServices, error: categoryError } = await supabase
+      console.log('Fetching lifestyle services with categories:', LIFESTYLE_CATEGORIES);
+      
+      // Fetch services by category
+      const { data, error } = await supabase
         .from('services')
         .select('*')
         .in('category', LIFESTYLE_CATEGORIES);
       
-      if (categoryError) throw categoryError;
+      if (error) {
+        console.error('Error fetching lifestyle services:', error);
+        throw error;
+      }
       
-      // Also look for services with names containing our lifestyle keywords
-      const { data: nameServices, error: nameError } = await supabase
-        .from('services')
-        .select('*')
-        .or('name.ilike.%hair%,name.ilike.%salon%,name.ilike.%kids%,name.ilike.%club%,name.ilike.%book%,name.ilike.%space%')
-        .not('id', 'in', `(${categoryServices.map(s => `'${s.id}'`).join(',')})`);
-      
-      if (nameError) throw nameError;
-      
-      // Combine results and remove duplicates
-      const combinedServices = [...categoryServices];
-      nameServices.forEach(service => {
-        if (!combinedServices.some(s => s.id === service.id)) {
-          combinedServices.push(service);
-        }
-      });
-      
-      return combinedServices.sort((a, b) => a.name.localeCompare(b.name));
+      console.log('Lifestyle services fetched:', data);
+      return data || [];
     }
   });
 
@@ -104,20 +93,20 @@ const LifestyleTab: React.FC = () => {
 
   return (
     <div className="py-4">
-      <div className="grid grid-cols-2 gap-4">
-        {services?.map((service) => (
+      <div className="grid grid-cols-2 gap-3">
+        {services.map((service) => (
           <div
             key={service.id}
             className={cn(
-              "rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 shadow",
+              "rounded-xl overflow-hidden cursor-pointer transition-all duration-200 shadow",
               isDarkMode
                 ? "bg-[#1E2230] hover:shadow-darcare-gold/10 hover:shadow-md"
                 : "bg-white hover:shadow-darcare-deepGold/10 hover:shadow-md"
             )}
             onClick={() => handleServiceClick(service.id, service.name, service.category)}
           >
-            {/* Image Section */}
-            <div className="aspect-[4/3] w-full">
+            {/* Image Section - Reduced height */}
+            <div className="aspect-[3/2] w-full">
               <img
                 src={service.image_url || getFallbackImage(service.name, 0)}
                 alt={service.name}
@@ -129,12 +118,12 @@ const LifestyleTab: React.FC = () => {
               />
             </div>
             
-            {/* Content Section */}
-            <div className="p-3 relative">
-              <div className="flex items-center mb-1">
+            {/* Content Section - Reduced padding */}
+            <div className="p-2 relative">
+              <div className="flex items-center mb-0.5">
                 <ServiceIcon category={service.category} name={service.name} />
                 <h3 className={cn(
-                  "font-serif text-lg line-clamp-1",
+                  "font-serif text-base line-clamp-1", // Smaller font
                   isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
                 )}>
                   {service.name}
@@ -142,7 +131,7 @@ const LifestyleTab: React.FC = () => {
               </div>
               
               <p className={cn(
-                "text-xs line-clamp-2 mb-2 min-h-[2.5rem]",
+                "text-xs line-clamp-1 mb-1 min-h-[1rem]", // Reduced line clamp and min height
                 isDarkMode ? "text-darcare-beige/80" : "text-darcare-charcoal/80"
               )}>
                 {service.description}
@@ -151,16 +140,16 @@ const LifestyleTab: React.FC = () => {
               <div className="flex items-center justify-between">
                 {service.estimated_duration && (
                   <div className={cn(
-                    "flex items-center gap-1 text-xs",
+                    "flex items-center gap-1 text-2xs", // Smaller text
                     isDarkMode ? "text-darcare-beige/60" : "text-darcare-charcoal/60"
                   )}>
-                    <Clock size={14} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
+                    <Clock size={12} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
                     <span>{service.estimated_duration}</span>
                   </div>
                 )}
                 
                 <ChevronRight 
-                  size={16} 
+                  size={14} // Smaller icon
                   className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} 
                 />
               </div>

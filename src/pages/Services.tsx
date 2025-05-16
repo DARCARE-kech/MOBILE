@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import AppHeader from "@/components/AppHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import MyRequestsTab from "@/components/services/MyRequestsTab";
@@ -16,6 +17,14 @@ const ServicesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("household");
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
+  const location = useLocation();
+
+  // Check if we have a specified active tab from navigation
+  useEffect(() => {
+    if (location.state && location.state.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
+  }, [location.state]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,8 +33,8 @@ const ServicesPage: React.FC = () => {
         drawerContent={<DrawerMenu />}
       />
       
-      <div className="pt-20 pb-24"> {/* Padding to prevent header overlap */}
-        <div className="px-4 mb-4">
+      <div className="pt-16 pb-20"> {/* Reduced top padding */}
+        <div className="px-2 mb-2"> {/* Reduced horizontal padding */}
           <Tabs 
             defaultValue="household" 
             value={activeTab} 
@@ -33,7 +42,7 @@ const ServicesPage: React.FC = () => {
             className="w-full"
           >
             <TabsList className={cn(
-              "w-full grid grid-cols-3 rounded-full p-1",
+              "w-full grid grid-cols-3 rounded-full p-0.5", // Smaller padding
               isDarkMode 
                 ? "bg-white/5 backdrop-blur-sm" 
                 : "bg-white/80 border border-darcare-deepGold/10 shadow-sm"
@@ -41,7 +50,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="household"
                 className={cn(
-                  "rounded-full text-sm font-medium transition-all duration-200",
+                  "rounded-full text-xs font-medium transition-all duration-200", // Smaller text
                   activeTab === "household" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -56,7 +65,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="lifestyle"
                 className={cn(
-                  "rounded-full text-sm font-medium transition-all duration-200",
+                  "rounded-full text-xs font-medium transition-all duration-200", // Smaller text
                   activeTab === "lifestyle" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -71,7 +80,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="requests"
                 className={cn(
-                  "rounded-full text-sm font-medium transition-all duration-200",
+                  "rounded-full text-xs font-medium transition-all duration-200", // Smaller text
                   activeTab === "requests" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -85,7 +94,7 @@ const ServicesPage: React.FC = () => {
               </TabsTrigger>
             </TabsList>
 
-            <div className="mt-4">
+            <div className="mt-2"> {/* Reduced margin */}
               <TabsContent value="household" className="mt-0">
                 <HouseholdTab />
               </TabsContent>

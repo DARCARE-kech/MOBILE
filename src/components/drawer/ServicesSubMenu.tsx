@@ -1,12 +1,8 @@
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import {
-  MessageCircle, Wrench, Car,
-  CalendarRange, ShoppingBag, Waves,
-  Scissors, Baby, Book, List
-} from "lucide-react";
+import { Scissors, Wrench, Car, 
+  Waves, Baby, Book } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,24 +22,24 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
     {
       label: t('services.household'),
       items: [
-        { title: t('services.cleaning'), category: 'cleaning', icon: <Scissors size={18} />, path: '/services/cleaning' },
-        { title: t('services.maintenance'), category: 'maintenance', icon: <Wrench size={18} />, path: '/services/maintenance' },
-        { title: t('services.laundry'), category: 'laundry', icon: <Waves size={18} />, path: '/services/laundry' },
-        { title: t('services.transport'), category: 'transport', icon: <Car size={18} />, path: '/services/transport' },
+        { title: t('services.cleaning'), category: 'cleaning', icon: <Scissors size={18} />, path: '/services' },
+        { title: t('services.maintenance'), category: 'maintenance', icon: <Wrench size={18} />, path: '/services' },
+        { title: t('services.laundry'), category: 'laundry', icon: <Waves size={18} />, path: '/services' },
+        { title: t('services.transport'), category: 'transport', icon: <Car size={18} />, path: '/services' },
       ]
     },
     {
       label: t('services.lifestyle'),
       items: [
-        { title: t('services.hairSalon'), category: 'hair', icon: <Scissors size={18} />, path: '/services/hair' },
-        { title: t('services.kidsClub'), category: 'kids', icon: <Baby size={18} />, path: '/services/kids' },
-        { title: t('services.bookSpace'), category: 'book-space', icon: <Book size={18} />, path: '/services/spaces' },
+        { title: t('services.hairSalon'), category: 'hair', icon: <Scissors size={18} />, path: '/services' },
+        { title: t('services.kidsClub'), category: 'kids', icon: <Baby size={18} />, path: '/services' },
+        { title: t('services.bookSpace'), category: 'book-space', icon: <Book size={18} />, path: '/services' },
       ]
     },
     {
       label: t('services.myRequests'),
       items: [
-        { title: t('services.myRequests'), category: 'requests', icon: <List size={18} />, path: '/services' },
+        { title: t('services.myRequests'), category: 'requests', icon: <Book size={18} />, path: '/services' },
       ]
     }
   ];
@@ -54,8 +50,9 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
       // For requests tab, navigate to services page with requests tab active
       navigate('/services', { state: { activeTab: 'requests' } });
     } else if (category === 'cleaning' || category === 'maintenance' || 
-              category === 'laundry' || category === 'transport' ||
-              category === 'hair' || category === 'kids') {
+              category === 'laundry' || category === 'transport') {
+      // For household services, navigate to services with household tab active
+      navigate('/services', { state: { activeTab: 'household' } });
         
       // Try to find the service with this category
       supabase
@@ -67,11 +64,29 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
         .then(({ data, error }) => {
           if (!error && data?.id) {
             navigate(`/services/${data.id}`);
-          } else {
-            // Fallback to the path
-            navigate(path);
           }
         });
+    } else if (category === 'hair' || category === 'kids' || category === 'book-space') {
+      // For lifestyle services, navigate to services with lifestyle tab active
+      navigate('/services', { state: { activeTab: 'lifestyle' } });
+        
+      // For book-space, navigate directly to spaces page
+      if (category === 'book-space') {
+        navigate('/services/spaces');
+      } else {
+        // Try to find the service with this category
+        supabase
+          .from('services')
+          .select('id')
+          .eq('category', category)
+          .limit(1)
+          .single()
+          .then(({ data, error }) => {
+            if (!error && data?.id) {
+              navigate(`/services/${data.id}`);
+            }
+          });
+      }
     } else {
       // For other services, use the provided path
       navigate(path);
@@ -94,7 +109,17 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ expanded, onToggle })
           </h3>
           <div className="space-y-1">
             {group.items.map((item, index) => {
-              const isActive = location.pathname.includes(item.path);
+              // For services menu, we'll check if the path includes the category
+              let isActive = false;
+              if (item.category === 'requests') {
+                isActive = location.pathname.includes('/services') && location.state?.activeTab === 'requests';
+              } else if (['cleaning', 'maintenance', 'laundry', 'transport'].includes(item.category)) {
+                isActive = location.pathname.includes('/services') && 
+                          (!location.state?.activeTab || location.state?.activeTab === 'household');
+              } else if (['hair', 'kids', 'book-space'].includes(item.category)) {
+                isActive = location.pathname.includes('/services') && location.state?.activeTab === 'lifestyle';
+              }
+              
               return (
                 <div
                   key={index}
