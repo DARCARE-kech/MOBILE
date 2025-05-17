@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,7 @@ import ServiceRequestLoader from '@/components/services/ServiceRequestLoader';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import DynamicFields from '@/components/services/form/DynamicFields';
+import { FormData } from '@/components/services/form/formHelpers';
 
 interface ServiceRequestFormProps {
   serviceType: string;
@@ -62,7 +64,8 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
     onSubmitEnd: () => setIsSubmitting(false)
   });
   
-  const form = useForm({
+  // Update the form to use the FormData type
+  const form = useForm<FormData>({
     defaultValues: {
       preferredDate: '',
       preferredTime: '',
@@ -77,7 +80,7 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
   // Get the optional fields from the service details
   const optionalFields = enhanceOptionalFields();
   
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: FormData) => {
     try {
       setIsSubmitting(true);
       

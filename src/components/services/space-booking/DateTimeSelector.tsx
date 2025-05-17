@@ -1,118 +1,81 @@
 
-import React from 'react';
-import { Calendar } from '@/components/ui/calendar';
+import React, { useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { Calendar } from '@/components/ui/calendar';
 import { TimeSelector } from '@/components/space-booking/TimeSelector';
-import { cn } from '@/lib/utils';
-import { useTheme } from '@/contexts/ThemeContext';
-import { format } from 'date-fns';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { CalendarIcon, Clock } from 'lucide-react';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { FormData } from '@/components/services/form/formHelpers';
 
 interface DateTimeSelectorProps {
-  form: any;
+  form: UseFormReturn<FormData>;
   selectedTime: Date | null;
   setSelectedTime: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
-export const DateTimeSelector = ({
+export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   form,
   selectedTime,
-  setSelectedTime,
-}: DateTimeSelectorProps) => {
+  setSelectedTime
+}) => {
   const { t } = useTranslation();
-  const [isTimeOpen, setIsTimeOpen] = React.useState(false);
-  const { isDarkMode } = useTheme();
+  const [date, setDate] = useState<Date | null>(null);
+  const [timeValue, setTimeValue] = useState<string>('');
   
-  // Convert string time to Date for TimeSelector if needed
-  const handleTimeSelect = (time: string) => {
-    if (time) {
-      // Parse time and create a new Date object
-      const [hours, minutes] = time.split(':').map(Number);
-      const newDate = new Date();
-      newDate.setHours(hours, minutes, 0, 0);
-      setSelectedTime(newDate);
-    } else {
-      setSelectedTime(null);
+  // Handle date selection
+  const handleDateSelect = (date: Date | undefined) => {
+    if (!date) return;
+    setDate(date);
+    form.setValue('preferredDate', date.toISOString().split('T')[0]);
+    
+    // If time is also selected, update the full datetime
+    if (timeValue) {
+      const newDateTime = new Date(date);
+      const [hours, minutes] = timeValue.split(':');
+      newDateTime.setHours(parseInt(hours), parseInt(minutes));
+      setSelectedTime(newDateTime);
+      form.setValue('preferredTime', timeValue);
     }
   };
   
-  // Format Date to string for TimeSelector display
-  const formattedTime = selectedTime 
-    ? `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`
-    : null;
+  // Handle time selection
+  const handleTimeSelect = (time: string) => {
+    setTimeValue(time);
+    form.setValue('preferredTime', time);
+    
+    // If date is also selected, update the full datetime
+    if (date) {
+      const newDateTime = new Date(date);
+      const [hours, minutes] = time.split(':');
+      newDateTime.setHours(parseInt(hours), parseInt(minutes));
+      setSelectedTime(newDateTime);
+    }
+  };
   
   return (
     <div className="space-y-4">
-      <FormField
-        control={form.control}
-        name="date"
-        render={({ field }) => (
-          <FormItem>
-            <div className="flex items-center justify-between mb-1">
-              <FormLabel className={isDarkMode ? "text-darcare-beige" : "text-darcare-charcoal"}>
-                {t('services.selectDate', 'Select Date')}
-              </FormLabel>
-            </div>
-            <div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal border",
-                        isDarkMode 
-                          ? "bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige" 
-                          : "bg-white border-darcare-deepGold/20 text-darcare-charcoal"
-                      )}
-                    >
-                      <CalendarIcon className={cn(
-                        "mr-2 h-4 w-4",
-                        isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-                      )} />
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span className="opacity-50">{t('services.pickDate', 'Pick a date')}</span>
-                      )}
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                    disabled={date => date < new Date()}
-                    className={cn("p-3 pointer-events-auto")}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <div className="space-y-1">
-        <FormLabel className={isDarkMode ? "text-darcare-beige" : "text-darcare-charcoal"}>
-          {t('services.selectTime', 'Select Time')}
-        </FormLabel>
-        <TimeSelector
-          selectedTime={formattedTime}
-          onTimeSelect={handleTimeSelect}
-          isOpen={isTimeOpen}
-          onOpenChange={setIsTimeOpen}
+      {/* Date Selector */}
+      <div>
+        <h4 className="text-sm mb-2 text-gray-400">{t('services.selectDate', 'Select Date')}</h4>
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={handleDateSelect}
+          disabled={(date) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return date < today;
+          }}
+          className="rounded-md border border-darcare-gold/20 bg-darcare-navy/70"
         />
-        {!selectedTime && form.formState.isSubmitted && (
-          <p className="text-sm text-red-500 mt-1">
-            {t('services.timeRequired', 'Please select a time')}
-          </p>
-        )}
+      </div>
+      
+      {/* Time Selector */}
+      <div>
+        <h4 className="text-sm mb-2 text-gray-400">{t('services.selectTime', 'Select Time')}</h4>
+        <TimeSelector
+          value={timeValue}
+          onChange={handleTimeSelect}
+        />
       </div>
     </div>
   );
