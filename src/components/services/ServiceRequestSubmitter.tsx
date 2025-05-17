@@ -26,12 +26,12 @@ export const useServiceSubmitter = ({
   const { user } = useAuth();
   const { category, option, tripType } = serviceState;
   
-  const handleSubmitRequest = async (formData: ServiceFormData) => {
+  const handleSubmitRequest = async (formData: ServiceFormData): Promise<boolean> => {
     if (!user) {
       toast.error(t('common.error'), {
         description: t('common.loginRequired')
       });
-      return;
+      return false;
     }
     
     onSubmitStart();
@@ -72,14 +72,15 @@ export const useServiceSubmitter = ({
         description: t('services.requestSubmittedDesc')
       });
       
-      // Navigate back to services
-      navigate('/services');
+      // Return true for successful submission
+      return true;
       
     } catch (error) {
       console.error('Error submitting request:', error);
       toast.error(t('common.error'), {
         description: t('services.requestErrorDesc')
       });
+      return false;
     } finally {
       onSubmitEnd();
     }

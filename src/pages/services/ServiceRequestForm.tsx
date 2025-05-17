@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -95,10 +94,10 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
       };
       
       // Handle the submission and store result
-      const success = await handleSubmitRequest(requestData);
+      const result = await handleSubmitRequest(requestData);
       
-      // Only navigate if success is true (successful submission)
-      if (success === true) {
+      // Only navigate if result is explicitly true (successful submission)
+      if (result === true) {
         navigate('/services');
       }
     } catch (error) {
