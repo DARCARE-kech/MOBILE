@@ -95,9 +95,10 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
       };
       
       // Handle the submission and store result
-      const result = await handleSubmitRequest(requestData);
+      const success = await handleSubmitRequest(requestData);
+      
       // Only navigate if result is truthy (successful submission)
-      if (result) {
+      if (success === true) {
         navigate('/services');
       }
     } catch (error) {

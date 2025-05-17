@@ -37,8 +37,9 @@ export const useSpaceBooking = (requestId?: string) => {
           setSelectedTime(date);
         }
         
-        if (data.metadata?.peopleCount) {
-          setPeopleCount(data.metadata.peopleCount);
+        // Check if selected_options contains peopleCount
+        if (data.selected_options && typeof data.selected_options === 'object' && data.selected_options.peopleCount) {
+          setPeopleCount(data.selected_options.peopleCount);
         }
         
         // Set form values
@@ -53,7 +54,7 @@ export const useSpaceBooking = (requestId?: string) => {
   const form = useForm({
     defaultValues: {
       note: '',
-      date: existingRequest?.preferred_date ? new Date(existingRequest.preferred_date) : undefined
+      date: existingRequest?.preferred_time ? new Date(existingRequest.preferred_time) : undefined
     }
   });
 
@@ -90,10 +91,9 @@ export const useSpaceBooking = (requestId?: string) => {
         space_id: spaceId,
         request_type: 'space',
         status: 'pending',
-        preferred_date: values.date ? new Date(values.date).toISOString() : new Date().toISOString(),
         preferred_time: preferredTime,
         note: values.note,
-        metadata: {
+        selected_options: {
           peopleCount,
           spaceName: values.spaceName
         }
