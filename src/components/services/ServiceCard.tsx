@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Club, Car, Scissors, Spa } from 'lucide-react';
+import { Club, Car, Scissors, Bath } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -34,7 +35,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
       return <Club className="h-5 w-5" />;
     }
     
-    return <Spa className="h-5 w-5" />;
+    return <Bath className="h-5 w-5" />; // Changed from Spa to Bath
   };
   
   // Format image URL for Supabase storage

@@ -27,5 +27,8 @@
   "common": {
     "loading": "Loading",
     "errorLoading": "Error loading data"
+  },
+  "drawer": {
+    "services": "Services"
   }
 }

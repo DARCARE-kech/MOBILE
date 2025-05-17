@@ -7,11 +7,17 @@ import { cn } from '@/lib/utils';
 
 interface ServicesSubMenuProps {
   onClose?: () => void;
+  expanded?: boolean; // Added the expanded prop
 }
 
-const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ onClose }) => {
+const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ onClose, expanded = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // If not expanded, don't render the menu
+  if (!expanded) {
+    return null;
+  }
 
   const handleClick = (activeTab: string) => {
     navigate('/services', { state: { activeTab } });
