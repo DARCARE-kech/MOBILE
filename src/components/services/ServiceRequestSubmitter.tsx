@@ -48,13 +48,15 @@ export const useServiceSubmitter = ({
       // Make sure service_id is properly defined
       console.log('Submitting service request with service:', service);
       console.log('Service ID used for submission:', service?.id);
+      console.log('Form data being submitted:', formData);
+      console.log('Selected options for submission:', selectedOptions);
 
       if (!service?.id) {
         console.warn('Warning: service_id is undefined - this will cause naming issues in My Requests');
       }
 
       // Insert request into database
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('service_requests')
         .insert({
           service_id: service?.id, // Ensure service_id is included
@@ -65,7 +67,12 @@ export const useServiceSubmitter = ({
           selected_options: selectedOptions
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error submitting service request:', error);
+        throw error;
+      }
+      
+      console.log('Service request submitted successfully:', data);
       
       // Show success message
       toast.success(t('services.requestSubmitted'), {

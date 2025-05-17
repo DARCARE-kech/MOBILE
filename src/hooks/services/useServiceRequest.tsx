@@ -19,6 +19,9 @@ export function useServiceRequest(): UseServiceRequestResult {
   const serviceState = location.state as ServiceLocationState || {};
   const { serviceType, serviceId, category, option, tripType } = serviceState;
   
+  console.log('useServiceRequest - state:', serviceState);
+  console.log('useServiceRequest - serviceType:', serviceType, 'serviceId:', serviceId);
+  
   // Validate we have a serviceType or serviceId
   useEffect(() => {
     if (!serviceType && !serviceId) {
@@ -244,6 +247,8 @@ export function useServiceRequest(): UseServiceRequestResult {
         return null;
       }
       
+      console.log('Service details fetched from database:', data);
+      
       if (!data) {
         console.log('No service details found, using fallback');
         
@@ -312,8 +317,6 @@ export function useServiceRequest(): UseServiceRequestResult {
           } as ServiceDetail;
         }
       }
-      
-      console.log('Service details fetched:', data);
       
       // Ensure the optional_fields is correctly typed
       if (data && data.optional_fields) {

@@ -1,82 +1,66 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import ServiceRequestForm from '@/pages/services/ServiceRequestForm';
-import ServiceHeader from '@/components/services/ServiceHeader';
-import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
+import { useForm } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
 import { LuxuryCard } from '@/components/ui/luxury-card';
-import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
+import { CalendarClock, Baby, Loader2 } from 'lucide-react';
+import FormSectionTitle from '@/components/services/FormSectionTitle';
+import { DateTimeSelector } from '@/components/services/space-booking/DateTimeSelector';
+import ServiceRequestForm from './ServiceRequestForm';
+import { ServiceDetail } from '@/hooks/services/types';
 
 interface KidsClubServiceProps {
-  serviceData: ServiceDetailType;
+  serviceData: ServiceDetail;
   existingRequest?: any;
   editMode?: boolean;
 }
 
-const KidsClubService: React.FC<KidsClubServiceProps> = ({
-  serviceData,
+const KidsClubService: React.FC<KidsClubServiceProps> = ({ 
+  serviceData, 
   existingRequest,
   editMode = false
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Fetch the service to get more details like name and image
-  const { data: service, isLoading } = useQuery({
-    queryKey: ['service-data', serviceData?.service_id],
-    queryFn: async () => {
-      if (!serviceData?.service_id) return null;
-      
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('id', serviceData.service_id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!serviceData?.service_id
-  });
+  console.log('KidsClub service data:', serviceData);
+  console.log('Service ID:', serviceData.service_id);
   
-  if (isLoading) {
+  if (!serviceData || !serviceData.service_id) {
+    console.error('No service data or service_id provided to KidsClubService');
     return (
-      <div className="flex justify-center items-center pt-8">
-        <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
+      <div className="p-4">
+        <div className="text-center py-8">
+          <p className="text-darcare-gold">Service information not available.</p>
+          <Button 
+            onClick={() => navigate('/services')}
+            className="mt-4"
+          >
+            Back to Services
+          </Button>
+        </div>
       </div>
     );
   }
   
   return (
-    <div className="pb-20">
-      <ServiceHeader
-        serviceName={service?.name || "Kids Club"}
-        serviceDetail={service}
-      />
-      
-      <div className="px-4 py-6">
-        <LuxuryCard className="mb-6">
-          <div className="p-5">
-            <h2 className="text-darcare-gold font-serif text-xl mb-3">
-              {t('services.kidsClub', 'Kids Club Service')}
-            </h2>
-            <p className="text-darcare-beige">
-              {service?.description || t('services.kidsClubDescription', 'Our kids club offers supervised activities and play for children of all ages. Book a session for your little ones to have fun in a safe environment.')}
-            </p>
-          </div>
-        </LuxuryCard>
-      
-        <ServiceRequestForm
-          serviceType="kids"
-          serviceId={serviceData?.service_id}
-          existingRequest={existingRequest}
-          editMode={editMode}
-        />
-      </div>
-    </div>
+    <ServiceRequestForm 
+      serviceType="kids"
+      serviceId={serviceData.service_id}
+      existingRequest={existingRequest}
+      editMode={editMode}
+    />
   );
 };
 

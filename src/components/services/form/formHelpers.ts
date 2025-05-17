@@ -1,81 +1,83 @@
 
-import type { ServiceDetail, ServiceFormData } from '@/hooks/services/types';
+import { UseFormReturn } from 'react-hook-form';
 
-// Helper function to generate default values based on optional fields
-export function generateDefaultValues(optionalFields: Record<string, any>): Record<string, any> {
-  const defaults: Record<string, any> = {};
-  
-  if (!optionalFields) return defaults;
-  
-  // Handle select fields (dropdowns)
-  if (optionalFields.selectFields) {
-    optionalFields.selectFields.forEach((field: any) => {
-      defaults[field.name] = field.defaultValue || '';
-    });
-  }
-  
-  // Handle number fields
-  if (optionalFields.numberFields) {
-    optionalFields.numberFields.forEach((field: any) => {
-      defaults[field.name] = field.defaultValue || '';
-    });
-  }
-  
-  // Handle multiselect fields (checkbox groups)
-  if (optionalFields.multiSelectFields) {
-    optionalFields.multiSelectFields.forEach((field: any) => {
-      const fieldDefaults: Record<string, boolean> = {};
-      field.options.forEach((opt: string) => {
-        fieldDefaults[opt.replace(/\s+/g, '_').toLowerCase()] = false;
-      });
-      defaults[field.name] = fieldDefaults;
-    });
-  }
-  
-  // Handle options (single selection fields)
-  if (optionalFields.options) {
-    defaults.selectedOption = '';
-  }
-  
-  // Handle categories (single selection fields)
-  if (optionalFields.categories) {
-    defaults.selectedCategory = '';
-  }
-  
-  // Handle checkboxes (multiple selection)
-  if (optionalFields.checkOptions) {
-    const checkDefaults: Record<string, boolean> = {};
-    optionalFields.checkOptions.forEach((opt: string) => {
-      checkDefaults[`check_${opt.replace(/\s+/g, '_').toLowerCase()}`] = false;
-    });
-    defaults.checkOptions = checkDefaults;
-  }
-  
-  // Handle custom fields
-  if (optionalFields.customFields) {
-    optionalFields.customFields.forEach((field: any) => {
-      if (field.type === 'checkbox') {
-        defaults[field.name] = false;
-      } else if (field.type === 'radio') {
-        defaults[field.name] = '';
-      } else {
-        defaults[field.name] = '';
-      }
-    });
-  }
-  
-  return defaults;
+// Define interface for form data
+export interface FormData {
+  preferredDate?: string;
+  preferredTime?: string;
+  note?: string;
+  selectedOption?: string;
+  selectedCategory?: string;
+  [key: string]: any;
 }
 
-// Use the shared FormData type
-export type { ServiceFormData as FormData };
-
+// Define props for service forms
 export interface ServiceFormProps {
-  serviceId: string;
+  serviceId?: string;
   serviceType: string;
   serviceName?: string;
-  serviceImageUrl?: string | null;
-  serviceDetails?: ServiceDetail;
-  optionalFields: Record<string, any>;
-  onSubmitSuccess?: (formData: ServiceFormData) => void;
+  serviceImageUrl?: string;
+  serviceDetails?: any;
+  optionalFields?: Record<string, any>;
+  existingRequest?: any;
+  editMode?: boolean;
+  onSubmitSuccess?: (data: FormData) => void;
 }
+
+// Generate default values for form based on optional fields
+export const generateDefaultValues = (optionalFields?: Record<string, any>): Record<string, any> => {
+  if (!optionalFields) return {};
+  
+  const defaultValues: Record<string, any> = {};
+  
+  // Process select fields
+  if (optionalFields.selectFields) {
+    optionalFields.selectFields.forEach((field: any) => {
+      defaultValues[field.name] = field.defaultValue || '';
+    });
+  }
+  
+  // Process number fields
+  if (optionalFields.numberFields) {
+    optionalFields.numberFields.forEach((field: any) => {
+      defaultValues[field.name] = field.defaultValue || field.min || 1;
+    });
+  }
+  
+  // Process multi-select fields
+  if (optionalFields.multiSelectFields) {
+    optionalFields.multiSelectFields.forEach((field: any) => {
+      field.options.forEach((option: string) => {
+        const fieldName = `${field.name}.${option.replace(/\s+/g, '_').toLowerCase()}`;
+        defaultValues[fieldName] = false;
+      });
+    });
+  }
+  
+  // Process options
+  if (optionalFields.options) {
+    defaultValues.selectedOption = '';
+  }
+  
+  // Process categories
+  if (optionalFields.categories) {
+    defaultValues.selectedCategory = '';
+  }
+  
+  // Process check options
+  if (optionalFields.checkOptions) {
+    optionalFields.checkOptions.forEach((option: string) => {
+      const fieldName = `checkOptions.check_${option.replace(/\s+/g, '_').toLowerCase()}`;
+      defaultValues[fieldName] = false;
+    });
+  }
+  
+  // Process custom fields
+  if (optionalFields.customFields) {
+    optionalFields.customFields.forEach((field: any) => {
+      defaultValues[field.name] = field.defaultValue || '';
+    });
+  }
+  
+  return defaultValues;
+};

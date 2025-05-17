@@ -83,16 +83,21 @@ const LifestyleTab: React.FC = () => {
 
   const handleServiceClick = (id: string, name: string, category: string | null) => {
     console.log('Clicked service:', id, name, category);
+    console.log('Service ID being passed:', id);
     
     if (category === 'club-access' || name.toLowerCase().includes('club access')) {
       console.log('Navigating to spaces page');
       navigate('/services/spaces', { state: { serviceId: id } });
     } else if (category === 'hair' || name.toLowerCase().includes('hair') || name.toLowerCase().includes('salon')) {
       console.log('Navigating to hair salon service');
-      navigate(`/services/${id}`);
+      navigate(`/services/${id}`, {
+        state: { serviceType: 'hair', serviceId: id }
+      });
     } else if (category === 'kids' || name.toLowerCase().includes('kids')) {
       console.log('Navigating to kids club service');
-      navigate(`/services/${id}`);
+      navigate(`/services/${id}`, {
+        state: { serviceType: 'kids', serviceId: id }
+      });
     } else {
       console.log('Navigating to generic service');
       navigate(`/services/${id}`);
@@ -120,7 +125,7 @@ const LifestyleTab: React.FC = () => {
   return (
     <div className="py-4">
       <div className="grid grid-cols-2 gap-3">
-        {services.map((service) => (
+        {services?.map((service) => (
           <div
             key={service.id}
             className={cn(
