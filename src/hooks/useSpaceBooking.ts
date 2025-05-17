@@ -1,170 +1,155 @@
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 
 export const useSpaceBooking = (requestId?: string) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<string>('morning');
-  const [peopleCount, setPeopleCount] = useState<number>(1);
-  const { user } = useAuth();
   const { t } = useTranslation();
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [peopleCount, setPeopleCount] = useState(1);
+  const navigate = useNavigate();
+
+  // If requestId is provided, fetch the request data
+  const { data: existingRequest } = useQuery({
+    queryKey: ['space-booking', requestId],
+    queryFn: async () => {
+      if (!requestId) return null;
+      
+      const { data, error } = await supabase
+        .from('service_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching request:', error);
+        return null;
+      }
+      
+      // Set initial values from the existing request
+      if (data) {
+        if (data.preferred_time) {
+          const date = new Date(data.preferred_time);
+          setSelectedTime(date);
+        }
+        
+        if (data.metadata?.peopleCount) {
+          setPeopleCount(data.metadata.peopleCount);
+        }
+        
+        // Set form values
+        form.setValue('note', data.note || '');
+      }
+      
+      return data;
+    },
+    enabled: !!requestId
+  });
+
   const form = useForm({
     defaultValues: {
-      date: new Date(),
-      specialRequests: '',
-    },
-  });
-  
-  // Load existing data if in edit mode and requestId is provided
-  useEffect(() => {
-    const loadExistingBooking = async () => {
-      if (!requestId) return;
-      
-      try {
-        // Fetch the existing booking data
-        const { data, error } = await supabase
-          .from('service_requests')
-          .select('*')
-          .eq('id', requestId)
-          .single();
-        
-        if (error) throw error;
-        if (!data) return;
-        
-        // Set form values based on the existing data
-        if (data.preferred_time) {
-          const preferredTime = new Date(data.preferred_time);
-          form.setValue('date', preferredTime);
-          
-          // Determine time of day
-          const hours = preferredTime.getHours();
-          if (hours < 12) {
-            setSelectedTime('morning');
-          } else if (hours < 17) {
-            setSelectedTime('afternoon');
-          } else {
-            setSelectedTime('evening');
-          }
-        }
-        
-        // Set special requests if available
-        if (data.note) {
-          form.setValue('specialRequests', data.note);
-        }
-        
-        // Set people count if available
-        if (data.selected_options && typeof data.selected_options === 'object' && data.selected_options !== null) {
-          const options = data.selected_options as Record<string, any>;
-          if (options.peopleCount) {
-            setPeopleCount(Number(options.peopleCount) || 1);
-          }
-        }
-        
-      } catch (error) {
-        console.error('Error loading booking data:', error);
-      }
-    };
-    
-    loadExistingBooking();
-  }, [requestId, form]);
-  
-  const handleSubmit = async (values: any, spaceId: string, isEditing = false, editRequestId?: string) => {
-    if (!user) {
-      toast.error(t('common.error'), {
-        description: t('services.loginRequired'),
-      });
-      return false;
+      note: '',
+      date: existingRequest?.preferred_date ? new Date(existingRequest.preferred_date) : undefined
     }
-    
-    setIsSubmitting(true);
-    
+  });
+
+  const handleSubmit = async (values: any, spaceId: string, isEditing = false, editRequestId?: string) => {
     try {
-      // Set time based on selected period (morning, afternoon, evening)
-      const date = new Date(values.date);
+      setIsSubmitting(true);
       
-      // Set hours based on time period selected
-      switch (selectedTime) {
-        case 'morning':
-          date.setHours(10, 0, 0, 0);
-          break;
-        case 'afternoon':
-          date.setHours(14, 0, 0, 0);
-          break;
-        case 'evening':
-          date.setHours(19, 0, 0, 0);
-          break;
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      
+      if (!userId) {
+        toast({
+          title: t('services.errorSubmitting', 'Error Submitting'),
+          description: t('services.needToLogin', 'You need to be logged in'),
+          variant: 'destructive'
+        });
+        return false;
+      }
+      
+      // Format the selected date and time into an ISO string
+      let preferredTime = null;
+      if (selectedTime) {
+        // Use the selected date (or today if not set) and combine with the selectedTime's hours/minutes
+        const preferredDate = values.date || new Date();
+        const timeDate = new Date(preferredDate);
+        timeDate.setHours(selectedTime.getHours());
+        timeDate.setMinutes(selectedTime.getMinutes());
+        preferredTime = timeDate.toISOString();
       }
       
       // Prepare the request data
       const requestData = {
-        user_id: user.id,
-        profile_id: user.id, // Définir profile_id égal à user_id
+        user_id: userId,
+        service_id: values.serviceId || null, // From Club Access service
         space_id: spaceId,
-        // Pour les réservations d'espace, service_id est explicitement null
-        service_id: null,
-        preferred_time: date.toISOString(),
-        note: values.specialRequests || null, // S'assurer que note est incluse
-        selected_options: {
+        request_type: 'space',
+        status: 'pending',
+        preferred_date: values.date ? new Date(values.date).toISOString() : new Date().toISOString(),
+        preferred_time: preferredTime,
+        note: values.note,
+        metadata: {
           peopleCount,
-          timeOfDay: selectedTime
-        },
-        status: isEditing ? undefined : 'pending' // Ne pas mettre à jour le statut si on modifie
+          spaceName: values.spaceName
+        }
       };
-
-      console.log('Submitting space booking with data:', requestData);
       
-      let error;
+      let result;
       
+      // If we're editing, update the existing request
       if (isEditing && editRequestId) {
-        // Update existing request
-        const { error: updateError } = await supabase
+        const { data, error } = await supabase
           .from('service_requests')
           .update(requestData)
-          .eq('id', editRequestId);
-        
-        error = updateError;
-        
-        if (!updateError) {
-          toast.success(t('services.bookingUpdated', 'Booking Updated'), {
-            description: t('services.bookingUpdatedDesc', 'Your space booking has been updated successfully')
-          });
-        }
+          .eq('id', editRequestId)
+          .select();
+          
+        if (error) throw error;
+        result = data;
       } else {
-        // Create new request
-        const { error: insertError } = await supabase
+        // Otherwise insert a new request
+        const { data, error } = await supabase
           .from('service_requests')
-          .insert(requestData);
-        
-        error = insertError;
-        
-        if (!insertError) {
-          toast.success(t('services.bookingConfirmed', 'Booking Confirmed'), {
-            description: t('services.bookingConfirmedDesc', 'Your space has been booked successfully')
-          });
-        }
+          .insert(requestData)
+          .select();
+          
+        if (error) throw error;
+        result = data;
       }
       
-      if (error) {
-        throw error;
-      }
+      // Show a success toast
+      toast({
+        title: isEditing 
+          ? t('services.bookingUpdated', 'Booking Updated') 
+          : t('services.bookingConfirmed', 'Booking Confirmed'),
+        description: isEditing
+          ? t('services.spaceBookingUpdated', 'Your space booking has been updated')
+          : t('services.spaceBookingConfirmed', 'Your space has been successfully booked'),
+      });
       
       return true;
-    } catch (error) {
-      console.error('Error submitting booking:', error);
-      toast.error(t('common.error'), {
-        description: t('services.bookingError', 'There was an error with your booking. Please try again.')
+      
+    } catch (error: any) {
+      console.error('Error submitting space booking:', error);
+      
+      toast({
+        title: t('services.errorSubmitting', 'Error Submitting'),
+        description: error.message || t('services.pleaseTryAgain', 'Please try again later'),
+        variant: 'destructive'
       });
+      
       return false;
+      
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return {
     form,
     isSubmitting,

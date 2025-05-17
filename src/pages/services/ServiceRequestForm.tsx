@@ -94,9 +94,9 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
         preferredTime,
       };
       
-      // Handle the submission
+      // Handle the submission and store result
       const result = await handleSubmitRequest(requestData);
-      // Check the result instead of the function call
+      // Only navigate if result is truthy (successful submission)
       if (result) {
         navigate('/services');
       }
