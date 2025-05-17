@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -40,9 +41,13 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  console.log('Hair Salon Service Data:', serviceData);
+  console.log('Optional Fields:', serviceData?.optional_fields);
+  console.log('Existing Request:', existingRequest);
+
   const optionalFields = serviceData?.optional_fields || {};
   const clientGenders = optionalFields.client_gender || ['Man', 'Woman'];
-  const serviceTypes = optionalFields.services || ['Haircut', 'Blow dry', 'Coloring'];
+  const serviceTypes = optionalFields.services || ['Haircut', 'Beard trim', 'Coloring', 'Blow dry', 'Shaving', 'Hair wash'];
   const stylistPreferences = optionalFields.stylist_gender_preference || ['Any', 'Male', 'Female'];
 
   const form = useForm<FormValues>({
@@ -60,7 +65,7 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
 
   const isFormValid = () => {
     const values = form.getValues();
-    return !!values.service_type;
+    return !!values.service_type && !!values.client_gender && !!values.stylist_gender_preference;
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -94,6 +99,8 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
           stylist_gender_preference: data.stylist_gender_preference,
         },
       };
+
+      console.log('Submitting Hair Salon request:', requestData);
 
       let error;
 

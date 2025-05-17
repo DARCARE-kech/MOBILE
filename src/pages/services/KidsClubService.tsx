@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -13,7 +14,7 @@ import OptionField from '@/components/services/form/OptionField';
 import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
 import NoteInput from '@/components/services/form/NoteInput';
 import { ServiceDetail } from '@/hooks/services/types';
-import { Baby } from 'lucide-react';
+import { Baby, AlertCircle } from 'lucide-react';
 
 interface KidsClubServiceProps {
   serviceData?: ServiceDetail;
@@ -27,7 +28,8 @@ interface FormValues {
   note: string;
   number_of_children: number;
   age_range: string;
-  time_slot: string;
+  time_slot_start: string;
+  time_slot_end: string;
   activities: {
     drawing: boolean;
     games: boolean;
@@ -45,11 +47,11 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [timeError, setTimeError] = useState<string | null>(null);
 
   const optionalFields = serviceData?.optional_fields || {};
   const ageOptions = optionalFields.age_range || ["0-3", "4-7", "8-12"];
-  const slotOptions = optionalFields.time_slot || ["Morning", "Afternoon", "Evening"];
-  const activityOptions = optionalFields.activities || ["drawing", "games", "storytelling", "outdoor_play"];
+  const activityOptions = optionalFields.activities || ["Drawing", "Games", "Storytelling", "Outdoor play"];
 
   const getDefaultActivities = () => {
     const defaultState = {
@@ -74,15 +76,37 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
       note: editMode && existingRequest?.note ? existingRequest.note : '',
       number_of_children: editMode && existingRequest?.selected_options?.number_of_children || 1,
       age_range: editMode && existingRequest?.selected_options?.age_range || ageOptions[0],
-      time_slot: editMode && existingRequest?.selected_options?.time_slot || slotOptions[0],
+      time_slot_start: editMode && existingRequest?.selected_options?.time_slot_start || '09:00',
+      time_slot_end: editMode && existingRequest?.selected_options?.time_slot_end || '12:00',
       activities: getDefaultActivities()
     },
     mode: 'onChange'
   });
 
+  const validateTimeRange = (start: string, end: string): boolean => {
+    if (!start || !end) return false;
+
+    const [startHour, startMinute] = start.split(':').map(Number);
+    const [endHour, endMinute] = end.split(':').map(Number);
+
+    if (startHour > endHour) {
+      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
+      return false;
+    }
+
+    if (startHour === endHour && startMinute >= endMinute) {
+      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
+      return false;
+    }
+
+    setTimeError(null);
+    return true;
+  };
+
   const isFormValid = () => {
     const values = form.getValues();
-    return values.number_of_children > 0;
+    return values.number_of_children > 0 && 
+      validateTimeRange(values.time_slot_start, values.time_slot_end);
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -90,6 +114,11 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
       toast.error(t('common.error'), {
         description: t('services.loginRequired'),
       });
+      return;
+    }
+
+    // Validate time range before submission
+    if (!validateTimeRange(data.time_slot_start, data.time_slot_end)) {
       return;
     }
 
@@ -113,12 +142,15 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
         selected_options: {
           number_of_children: data.number_of_children,
           age_range: data.age_range,
-          time_slot: data.time_slot,
+          time_slot_start: data.time_slot_start,
+          time_slot_end: data.time_slot_end,
           activities: Object.entries(data.activities)
             .filter(([_, selected]) => selected)
             .map(([activity]) => activity)
         }
       };
+
+      console.log('Submitting Kids Club request:', requestData);
 
       let error;
 
@@ -187,13 +219,42 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
               label={t('services.ageRange')}
               options={ageOptions}
             />
-            <OptionField
-              form={form}
-              fieldType="select"
-              name="time_slot"
-              label={t('services.timeSlot')}
-              options={slotOptions}
-            />
+            
+            {/* Time Range Section */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-darcare-beige">{t('services.timeSlot')}</h3>
+                {timeError && (
+                  <div className="flex items-center text-red-500 text-xs">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    {timeError}
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <OptionField
+                  form={form}
+                  fieldType="time"
+                  name="time_slot_start"
+                  label={t('services.startTime')}
+                  onChange={value => {
+                    const end = form.getValues('time_slot_end');
+                    validateTimeRange(value as string, end);
+                  }}
+                />
+                <OptionField
+                  form={form}
+                  fieldType="time"
+                  name="time_slot_end"
+                  label={t('services.endTime')}
+                  onChange={value => {
+                    const start = form.getValues('time_slot_start');
+                    validateTimeRange(start, value as string);
+                  }}
+                />
+              </div>
+            </div>
+            
             <OptionField
               form={form}
               fieldType="checkbox"

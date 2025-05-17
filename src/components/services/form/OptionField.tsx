@@ -14,7 +14,7 @@ import { formatFieldKey } from '@/utils/formattingUtils';
 
 interface OptionFieldProps {
   form: UseFormReturn<any>;
-  fieldType: 'radio' | 'checkbox' | 'number' | 'toggle' | 'slider';
+  fieldType: 'radio' | 'checkbox' | 'number' | 'toggle' | 'slider' | 'select' | 'time';
   name: string;
   label: string;
   options?: string[];
@@ -24,6 +24,7 @@ interface OptionFieldProps {
   subtitle?: string;
   icon?: React.ReactNode;
   className?: string;
+  onChange?: (value: string | number | boolean) => void;
 }
 
 const OptionField: React.FC<OptionFieldProps> = ({
@@ -37,16 +38,25 @@ const OptionField: React.FC<OptionFieldProps> = ({
   step = 1,
   subtitle,
   icon,
-  className
+  className,
+  onChange
 }) => {
+  const handleChange = (value: string | number | boolean) => {
+    if (onChange) {
+      onChange(value);
+    }
+  };
+
   return (
     <div className={cn("mb-6", className)}>
       {/* Section title with formatted label */}
-      <FormSectionTitle
-        title={label}
-        icon={icon}
-        subtitle={subtitle}
-      />
+      {fieldType !== 'time' && (
+        <FormSectionTitle
+          title={label}
+          icon={icon}
+          subtitle={subtitle}
+        />
+      )}
 
       {fieldType === 'radio' && options.length > 0 && (
         <FormField
@@ -57,7 +67,10 @@ const OptionField: React.FC<OptionFieldProps> = ({
               <div className="space-y-3">
                 <RadioGroup
                   value={field.value}
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    handleChange(value);
+                  }}
                   className="flex flex-col space-y-2"
                 >
                   {options.map((option, index) => (
@@ -80,6 +93,34 @@ const OptionField: React.FC<OptionFieldProps> = ({
         />
       )}
 
+      {fieldType === 'select' && options.length > 0 && (
+        <FormField
+          control={form.control}
+          name={name}
+          render={({ field }) => (
+            <FormItem>
+              <div className="space-y-3">
+                <select
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleChange(e.target.value);
+                  }}
+                  className="w-full bg-darcare-navy/50 border border-darcare-gold/20 text-darcare-beige rounded-md p-2 focus:border-darcare-gold/50 focus:outline-none"
+                >
+                  {options.map((option, index) => (
+                    <option key={index} value={option}>
+                      {formatFieldKey(option)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
       {fieldType === 'checkbox' && options.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {options.map((option, index) => (
@@ -92,7 +133,10 @@ const OptionField: React.FC<OptionFieldProps> = ({
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        handleChange(checked || false);
+                      }}
                       className="border-darcare-gold/50 data-[state=checked]:bg-darcare-gold data-[state=checked]:text-darcare-navy mt-0.5"
                     />
                   </FormControl>
@@ -119,7 +163,35 @@ const OptionField: React.FC<OptionFieldProps> = ({
                   max={max}
                   className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige focus:border-darcare-gold/50 rounded-md"
                   {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    field.onChange(value);
+                    handleChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
+      {fieldType === 'time' && (
+        <FormField
+          control={form.control}
+          name={name}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-darcare-beige">{label}</FormLabel>
+              <FormControl>
+                <Input
+                  type="time"
+                  className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige focus:border-darcare-gold/50 rounded-md"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    handleChange(e.target.value);
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -141,7 +213,10 @@ const OptionField: React.FC<OptionFieldProps> = ({
               <FormControl>
                 <Switch
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    handleChange(checked);
+                  }}
                   className="data-[state=checked]:bg-darcare-gold"
                 />
               </FormControl>
@@ -166,7 +241,10 @@ const OptionField: React.FC<OptionFieldProps> = ({
                   max={max}
                   step={step}
                   value={[field.value]}
-                  onValueChange={(values) => field.onChange(values[0])}
+                  onValueChange={(values) => {
+                    field.onChange(values[0]);
+                    handleChange(values[0]);
+                  }}
                   className="py-4"
                 />
               </FormControl>
