@@ -6,7 +6,6 @@ import { supabase } from '@/integrations/supabase/client';
 import CleaningService from '@/pages/services/CleaningService';
 import MaintenanceService from '@/pages/services/MaintenanceService';
 import TransportService from '@/pages/services/TransportService';
-import BookSpaceService from '@/pages/services/BookSpaceService';
 import ShopService from '@/pages/services/ShopService';
 import LaundryService from '@/pages/services/LaundryService';
 import HairSalonService from '@/pages/services/HairSalonService';
@@ -80,7 +79,7 @@ const ServiceDetail: React.FC = () => {
   const { data: service, isLoading: isLoadingService, error: serviceError } = useQuery({
     queryKey: ['service', id],
     queryFn: async () => {
-      // Only handle shop as a special case, remove the club access special case
+      // Only handle shop as a special case
       if (id === 'shop') {
         console.log("Special service ID detected, skipping fetch");
         return null;
@@ -213,6 +212,13 @@ const ServiceDetail: React.FC = () => {
     service_id: service.id 
   } : { service_id: service.id } as ServiceDetailType;
   
+  // Special handling for Club Access - redirect to spaces list
+  if (serviceNameLower?.includes('club') && serviceNameLower?.includes('access')) {
+    // Navigate to spaces list
+    navigate('/services/spaces', { state: { serviceId: service.id } });
+    return null;
+  }
+  
   // Pass serviceDetails and existingRequest to the specific service component
   if (serviceNameLower?.includes('laundry')) {
     return (
@@ -290,21 +296,6 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <KidsClubService 
-            serviceData={enhancedServiceDetails}
-            existingRequest={existingRequest}
-            editMode={editMode}
-          />
-        </div>
-        <BottomNavigation activeTab="services" />
-      </div>
-    );
-  } else if (serviceNameLower?.includes('access')) {
-    // Club Access (previously Book Space) now uses BookSpaceService component
-    return (
-      <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
-        <div className="pt-20">
-          <BookSpaceService 
             serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}

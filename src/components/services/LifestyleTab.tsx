@@ -3,14 +3,14 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Clock, Loader2, Scissors, Baby, Book } from 'lucide-react';
+import { ChevronRight, Clock, Loader2, Scissors, Baby, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { getFallbackImage } from '@/utils/imageUtils';
 
-// Lifestyle categories
-const LIFESTYLE_CATEGORIES = ['hair', 'kids', 'book-space'];
+// Lifestyle categories - Update this to include club-access instead of book-space
+const LIFESTYLE_CATEGORIES = ['hair', 'kids', 'club-access'];
 
 // Icon mapping for service types
 const ServiceIcon = ({ category, name }: { category: string | null, name: string }) => {
@@ -28,10 +28,10 @@ const ServiceIcon = ({ category, name }: { category: string | null, name: string
     return <Scissors className={iconClass} />;
   } else if (lowerCategory === 'kids' || lowerName.includes('kids') || lowerName.includes('club')) {
     return <Baby className={iconClass} />;
-  } else if (lowerCategory === 'book-space' || lowerName.includes('book') || lowerName.includes('space')) {
-    return <Book className={iconClass} />;
+  } else if (lowerCategory === 'club-access' || lowerName.includes('club access')) {
+    return <Users className={iconClass} />;
   } else {
-    return <Book className={iconClass} />; // Default icon
+    return <Users className={iconClass} />; // Default icon
   }
 };
 
@@ -58,23 +58,23 @@ const LifestyleTab: React.FC = () => {
       
       console.log('Lifestyle services fetched:', data);
       
-      // Add a static "Book Space" service if it doesn't exist in the data
-      const bookSpaceExists = data?.some(service => 
-        service.category === 'book-space' || 
-        service.name?.toLowerCase().includes('book space')
+      // Add a static "Club Access" service if it doesn't exist in the data
+      const clubAccessExists = data?.some(service => 
+        service.category === 'club-access' || 
+        service.name?.toLowerCase().includes('club access')
       );
       
-      if (!bookSpaceExists) {
-        console.log('Adding static Book Space service');
-        const bookSpaceService = {
-          id: 'book-space',
-          name: 'Book Space',
-          description: 'Reserve spaces for your activities',
-          category: 'book-space',
+      if (!clubAccessExists) {
+        console.log('Adding static Club Access service');
+        const clubAccessService = {
+          id: 'club-access',
+          name: 'Club Access',
+          description: 'Access to club facilities like pool, gym, and more',
+          category: 'club-access',
           image_url: null,
           estimated_duration: null
         };
-        return [...(data || []), bookSpaceService];
+        return [...(data || []), clubAccessService];
       }
       
       return data || [];
@@ -84,13 +84,13 @@ const LifestyleTab: React.FC = () => {
   const handleServiceClick = (id: string, name: string, category: string | null) => {
     console.log('Clicked service:', id, name, category);
     
-    if (category === 'book-space' || name.toLowerCase().includes('book space') || id === 'book-space') {
+    if (category === 'club-access' || name.toLowerCase().includes('club access')) {
       console.log('Navigating to spaces page');
-      navigate('/services/spaces');
+      navigate('/services/spaces', { state: { serviceId: id } });
     } else if (category === 'hair' || name.toLowerCase().includes('hair') || name.toLowerCase().includes('salon')) {
       console.log('Navigating to hair salon service');
       navigate(`/services/${id}`);
-    } else if (category === 'kids' || name.toLowerCase().includes('kids') || name.toLowerCase().includes('club')) {
+    } else if (category === 'kids' || name.toLowerCase().includes('kids')) {
       console.log('Navigating to kids club service');
       navigate(`/services/${id}`);
     } else {

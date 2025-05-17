@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -44,6 +43,9 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
   // If not explicitly set through props, check location state
   const isEditMode = editMode || (location.state?.editMode === true);
   const requestId = existingRequest?.id || location.state?.requestId;
+  
+  // Get serviceId from props or location state
+  const serviceId = serviceData?.service_id || location.state?.serviceId;
 
   const {
     form,
@@ -56,8 +58,21 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
   } = useSpaceBooking(requestId);
 
   const { data: spaces, isLoading } = useQuery({
-    queryKey: ['spaces'],
+    queryKey: ['spaces', spaceId],
     queryFn: async () => {
+      // If we have a specific spaceId, fetch just that space
+      if (spaceId) {
+        const { data, error } = await supabase
+          .from('spaces')
+          .select('*')
+          .eq('id', spaceId)
+          .single();
+
+        if (error) throw error;
+        return [data];
+      }
+      
+      // Otherwise fetch all spaces
       const { data, error } = await supabase
         .from('spaces')
         .select('*');
@@ -86,7 +101,13 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
 
   const onSubmit = async (values: any) => {
     // For edit mode, we need to pass the requestId
-    const success = await handleSubmit(values, selectedSpace.id, isEditMode, requestId);
+    const requestData = {
+      ...values,
+      serviceId, // Include the service ID from Club Access
+      spaceId: selectedSpace.id
+    };
+    
+    const success = await handleSubmit(requestData, selectedSpace.id, isEditMode, requestId);
     if (success) {
       navigate('/services');
     }
@@ -178,7 +199,11 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
             </LuxuryCard>
 
             <LuxuryCard>
-              
+              <FormSectionTitle 
+                title={t('services.specialRequests', 'Special Requests')} 
+                icon={<PenLine className="w-5 h-5" />}
+                rawKeys={true}
+              />
               <div className="mt-3">
                 <SpecialRequests form={form} />
               </div>

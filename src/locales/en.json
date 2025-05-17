@@ -28,12 +28,27 @@
     "capacity": "Capacity",
     "rulesAndGuidelines": "Rules and Guidelines",
     "schedulingDetails": "Scheduling Details",
-    "updateBooking": "Update Booking"
+    "updateBooking": "Update Booking",
+    "available": "Available",
+    "availableSpaces": "Available Spaces",
+    "specialRequests": "Special Requests",
+    "specialRequestsPlaceholder": "Any special instructions or requests...",
+    "submitting": "Submitting...",
+    "updateRequest": "Update Request",
+    "submitRequest": "Submit Request",
+    "errorSubmitting": "Error Submitting",
+    "pleaseTryAgain": "Please try again later",
+    "hairSalon": "Hair Salon Service",
+    "hairSalonDescription": "Book a salon appointment for haircuts, styling, coloring and more. Our professional stylists offer a variety of services.",
+    "kidsClub": "Kids Club Service", 
+    "kidsClubDescription": "Our kids club offers supervised activities and play for children of all ages. Book a session for your little ones to have fun in a safe environment."
   },
   "common": {
     "loading": "Loading",
     "errorLoading": "Error loading data",
-    "notSpecified": "Not specified"
+    "notSpecified": "Not specified",
+    "error": "Error",
+    "fetchDataError": "Failed to fetch data"
   },
   "drawer": {
     "services": "Services"

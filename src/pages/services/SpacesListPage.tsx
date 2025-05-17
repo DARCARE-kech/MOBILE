@@ -2,7 +2,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Card } from '@/components/ui/card';
@@ -24,8 +24,12 @@ interface Space {
 
 const SpacesListPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
+  
+  // Get the service ID from location state if present
+  const serviceId = location.state?.serviceId;
   
   const { data: spaces, isLoading, error } = useQuery({
     queryKey: ['spaces'],
@@ -44,7 +48,7 @@ const SpacesListPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-background">
         <AppHeader
-          title={t('services.bookSpace', 'Book a Space')}
+          title={t('services.clubAccess', 'Club Access')}
           onBack={() => navigate('/services')}
           drawerContent={<DrawerMenu />}
         />
@@ -65,13 +69,13 @@ const SpacesListPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-background">
         <AppHeader
-          title={t('services.bookSpace', 'Book a Space')}
+          title={t('services.clubAccess', 'Club Access')}
           onBack={() => navigate('/services')}
           drawerContent={<DrawerMenu />}
         />
         
         <div className="p-4 pt-24 pb-24 text-destructive">
-          {t('common.error')}: {t('common.fetchDataError')}
+          {t('common.error', 'Error')}: {t('common.fetchDataError', 'Failed to fetch data')}
         </div>
         
         <BottomNavigation activeTab="services" />
@@ -82,7 +86,7 @@ const SpacesListPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader
-        title={t('services.bookSpace', 'Book a Space')}
+        title={t('services.clubAccess', 'Club Access')}
         onBack={() => navigate('/services')}
         drawerContent={<DrawerMenu />}
       />
@@ -105,7 +109,9 @@ const SpacesListPage: React.FC = () => {
                   ? "bg-darcare-navy border-darcare-gold/10 hover:border-darcare-gold/30" 
                   : "bg-white border-primary/10 hover:border-primary/30"
               )}
-              onClick={() => navigate(`/services/space/${space.id}`)}
+              onClick={() => navigate(`/services/space/${space.id}`, {
+                state: { serviceId: serviceId }
+              })}
             >
               <div className="w-full h-40 overflow-hidden">
                 <img
@@ -140,7 +146,7 @@ const SpacesListPage: React.FC = () => {
                   <div className="flex items-center gap-1.5 text-sm ml-auto">
                     <Clock size={14} className={isDarkMode ? "text-darcare-gold/70" : "text-secondary/70"} />
                     <span className={isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"}>
-                      {t('services.available')}
+                      {t('services.available', 'Available')}
                     </span>
                   </div>
                 </div>
