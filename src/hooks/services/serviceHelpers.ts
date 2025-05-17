@@ -123,10 +123,28 @@ export const getServiceTitle = (service: any, serviceType?: string) => {
   if (serviceType) {
     if (serviceType === 'hair') return 'Hair Salon';
     if (serviceType === 'kids') return 'Kids Club';
-    return `${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)} Service`;
+    return `${serviceType.charAt(0).toUpperCase() + serviceType.slice(1).replace(/_/g, ' ')} Service`;
   }
   
   return 'New Request';
+};
+
+// Function to get service image URL with proper error handling
+export const getServiceImageUrl = (imagePath?: string) => {
+  if (!imagePath) return '/placeholder.svg';
+  
+  // If it's already a full URL, return it
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  
+  // Handle Supabase storage paths
+  try {
+    return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${imagePath}`;
+  } catch (error) {
+    console.error('Error formatting image URL:', error);
+    return '/placeholder.svg';
+  }
 };
 
 // Define or export additional functions for getting space details

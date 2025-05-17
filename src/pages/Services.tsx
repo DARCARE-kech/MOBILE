@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
 import DrawerMenu from "@/components/DrawerMenu";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import HouseholdTab from "@/components/services/HouseholdTab";
-import LifestyleTab from "@/components/services/LifestyleTab";
+import InternalServicesTab from "@/components/services/InternalServicesTab";
+import ExternalServicesTab from "@/components/services/ExternalServicesTab";
 
 const ServicesPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("household");
+  const [activeTab, setActiveTab] = useState("invilla");
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
   const location = useLocation();
@@ -36,7 +36,7 @@ const ServicesPage: React.FC = () => {
       <div className="pt-16 pb-20"> {/* Reduced top padding */}
         <div className="px-2 mb-1"> {/* Further reduced horizontal padding and margin */}
           <Tabs 
-            defaultValue="household" 
+            defaultValue="invilla" 
             value={activeTab} 
             onValueChange={setActiveTab}
             className="w-full"
@@ -48,10 +48,10 @@ const ServicesPage: React.FC = () => {
                 : "bg-white/80 border border-darcare-deepGold/10 shadow-sm"
             )}>
               <TabsTrigger 
-                value="household"
+                value="invilla"
                 className={cn(
                   "rounded-full text-xs font-medium transition-all duration-200", 
-                  activeTab === "household" 
+                  activeTab === "invilla" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
                       : "bg-darcare-deepGold text-white"
@@ -60,13 +60,13 @@ const ServicesPage: React.FC = () => {
                       : "text-darcare-charcoal hover:text-darcare-deepGold"
                 )}
               >
-                {t('services.household')}
+                {t('services.invilla')}
               </TabsTrigger>
               <TabsTrigger 
-                value="lifestyle"
+                value="leisure"
                 className={cn(
                   "rounded-full text-xs font-medium transition-all duration-200",
-                  activeTab === "lifestyle" 
+                  activeTab === "leisure" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
                       : "bg-darcare-deepGold text-white"
@@ -75,7 +75,7 @@ const ServicesPage: React.FC = () => {
                       : "text-darcare-charcoal hover:text-darcare-deepGold"
                 )}
               >
-                {t('services.lifestyle')}
+                {t('services.leisure')}
               </TabsTrigger>
               <TabsTrigger 
                 value="requests"
@@ -95,11 +95,11 @@ const ServicesPage: React.FC = () => {
             </TabsList>
 
             <div className="mt-1"> {/* Further reduced margin */}
-              <TabsContent value="household" className="mt-0">
-                <HouseholdTab />
+              <TabsContent value="invilla" className="mt-0">
+                <InternalServicesTab />
               </TabsContent>
-              <TabsContent value="lifestyle" className="mt-0">
-                <LifestyleTab />
+              <TabsContent value="leisure" className="mt-0">
+                <ExternalServicesTab />
               </TabsContent>
               <TabsContent value="requests" className="mt-0">
                 <MyRequestsTab />
