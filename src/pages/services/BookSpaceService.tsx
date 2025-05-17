@@ -21,17 +21,29 @@ import { useTranslation } from 'react-i18next';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import ServiceBanner from '@/components/services/ServiceBanner';
+import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
 
-const BookSpaceService = () => {
+// Define props interface for BookSpaceService component to match what ServiceDetail is passing
+interface BookSpaceServiceProps {
+  serviceData?: ServiceDetailType;
+  existingRequest?: any;
+  editMode?: boolean;
+}
+
+const BookSpaceService: React.FC<BookSpaceServiceProps> = ({ 
+  serviceData, 
+  existingRequest, 
+  editMode = false 
+}) => {
   const navigate = useNavigate();
   const { id: spaceId } = useParams();
   const location = useLocation();
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
   
-  // Check for edit mode from location state
-  const editMode = location.state?.editMode === true;
-  const requestId = location.state?.requestId;
+  // If not explicitly set through props, check location state
+  const isEditMode = editMode || (location.state?.editMode === true);
+  const requestId = existingRequest?.id || location.state?.requestId;
 
   const {
     form,
@@ -61,8 +73,8 @@ const BookSpaceService = () => {
     return (
       <div className="bg-darcare-navy min-h-screen">
         <AppHeader 
-          title={t('services.bookSpace', 'Book a Space')}
-          onBack={() => navigate('/services/spaces')}
+          title={t('services.clubAccess', 'Club Access')}
+          onBack={() => navigate('/services')}
         />
         <div className="flex justify-center items-center h-[80vh] pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
@@ -74,7 +86,7 @@ const BookSpaceService = () => {
 
   const onSubmit = async (values: any) => {
     // For edit mode, we need to pass the requestId
-    const success = await handleSubmit(values, selectedSpace.id, editMode, requestId);
+    const success = await handleSubmit(values, selectedSpace.id, isEditMode, requestId);
     if (success) {
       navigate('/services');
     }
@@ -83,7 +95,7 @@ const BookSpaceService = () => {
   return (
     <div className="bg-darcare-navy min-h-screen pb-20">
       <AppHeader
-        title={editMode ? t('services.updateBooking', 'Update Booking') : selectedSpace.name}
+        title={isEditMode ? t('services.updateBooking', 'Update Booking') : selectedSpace.name}
         onBack={() => navigate('/services/spaces')}
       />
 
@@ -173,7 +185,7 @@ const BookSpaceService = () => {
             </LuxuryCard>
 
             <div className="pt-4 pb-16">
-              <BookingSubmitButton isSubmitting={isSubmitting} isEditing={editMode} />
+              <BookingSubmitButton isSubmitting={isSubmitting} isEditing={isEditMode} />
             </div>
           </form>
         </Form>

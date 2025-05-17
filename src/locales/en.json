@@ -22,11 +22,18 @@
     "clubAccess": "Club Access",
     "noServicesAvailable": "No services available",
     "loading": "Loading services...",
-    "loadingDescription": "Please wait while we fetch your services"
+    "loadingDescription": "Please wait while we fetch your services",
+    "shop": "Shop",
+    "editRequest": "Edit Request",
+    "capacity": "Capacity",
+    "rulesAndGuidelines": "Rules and Guidelines",
+    "schedulingDetails": "Scheduling Details",
+    "updateBooking": "Update Booking"
   },
   "common": {
     "loading": "Loading",
-    "errorLoading": "Error loading data"
+    "errorLoading": "Error loading data",
+    "notSpecified": "Not specified"
   },
   "drawer": {
     "services": "Services"
