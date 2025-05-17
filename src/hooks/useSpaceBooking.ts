@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -38,8 +39,13 @@ export const useSpaceBooking = (requestId?: string) => {
         }
         
         // Check if selected_options contains peopleCount
-        if (data.selected_options && typeof data.selected_options === 'object' && data.selected_options.peopleCount) {
-          setPeopleCount(data.selected_options.peopleCount);
+        // Use type guards to safely access peopleCount
+        if (data.selected_options && 
+            typeof data.selected_options === 'object' && 
+            data.selected_options !== null &&
+            !Array.isArray(data.selected_options) &&
+            'peopleCount' in data.selected_options) {
+          setPeopleCount(Number(data.selected_options.peopleCount));
         }
         
         // Set form values
