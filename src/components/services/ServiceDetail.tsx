@@ -80,7 +80,8 @@ const ServiceDetail: React.FC = () => {
   const { data: service, isLoading: isLoadingService, error: serviceError } = useQuery({
     queryKey: ['service', id],
     queryFn: async () => {
-      if (id === 'book-space' || id === 'shop') {
+      // Only handle shop as a special case, remove the club access special case
+      if (id === 'shop') {
         console.log("Special service ID detected, skipping fetch");
         return null;
       }
@@ -105,7 +106,7 @@ const ServiceDetail: React.FC = () => {
       console.log("Service data fetched:", data);
       return data as ServiceType;
     },
-    enabled: !!id && id !== 'book-space' && id !== 'shop'
+    enabled: !!id && id !== 'shop'
   });
 
   // Fetch the service-specific details based on service type
@@ -134,6 +135,8 @@ const ServiceDetail: React.FC = () => {
           return { category: 'hair', service_id: service.id } as ServiceDetailType;
         } else if (serviceNameLower.includes('kids')) {
           return { category: 'kids', service_id: service.id } as ServiceDetailType;
+        } else if (serviceNameLower.includes('club') && serviceNameLower.includes('access')) {
+          return { category: 'club-access', service_id: service.id } as ServiceDetailType;
         }
         return null;
       }
@@ -145,6 +148,8 @@ const ServiceDetail: React.FC = () => {
           return { category: 'hair', service_id: service.id } as ServiceDetailType;
         } else if (serviceNameLower.includes('kids')) {
           return { category: 'kids', service_id: service.id } as ServiceDetailType;
+        } else if (serviceNameLower.includes('club') && serviceNameLower.includes('access')) {
+          return { category: 'club-access', service_id: service.id } as ServiceDetailType;
         }
         
         // For other services without data, return a basic structure
@@ -165,19 +170,7 @@ const ServiceDetail: React.FC = () => {
   
   const isLoading = isLoadingService || isLoadingDetails;
   
-  // Special cases for shop and book-space
-  if (id === 'book-space') {
-    return (
-      <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('services.bookSpace')} onBack={() => navigate('/services')} />
-        <div className="pt-20">
-          <BookSpaceService />
-        </div>
-        <BottomNavigation activeTab="services" />
-      </div>
-    );
-  }
-  
+  // Special case for shop
   if (id === 'shop') {
     return (
       <div className="min-h-screen bg-darcare-navy">
@@ -297,6 +290,21 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <KidsClubService 
+            serviceData={enhancedServiceDetails}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
+        </div>
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  } else if (serviceNameLower?.includes('access')) {
+    // Club Access (previously Book Space) now uses BookSpaceService component
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <div className="pt-20">
+          <BookSpaceService 
             serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}

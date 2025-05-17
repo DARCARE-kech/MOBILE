@@ -61,38 +61,11 @@ const InternalServicesTab: React.FC = () => {
     );
   }
 
-  // Handle service selection
+  // Handle service selection - simplify to always navigate to service detail page by ID
   const handleServiceSelect = (service: any) => {
     console.log('Selected service:', service);
-    
-    // For special services with dedicated pages
-    if (service.name.toLowerCase().includes('cleaning')) {
-      navigate('/services/cleaning', { state: { serviceId: service.id } });
-      return;
-    }
-    
-    if (service.name.toLowerCase().includes('laundry')) {
-      navigate('/services/laundry', { state: { serviceId: service.id } });
-      return;
-    }
-    
-    if (service.name.toLowerCase().includes('maintenance')) {
-      navigate('/services/maintenance', { state: { serviceId: service.id } });
-      return;
-    }
-    
-    if (service.name.toLowerCase().includes('transport')) {
-      navigate('/services/transport', { state: { serviceId: service.id } });
-      return;
-    }
-    
-    // For other services, use the dynamic form
-    navigate('/services/request', { 
-      state: { 
-        serviceId: service.id,
-        serviceType: service.name.toLowerCase().replace(/\s+/g, '_')
-      }
-    });
+    // Navigate to service detail page with the service ID
+    navigate(`/services/${service.id}`);
   };
 
   return (

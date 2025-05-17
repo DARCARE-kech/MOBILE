@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -61,38 +60,18 @@ const ExternalServicesTab: React.FC = () => {
     );
   }
 
-  // Handle service selection
+  // Handle service selection - simplify to always navigate to service detail page by ID
   const handleServiceSelect = (service: any) => {
     console.log('Selected service:', service);
     
-    // Check for special service types
-    if (service.name.toLowerCase().includes('hair salon')) {
-      navigate('/services/hair-salon', { state: { serviceId: service.id, serviceType: 'hair' } });
-      return;
-    }
-    
-    if (service.name.toLowerCase().includes('kids club')) {
-      navigate('/services/kids-club', { state: { serviceId: service.id, serviceType: 'kids' } });
-      return;
-    }
-    
-    if (service.name.toLowerCase().includes('club access')) {
-      navigate('/services/book-space', { state: { serviceId: service.id } });
-      return;
-    }
-    
+    // Special case for Shop service - keep its unique handling
     if (service.name.toLowerCase().includes('shop')) {
       navigate('/services/shop', { state: { serviceId: service.id } });
       return;
     }
     
-    // For other services, use the dynamic form
-    navigate('/services/request', { 
-      state: { 
-        serviceId: service.id,
-        serviceType: service.name.toLowerCase().replace(/\s+/g, '_')
-      }
-    });
+    // For all other services, navigate to the service detail page with the service ID
+    navigate(`/services/${service.id}`);
   };
 
   return (
