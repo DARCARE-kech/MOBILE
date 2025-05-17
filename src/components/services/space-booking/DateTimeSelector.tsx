@@ -13,8 +13,8 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 
 interface DateTimeSelectorProps {
   form: any;
-  selectedTime: string | null;
-  setSelectedTime: (time: string | null) => void;
+  selectedTime: Date | null;
+  setSelectedTime: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
 export const DateTimeSelector = ({
@@ -25,6 +25,24 @@ export const DateTimeSelector = ({
   const { t } = useTranslation();
   const [isTimeOpen, setIsTimeOpen] = React.useState(false);
   const { isDarkMode } = useTheme();
+  
+  // Convert string time to Date for TimeSelector if needed
+  const handleTimeSelect = (time: string) => {
+    if (time) {
+      // Parse time and create a new Date object
+      const [hours, minutes] = time.split(':').map(Number);
+      const newDate = new Date();
+      newDate.setHours(hours, minutes, 0, 0);
+      setSelectedTime(newDate);
+    } else {
+      setSelectedTime(null);
+    }
+  };
+  
+  // Format Date to string for TimeSelector display
+  const formattedTime = selectedTime 
+    ? `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`
+    : null;
   
   return (
     <div className="space-y-4">
@@ -85,8 +103,8 @@ export const DateTimeSelector = ({
           {t('services.selectTime', 'Select Time')}
         </FormLabel>
         <TimeSelector
-          selectedTime={selectedTime}
-          onTimeSelect={setSelectedTime}
+          selectedTime={formattedTime}
+          onTimeSelect={handleTimeSelect}
           isOpen={isTimeOpen}
           onOpenChange={setIsTimeOpen}
         />

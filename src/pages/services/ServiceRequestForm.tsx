@@ -4,16 +4,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
-import { CalendarClock, PenLine } from 'lucide-react';
+import { CalendarClock, PenLine, Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { DateTimeSelector } from '@/components/services/space-booking/DateTimeSelector';
 import { LuxuryCard } from '@/components/ui/luxury-card';
-import BottomNavigation from '@/components/BottomNavigation';
-import MainHeader from '@/components/MainHeader';
 import { useServiceRequestForForm } from '@/hooks/useServiceRequest';
 import { useServiceSubmitter } from '@/components/services/ServiceRequestSubmitter';
 import ServiceRequestLoader from '@/components/services/ServiceRequestLoader';
@@ -98,8 +95,9 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
       };
       
       // Handle the submission
-      const success = await handleSubmitRequest(requestData);
-      if (success) {
+      const result = await handleSubmitRequest(requestData);
+      // Check the result instead of the function call
+      if (result) {
         navigate('/services');
       }
     } catch (error) {
