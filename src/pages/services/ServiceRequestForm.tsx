@@ -17,7 +17,7 @@ import ServiceRequestLoader from '@/components/services/ServiceRequestLoader';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import DynamicFields from '@/components/services/form/DynamicFields';
-import { FormData } from '@/components/services/form/formHelpers';
+import { FormData, ServiceFormData } from '@/components/services/form/formHelpers';
 
 interface ServiceRequestFormProps {
   serviceType: string;
@@ -70,6 +70,7 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
       preferredDate: '',
       preferredTime: '',
       note: existingRequest?.note || '',
+      date: new Date(),
     }
   });
   
@@ -91,9 +92,10 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({
       }
       
       // Prepare the request data
-      const requestData = {
+      const requestData: ServiceFormData = {
         ...values,
-        preferredTime,
+        preferredTime: values.preferredTime || '',
+        preferredDate: values.preferredDate || '',
       };
       
       // Handle the submission and store result

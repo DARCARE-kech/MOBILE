@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { type ServiceFormData } from '@/hooks/services/types';
+import { ServiceFormData } from '@/components/services/form/formHelpers';
 import type { ServiceLocationState } from '@/hooks/services/types';
 import { useAuth } from '@/contexts/AuthContext';
 

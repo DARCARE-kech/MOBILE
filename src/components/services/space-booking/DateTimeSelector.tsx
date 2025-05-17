@@ -20,12 +20,15 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   const { t } = useTranslation();
   const [date, setDate] = useState<Date | null>(null);
   const [timeValue, setTimeValue] = useState<string>('');
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   
   // Handle date selection
   const handleDateSelect = (date: Date | undefined) => {
     if (!date) return;
     setDate(date);
     form.setValue('preferredDate', date.toISOString().split('T')[0]);
+    // Also set date field for space booking forms
+    form.setValue('date', date);
     
     // If time is also selected, update the full datetime
     if (timeValue) {
@@ -65,7 +68,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
             today.setHours(0, 0, 0, 0);
             return date < today;
           }}
-          className="rounded-md border border-darcare-gold/20 bg-darcare-navy/70"
+          className="rounded-md border border-darcare-gold/20 bg-darcare-navy/70 pointer-events-auto"
         />
       </div>
       
@@ -73,8 +76,10 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
       <div>
         <h4 className="text-sm mb-2 text-gray-400">{t('services.selectTime', 'Select Time')}</h4>
         <TimeSelector
-          value={timeValue}
-          onChange={handleTimeSelect}
+          selectedTime={timeValue}
+          onTimeSelect={handleTimeSelect}
+          isOpen={isTimePickerOpen}
+          onOpenChange={setIsTimePickerOpen}
         />
       </div>
     </div>

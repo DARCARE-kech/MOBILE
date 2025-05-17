@@ -33,12 +33,13 @@ export interface ServiceDetail {
   default_duration?: string | null;
 }
 
-// Form data interface for service requests
+// Form data interface for service requests - matches with FormData in formHelpers.ts
 export interface ServiceFormData {
   preferredDate: string;
   preferredTime: string;
-  note: string;
+  note?: string;
   selectedCategory?: string;
   selectedOption?: string;
+  date?: Date;
   [key: string]: any; // For additional dynamic fields
 }

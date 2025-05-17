@@ -8,6 +8,17 @@ export interface FormData {
   note?: string;
   selectedOption?: string;
   selectedCategory?: string;
+  date?: Date; // Add date field for space booking forms
+  [key: string]: any;
+}
+
+// Define interface for service form data - used by specific service request endpoints
+export interface ServiceFormData {
+  preferredDate: string; // Required in ServiceFormData
+  preferredTime: string; // Required in ServiceFormData
+  note?: string;
+  selectedOption?: string;
+  selectedCategory?: string;
   [key: string]: any;
 }
 

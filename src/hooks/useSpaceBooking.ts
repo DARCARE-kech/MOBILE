@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { FormData } from '@/components/services/form/formHelpers';
 
 export const useSpaceBooking = (requestId?: string) => {
   const { t } = useTranslation();
@@ -57,10 +58,13 @@ export const useSpaceBooking = (requestId?: string) => {
     enabled: !!requestId
   });
 
-  const form = useForm({
+  // Update the form type to match FormData interface
+  const form = useForm<FormData>({
     defaultValues: {
       note: '',
-      date: existingRequest?.preferred_time ? new Date(existingRequest.preferred_time) : undefined
+      date: existingRequest?.preferred_time ? new Date(existingRequest.preferred_time) : undefined,
+      preferredTime: '',
+      preferredDate: ''
     }
   });
 

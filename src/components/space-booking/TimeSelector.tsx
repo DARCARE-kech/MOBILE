@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Clock } from 'lucide-react';
@@ -12,20 +12,45 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
 interface TimeSelectorProps {
-  selectedTime: string | null;
+  selectedTime?: string | null; // Make this prop optional or nullable
   onTimeSelect: (time: string) => void;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen?: boolean; // Make isOpen optional
+  onOpenChange?: (open: boolean) => void; // Make onOpenChange optional
+  value?: string; // Add value prop for backward compatibility
+  onChange?: (time: string) => void; // Add onChange prop for backward compatibility
 }
 
 export const TimeSelector: React.FC<TimeSelectorProps> = ({
   selectedTime,
   onTimeSelect,
-  isOpen,
-  onOpenChange,
+  isOpen = false, // Default value
+  onOpenChange = () => {}, // Default empty function
+  value, // Get value from props
+  onChange, // Get onChange from props
 }) => {
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
+  const [internalIsOpen, setInternalIsOpen] = useState(isOpen);
+
+  // Handle both API patterns
+  const handleTimeSelect = (time: string) => {
+    onTimeSelect(time);
+    if (onChange) onChange(time);
+    
+    // Handle internal state if onOpenChange not provided
+    if (!onOpenChange) {
+      setInternalIsOpen(false);
+    } else {
+      onOpenChange(false);
+    }
+  };
+
+  // Use either the controlled or uncontrolled open state
+  const openState = onOpenChange ? isOpen : internalIsOpen;
+  const setOpenState = onOpenChange || setInternalIsOpen;
+  
+  // Use value prop if selectedTime is not provided
+  const displayTime = selectedTime || value || null;
 
   // More elegant time slots with morning and afternoon grouping
   const timeSlots = [
@@ -51,8 +76,8 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
 
   return (
     <Collapsible
-      open={isOpen}
-      onOpenChange={onOpenChange}
+      open={openState}
+      onOpenChange={setOpenState}
       className="w-full"
     >
       <CollapsibleTrigger asChild>
@@ -70,11 +95,11 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
               "mr-2 h-4 w-4",
               isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
             )} />
-            {selectedTime ? selectedTime : t('services.selectTime', 'Select Time')}
+            {displayTime ? displayTime : t('services.selectTime', 'Select Time')}
           </div>
           <span className={cn(
             "transform transition-transform",
-            isOpen ? "rotate-180" : ""
+            openState ? "rotate-180" : ""
           )}>
             ▼
           </span>
@@ -101,7 +126,7 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                   key={slot.time}
                   className={cn(
                     "p-2 rounded-md text-center cursor-pointer transition-all text-sm",
-                    selectedTime === slot.time 
+                    displayTime === slot.time 
                       ? isDarkMode
                         ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
                         : 'bg-darcare-deepGold/20 border border-darcare-deepGold/40 text-darcare-deepGold'
@@ -109,10 +134,7 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                         ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30'
                         : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30'
                   )}
-                  onClick={() => {
-                    onTimeSelect(slot.time);
-                    onOpenChange(false);
-                  }}
+                  onClick={() => handleTimeSelect(slot.time)}
                 >
                   {slot.time}
                 </div>
@@ -136,7 +158,7 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                   key={slot.time}
                   className={cn(
                     "p-2 rounded-md text-center cursor-pointer transition-all text-sm",
-                    selectedTime === slot.time 
+                    displayTime === slot.time 
                       ? isDarkMode
                         ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
                         : 'bg-darcare-deepGold/20 border border-darcare-deepGold/40 text-darcare-deepGold'
@@ -144,10 +166,7 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                         ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30'
                         : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30'
                   )}
-                  onClick={() => {
-                    onTimeSelect(slot.time);
-                    onOpenChange(false);
-                  }}
+                  onClick={() => handleTimeSelect(slot.time)}
                 >
                   {slot.time}
                 </div>
@@ -171,7 +190,7 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                   key={slot.time}
                   className={cn(
                     "p-2 rounded-md text-center cursor-pointer transition-all text-sm",
-                    selectedTime === slot.time 
+                    displayTime === slot.time 
                       ? isDarkMode
                         ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
                         : 'bg-darcare-deepGold/20 border border-darcare-deepGold/40 text-darcare-deepGold'
@@ -179,10 +198,7 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                         ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30'
                         : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30'
                   )}
-                  onClick={() => {
-                    onTimeSelect(slot.time);
-                    onOpenChange(false);
-                  }}
+                  onClick={() => handleTimeSelect(slot.time)}
                 >
                   {slot.time}
                 </div>
