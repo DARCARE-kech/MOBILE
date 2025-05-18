@@ -60,6 +60,7 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
       storytelling: false,
       outdoor_play: false,
     };
+    
     if (editMode && existingRequest?.selected_options?.activities) {
       for (const key of Object.keys(defaultState)) {
         defaultState[key as keyof typeof defaultState] =
