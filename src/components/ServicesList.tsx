@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ChevronRight, User, AlertTriangle, Plus, Loader2, Clock } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
@@ -20,6 +19,7 @@ interface Service {
   } | null;
   space_id?: string | null;
   service_id?: string | null;
+  name?: string; // Added name property to handle space bookings
 }
 
 interface ServicesListProps {
@@ -83,7 +83,8 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           
           // Handle space booking requests specifically
           if (!serviceName && service.space_id) {
-            serviceName = {t(`services.${service.name}`, service.name)};
+            // Fix: removed the extra curly braces from t() call
+            serviceName = t(`services.${service.name}`, service.name);
           }
           
           // Fallback if still no service name
