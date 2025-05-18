@@ -83,7 +83,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           
           // Handle space booking requests specifically
           if (!serviceName && service.space_id) {
-            serviceName = t('services.bookSpace', 'Book Space');
+            serviceName = {t(`services.${service.name}`, service.name)};
           }
           
           // Fallback if still no service name
