@@ -201,7 +201,7 @@ const HistoryTab: React.FC = () => {
           
           if (record.space_id) {
             // Pour les réservations d'espace
-            serviceName = t('services.bookSpace', 'Book Space');
+            serviceName = t(`services.${request.services.name}`);
           } else if (record.services?.name) {
             // Pour les services standards avec un nom valide
             serviceName = record.services.name;
