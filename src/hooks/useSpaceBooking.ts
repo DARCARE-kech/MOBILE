@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { FormData } from '@/components/services/form/formHelpers';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const useSpaceBooking = (requestId?: string) => {
   const { t } = useTranslation();
@@ -14,6 +15,7 @@ export const useSpaceBooking = (requestId?: string) => {
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [peopleCount, setPeopleCount] = useState(1);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // If requestId is provided, fetch the request data
   const { data: existingRequest } = useQuery({
@@ -72,13 +74,9 @@ export const useSpaceBooking = (requestId?: string) => {
     try {
       setIsSubmitting(true);
       
-      const userId = (await supabase.auth.getUser()).data.user?.id;
-      
-      if (!userId) {
-        toast({
-          title: t('services.errorSubmitting', 'Error Submitting'),
-          description: t('services.needToLogin', 'You need to be logged in'),
-          variant: 'destructive'
+      if (!user) {
+        toast.error(t('services.errorSubmitting', 'Error Submitting'), {
+          description: t('services.loginRequired', 'You must be logged in to submit a request.')
         });
         return false;
       }
@@ -96,8 +94,9 @@ export const useSpaceBooking = (requestId?: string) => {
       
       // Prepare the request data
       const requestData = {
-        user_id: userId,
-        service_id: values.serviceId || null, // From Club Access service
+        user_id: user.id,
+        profile_id: user.id,  // Ensure profile_id is set to match user_id
+        service_id: values.serviceId, // From Club Access service
         space_id: spaceId,
         request_type: 'space',
         status: 'pending',
@@ -105,9 +104,12 @@ export const useSpaceBooking = (requestId?: string) => {
         note: values.note,
         selected_options: {
           peopleCount,
-          spaceName: values.spaceName
+          spaceName: values.spaceName,
+          spaceId: spaceId
         }
       };
+      
+      console.log('Submitting service request with data:', requestData);
       
       let result;
       
@@ -121,6 +123,10 @@ export const useSpaceBooking = (requestId?: string) => {
           
         if (error) throw error;
         result = data;
+        
+        toast.success(t('services.requestUpdated', 'Request Updated'), {
+          description: t('services.requestUpdatedDesc', 'Your request has been updated successfully.'),
+        });
       } else {
         // Otherwise insert a new request
         const { data, error } = await supabase
@@ -130,27 +136,21 @@ export const useSpaceBooking = (requestId?: string) => {
           
         if (error) throw error;
         result = data;
+        
+        toast.success(t('services.requestSubmitted', 'Request Submitted'), {
+          description: t('services.requestSubmittedDesc', 'Your request has been submitted successfully.'),
+        });
       }
       
-      // Show a success toast
-      toast({
-        title: isEditing 
-          ? t('services.bookingUpdated', 'Booking Updated') 
-          : t('services.bookingConfirmed', 'Booking Confirmed'),
-        description: isEditing
-          ? t('services.spaceBookingUpdated', 'Your space booking has been updated')
-          : t('services.spaceBookingConfirmed', 'Your space has been successfully booked'),
-      });
+      console.log('Service request saved successfully:', result);
       
       return true;
       
     } catch (error: any) {
       console.error('Error submitting space booking:', error);
       
-      toast({
-        title: t('services.errorSubmitting', 'Error Submitting'),
+      toast.error(t('services.errorSubmitting', 'Error Submitting'), {
         description: error.message || t('services.pleaseTryAgain', 'Please try again later'),
-        variant: 'destructive'
       });
       
       return false;

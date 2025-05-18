@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -21,6 +22,7 @@ import FormSectionTitle from '@/components/services/FormSectionTitle';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import ServiceBanner from '@/components/services/ServiceBanner';
 import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
+import { toast } from 'sonner';
 
 // Define props interface for BookSpaceService component to match what ServiceDetail is passing
 interface BookSpaceServiceProps {
@@ -82,6 +84,28 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
     }
   });
 
+  // Find the club access service ID if not provided
+  const { data: clubAccessService } = useQuery({
+    queryKey: ['club-access-service'],
+    queryFn: async () => {
+      if (serviceId) return { id: serviceId };
+      
+      const { data, error } = await supabase
+        .from('services')
+        .select('id')
+        .eq('name', 'Club Access')
+        .single();
+        
+      if (error) {
+        console.error('Error fetching Club Access service:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: !serviceId
+  });
+
   const selectedSpace = spaces?.find(space => space.id === spaceId) || spaces?.[0];
 
   if (isLoading || !selectedSpace) {
@@ -100,12 +124,25 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
   }
 
   const onSubmit = async (values: any) => {
+    // Prepare the request data with the correct service ID
+    const effectiveServiceId = serviceId || clubAccessService?.id;
+    
+    if (!effectiveServiceId) {
+      toast.error(t('common.error', 'Error'), {
+        description: t('services.serviceNotFound', 'Club Access service not found')
+      });
+      return;
+    }
+    
     // For edit mode, we need to pass the requestId
     const requestData = {
       ...values,
-      serviceId, // Include the service ID from Club Access
+      serviceId: effectiveServiceId, // Use the fetched or provided Club Access service ID
+      spaceName: selectedSpace.name,
       spaceId: selectedSpace.id
     };
+    
+    console.log('Submitting space booking with data:', requestData);
     
     const success = await handleSubmit(requestData, selectedSpace.id, isEditMode, requestId);
     if (success) {

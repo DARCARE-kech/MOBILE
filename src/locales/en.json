@@ -39,6 +39,16 @@
     "sendRequest": "Send Request",
     "errorSubmitting": "Error Submitting",
     "pleaseTryAgain": "Please try again later",
+    "loginRequired": "You must be logged in to submit a request.",
+    "requestSubmitted": "Request Submitted",
+    "requestSubmittedDesc": "Your request has been submitted successfully.",
+    "requestUpdated": "Request Updated",
+    "requestUpdatedDesc": "Your request has been updated successfully.",
+    "serviceNotFound": "Club Access service not found",
+    "bookingConfirmed": "Booking Confirmed",
+    "confirmBooking": "Confirm Booking",
+    "spaceBookingConfirmed": "Your space has been successfully booked",
+    "spaceBookingUpdated": "Your space booking has been updated",
     "hairSalon": "Hair Salon Service",
     "hairSalonDescription": "Book a salon appointment for haircuts, styling, coloring and more. Our professional stylists offer a variety of services.",
     "kidsClub": "Kids Club Service", 
@@ -55,12 +65,14 @@
     "activities": "Activities",
     "selectActivities": "Select activities for your children",
     "endTimeMustBeAfterStartTime": "End time must be after start time",
-    "requestSubmitted": "Request Submitted",
-    "requestSubmittedDesc": "Your request has been submitted successfully.",
-    "requestUpdated": "Request Updated",
-    "requestUpdatedDesc": "Your request has been updated successfully.",
-    "loginRequired": "You must be logged in to submit a request.",
-    "requestErrorDesc": "An error occurred while processing your request. Please try again."
+    "numberOfPeople": "Number of People",
+    "person": "Person",
+    "people": "People",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening"
   },
   "common": {
     "loading": "Loading",
@@ -68,7 +80,10 @@
     "notSpecified": "Not specified",
     "error": "Error",
     "fetchDataError": "Failed to fetch data",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "processing": "Processing...",
+    "decrease": "Decrease",
+    "increase": "Increase"
   },
   "drawer": {
     "services": "Services"
