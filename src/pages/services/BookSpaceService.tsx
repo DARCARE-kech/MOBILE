@@ -137,6 +137,13 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
       return;
     }
     
+    if (!spaceId) {
+      toast.error(t('common.error', 'Error'), {
+        description: t('services.spaceNotFound', 'Space not found')
+      });
+      return;
+    }
+    
     // Prepare the request data with all necessary fields
     const requestData = {
       ...values,

@@ -109,6 +109,8 @@ export const useSpaceBooking = (requestId?: string) => {
         }
       };
       
+      console.log('Submitting space booking with data:', requestData);
+      
       let result;
       
       // If we're editing, update the existing request
@@ -119,8 +121,12 @@ export const useSpaceBooking = (requestId?: string) => {
           .eq('id', editRequestId)
           .select();
           
-        if (error) throw error;
+        if (error) {
+          console.error('Error updating space booking:', error);
+          throw error;
+        }
         result = data;
+        console.log('Space booking updated successfully:', result);
       } else {
         // Otherwise insert a new request
         const { data, error } = await supabase
@@ -128,8 +134,12 @@ export const useSpaceBooking = (requestId?: string) => {
           .insert(requestData)
           .select();
           
-        if (error) throw error;
+        if (error) {
+          console.error('Error inserting space booking:', error);
+          throw error;
+        }
         result = data;
+        console.log('Space booking inserted successfully:', result);
       }
       
       // Show a success toast
