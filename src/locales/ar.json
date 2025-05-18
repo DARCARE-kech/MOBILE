@@ -75,7 +75,17 @@
     "termsOfService": "شروط الخدمة",
     "privacyPolicy": "سياسة الخصوصية",
     "termsRequired": "الموافقة مطلوبة",
-    "mustAgreeToTerms": "يجب أن توافق على شروط الخدمة وسياسة الخصوصية لإنشاء حساب."
+    "mustAgreeToTerms": "يجب أن توافق على شروط الخدمة وسياسة الخصوصية لإنشاء حساب.",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "nameRequired": "الاسم مطلوب",
+    "confirmPasswordRequired": "يرجى تأكيد كلمة المرور",
+    "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+    "passwordTooShort": "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل",
+    "enterFullName": "اسمك الكامل",
+    "enterEmail": "بريدك@الالكتروني.كوم",
+    "enterPassword": "كلمة المرور",
+    "confirmNewPassword": "تأكيد كلمة المرور"
   },
   "navigation": {
     "home": "الرئيسية",
@@ -155,7 +165,7 @@
     "passengers": "الركاب",
     "luggageSupport": "مساعدة بالأمتعة",
     "luggageSubtitle": "هل تحتاج إلى مساعدة في حمل الأمتعة؟",
-    "laundryServices": "خدمات الغسيل",
+    "laundryServices": "خدمات ��لغسيل",
     "selectAtLeastOne": "حدد خدمة واحدة على الأقل",
     "specialFabrics": "أقمشة خاصة",
     "fabricsSubtitle": "حدد أي أنواع أقمشة خاصة",

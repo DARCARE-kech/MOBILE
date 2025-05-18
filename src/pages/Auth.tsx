@@ -9,7 +9,7 @@ import LoginForm from "@/components/auth/LoginForm";
 import SignupForm from "@/components/auth/SignupForm";
 import AuthFooter from "@/components/auth/AuthFooter";
 import LanguageSwitcher from "@/components/auth/LanguageSwitcher";
-import { validateEmail, validatePassword, validateName } from "@/utils/authValidation";
+import { validateEmail, validatePassword, validateName, validateConfirmPassword } from "@/utils/authValidation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
@@ -19,9 +19,11 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [nameError, setNameError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState(""); // New error state
   const [termsAgreed, setTermsAgreed] = useState(false);
   const { signIn, signUp, isLoading, user } = useAuth();
   const { toast } = useToast();
@@ -57,10 +59,17 @@ const Auth = () => {
         return;
       }
       
+      // Validate confirm password
+      const isConfirmPasswordValid = validateConfirmPassword(password, confirmPassword);
+      if (isConfirmPasswordValid) {
+        setConfirmPasswordError(isConfirmPasswordValid);
+        return;
+      }
+      
       if (!termsAgreed) {
         toast({
           title: t('auth.termsRequired'),
-          description: t('auth.mustAgreeToTerms', 'You must agree to the Terms of Service and Privacy Policy to create an account.'),
+          description: t('auth.mustAgreeToTerms'),
           variant: "destructive",
         });
         return;
@@ -90,6 +99,7 @@ const Auth = () => {
           setIsLogin(true);
           // Clear form fields
           setPassword("");
+          setConfirmPassword("");
           
           // Toast notification is already handled in the useAuthMethods
         }
@@ -108,7 +118,7 @@ const Auth = () => {
         ? "bg-darcare-navy bg-gradient-to-b from-darcare-navy to-[#1A1F2C]"
         : "bg-background bg-gradient-to-b from-[#F8F4F0] to-white"
     )}>
-      <div className="mb-12 flex justify-center">
+      <div className="mb-10 flex justify-center">
         <Logo color={isDarkMode ? "gold" : "navy"} size="md" />
       </div>
       <div className="w-full max-w-md mx-auto">
@@ -125,7 +135,7 @@ const Auth = () => {
             {isLogin ? t("auth.signIn") : t("auth.createAccount")}
           </h1>
           <p className={cn(
-            "text-center mb-10",
+            "text-center mb-8",
             isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
           )}>
             {isLogin
@@ -156,19 +166,21 @@ const Auth = () => {
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
               nameError={nameError}
               emailError={emailError}
               passwordError={passwordError}
+              confirmPasswordError={confirmPasswordError}
               setNameError={setNameError}
               setEmailError={setEmailError}
               setPasswordError={setPasswordError}
+              setConfirmPasswordError={setConfirmPasswordError}
+              termsAgreed={termsAgreed}
+              setTermsAgreed={setTermsAgreed}
               handleSubmit={handleSubmit}
               isLoading={isLoading}
             />
-          )}
-          
-          {!isLogin && (
-            <AuthFooter termsAgreed={termsAgreed} setTermsAgreed={setTermsAgreed} />
           )}
           
           <LanguageSwitcher />
