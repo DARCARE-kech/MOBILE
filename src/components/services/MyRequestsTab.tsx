@@ -281,10 +281,10 @@ const MyRequestsTab: React.FC = () => {
             
             if (request.space_id) {
               // For space reservations
-              serviceName = request.services.name;
+              serviceName = t(`services.${request.services.name}`);
             } else if (request.services && request.services.name) {
               // For standard services with a valid name
-              serviceName = request.services.name;
+              serviceName = t(`services.${request.services.name}`);
             } else {
               // Fallback for services without a name
               serviceName = t('services.untitled', 'Untitled Service');
