@@ -281,7 +281,7 @@ const MyRequestsTab: React.FC = () => {
             
             if (request.space_id) {
               // For space reservations
-              serviceName = t('services.bookSpace', 'Book Space');
+              serviceName = request.services.name;
             } else if (request.services && request.services.name) {
               // For standard services with a valid name
               serviceName = request.services.name;
