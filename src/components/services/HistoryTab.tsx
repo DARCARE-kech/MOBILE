@@ -196,17 +196,17 @@ const HistoryTab: React.FC = () => {
     <>
       <div className="space-y-2 p-2">
         {history?.map(record => {
-          // Déterminer le nom du service en fonction du contexte
+          // Fixing the error here: replace 'request' with 'record'
           let serviceName = "";
           
           if (record.space_id) {
-            // Pour les réservations d'espace
-            serviceName = t(`services.${request.services.name}`);
+            // For space bookings
+            serviceName = t(`services.${record.services.name}`);
           } else if (record.services?.name) {
-            // Pour les services standards avec un nom valide
+            // For standard services with a valid name
             serviceName = record.services.name;
           } else {
-            // Fallback pour les services sans nom
+            // Fallback for services without a name
             serviceName = t('services.untitled', 'Untitled Service');
           }
           
