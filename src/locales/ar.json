@@ -27,7 +27,7 @@
     "minute": "دقيقة",
     "error": "خطأ",
     "success": "نجاح",
-     "favorites": "المفضلة",
+    "favorites": "المفضلة",
     "cancel": "إلغاء",
     "save": "حفظ",
     "back": "رجوع",
@@ -86,12 +86,10 @@
     "bookSpace": "حجز مساحة",
     "requestService": "طلب خدمة"
   },
-
   "recommendations": {
-  "title": "أبرز معالم مراكش",
-  "viewAll": "عرض الكل"
-},
-  
+    "title": "أبرز معالم مراكش",
+    "viewAll": "عرض الكل"
+  },
   "home": {
     "welcomeBack": "مرحبًا بعودتك",
     "yourStay": "إقامتك",
@@ -102,26 +100,21 @@
   },
   "services": {
     "invilla": "داخل الفيلا",
-  "leisure": "الأنشطة",
+    "leisure": "الأنشطة",
     "reserve": "حجز",
     "requests": "طلباتي",
-      "cleaning": "تنظيف",
-  "maintenance": "صيانة",
-  "transport": "نقل",
-  "laundry": "غسيل",
-  "shop": "تسوق",
-  "bookSpace": "حجز مساحة",
+    "cleaning": "تنظيف",
+    "maintenance": "صيانة",
+    "transport": "نقل",
+    "laundry": "غسيل",
+    "shop": "تسوق",
+    "bookSpace": "حجز مساحة",
     "history": "التاريخ",
     "book": "حجز",
     "capacity": "السعة",
     "available": "متاح",
     "request": "طلب",
     "spaces": "المساحات",
-    "cleaning": "تنظيف",
-    "maintenance": "صيانة",
-    "transport": "نقل",
-    "shop": "متجر",
-    "laundry": "غسيل",
     "details": "تفاصيل الخدمة",
     "preferredTime": "الوقت المفضل",
     "preferredDate": "التاريخ المفضل",
@@ -129,7 +122,6 @@
     "specialRequests": "طلبات خاصة",
     "requestService": "طلب خدمة",
     "viewDetails": "عرض التفاصيل",
-    "bookSpace": "حجز مساحة",
     "bookSpaceDescription": "احجز مرافقنا الحصرية بما في ذلك المسبح وملعب البادل وصالة اللياقة البدنية.",
     "shopDescription": "تصفح مجموعتنا الحصرية من العناصر الفاخرة والأطعمة المحلية والضروريات.",
     "unscheduled": "غير مجدول",
@@ -184,37 +176,22 @@
     "estimatedDuration": "المدة التقديرية",
     "notesSubtitle": "ملاحظات إضافية",
     "notesPlaceholder": "أضف أي معلومات إضافية هنا...",
-
-  "cleaningType": "نوع التنظيف",
-  "selectRooms": "اختر الغرف",
-  "roomsSubtitle": "اختر المناطق التي تحتاج إلى تنظيف",
-  "loginRequired": "يجب تسجيل الدخول لإرسال طلب الخدمة.",
-  "sendRequest": "إرسال الطلب",
-  "updateRequest": "تحديث الطلب",
-  "requestSubmitted": "تم إرسال الطلب",
-  "requestSubmittedDesc": "تم إرسال طلب التنظيف الخاص بك بنجاح.",
-  "requestUpdated": "تم تحديث الطلب",
-  "requestUpdatedDesc": "تم تحديث طلب التنظيف الخاص بك.",
-  "requestErrorDesc": "حدث خطأ أثناء معالجة الطلب. يرجى المحاولة مرة أخرى.",
-  "labels": {
-  "cleaning": "تنظيف",
-  "maintenance": "صيانة",
-  "transport": "نقل",
-  "laundry": "غسيل",
-  "shop": "تسوق",
-  "bookSpace": "حجز مساحة"
-},
-"instructions": {
-  "cleaning": "يرجى اختيار نوع التنظيف والغرف المطلوبة.",
-  "maintenance": "صف المشكلة والوقت المفضل للصيانة.",
-  "transport": "حدد وقت الاستلام وتفضيلات النقل الإضافية.",
-  "laundry": "اختر خدمات الغسيل وحدد أنواع الأقمشة الخاصة إذا لزم الأمر.",
-  "bookSpace": "اختر التاريخ والوقت لحجز المساحة."
-},
-
-
-
-
+    "loginRequired": "يجب تسجيل الدخول لإرسال طلب الخدمة.",
+    "labels": {
+      "cleaning": "تنظيف",
+      "maintenance": "صيانة",
+      "transport": "نقل",
+      "laundry": "غسيل",
+      "shop": "تسوق",
+      "bookSpace": "حجز مساحة"
+    },
+    "instructions": {
+      "cleaning": "يرجى اختيار نوع التنظيف والغرف المطلوبة.",
+      "maintenance": "صف المشكلة والوقت المفضل للصيانة.",
+      "transport": "حدد وقت الاستلام وتفضيلات النقل الإضافية.",
+      "laundry": "اختر خدمات الغسيل وحدد أنواع الأقمشة الخاصة إذا لزم الأمر.",
+      "bookSpace": "اختر التاريخ والوقت لحجز المساحة."
+    },
     "status": {
       "pending": "قيد الانتظار",
       "approved": "تمت الموافقة",
@@ -351,8 +328,8 @@
     "chat": "الدردشة",
     "settings": "الإعدادات",
     "notifications": "الإشعارات"
-  }
-"drawer": {
+  },
+  "drawer": {
     "services": "الخدمات",
     "myRequests": "طلباتي",
     "history": "السجل",

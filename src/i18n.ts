@@ -28,7 +28,6 @@ i18n
     },
     returnNull: false,
     returnEmptyString: false,
-    keySeparator: '.',
     debug: process.env.NODE_ENV === 'development'
   });
 
