@@ -95,6 +95,8 @@
     "exploreDestination": "Explore the Destination"
   },
   "services": {
+    "invilla": "In Villa",
+    "leisure": "Leisure",
     "title": "Services",
     "reserve": "Reserve",
     "requests": "Requests",

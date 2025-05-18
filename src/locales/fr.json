@@ -110,6 +110,8 @@
 },
   
   "services": {
+    "invilla": "À la villa",
+  "leisure": "Activités",
     "reserve": "Réserver",
     "requests": "Mes Demandes",
     "history": "Historique",

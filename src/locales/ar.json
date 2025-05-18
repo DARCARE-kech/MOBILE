@@ -101,6 +101,8 @@
     "viewAll": "عرض الكل"
   },
   "services": {
+    "invilla": "داخل الفيلا",
+  "leisure": "الأنشطة",
     "reserve": "حجز",
     "requests": "طلباتي",
       "cleaning": "تنظيف",
