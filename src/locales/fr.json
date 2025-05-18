@@ -399,4 +399,19 @@
     "checkEmail": "Vérifiez votre email pour un lien de réinitialisation",
     "invalidCredentials": "Email ou mot de passe invalide"
   }
+
+"drawer": {
+    "services": "Services",
+    "myRequests": "Mes demandes",
+    "history": "Historique",
+    "stayDetails": "Détails du séjour",
+    "chatWithUs": "Discuter avec nous",
+    "contactAdmin": "Contacter l’administration",
+    "assistant": "Assistant",
+    "notifications": "Notifications",
+    "favorites": "Favoris",
+    "helpFaq": "Aide / FAQ",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  }
 }

@@ -403,4 +403,18 @@
     "settings": "Settings",
     "notifications": "Notifications"
   }
+"drawer": {
+    "services": "Services",
+    "myRequests": "My Requests",
+    "history": "History",
+    "stayDetails": "Stay Details",
+    "chatWithUs": "Chat with Us",
+    "contactAdmin": "Contact Admin",
+    "assistant": "Assistant",
+    "notifications": "Notifications",
+    "favorites": "Favorites",
+    "helpFaq": "Help / FAQ",
+    "settings": "Settings",
+    "logout": "Logout"
+  }
 }

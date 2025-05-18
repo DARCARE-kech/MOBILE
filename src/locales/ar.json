@@ -352,4 +352,18 @@
     "settings": "الإعدادات",
     "notifications": "الإشعارات"
   }
+"drawer": {
+    "services": "الخدمات",
+    "myRequests": "طلباتي",
+    "history": "السجل",
+    "stayDetails": "تفاصيل الإقامة",
+    "chatWithUs": "الدردشة معنا",
+    "contactAdmin": "الاتصال بالإدارة",
+    "assistant": "المساعد",
+    "notifications": "الإشعارات",
+    "favorites": "المفضلة",
+    "helpFaq": "مركز المساعدة",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  }
 }
