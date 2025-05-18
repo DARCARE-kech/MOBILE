@@ -35,7 +35,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
           variant="ghost"
           size="icon"
           className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-          aria-label={t('common.menu')}
+          aria-label={t('common.menu', 'Menu')}
         >
           <Menu size={20} />
         </Button>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -92,6 +91,8 @@ export const useSpaceBooking = (requestId?: string) => {
         preferredTime = timeDate.toISOString();
       }
       
+      console.log('Club Access service ID:', values.serviceId);
+      
       // Prepare the request data
       const requestData = {
         user_id: user.id,
@@ -121,12 +122,12 @@ export const useSpaceBooking = (requestId?: string) => {
           .eq('id', editRequestId)
           .select();
           
-        if (error) throw error;
-        result = data;
+        if (error) {
+          console.error("Error updating request:", error);
+          throw error;
+        }
         
-        toast.success(t('services.requestUpdated', 'Request Updated'), {
-          description: t('services.requestUpdatedDesc', 'Your request has been updated successfully.'),
-        });
+        result = data;
       } else {
         // Otherwise insert a new request
         const { data, error } = await supabase
@@ -134,16 +135,15 @@ export const useSpaceBooking = (requestId?: string) => {
           .insert(requestData)
           .select();
           
-        if (error) throw error;
-        result = data;
+        if (error) {
+          console.error("Error inserting request:", error);
+          throw error;
+        }
         
-        toast.success(t('services.requestSubmitted', 'Request Submitted'), {
-          description: t('services.requestSubmittedDesc', 'Your request has been submitted successfully.'),
-        });
+        result = data;
       }
       
       console.log('Service request saved successfully:', result);
-      
       return true;
       
     } catch (error: any) {

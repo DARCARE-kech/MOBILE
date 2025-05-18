@@ -1,38 +1,42 @@
 
 import React from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
-import { formatFieldKey } from '@/utils/formattingUtils';
 import { useTranslation } from 'react-i18next';
 
 interface FormSectionTitleProps {
   title: string;
   icon?: React.ReactNode;
-  subtitle?: string;
-  className?: string;
-  rawKeys?: boolean; // Set to true only when title is already formatted or is a translation key
+  rawKeys?: boolean;
 }
 
 const FormSectionTitle: React.FC<FormSectionTitleProps> = ({ 
   title, 
   icon, 
-  subtitle,
-  className,
-  rawKeys = false
+  rawKeys = false // Default to false to ensure translations are used
 }) => {
+  const { isDarkMode } = useTheme();
   const { t } = useTranslation();
   
-  // For translation keys, we try to translate them first
-  // If rawKeys is true, we assume the title is already a human-readable string or direct translation key
-  const displayTitle = rawKeys ? title : formatFieldKey(title);
-  const displaySubtitle = subtitle ? (rawKeys ? subtitle : formatFieldKey(subtitle)) : undefined;
+  // If rawKeys is false, attempt to translate the title
+  const displayTitle = rawKeys ? title : t(title, title);
   
   return (
-    <div className={cn("mb-4", className)}>
-      <div className="flex items-center gap-2 mb-1">
-        {icon && <div className="text-darcare-gold">{icon}</div>}
-        <h3 className="text-darcare-gold font-serif text-lg">{displayTitle}</h3>
-      </div>
-      
+    <div className="flex items-center gap-2">
+      {icon && (
+        <span className={cn(
+          "text-darcare-gold",
+          isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+        )}>
+          {icon}
+        </span>
+      )}
+      <h3 className={cn(
+        "text-lg font-serif",
+        isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+      )}>
+        {displayTitle}
+      </h3>
     </div>
   );
 };

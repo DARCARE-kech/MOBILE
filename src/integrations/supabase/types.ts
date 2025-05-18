@@ -791,6 +791,10 @@ export type Database = {
         Args: { lat1: number; lon1: number; lat2: number; lon2: number }
         Returns: number
       }
+      enable_realtime: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_available_spaces: {
         Args: Record<PropertyKey, never>
         Returns: {

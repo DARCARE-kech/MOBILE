@@ -23,6 +23,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import ServiceBanner from '@/components/services/ServiceBanner';
 import { ServiceDetail as ServiceDetailType } from '@/hooks/services/types';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Define props interface for BookSpaceService component to match what ServiceDetail is passing
 interface BookSpaceServiceProps {
@@ -41,6 +42,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
   const location = useLocation();
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
+  const { user } = useAuth();
   
   // If not explicitly set through props, check location state
   const isEditMode = editMode || (location.state?.editMode === true);
@@ -59,6 +61,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
     handleSubmit
   } = useSpaceBooking(requestId);
 
+  // Query to get spaces data
   const { data: spaces, isLoading } = useQuery({
     queryKey: ['spaces', spaceId],
     queryFn: async () => {
@@ -124,7 +127,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
   }
 
   const onSubmit = async (values: any) => {
-    // Prepare the request data with the correct service ID
+    // Ensure we have the service ID before proceeding
     const effectiveServiceId = serviceId || clubAccessService?.id;
     
     if (!effectiveServiceId) {
@@ -134,19 +137,38 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
       return;
     }
     
-    // For edit mode, we need to pass the requestId
+    // Prepare the request data with all necessary fields
     const requestData = {
       ...values,
-      serviceId: effectiveServiceId, // Use the fetched or provided Club Access service ID
+      serviceId: effectiveServiceId,
       spaceName: selectedSpace.name,
       spaceId: selectedSpace.id
     };
     
     console.log('Submitting space booking with data:', requestData);
     
-    const success = await handleSubmit(requestData, selectedSpace.id, isEditMode, requestId);
-    if (success) {
-      navigate('/services');
+    try {
+      // For edit mode, we need to pass the requestId
+      const success = await handleSubmit(requestData, selectedSpace.id, isEditMode, requestId);
+      
+      if (success) {
+        // Show success toast
+        toast.success(isEditMode 
+          ? t('services.requestUpdated', 'Request Updated') 
+          : t('services.bookingConfirmed', 'Booking Confirmed'), {
+          description: isEditMode 
+            ? t('services.spaceBookingUpdated', 'Your space booking has been updated')
+            : t('services.spaceBookingConfirmed', 'Your space has been successfully booked')
+        });
+        
+        // Navigate back to services page
+        navigate('/services');
+      }
+    } catch (error) {
+      console.error('Error submitting space booking:', error);
+      toast.error(t('common.error', 'Error'), {
+        description: t('services.errorSubmitting', 'Error submitting your request. Please try again.') 
+      });
     }
   };
 
@@ -195,7 +217,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
             <FormSectionTitle 
               title={t('services.rulesAndGuidelines', 'Rules and Guidelines')} 
               icon={<Info className="w-5 h-5" />}
-              rawKeys={true}
+              rawKeys={false}
             />
             <p className={cn(
               "whitespace-pre-line mt-2",
@@ -213,7 +235,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
               <FormSectionTitle 
                 title={t('services.schedulingDetails', 'Scheduling Details')} 
                 icon={<CalendarClock className="w-5 h-5" />}
-                rawKeys={true}
+                rawKeys={false}
               />
               <div className="mt-3">
                 <DateTimeSelector
@@ -239,7 +261,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
               <FormSectionTitle 
                 title={t('services.specialRequests', 'Special Requests')} 
                 icon={<PenLine className="w-5 h-5" />}
-                rawKeys={true}
+                rawKeys={false}
               />
               <div className="mt-3">
                 <SpecialRequests form={form} />
@@ -247,7 +269,10 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
             </LuxuryCard>
 
             <div className="pt-4 pb-16">
-              <BookingSubmitButton isSubmitting={isSubmitting} isEditing={isEditMode} />
+              <BookingSubmitButton 
+                isSubmitting={isSubmitting} 
+                isEditing={isEditMode}
+              />
             </div>
           </form>
         </Form>
