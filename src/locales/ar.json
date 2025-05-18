@@ -1,4 +1,3 @@
-
 {
   "common": {
     "back": "عودة",
@@ -70,7 +69,13 @@
     "invalidEmail": "عنوان بريد إلكتروني غير صالح",
     "rateLimitExceeded": "محاولات تسجيل دخول كثيرة. يرجى المحاولة مرة أخرى لاحقًا.",
     "passwordResetSent": "تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور",
-    "checkEmail": "يرجى التحقق من بريدك الإلكتروني"
+    "checkEmail": "يرجى التحقق من بريدك الإلكتروني",
+    "termsAgreement": "أوافق على",
+    "termsAndPolicy": "شروط الخدمة وسياسة الخصوصية",
+    "termsOfService": "شروط الخدمة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsRequired": "الموافقة مطلوبة",
+    "mustAgreeToTerms": "يجب أن توافق على شروط الخدمة وسياسة الخصوصية لإنشاء حساب."
   },
   "navigation": {
     "home": "الرئيسية",
@@ -233,7 +238,7 @@
       "shopping": "تسوق",
       "culture": "ثقافة",
       "restaurant": "مطعم",
-      "excursion": "رحلة"
+      "excursion": "رح��ة"
     }
   },
   "shop": {

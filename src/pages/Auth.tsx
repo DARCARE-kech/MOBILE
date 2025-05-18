@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
@@ -7,6 +8,7 @@ import AuthTabs from "@/components/auth/AuthTabs";
 import LoginForm from "@/components/auth/LoginForm";
 import SignupForm from "@/components/auth/SignupForm";
 import AuthFooter from "@/components/auth/AuthFooter";
+import LanguageSwitcher from "@/components/auth/LanguageSwitcher";
 import { validateEmail, validatePassword, validateName } from "@/utils/authValidation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
@@ -20,6 +22,7 @@ const Auth = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [nameError, setNameError] = useState("");
+  const [termsAgreed, setTermsAgreed] = useState(false);
   const { signIn, signUp, isLoading, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -51,6 +54,15 @@ const Auth = () => {
       const isNameValid = validateName(name);
       if (isNameValid) {
         setNameError(isNameValid);
+        return;
+      }
+      
+      if (!termsAgreed) {
+        toast({
+          title: t('auth.termsRequired'),
+          description: t('auth.mustAgreeToTerms', 'You must agree to the Terms of Service and Privacy Policy to create an account.'),
+          variant: "destructive",
+        });
         return;
       }
     }
@@ -155,7 +167,11 @@ const Auth = () => {
             />
           )}
           
-          <AuthFooter />
+          {!isLogin && (
+            <AuthFooter termsAgreed={termsAgreed} setTermsAgreed={setTermsAgreed} />
+          )}
+          
+          <LanguageSwitcher />
         </div>
       </div>
     </div>
