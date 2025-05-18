@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Clock, User, Eye, Trash2 } from 'lucide-react';
@@ -15,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useRequestStatusNotification } from '@/hooks/useRequestStatusNotification';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,7 +56,11 @@ const HistoryTab: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [requestToDelete, setRequestToDelete] = React.useState<string | null>(null);
+  const [requestToDelete, setRequestToDelete] = useState<string | null>(null);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  
+  // Initialize the status notification hook when a request is selected
+  useRequestStatusNotification(selectedRequestId);
   
   const { data: history, isLoading, error } = useQuery({
     queryKey: ['service-history', user?.id],
@@ -128,6 +132,7 @@ const HistoryTab: React.FC = () => {
   });
 
   const handleRequestClick = (requestId: string) => {
+    setSelectedRequestId(requestId);
     navigate(`/services/requests/${requestId}`);
   };
 

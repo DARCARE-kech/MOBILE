@@ -28,5 +28,28 @@
     "activities": "Activités",
     "selectActivities": "Sélectionnez les activités pour vos enfants",
     "endTimeMustBeAfterStartTime": "L'heure de fin doit être après l'heure de début"
+  },
+  "notifications": {
+    "requestSubmitted": "Demande soumise",
+    "requestInProgress": "Demande en cours",
+    "requestCompleted": "Demande terminée",
+    "requestCancelled": "Demande annulée",
+    "awaitingConfirmation": "En attente de confirmation de l'administration.",
+    "staffHandlingRequest": "Un membre du personnel traite actuellement votre demande.",
+    "requestSuccessfullyCompleted": "Votre demande a été complétée avec succès.",
+    "requestHasBeenCancelled": "Cette demande a été annulée."
+  },
+  "drawer": {
+    "services": "Services",
+    "myRequests": "Mes Demandes",
+    "history": "Historique",
+    "stayDetails": "Détails du Séjour",
+    "chatWithUs": "Discuter avec Nous",
+    "contactAdmin": "Contacter l'Admin",
+    "notifications": "Notifications",
+    "favorites": "Favoris",
+    "helpFaq": "Aide / FAQ",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
   }
 }

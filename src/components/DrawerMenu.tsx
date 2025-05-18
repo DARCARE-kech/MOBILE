@@ -16,6 +16,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
   const { handleLogout } = useUserProfile();
   const { signOut } = useAuth();
   const { t } = useTranslation();
+  const [open, setOpen] = React.useState(false);
   
   // Use the provided onLogout or fallback to the default logout functions
   const handleLogoutClick = () => {
@@ -28,7 +29,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
   };
   
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -39,7 +40,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onLogout }) => {
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <EnhancedDrawerMenu onLogout={handleLogoutClick} />
+      <EnhancedDrawerMenu onLogout={handleLogoutClick} onClose={() => setOpen(false)} />
     </Sheet>
   );
 };

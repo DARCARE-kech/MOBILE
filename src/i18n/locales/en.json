@@ -28,5 +28,28 @@
     "activities": "Activities",
     "selectActivities": "Select activities for your children",
     "endTimeMustBeAfterStartTime": "End time must be after start time"
+  },
+  "notifications": {
+    "requestSubmitted": "Request submitted",
+    "requestInProgress": "Request in progress",
+    "requestCompleted": "Request completed",
+    "requestCancelled": "Request cancelled",
+    "awaitingConfirmation": "Awaiting confirmation from the administration.",
+    "staffHandlingRequest": "A staff member is currently handling your request.",
+    "requestSuccessfullyCompleted": "Your request has been successfully completed.",
+    "requestHasBeenCancelled": "This request has been cancelled."
+  },
+  "drawer": {
+    "services": "Services",
+    "myRequests": "My Requests",
+    "history": "History",
+    "stayDetails": "Stay Details",
+    "chatWithUs": "Chat with Us",
+    "contactAdmin": "Contact Admin",
+    "notifications": "Notifications",
+    "favorites": "Favorites",
+    "helpFaq": "Help / FAQ",
+    "settings": "Settings",
+    "logout": "Logout"
   }
 }

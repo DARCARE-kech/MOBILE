@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -13,11 +12,15 @@ import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
 import { Json } from "@/integrations/supabase/types"; 
+import { useRequestStatusNotification } from "@/hooks/useRequestStatusNotification";
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
+  // Initialize the status notification hook
+  useRequestStatusNotification(id);
   
   const { data: request, isLoading } = useServiceRequestById(id);
   const { 

@@ -75,6 +75,19 @@ const ServiceDetail: React.FC = () => {
     }
   }, [location]);
   
+  // Enable realtime subscriptions when component mounts
+  useEffect(() => {
+    // Enable realtime for service_requests table
+    const enableRealtime = async () => {
+      await supabase.rpc('supabase_functions.enable_realtime', {
+        table: 'service_requests',
+        schema: 'public'
+      });
+    };
+    
+    enableRealtime();
+  }, []);
+  
   // Fetch the base service information
   const { data: service, isLoading: isLoadingService, error: serviceError } = useQuery({
     queryKey: ['service', id],
