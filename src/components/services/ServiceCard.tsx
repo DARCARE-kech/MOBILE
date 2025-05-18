@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Club, Car, Scissors, Bath } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 interface ServiceCardProps {
   service: {
@@ -17,6 +18,7 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
+  const { t } = useTranslation();
   const { isDarkMode } = useTheme();
   
   // Get the appropriate icon based on the service name
@@ -92,7 +94,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
           "font-serif text-sm font-medium mb-1", // Reduced text size and margin
           isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
         )}>
-          {service.name}
+          {t(`services.${service.name}`, service.name)}
         </h3>
         {service.description && (
           <p className="text-xs opacity-75 line-clamp-2"> {/* Reduced text size */}
