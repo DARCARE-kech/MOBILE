@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
@@ -13,6 +13,8 @@ import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
 import { Json } from "@/integrations/supabase/types"; 
+import StatusNotification from "@/components/services/StatusNotification";
+import { supabase } from "@/integrations/supabase/client";
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +28,45 @@ const RequestDetailPage = () => {
     cancelRequest, 
     isCancelling 
   } = useRequestMutations(id || '');
+  
+  // Track previous status for notification comparisons
+  const [previousStatus, setPreviousStatus] = useState<string | null>(null);
+  
+  // Set up real-time subscription for status changes
+  useEffect(() => {
+    if (!id) return;
+    
+    // Store initial status
+    if (request?.status && previousStatus === null) {
+      setPreviousStatus(request.status);
+    }
+    
+    // Set up realtime subscription to listen for changes to this request
+    const channel = supabase
+      .channel('request-status-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'service_requests',
+          filter: `id=eq.${id}`
+        },
+        (payload) => {
+          // When an update is detected, check if the status has changed
+          const newStatus = payload.new?.status;
+          if (newStatus && newStatus !== previousStatus) {
+            setPreviousStatus(request?.status || null);
+          }
+        }
+      )
+      .subscribe();
+    
+    // Cleanup function
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, request?.status, previousStatus]);
   
   if (isLoading) {
     return (
@@ -95,6 +136,12 @@ const RequestDetailPage = () => {
         rightContent={<div />} // Empty div to prevent default icons
       />
       
+      {/* Status notification component */}
+      <StatusNotification 
+        status={request.status} 
+        previousStatus={previousStatus} 
+      />
+      
       <div className="p-4 space-y-6 pt-24"> {/* Increased padding-top to prevent header overlap */}
         <div className="luxury-card">
           <RequestDetailHeader
@@ -119,7 +166,9 @@ const RequestDetailPage = () => {
         {canModify && (
           <div className="mt-4">
             <RequestActions
-              onEdit={() => navigate(`/services/${request.service_id}`)}
+              onEdit={() => navigate(`/services/${request.service_id}`, { 
+                state: { editMode: true, requestId: request.id }
+              })}
               onCancel={() => cancelRequest()}
               isSubmitting={isCancelling}
             />

@@ -27,6 +27,14 @@
     "endTime": "End Time",
     "activities": "Activities",
     "selectActivities": "Select activities for your children",
-    "endTimeMustBeAfterStartTime": "End time must be after start time"
+    "endTimeMustBeAfterStartTime": "End time must be after start time",
+    "statusPending": "Request submitted",
+    "statusPendingDesc": "Awaiting confirmation from the administration.",
+    "statusInProgress": "Request in progress",
+    "statusInProgressDesc": "A staff member is currently handling your request.",
+    "statusCompleted": "Request completed",
+    "statusCompletedDesc": "Your request has been successfully completed.",
+    "statusCancelled": "Request cancelled",
+    "statusCancelledDesc": "This request has been cancelled."
   }
 }
