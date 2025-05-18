@@ -28,6 +28,8 @@ import AboutPage from "@/pages/profile/AboutPage";
 import ChangePassword from "@/pages/profile/ChangePassword";
 import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage";
 import ForgotPassword from "./ForgotPassword";
+import TermsAndPolicy from "./TermsAndPolicy"; // adapte le chemin si besoin
+
 
 const MainApp: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -74,6 +76,10 @@ const MainApp: React.FC = () => {
           <Onboarding onComplete={handleOnboardingComplete} />
         ),
       },
+      {
+  path: "/terms-and-policy",
+  element: <TermsAndPolicy />
+}
     ];
 
     // Protected routes - require authentication
