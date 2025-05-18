@@ -60,14 +60,14 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
 
       {/* Reserve button */}
       <section className="px-6 pb-4 flex justify-center">
-        <IconButton 
-          icon={<Calendar className="stroke-current" />} 
-          variant="primary"
-          size="lg"
-          onClick={onReserve}
-          className="shadow-md hover:shadow-lg transition-all"
-          aria-label={t('explore.reserve')}
-        />
+        <Button 
+  variant="outline" 
+  size="sm" 
+  className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
+  oonClick={onReserve}
+>
+  Reserve
+</Button>
       </section>
 
       {/* Subtle divider */}
