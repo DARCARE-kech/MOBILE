@@ -79,16 +79,15 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
       <div className="space-y-3">
         {services.map((service) => {
           // Get service name from services object or title property
-          let serviceName = service.services?.name || service.title;
-          
-          // Handle space booking requests specifically
-          if (!serviceName && service.space_id) {
-            // Fix: removed the extra curly braces from t() call
-            serviceName = t(`services.${service.name}`, service.name);
-          }
-          
-          // Fallback if still no service name
-          if (!serviceName) {
+          let serviceName = '';
+
+if (service.services?.name) {
+  serviceName = t(`services.${service.services.name}`, service.services.name);
+} else if (service.space_id && service.name) {
+  serviceName = t(`services.${service.name}`, service.name); // for Club Access / space bookings
+} else if (service.title) {
+  serviceName = t(`services.${service.title}`, service.title);
+} else {
             serviceName = t('services.untitled');
           }
           
