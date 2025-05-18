@@ -125,13 +125,13 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
 
       <section className="px-6 pb-4 flex justify-center">
         <Button 
-  variant="outline" 
-  size="sm" 
-  className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
-  oonClick={onReserve}
->
-  Reserve
-</Button>
+          variant="outline" 
+          size="sm" 
+          className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
+          onClick={onReserve}
+        >
+          Reserve
+        </Button>
       </section>
     </div>
   );
