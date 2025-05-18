@@ -1,3 +1,4 @@
+
 {
   "common": {
     "back": "Retour",
@@ -147,7 +148,29 @@
     "hairSalon": "Salon de Coiffure",
     "kidsClub": "Club Enfants",
     "bookSpace": "Réserver un Espace",
-    "noLifestyleServices": "Aucun service lifestyle disponible"
+    "noLifestyleServices": "Aucun service lifestyle disponible",
+    "clientGender": "Genre du client",
+    "hairServices": "Services de coiffure",
+    "stylistGender": "Préférence de genre pour le coiffeur",
+    "selectOne": "Sélectionnez un service",
+    "numberOfChildren": "Nombre d'enfants",
+    "ageRange": "Tranche d'âge",
+    "timeSlot": "Créneau horaire",
+    "startTime": "Heure de début",
+    "endTime": "Heure de fin",
+    "activities": "Activités",
+    "selectActivities": "Sélectionnez les activités pour vos enfants",
+    "endTimeMustBeAfterStartTime": "L'heure de fin doit être après l'heure de début",
+    "requestSubmitted": "Demande soumise",
+    "requestSubmittedDesc": "Votre demande a été soumise avec succès.",
+    "requestUpdated": "Demande mise à jour",
+    "requestUpdatedDesc": "Votre demande a été mise à jour avec succès.",
+    "loginRequired": "Vous devez être connecté pour soumettre une demande.",
+    "requestErrorDesc": "Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer.",
+    "updateRequest": "Mettre à jour la demande",
+    "sendRequest": "Envoyer la demande",
+    "hairSalonDescription": "Prenez rendez-vous au salon pour des coupes, des coiffures, des colorations et plus. Nos coiffeurs professionnels offrent une variété de services.",
+    "kidsClubDescription": "Notre club pour enfants propose des activités surveillées et des jeux pour les enfants de tous âges. Réservez une session pour que vos petits s'amusent dans un environnement sûr."
   },
   "explore": {
     "searchPlaceholder": "Rechercher des lieux et expériences...",

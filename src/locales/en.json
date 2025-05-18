@@ -36,19 +36,39 @@
     "submitting": "Submitting...",
     "updateRequest": "Update Request",
     "submitRequest": "Submit Request",
+    "sendRequest": "Send Request",
     "errorSubmitting": "Error Submitting",
     "pleaseTryAgain": "Please try again later",
     "hairSalon": "Hair Salon Service",
     "hairSalonDescription": "Book a salon appointment for haircuts, styling, coloring and more. Our professional stylists offer a variety of services.",
     "kidsClub": "Kids Club Service", 
-    "kidsClubDescription": "Our kids club offers supervised activities and play for children of all ages. Book a session for your little ones to have fun in a safe environment."
+    "kidsClubDescription": "Our kids club offers supervised activities and play for children of all ages. Book a session for your little ones to have fun in a safe environment.",
+    "clientGender": "Client Gender",
+    "hairServices": "Hair Services",
+    "stylistGender": "Stylist Gender Preference",
+    "selectOne": "Select one service",
+    "numberOfChildren": "Number of Children",
+    "ageRange": "Age Range",
+    "timeSlot": "Time Slot",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "activities": "Activities",
+    "selectActivities": "Select activities for your children",
+    "endTimeMustBeAfterStartTime": "End time must be after start time",
+    "requestSubmitted": "Request Submitted",
+    "requestSubmittedDesc": "Your request has been submitted successfully.",
+    "requestUpdated": "Request Updated",
+    "requestUpdatedDesc": "Your request has been updated successfully.",
+    "loginRequired": "You must be logged in to submit a request.",
+    "requestErrorDesc": "An error occurred while processing your request. Please try again."
   },
   "common": {
     "loading": "Loading",
     "errorLoading": "Error loading data",
     "notSpecified": "Not specified",
     "error": "Error",
-    "fetchDataError": "Failed to fetch data"
+    "fetchDataError": "Failed to fetch data",
+    "submitting": "Submitting..."
   },
   "drawer": {
     "services": "Services"

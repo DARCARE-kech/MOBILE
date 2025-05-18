@@ -13,6 +13,20 @@
     "messageError": "Could not send your message.",
     "noHistoryYet": "No conversation history yet",
     "startNewChat": "Start a new chat to begin",
-    "messageInputLabel": "Message input field"
+    "messageInputLabel": "Message input field",
+    "hairSalonDescription": "Book a salon appointment for haircuts, styling, coloring and more.",
+    "kidsClubDescription": "Our kids club offers supervised activities and play for children of all ages.",
+    "clientGender": "Client Gender",
+    "hairServices": "Hair Services",
+    "stylistGender": "Stylist Gender Preference",
+    "selectOne": "Select one service",
+    "numberOfChildren": "Number of Children",
+    "ageRange": "Age Range",
+    "timeSlot": "Time Slot",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "activities": "Activities",
+    "selectActivities": "Select activities for your children",
+    "endTimeMustBeAfterStartTime": "End time must be after start time"
   }
 }

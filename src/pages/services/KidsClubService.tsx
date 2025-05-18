@@ -156,26 +156,30 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
       let error;
 
       if (editMode && existingRequest?.id) {
+        // Update existing request
         const { error: updateError } = await supabase
           .from('service_requests')
           .update(requestData)
           .eq('id', existingRequest.id);
+          
         error = updateError;
 
         if (!updateError) {
-          toast.success(t('services.requestUpdated'), {
-            description: t('services.requestUpdatedDesc'),
+          toast.success(t('services.requestUpdated', 'Request Updated'), {
+            description: t('services.requestUpdatedDesc', 'Your kids club request has been updated successfully.'),
           });
         }
       } else {
+        // Create new request
         const { error: insertError } = await supabase
           .from('service_requests')
           .insert(requestData);
+          
         error = insertError;
 
         if (!insertError) {
-          toast.success(t('services.requestSubmitted'), {
-            description: t('services.requestSubmittedDesc'),
+          toast.success(t('services.requestSubmitted', 'Request Submitted'), {
+            description: t('services.requestSubmittedDesc', 'Your kids club request has been submitted successfully.'),
           });
         }
       }
@@ -185,8 +189,8 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
       navigate('/services');
     } catch (err) {
       console.error('Request error:', err);
-      toast.error(t('common.error'), {
-        description: t('services.requestErrorDesc'),
+      toast.error(t('common.error', 'Error'), {
+        description: t('services.requestErrorDesc', 'An error occurred while processing your request. Please try again.'),
       });
     } finally {
       setIsSubmitting(false);
@@ -207,7 +211,7 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
               form={form}
               fieldType="number"
               name="number_of_children"
-              label={t('services.numberOfChildren')}
+              label={t('services.numberOfChildren', 'Number of Children')}
               min={1}
               max={10}
               step={1}
@@ -217,14 +221,14 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
               form={form}
               fieldType="select"
               name="age_range"
-              label={t('services.ageRange')}
+              label={t('services.ageRange', 'Age Range')}
               options={ageOptions}
             />
             
             {/* Time Range Section */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-darcare-beige">{t('services.timeSlot')}</h3>
+                <h3 className="text-sm font-medium text-darcare-beige">{t('services.timeSlot', 'Time Slot')}</h3>
                 {timeError && (
                   <div className="flex items-center text-red-500 text-xs">
                     <AlertCircle className="h-3 w-3 mr-1" />
@@ -237,7 +241,7 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
                   form={form}
                   fieldType="time"
                   name="time_slot_start"
-                  label={t('services.startTime')}
+                  label={t('services.startTime', 'Start Time')}
                   onChange={value => {
                     const end = form.getValues('time_slot_end');
                     validateTimeRange(value as string, end);
@@ -247,7 +251,7 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
                   form={form}
                   fieldType="time"
                   name="time_slot_end"
-                  label={t('services.endTime')}
+                  label={t('services.endTime', 'End Time')}
                   onChange={value => {
                     const start = form.getValues('time_slot_start');
                     validateTimeRange(start, value as string);
@@ -260,9 +264,9 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
               form={form}
               fieldType="checkbox"
               name="activities"
-              label={t('services.activities')}
+              label={t('services.activities', 'Activities')}
               options={activityOptions}
-              subtitle={t('services.selectActivities')}
+              subtitle={t('services.selectActivities', 'Select activities for your children')}
             />
             <DateTimePickerSection form={form} />
             <NoteInput form={form} />
@@ -272,10 +276,10 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting
-                ? t('common.submitting')
+                ? t('common.submitting', 'Submitting...')
                 : editMode
-                ? t('services.updateRequest')
-                : t('services.sendRequest')}
+                ? t('services.updateRequest', 'Update Request')
+                : t('services.sendRequest', 'Send Request')}
             </Button>
           </form>
         </Form>

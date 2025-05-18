@@ -70,8 +70,8 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
 
   const onSubmit = async (data: FormValues) => {
     if (!user) {
-      toast.error(t('common.error'), {
-        description: t('services.loginRequired'),
+      toast.error(t('common.error', 'Error'), {
+        description: t('services.loginRequired', 'You must be logged in to submit a request.'),
       });
       return;
     }
@@ -105,26 +105,30 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
       let error;
 
       if (editMode && existingRequest?.id) {
+        // Update existing request
         const { error: updateError } = await supabase
           .from('service_requests')
           .update(requestData)
           .eq('id', existingRequest.id);
+          
         error = updateError;
 
         if (!updateError) {
-          toast.success(t('services.requestUpdated'), {
-            description: t('services.requestUpdatedDesc'),
+          toast.success(t('services.requestUpdated', 'Request Updated'), {
+            description: t('services.requestUpdatedDesc', 'Your hair salon appointment has been updated successfully.'),
           });
         }
       } else {
+        // Create new request
         const { error: insertError } = await supabase
           .from('service_requests')
           .insert(requestData);
+          
         error = insertError;
 
         if (!insertError) {
-          toast.success(t('services.requestSubmitted'), {
-            description: t('services.requestSubmittedDesc'),
+          toast.success(t('services.requestSubmitted', 'Request Submitted'), {
+            description: t('services.requestSubmittedDesc', 'Your hair salon appointment has been submitted successfully.'),
           });
         }
       }
@@ -134,8 +138,8 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
       navigate('/services');
     } catch (err) {
       console.error('Request error:', err);
-      toast.error(t('common.error'), {
-        description: t('services.requestErrorDesc'),
+      toast.error(t('common.error', 'Error'), {
+        description: t('services.requestErrorDesc', 'An error occurred while processing your request. Please try again.'),
       });
     } finally {
       setIsSubmitting(false);
@@ -156,7 +160,7 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
               form={form}
               fieldType="select"
               name="client_gender"
-              label={t('services.clientGender')}
+              label={t('services.clientGender', 'Client Gender')}
               options={clientGenders}
               icon={<Scissors className="h-5 w-5" />}
             />
@@ -164,15 +168,15 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
               form={form}
               fieldType="select"
               name="service_type"
-              label={t('services.hairServices')}
+              label={t('services.hairServices', 'Hair Services')}
               options={serviceTypes}
-              subtitle={t('services.selectOne')}
+              subtitle={t('services.selectOne', 'Select one service')}
             />
             <OptionField
               form={form}
               fieldType="select"
               name="stylist_gender_preference"
-              label={t('services.stylistGender')}
+              label={t('services.stylistGender', 'Stylist Gender Preference')}
               options={stylistPreferences}
             />
             <DateTimePickerSection form={form} />
@@ -183,10 +187,10 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
               className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting
-                ? t('common.submitting')
+                ? t('common.submitting', 'Submitting...')
                 : editMode
-                ? t('services.updateRequest')
-                : t('services.sendRequest')}
+                ? t('services.updateRequest', 'Update Request')
+                : t('services.sendRequest', 'Send Request')}
             </Button>
           </form>
         </Form>

@@ -13,6 +13,20 @@
     "messageError": "Impossible d'envoyer votre message.",
     "noHistoryYet": "Pas encore d'historique de conversation",
     "startNewChat": "Commencez une nouvelle conversation",
-    "messageInputLabel": "Champ de saisie de message"
+    "messageInputLabel": "Champ de saisie de message",
+    "hairSalonDescription": "Prenez rendez-vous au salon pour des coupes, des coiffures, des colorations et plus.",
+    "kidsClubDescription": "Notre club pour enfants propose des activités surveillées et des jeux pour les enfants de tous âges.",
+    "clientGender": "Genre du client",
+    "hairServices": "Services de coiffure",
+    "stylistGender": "Préférence de genre pour le coiffeur",
+    "selectOne": "Sélectionnez un service",
+    "numberOfChildren": "Nombre d'enfants",
+    "ageRange": "Tranche d'âge",
+    "timeSlot": "Créneau horaire",
+    "startTime": "Heure de début",
+    "endTime": "Heure de fin",
+    "activities": "Activités",
+    "selectActivities": "Sélectionnez les activités pour vos enfants",
+    "endTimeMustBeAfterStartTime": "L'heure de fin doit être après l'heure de début"
   }
 }
