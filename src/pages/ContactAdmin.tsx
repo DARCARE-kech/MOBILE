@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import MainHeader from '@/components/MainHeader';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -22,16 +22,36 @@ interface FormData {
   message: string;
 }
 
+interface LocationState {
+  preselectedCategory?: Enums<'admin_message_category'>;
+  subject?: string;
+}
+
 const ContactAdmin: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as LocationState;
+  
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, watch } = useForm<FormData>({
     defaultValues: {
-      category: 'issue',
+      category: state?.preselectedCategory || 'issue',
     }
   });
-  const { sendAdminMessage } = useAdminContact();
   
+  const { sendAdminMessage } = useAdminContact();
   const selectedCategory = watch('category');
+
+  useEffect(() => {
+    // Set preselected category from navigation state if available
+    if (state?.preselectedCategory) {
+      setValue('category', state.preselectedCategory);
+    }
+    
+    // If we have a subject, prefill the message with it
+    if (state?.subject) {
+      setValue('message', `Regarding: ${state.subject}\n\n`);
+    }
+  }, [state, setValue]);
 
   const onSubmit = async (data: FormData) => {
     await sendAdminMessage.mutateAsync(data);

@@ -33,6 +33,15 @@ const RecommendationDetail = () => {
 
   const handleBack = () => navigate(-1);
 
+  const handleReserve = () => {
+    navigate('/contact-admin', { 
+      state: { 
+        preselectedCategory: 'external_request',
+        subject: recommendation?.title 
+      }
+    });
+  };
+
   if (!id) {
     return <RecommendationDetailSkeleton onBack={handleBack} />;
   }
@@ -62,6 +71,7 @@ const RecommendationDetail = () => {
         recommendation={recommendation}
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        onReserve={handleReserve}
       />
       
       <BottomNavigation activeTab="explore" />

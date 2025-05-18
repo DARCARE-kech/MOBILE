@@ -1,15 +1,17 @@
 
-import { MapPin, Star, Clock, Phone, Globe } from "lucide-react";
+import { MapPin, Star, Clock, Phone, Globe, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { TagsList } from "./TagsList";
+import IconButton from "@/components/services/IconButton";
 
 interface RecommendationInfoProps {
   recommendation: Recommendation;
+  onReserve: () => void;
 }
 
-export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) => {
+export const RecommendationInfo = ({ recommendation, onReserve }: RecommendationInfoProps) => {
   const { t } = useTranslation();
 
   // Section visibility checks
@@ -55,6 +57,18 @@ export const RecommendationInfo = ({ recommendation }: RecommendationInfoProps) 
           </p>
         </section>
       )}
+
+      {/* Reserve button */}
+      <section className="px-6 pb-4 flex justify-center">
+        <IconButton 
+          icon={<Calendar className="stroke-current" />} 
+          variant="primary"
+          size="lg"
+          onClick={onReserve}
+          className="shadow-md hover:shadow-lg transition-all"
+          aria-label={t('explore.reserve')}
+        />
+      </section>
 
       {/* Subtle divider */}
       {hasContactOrLocation && <div className="h-[1px] bg-darcare-gold/10 mx-6 mb-3" />}
