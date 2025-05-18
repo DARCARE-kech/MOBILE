@@ -75,17 +75,28 @@ const ServiceDetail: React.FC = () => {
     }
   }, [location]);
   
-  // Enable realtime subscriptions when component mounts
+  // Setup real-time subscription when component mounts
   useEffect(() => {
-    // Enable realtime for service_requests table
-    const enableRealtime = async () => {
-      await supabase.rpc('supabase_functions.enable_realtime', {
-        table: 'service_requests',
-        schema: 'public'
-      });
-    };
+    // No need to call enable_realtime RPC function
+    // Directly subscribe to the changes using .channel()
+    const channel = supabase
+      .channel('service-updates')
+      .on('postgres_changes', 
+        { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'service_requests' 
+        },
+        (payload) => {
+          console.log('Service request updated:', payload);
+        }
+      )
+      .subscribe();
     
-    enableRealtime();
+    return () => {
+      // Clean up subscription
+      supabase.removeChannel(channel);
+    };
   }, []);
   
   // Fetch the base service information
