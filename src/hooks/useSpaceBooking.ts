@@ -1,12 +1,11 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { FormData } from '@/components/services/form/formHelpers';
-import { useAuth } from '@/contexts/AuthContext';
 
 export const useSpaceBooking = (requestId?: string) => {
   const { t } = useTranslation();
@@ -14,7 +13,6 @@ export const useSpaceBooking = (requestId?: string) => {
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [peopleCount, setPeopleCount] = useState(1);
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   // If requestId is provided, fetch the request data
   const { data: existingRequest } = useQuery({
@@ -59,13 +57,10 @@ export const useSpaceBooking = (requestId?: string) => {
     enabled: !!requestId
   });
 
-  // Update the form type to match FormData interface
-  const form = useForm<FormData>({
+  const form = useForm({
     defaultValues: {
       note: '',
-      date: existingRequest?.preferred_time ? new Date(existingRequest.preferred_time) : undefined,
-      preferredTime: '',
-      preferredDate: ''
+      date: existingRequest?.preferred_time ? new Date(existingRequest.preferred_time) : undefined
     }
   });
 
@@ -73,9 +68,13 @@ export const useSpaceBooking = (requestId?: string) => {
     try {
       setIsSubmitting(true);
       
-      if (!user) {
-        toast.error(t('services.errorSubmitting', 'Error Submitting'), {
-          description: t('services.loginRequired', 'You must be logged in to submit a request.')
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      
+      if (!userId) {
+        toast({
+          title: t('services.errorSubmitting', 'Error Submitting'),
+          description: t('services.needToLogin', 'You need to be logged in'),
+          variant: 'destructive'
         });
         return false;
       }
@@ -91,13 +90,10 @@ export const useSpaceBooking = (requestId?: string) => {
         preferredTime = timeDate.toISOString();
       }
       
-      console.log('Club Access service ID:', values.serviceId);
-      
       // Prepare the request data
       const requestData = {
-        user_id: user.id,
-        profile_id: user.id,  // Ensure profile_id is set to match user_id
-        service_id: values.serviceId, // From Club Access service
+        user_id: userId,
+        service_id: values.serviceId || null, // From Club Access service
         space_id: spaceId,
         request_type: 'space',
         status: 'pending',
@@ -105,12 +101,9 @@ export const useSpaceBooking = (requestId?: string) => {
         note: values.note,
         selected_options: {
           peopleCount,
-          spaceName: values.spaceName,
-          spaceId: spaceId
+          spaceName: values.spaceName
         }
       };
-      
-      console.log('Submitting service request with data:', requestData);
       
       let result;
       
@@ -122,11 +115,7 @@ export const useSpaceBooking = (requestId?: string) => {
           .eq('id', editRequestId)
           .select();
           
-        if (error) {
-          console.error("Error updating request:", error);
-          throw error;
-        }
-        
+        if (error) throw error;
         result = data;
       } else {
         // Otherwise insert a new request
@@ -135,22 +124,29 @@ export const useSpaceBooking = (requestId?: string) => {
           .insert(requestData)
           .select();
           
-        if (error) {
-          console.error("Error inserting request:", error);
-          throw error;
-        }
-        
+        if (error) throw error;
         result = data;
       }
       
-      console.log('Service request saved successfully:', result);
+      // Show a success toast
+      toast({
+        title: isEditing 
+          ? t('services.bookingUpdated', 'Booking Updated') 
+          : t('services.bookingConfirmed', 'Booking Confirmed'),
+        description: isEditing
+          ? t('services.spaceBookingUpdated', 'Your space booking has been updated')
+          : t('services.spaceBookingConfirmed', 'Your space has been successfully booked'),
+      });
+      
       return true;
       
     } catch (error: any) {
       console.error('Error submitting space booking:', error);
       
-      toast.error(t('services.errorSubmitting', 'Error Submitting'), {
+      toast({
+        title: t('services.errorSubmitting', 'Error Submitting'),
         description: error.message || t('services.pleaseTryAgain', 'Please try again later'),
+        variant: 'destructive'
       });
       
       return false;
