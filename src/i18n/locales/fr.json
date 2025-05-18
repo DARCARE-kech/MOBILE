@@ -27,14 +27,6 @@
     "endTime": "Heure de fin",
     "activities": "Activités",
     "selectActivities": "Sélectionnez les activités pour vos enfants",
-    "endTimeMustBeAfterStartTime": "L'heure de fin doit être après l'heure de début",
-    "statusPending": "Demande soumise",
-    "statusPendingDesc": "En attente de confirmation par l'administration.",
-    "statusInProgress": "Demande en cours",
-    "statusInProgressDesc": "Un membre du personnel s'occupe actuellement de votre demande.",
-    "statusCompleted": "Demande complétée",
-    "statusCompletedDesc": "Votre demande a été complétée avec succès.",
-    "statusCancelled": "Demande annulée",
-    "statusCancelledDesc": "Cette demande a été annulée."
+    "endTimeMustBeAfterStartTime": "L'heure de fin doit être après l'heure de début"
   }
 }

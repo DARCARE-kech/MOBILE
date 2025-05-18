@@ -1,36 +1,21 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { 
   Sheet, 
   SheetContent, 
   SheetHeader,
   SheetTrigger 
 } from "@/components/ui/sheet";
-import { 
-  Menu, 
-  MessageCircle, 
-  Bot, 
-  UserCircle, 
-  Bell, 
-  LogOut, 
-  ChevronDown, 
-  ChevronRight,
-  List,
-  History,
-  Hotel,
-  HelpCircle,
-  Settings,
-  Star
-} from "lucide-react";
+import { Menu, MessageCircle, Bot, UserCircle, Bell, LogOut, ChevronDown, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import UserProfileSection from "./drawer/UserProfileSection";
-import DynamicServicesMenu from "./drawer/DynamicServicesMenu";
+import ServicesSubMenu from "./drawer/ServicesSubMenu";
+import MainNavigation from "./drawer/MainNavigation";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { supabase } from "@/integrations/supabase/client";
 
 interface EnhancedDrawerMenuProps {
   onLogout: () => void;
@@ -85,32 +70,10 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
               )}
             </button>
             
-            <DynamicServicesMenu expanded={servicesExpanded} />
+            <ServicesSubMenu expanded={servicesExpanded} />
           </div>
 
-          <Link
-            to="/services"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><List size={20} /></span>
-            <span>{t('navigation.requests')}</span>
-          </Link>
-          
-          <Link
-            to="/services/history"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><History size={20} /></span>
-            <span>{t('navigation.history')}</span>
-          </Link>
-          
-          <Link
-            to="/stays"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><Hotel size={20} /></span>
-            <span>{t('navigation.stayDetails')}</span>
-          </Link>
+          <MainNavigation />
 
           <Separator className="my-2 bg-darcare-gold/20" />
 
@@ -123,14 +86,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             <span>{t('navigation.chatWithUs')}</span>
           </Button>
 
-          <Link
-            to="/contact-admin"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><Bot size={20} /></span>
-            <span>{t('navigation.contactAdmin')}</span>
-          </Link>
-          
           <Link
             to="/chatbot"
             className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
@@ -156,30 +111,6 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
             <span className="text-darcare-gold"><Bell size={20} /></span>
             <span>{t('navigation.notifications')}</span>
           </Link>
-          
-          <Link
-            to="/explore/favorites"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><Star size={20} /></span>
-            <span>{t('navigation.favorites')}</span>
-          </Link>
-          
-          <Link
-            to="/help"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><HelpCircle size={20} /></span>
-            <span>{t('navigation.helpFaq')}</span>
-          </Link>
-          
-          <Link
-            to="/settings"
-            className="flex items-center gap-4 py-3 px-4 text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold rounded-lg transition-colors"
-          >
-            <span className="text-darcare-gold"><Settings size={20} /></span>
-            <span>{t('navigation.settings')}</span>
-          </Link>
 
           <div className="mt-auto pt-6 pb-4">
             <Separator className="mb-4 bg-darcare-gold/20" />
@@ -189,7 +120,7 @@ const EnhancedDrawerMenu: React.FC<EnhancedDrawerMenuProps> = ({ onLogout }) => 
               className="w-full justify-start gap-4 py-3 h-auto text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold"
             >
               <span className="text-darcare-gold"><LogOut size={20} /></span>
-              <span>{t('navigation.logout')}</span>
+              <span>{t('common.logout')}</span>
             </Button>
             <div className="text-center mt-4">
               <span className="text-xs text-darcare-beige/40">{appVersion}</span>

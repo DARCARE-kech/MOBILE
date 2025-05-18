@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Clock, User, Eye, Trash2 } from 'lucide-react';
@@ -14,7 +15,6 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import StatusNotification from '@/components/services/StatusNotification';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,10 +56,7 @@ const HistoryTab: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [requestToDelete, setRequestToDelete] = useState<string | null>(null);
-  
-  // Track request statuses to detect changes
-  const [requestStatuses, setRequestStatuses] = useState<Record<string, string>>({});
+  const [requestToDelete, setRequestToDelete] = React.useState<string | null>(null);
   
   const { data: history, isLoading, error } = useQuery({
     queryKey: ['service-history', user?.id],
@@ -100,55 +97,6 @@ const HistoryTab: React.FC = () => {
     },
     enabled: !!user?.id
   });
-
-  // Store initial status values for comparison
-  useEffect(() => {
-    if (history && history.length > 0) {
-      const statusMap: Record<string, string> = {};
-      history.forEach(request => {
-        if (request.id && request.status) {
-          statusMap[request.id] = request.status;
-        }
-      });
-      setRequestStatuses(statusMap);
-    }
-  }, [history]);
-  
-  // Set up realtime subscription for status changes
-  useEffect(() => {
-    if (!user?.id) return;
-    
-    const channel = supabase
-      .channel('history-status-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'service_requests',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const requestId = payload.new?.id;
-          const newStatus = payload.new?.status;
-          
-          if (requestId && newStatus) {
-            const oldStatus = requestStatuses[requestId];
-            
-            // Update the status map
-            setRequestStatuses(prev => ({
-              ...prev,
-              [requestId]: newStatus
-            }));
-          }
-        }
-      )
-      .subscribe();
-    
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user?.id, requestStatuses]);
 
   // Mutation to delete a service request
   const deleteMutation = useMutation({
@@ -241,20 +189,6 @@ const HistoryTab: React.FC = () => {
 
   return (
     <>
-      {/* Render status notifications for each request if status changes */}
-      {history.map(record => {
-        if (record.id && record.status && requestStatuses[record.id] && record.status !== requestStatuses[record.id]) {
-          return (
-            <StatusNotification 
-              key={`notification-${record.id}`}
-              status={record.status} 
-              previousStatus={requestStatuses[record.id]} 
-            />
-          );
-        }
-        return null;
-      })}
-      
       <div className="space-y-2 p-2">
         {history?.map(record => {
           // Déterminer le nom du service en fonction du contexte

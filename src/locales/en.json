@@ -5,20 +5,7 @@
     "services": "Services",
     "explore": "Explore",
     "chat": "Chat",
-    "profile": "Profile",
-    "requests": "My Requests",
-    "history": "History",
-    "stayDetails": "Stay Details",
-    "chatWithUs": "Chat with Us",
-    "contactAdmin": "Contact Admin",
-    "assistant": "AI Assistant",
-    "notifications": "Notifications",
-    "favorites": "Favorites",
-    "helpFaq": "Help / FAQ",
-    "settings": "Settings",
-    "logout": "Logout",
-    "availableServices": "Available Services",
-    "spaces": "Spaces"
+    "profile": "Profile"
   },
   "services": {
     "invilla": "In Villa",
@@ -73,15 +60,7 @@
     "requestUpdated": "Request Updated",
     "requestUpdatedDesc": "Your request has been updated successfully.",
     "loginRequired": "You must be logged in to submit a request.",
-    "requestErrorDesc": "An error occurred while processing your request. Please try again.",
-    "statusPending": "Request submitted",
-    "statusPendingDesc": "Awaiting confirmation from the administration.",
-    "statusInProgress": "Request in progress",
-    "statusInProgressDesc": "A staff member is currently handling your request.",
-    "statusCompleted": "Request completed",
-    "statusCompletedDesc": "Your request has been successfully completed.",
-    "statusCancelled": "Request cancelled",
-    "statusCancelledDesc": "This request has been cancelled."
+    "requestErrorDesc": "An error occurred while processing your request. Please try again."
   },
   "common": {
     "loading": "Loading",
