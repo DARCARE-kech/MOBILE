@@ -59,16 +59,7 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
       )}
 
       {/* Reserve button */}
-      <section className="px-6 pb-4 flex justify-center">
-        <Button 
-  variant="outline" 
-  size="sm" 
-  className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
-  oonClick={onReserve}
->
-  Reserve
-</Button>
-      </section>
+      
 
       {/* Subtle divider */}
       {hasContactOrLocation && <div className="h-[1px] bg-darcare-gold/10 mx-6 mb-3" />}
@@ -129,7 +120,19 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
         <section className="px-6 pb-6 pt-3">
           <TagsList tags={recommendation.tags} />
         </section>
+       
       )}
+
+      <section className="px-6 pb-4 flex justify-center">
+        <Button 
+  variant="outline" 
+  size="sm" 
+  className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
+  oonClick={onReserve}
+>
+  Reserve
+</Button>
+      </section>
     </div>
   );
 };
