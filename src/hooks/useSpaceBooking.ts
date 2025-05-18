@@ -99,7 +99,7 @@ export const useSpaceBooking = (requestId?: string) => {
         user_id: userId,
         service_id: values.serviceId || null, // From Club Access service
         space_id: spaceId,
-        request_type: 'space',
+        
         status: 'pending',
         preferred_time: preferredTime,
         note: values.note,
