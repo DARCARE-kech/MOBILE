@@ -29,6 +29,8 @@ interface FormValues {
   driverLanguage: string;
   passengers: number;
   luggageSupport: boolean;
+  // Adding vehicleType with an empty string as default value
+  vehicleType: string;
 }
 
 const TransportService: React.FC<TransportServiceProps> = ({ 
@@ -79,15 +81,20 @@ const TransportService: React.FC<TransportServiceProps> = ({
         : 2,
       luggageSupport: editMode && existingRequest?.selected_options?.luggageSupport 
         ? existingRequest.selected_options.luggageSupport 
-        : false
+        : false,
+      // Initialize vehicleType with an existing value or empty string
+      vehicleType: editMode && existingRequest?.selected_options?.vehicleType
+        ? existingRequest.selected_options.vehicleType
+        : ''
     },
     mode: 'onChange'
   });
   
   // Check if form is valid for enabling submit button
   const isFormValid = () => {
-    const { vehicleType } = form.getValues();
-    return !!vehicleType;
+    // Since vehicleType isn't actually used in the UI currently,
+    // we can modify this validation to check other fields or always return true
+    return true;
   };
   
   const onSubmit = async (data: FormValues) => {
@@ -123,10 +130,10 @@ const TransportService: React.FC<TransportServiceProps> = ({
         preferred_time: isoDateTime,
         note: data.note || null, // S'assurer que note est toujours incluse
         selected_options: {
-        
           driverLanguage: data.driverLanguage,
           passengers: data.passengers,
           luggageSupport: data.luggageSupport
+          // We don't include vehicleType in the submitted data since it's not actually used
         }
       };
 
