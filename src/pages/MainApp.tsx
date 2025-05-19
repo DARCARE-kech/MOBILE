@@ -28,7 +28,8 @@ import AboutPage from "@/pages/profile/AboutPage";
 import ChangePassword from "@/pages/profile/ChangePassword";
 import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage";
 import ForgotPassword from "./ForgotPassword";
-import TermsAndPolicy from "./TermsAndPolicy"; // adapte le chemin si besoin
+import TermsAndPolicy from "./TermsAndPolicy"; 
+import { Toaster } from "@/components/ui/toaster";
 
 
 const MainApp: React.FC = () => {
@@ -222,7 +223,13 @@ const MainApp: React.FC = () => {
     return <SplashScreen />;
   }
 
-  return <RouterProvider router={router} />;
+  return (
+  <>
+    <RouterProvider router={router} />
+    <Toaster /> 
+  </>
+);
+  
 };
 
 export default MainApp;
