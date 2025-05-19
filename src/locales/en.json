@@ -93,7 +93,13 @@
     "enterFullName": "Your full name",
     "enterEmail": "you@email.com",
     "enterPassword": "Password",
-    "confirmNewPassword": "Confirm your password"
+    "confirmNewPassword": "Confirm your password",
+    "signupEmailSent": "A verification email has been sent to your email address.",
+    "welcomeFirstLogin": "Welcome! Your account is now active.",
+    "welcomeReturn": "You are now connected.",
+    "noAccountFound": "No account found with this email.",
+    "incorrectPassword": "Incorrect password. Please try again.",
+    "emailNotVerified": "Please verify your email before logging in."
   },
   "home": {
     "quickServices": "Quick Services",

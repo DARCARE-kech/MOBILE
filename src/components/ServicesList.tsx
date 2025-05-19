@@ -1,5 +1,6 @@
+
 import React from "react";
-import { ChevronRight, User, AlertTriangle, Plus, Loader2, Clock } from "lucide-react";
+import { ChevronRight, User, Plus, Loader2, Clock } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -44,10 +45,14 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
 
   if (!services || services.length === 0) {
     return (
-      <div className="luxury-card p-6 flex flex-col items-center justify-center text-center">
-        <AlertTriangle className="text-primary mb-3 h-8 w-8" />
-        <h3 className="text-foreground font-medium mb-2">{t('services.noActivitiesScheduled')}</h3>
-        <p className="text-foreground/70 text-sm mb-4">{t('services.noRequestsYet')}</p>
+      <div className={cn(
+        "luxury-card p-6 flex flex-col items-center justify-center text-center",
+        isDarkMode ? "bg-[#1C1F2A] border-darcare-gold/10" : "bg-white border-darcare-deepGold/10"
+      )}>
+        <h3 className={cn(
+          "text-foreground font-medium mb-3",
+          isDarkMode ? "text-darcare-beige" : "text-primary"
+        )}>{t('services.noServicesMessage')}</h3>
         <Button 
           className={cn(
             "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -55,7 +60,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           )}
           onClick={() => navigate('/services')}
         >
-          {t('services.requestService')}
+          {t('services.scheduleServiceCTA')}
         </Button>
       </div>
     );

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,7 +28,7 @@ export const useAuthMethods = () => {
 
       toast({
         title: t("auth.signupSuccess"),
-        description: t("auth.emailConfirmationRequired"),
+        description: t("auth.signupEmailSent"),
         duration: 8000,
       });
       
@@ -64,9 +65,14 @@ export const useAuthMethods = () => {
 
       if (error) throw error;
 
+      // Check if this is the first login
+      const isFirstLogin = data.user?.app_metadata?.provider === "email" && 
+                          data.user.last_sign_in_at === data.user.created_at;
+      
       toast({
         title: t("auth.welcomeBack"),
-        description: t("auth.signInSuccess"),
+        description: isFirstLogin ? t("auth.welcomeFirstLogin") : t("auth.welcomeReturn"),
+        variant: "success",
       });
       
       return { success: true, data };
@@ -79,10 +85,16 @@ export const useAuthMethods = () => {
       // Check for specific error conditions
       if (error.message.includes("Email not confirmed")) {
         errorCode = "email_not_confirmed";
-        errorMessage = t("auth.emailNotConfirmed");
+        errorMessage = t("auth.emailNotVerified");
       } else if (error.message.includes("Invalid login credentials")) {
-        errorCode = "invalid_credentials";
-        errorMessage = t("auth.invalidCredentials");
+        // Try to determine if it's an email or password issue
+        if (error.message.includes("email")) {
+          errorCode = "invalid_email";
+          errorMessage = t("auth.noAccountFound");
+        } else {
+          errorCode = "invalid_password";
+          errorMessage = t("auth.incorrectPassword");
+        }
       } else if (error.message.includes("rate limit")) {
         errorCode = "rate_limit";
         errorMessage = t("auth.rateLimitExceeded");
@@ -108,14 +120,14 @@ export const useAuthMethods = () => {
       if (error) throw error;
       
       toast({
-        title: "Signed out",
-        description: "You have been successfully signed out",
+        title: t("auth.signOut"),
+        description: t("auth.signOutSuccess"),
       });
     } catch (error: any) {
       console.error("Error signing out:", error);
       toast({
-        title: "Error",
-        description: "Failed to sign out",
+        title: t("common.error"),
+        description: t("auth.signOutFailed"),
         variant: "destructive",
       });
     } finally {
@@ -133,8 +145,8 @@ export const useAuthMethods = () => {
       if (error) throw error;
       
       toast({
-        title: "Password reset email sent",
-        description: "Check your inbox for instructions to reset your password",
+        title: t("auth.passwordResetSent"),
+        description: t("auth.checkEmail"),
         duration: 8000,
       });
       
@@ -142,8 +154,8 @@ export const useAuthMethods = () => {
     } catch (error: any) {
       console.error("Error sending password reset:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to send password reset email",
+        title: t("common.error"),
+        description: error.message || t("auth.resetPasswordFailed"),
         variant: "destructive",
       });
       return false;
