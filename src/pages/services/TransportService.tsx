@@ -25,7 +25,7 @@ interface FormValues {
   date: Date;
   time: string;
   note: string;
-  vehicleType: string;
+
   driverLanguage: string;
   passengers: number;
   luggageSupport: boolean;
@@ -46,7 +46,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
   console.log('TransportService - service_id:', serviceData?.service_id);
   
   const optionalFields = serviceData?.optional_fields || {};
-  const vehicleTypes = optionalFields.vehicle_types || ["van", "sedan", "luxury car", "motorbike"];
+
   const languageOptions = optionalFields.driver_languages || ["english", "french", "arabic"];
   
   // Extract date and time from existingRequest if in edit mode
@@ -70,9 +70,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
       date: getDefaultDate(),
       time: getDefaultTime(),
       note: editMode && existingRequest?.note ? existingRequest.note : '',
-      vehicleType: editMode && existingRequest?.selected_options?.vehicleType 
-        ? existingRequest.selected_options.vehicleType 
-        : '',
+      
       driverLanguage: editMode && existingRequest?.selected_options?.driverLanguage 
         ? existingRequest.selected_options.driverLanguage 
         : 'english',
@@ -125,7 +123,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
         preferred_time: isoDateTime,
         note: data.note || null, // S'assurer que note est toujours incluse
         selected_options: {
-          vehicleType: data.vehicleType,
+        
           driverLanguage: data.driverLanguage,
           passengers: data.passengers,
           luggageSupport: data.luggageSupport
@@ -192,14 +190,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Vehicle Type Selection */}
-            <OptionField
-              form={form}
-              fieldType="radio"
-              name="vehicleType"
-              label={t('services.vehicleType')}
-              options={vehicleTypes}
-            />
-            
+           
             {/* Driver Language Selection */}
             <OptionField
               form={form}
