@@ -87,14 +87,9 @@ export const useAuthMethods = () => {
         errorCode = "email_not_confirmed";
         errorMessage = t("auth.emailNotVerified");
       } else if (error.message.includes("Invalid login credentials")) {
-        // Try to determine if it's an email or password issue
-        if (error.message.includes("email")) {
-          errorCode = "invalid_email";
-          errorMessage = t("auth.noAccountFound");
-        } else {
-          errorCode = "invalid_password";
-          errorMessage = t("auth.incorrectPassword");
-        }
+  errorCode = "invalid_credentials";
+  errorMessage = t("auth.invalidCredentials"); // Exemple: "Incorrect email or password"
+}
       } else if (error.message.includes("rate limit")) {
         errorCode = "rate_limit";
         errorMessage = t("auth.rateLimitExceeded");
