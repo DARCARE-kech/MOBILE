@@ -11,25 +11,24 @@ export const useAuthMethods = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  
-
   const signUp = async (email: string, password: string, fullName: string) => {
     setIsLoading(true);
     try {
-      const { data: existingUsers, error: lookupError } = await supabase
-  .from('users') // ou 'auth.users' si tu as accès à cette vue (attention aux permissions)
-  .select('email')
-  .eq('email', email)
-  .single();
+      // Check if email already exists in user_profiles instead of directly checking auth.users
+      const { data: existingUser, error: lookupError } = await supabase
+        .from('user_profiles')
+        .select('email')
+        .eq('email', email)
+        .single();
 
-if (existingUsers) {
-  toast({
-    title: t("auth.signupFailed"),
-    description: t("auth.emailAlreadyRegistered"),
-    variant: "destructive",
-  });
-  throw new Error("Email already in use");
-};
+      if (existingUser) {
+        toast({
+          title: t("auth.signupFailed"),
+          description: t("auth.emailAlreadyRegistered"),
+          variant: "destructive",
+        });
+        throw new Error("Email already in use");
+      }
 
       const { data, error } = await supabase.auth.signUp({
         email,
