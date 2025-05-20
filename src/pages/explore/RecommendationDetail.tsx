@@ -10,6 +10,8 @@ import { RecommendationTabs } from "@/components/explore/RecommendationTabs";
 import { useRecommendationDetail } from "@/hooks/useRecommendationDetail";
 import { RecommendationHeader } from "@/components/RecommendationHeader";
 import { supabase } from "@/integrations/supabase/client";
+import ShopButton from "@/components/shop/ShopButton";
+import FloatingAction from "@/components/FloatingAction";
 
 const RecommendationDetail = () => {
   const { id } = useParams();
@@ -51,13 +53,17 @@ const RecommendationDetail = () => {
       }
 
       if (reservationService) {
-        // Navigate directly to the service form with state parameters
+        // Navigate directly to the reservation form with pre-populated data
         navigate(`/services/${reservationService.id}`, {
           state: {
             serviceId: reservationService.id,
             serviceType: 'reservation',
             category: recommendation.category || 'restaurant',
-            option: recommendation.title
+            option: recommendation.title,
+            prefilledData: {
+              reservationType: recommendation.category || 'restaurant',
+              reservationName: recommendation.title
+            }
           }
         });
       } else {
@@ -116,6 +122,8 @@ const RecommendationDetail = () => {
         onReserve={handleReserve}
       />
       
+      <ShopButton />
+      <FloatingAction />
       <BottomNavigation activeTab="explore" />
     </div>
   );

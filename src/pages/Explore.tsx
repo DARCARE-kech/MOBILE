@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import FloatingAction from "@/components/FloatingAction";
 import DrawerMenu from "@/components/DrawerMenu";
 import { type RecommendationCategory } from "@/utils/recommendationCategories";
+import ShopButton from "@/components/shop/ShopButton";
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,6 +44,7 @@ const ExplorePage = () => {
         />
       </div>
       
+      <ShopButton />
       <FloatingAction />
       <BottomNavigation activeTab="explore" />
     </div>

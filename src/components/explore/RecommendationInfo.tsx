@@ -130,7 +130,7 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
           className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
           onClick={onReserve}
         >
-          Reserve
+          {t('explore.reserve', 'Reserve')}
         </Button>
       </section>
     </div>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface IconButtonProps {
   icon: React.ReactNode;
@@ -11,7 +11,6 @@ interface IconButtonProps {
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
-  // Add other button props you need here
 }
 
 const IconButton: React.FC<IconButtonProps> = ({ 
@@ -21,8 +20,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   badge,
   className,
   disabled,
-  onClick,
-  ...props 
+  onClick
 }) => {
   const sizeClasses = {
     sm: 'w-8 h-8',

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -41,14 +42,18 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const location = window.location;
+  // Get prefilled data if available from state
+  const prefilledData = location.state?.prefilledData || {};
+
+  // Use URL search params as a fallback for direct links
   const searchParams = new URLSearchParams(location.search);
-  const recommendationTitle = searchParams.get('title');
-  const recommendationType = searchParams.get('type');
+  const recommendationTitle = searchParams.get('title') || prefilledData.reservationName;
+  const recommendationType = searchParams.get('type') || prefilledData.reservationType;
 
   const defaultDate = existingRequest?.preferred_time
     ? new Date(existingRequest.preferred_time)
@@ -71,6 +76,17 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
     defaultValues,
     mode: 'onChange'
   });
+
+  // Update form values when prefilled data changes
+  useEffect(() => {
+    if (prefilledData.reservationType) {
+      form.setValue('reservationType', prefilledData.reservationType);
+    }
+    
+    if (prefilledData.reservationName) {
+      form.setValue('reservationName', prefilledData.reservationName);
+    }
+  }, [prefilledData, form]);
 
   const { handleSubmitRequest } = useServiceSubmitter({
     service: { id: serviceData.service_id, name: 'Reservation' },

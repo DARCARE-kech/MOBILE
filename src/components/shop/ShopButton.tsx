@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 const ShopButton: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const location = useLocation();
+  
+  // Only show the button on specific routes
+  const allowedPaths = ['/', '/services', '/explore'];
+  const currentPath = location.pathname;
+  
+  // Check if current path is in the allowed paths list or starts with one of them
+  const shouldShow = allowedPaths.some(path => 
+    currentPath === path || 
+    (path !== '/' && currentPath.startsWith(path + '/'))
+  );
+  
+  if (!shouldShow) return null;
 
   return (
     <div className="fixed right-6 bottom-40 z-40">
