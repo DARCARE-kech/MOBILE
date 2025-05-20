@@ -305,7 +305,8 @@
     "locationNotAvailable": "Location information not available",
     "noCoordinatesProvided": "No coordinates provided for this location",
     "somethingWentWrong": "Something went wrong",
-    "couldNotLoadRecommendation": "Could not load recommendation details"
+    "couldNotLoadRecommendation": "Could not load recommendation details",
+      "filterByCategory": "Filter by category"
   },
   "navigation": {
     "home": "Home",

@@ -254,7 +254,8 @@
       "culture": "ثقافة",
       "restaurant": "مطعم",
       "excursion": "رح��ة"
-    }
+    },
+    "filterByCategory": "تصفية حسب الفئة"
   },
   "shop": {
     "cart": "عربة التسوق",

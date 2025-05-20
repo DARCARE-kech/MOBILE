@@ -96,7 +96,7 @@ export const FiltersBar = ({
                 setShowFiltersDialog(false);
               }}
             >
-              {t('explore.allCategories')}
+             
             </Button>
             
             {RECOMMENDATION_CATEGORIES.map((category) => (

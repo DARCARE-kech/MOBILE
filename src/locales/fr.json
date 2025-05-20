@@ -336,7 +336,8 @@
     "locationNotAvailable": "Informations de localisation non disponibles",
     "noCoordinatesProvided": "Aucune coordonnée fournie pour cet emplacement",
     "somethingWentWrong": "Quelque chose s'est mal passé",
-    "couldNotLoadRecommendation": "Impossible de charger les détails de la recommandation"
+    "couldNotLoadRecommendation": "Impossible de charger les détails de la recommandation",
+      "filterByCategory": "Filtrer par catégorie"
   },
   "navigation": {
     "home": "Accueil",
