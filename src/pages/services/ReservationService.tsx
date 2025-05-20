@@ -1,28 +1,23 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
-import NoteInput from '@/components/services/form/NoteInput';
-import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
-import { CalendarClock, Users, PenLine, Send } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useServiceSubmitter } from '@/components/services/ServiceRequestSubmitter';
 import { ServiceDetail } from '@/hooks/services/types';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CalendarClock, Users, PenLine } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { LuxuryCard } from '@/components/ui/luxury-card';
+import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
 
 interface ReservationServiceProps {
   serviceData: ServiceDetail;
@@ -34,7 +29,7 @@ type FormData = {
   reservationType: string;
   peopleCount: string;
   reservationName: string;
-  preferredDate: string;
+  preferredDate: Date;
   preferredTime: string;
   note: string;
 };
@@ -49,29 +44,34 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Get data from location if available (for pre-filling from recommendations)
+
   const location = window.location;
   const searchParams = new URLSearchParams(location.search);
   const recommendationTitle = searchParams.get('title');
   const recommendationType = searchParams.get('type');
 
-  // Default form values based on existing request or location params
+  const defaultDate = existingRequest?.preferred_time
+    ? new Date(existingRequest.preferred_time)
+    : new Date();
+
+  const defaultTime = existingRequest?.preferred_time
+    ? `${new Date(existingRequest.preferred_time).getHours().toString().padStart(2, '0')}:${new Date(existingRequest.preferred_time).getMinutes().toString().padStart(2, '0')}`
+    : '12:00';
+
   const defaultValues = {
     reservationType: existingRequest?.selected_options?.reservationType || recommendationType || '',
     peopleCount: existingRequest?.selected_options?.peopleCount || '2',
     reservationName: existingRequest?.selected_options?.reservationName || recommendationTitle || '',
-    preferredDate: existingRequest?.preferredDate || '',
-    preferredTime: existingRequest?.preferredTime || '',
+    preferredDate: defaultDate,
+    preferredTime: defaultTime,
     note: existingRequest?.note || ''
   };
 
-  // Setup form with validation
   const form = useForm<FormData>({
-    defaultValues
+    defaultValues,
+    mode: 'onChange'
   });
 
-  // Use our service submitter hook
   const { handleSubmitRequest } = useServiceSubmitter({
     service: { id: serviceData.service_id, name: 'Reservation' },
     serviceState: { serviceType: 'reservation', serviceId: serviceData.service_id },
@@ -79,7 +79,6 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
     onSubmitEnd: () => setIsSubmitting(false)
   });
 
-  // Handle form submission
   const onSubmit = async (data: FormData) => {
     if (!user) {
       toast({
@@ -90,20 +89,42 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
       return;
     }
 
+    if (!data.reservationType || !data.reservationName) {
+      toast({
+        title: t('common.error'),
+        description: t('services.fillAllFields'),
+        variant: 'destructive'
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      
-      // Format data for submission (following the same structure as other services)
+
+      const isoDateTime = new Date(
+        data.preferredDate.getFullYear(),
+        data.preferredDate.getMonth(),
+        data.preferredDate.getDate(),
+        parseInt(data.preferredTime.split(':')[0]),
+        parseInt(data.preferredTime.split(':')[1])
+      ).toISOString();
+
       const requestData = {
-        ...data,
-        // Include any other fields required for submission
+        service_id: serviceData?.service_id,
+        user_id: user.id,
+        profile_id: user.id,
+        preferred_time: isoDateTime,
+        note: data.note || null,
+        selected_options: {
+          reservationType: data.reservationType,
+          peopleCount: data.peopleCount,
+          reservationName: data.reservationName
+        }
       };
-      
-      // Submit the request
+
       const success = await handleSubmitRequest(requestData);
-      
+
       if (success) {
-        // Navigate back to services page on success
         navigate('/services');
       }
     } catch (error) {
@@ -118,7 +139,6 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
     }
   };
 
-  // Get reservation types from serviceData if available or use default
   const reservationTypes = serviceData?.optional_fields?.selectFields?.find(
     (field: any) => field.name === 'type'
   )?.options || ['restaurant', 'activity', 'excursion', 'other'];
@@ -154,10 +174,7 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('services.reservationType')}</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className={cn(
                           "w-full bg-darcare-navy/50 border-darcare-gold/30",
