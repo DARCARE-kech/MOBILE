@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -122,7 +123,9 @@ const RequestDetailPage = () => {
         {canModify && (
           <div className="mt-4">
             <RequestActions
-              onEdit={() => navigate(`/services/${request.service_id}`)}
+              onEdit={() => navigate(`/services/${request.service_id}`, {
+                state: { editMode: true, requestId: request.id }
+              })}
               onCancel={() => cancelRequest()}
               isSubmitting={isCancelling}
             />

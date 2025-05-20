@@ -24,11 +24,9 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
     <div className="space-y-4">
       <div className="flex justify-between items-start mb-3">
         <h2 className="font-serif text-darcare-gold text-xl">
-  {t(`services.${serviceName}`, formatFieldKey(serviceName))}
-</h2>
-
-        <span>{t(`services.status.${status}`, status)}</span>
-
+          {t(`services.${serviceName.toLowerCase()}`, formatFieldKey(serviceName))}
+        </h2>
+        <StatusBadge status={status || 'pending'} />
       </div>
     </div>
   );

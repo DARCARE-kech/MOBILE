@@ -136,7 +136,9 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
                   ? value.join(', ') 
                   : typeof value === 'boolean'
                     ? (value ? t('common.yes') : t('common.no'))
-                    : value}
+                    : typeof value === 'object' 
+                      ? JSON.stringify(value) // Convert objects to string to prevent React errors
+                      : String(value)} {/* Ensure all values are converted to strings */}
               </span>
             </div>
           ))}
