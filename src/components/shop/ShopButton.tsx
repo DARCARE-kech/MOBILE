@@ -12,7 +12,7 @@ const ShopButton: React.FC = () => {
   const location = useLocation();
   
   // Only show the button on specific routes
-  const allowedPaths = ['/', '/services', '/explore'];
+  const allowedPaths = ['/home', '/services', '/explore'];
   const currentPath = location.pathname;
   
   // Check if current path is in the allowed paths list or starts with one of them
