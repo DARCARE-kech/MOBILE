@@ -424,6 +424,14 @@
     "accountSettings": "Account Settings"
   },
   "notifications": {
+    "requestSubmitted": "Request Submitted",
+    "awaitingConfirmation": "Your request is awaiting confirmation",
+    "requestInProgress": "Request In Progress",
+    "staffHandlingRequest": "Staff is now handling your request",
+    "requestCompleted": "Request Completed",
+    "requestSuccessfullyCompleted": "Your request has been successfully completed",
+    "requestCancelled": "Request Cancelled",
+    "requestHasBeenCancelled": "Your request has been cancelled",
     "noNotifications": "No notifications yet"
   },
   "languages": {
