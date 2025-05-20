@@ -14,9 +14,6 @@ import { supabase } from "@/integrations/supabase/client";
 import FloatingAction from "@/components/FloatingAction";
 import ShopButton from "@/components/shop/ShopButton";
 
-const { data } = await supabase.auth.getSession();
-console.log(data.session?.access_token);
-
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
