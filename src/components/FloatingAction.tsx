@@ -41,7 +41,7 @@ const FloatingAction: React.FC = () => {
   ];
 
   return (
-    <div className="fixed right-6 bottom-40 z-40">
+    <div className="fixed right-6 bottom-24 z-40">
       <AnimatePresence>
         {isOpen && (
           <div className="absolute bottom-12 right-0 space-y-2">
