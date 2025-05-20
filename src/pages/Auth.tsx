@@ -183,7 +183,7 @@ const Auth = () => {
             />
           )}
           
-          <LanguageSwitcher />
+         
         </div>
       </div>
     </div>
