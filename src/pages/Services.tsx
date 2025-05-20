@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -6,6 +5,7 @@ import AppHeader from "@/components/AppHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import MyRequestsTab from "@/components/services/MyRequestsTab";
 import FloatingAction from "@/components/FloatingAction";
+import ShopButton from "@/components/shop/ShopButton";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
 import DrawerMenu from "@/components/DrawerMenu";
@@ -41,8 +41,8 @@ const ServicesPage: React.FC = () => {
         drawerContent={<DrawerMenu />}
       />
       
-      <div className="pt-16 pb-20"> {/* Reduced top padding */}
-        <div className="px-2 mb-1"> {/* Further reduced horizontal padding and margin */}
+      <div className="pt-16 pb-20">
+        <div className="px-2 mb-1">
           <Tabs 
             defaultValue="services" 
             value={activeTab} 
@@ -102,7 +102,7 @@ const ServicesPage: React.FC = () => {
               </TabsTrigger>
             </TabsList>
 
-            <div className="mt-1"> {/* Further reduced margin */}
+            <div className="mt-1">
               <TabsContent value="services" className="mt-0">
                 <InternalServicesTab />
               </TabsContent>
@@ -117,6 +117,7 @@ const ServicesPage: React.FC = () => {
         </div>
       </div>
       
+      <ShopButton />
       <FloatingAction />
       <BottomNavigation activeTab="services" />
     </div>

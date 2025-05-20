@@ -13,6 +13,7 @@ import { Loader2 } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
+import FloatingAction from '@/components/FloatingAction';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -121,6 +122,7 @@ const CartScreen = () => {
         <div className="p-4 pt-16 pb-24">
           <CartEmpty onContinueShopping={() => navigate('/services')} />
         </div>
+        <FloatingAction />
         <BottomNavigation activeTab="services" />
       </div>
     );
@@ -140,6 +142,7 @@ const CartScreen = () => {
           />
         </div>
       </div>
+      <FloatingAction />
       <BottomNavigation activeTab="services" />
     </div>
   );

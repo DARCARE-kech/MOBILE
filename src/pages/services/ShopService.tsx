@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShopCart } from '@/hooks/useShopCart';
@@ -14,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import CategoryFilter from '@/components/shop/CategoryFilter';
+import FloatingAction from '@/components/FloatingAction';
 
 const ShopService = () => {
   const navigate = useNavigate();
@@ -143,6 +143,7 @@ const ShopService = () => {
         </div>
       )}
       
+      <FloatingAction />
       <BottomNavigation activeTab="services" />
     </div>
   );

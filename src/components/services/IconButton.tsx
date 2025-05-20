@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;
@@ -31,7 +32,9 @@ const IconButton: React.FC<IconButtonProps> = ({
   };
   
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       className={cn(
         'rounded-full flex items-center justify-center transition-colors relative',
         sizeClasses[size],
@@ -48,7 +51,7 @@ const IconButton: React.FC<IconButtonProps> = ({
           {badge > 9 ? '9+' : badge}
         </div>
       )}
-    </button>
+    </motion.button>
   );
 };
 

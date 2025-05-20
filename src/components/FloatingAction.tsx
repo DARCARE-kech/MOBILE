@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Plus, DoorOpen, Wrench, MessageCircle, X, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface QuickAction {
   id: string;
@@ -27,62 +28,80 @@ const FloatingAction: React.FC = () => {
     {
       id: "space",
       label: t('navigation.bookSpace'),
-      icon: <DoorOpen size={20} />,
+      icon: <DoorOpen size={18} />,
       action: () => navigate("/services/spaces"),
     },
     {
       id: "service",
       label: t('navigation.requestService'),
-      icon: <Wrench size={20} />,
+      icon: <Wrench size={18} />,
       action: () => navigate("/services"),
     },
     {
       id: "whatsapp",
       label: t('navigation.chatWithUs'),
-      icon: <MessageCircle size={20} />,
+      icon: <MessageCircle size={18} />,
       action: openWhatsApp,
     },
     {
       id: "contact-admin",
       label: t('navigation.contactAdmin', 'Contact Admin'),
-      icon: <User size={20} />,
+      icon: <User size={18} />,
       action: () => navigate("/contact-admin"),
     },
   ];
 
   return (
     <div className="fixed right-6 bottom-24 z-40">
-      {isOpen && (
-        <div className="absolute bottom-16 right-0 space-y-3">
-          {quickActions.map((action) => (
-            <div
-              key={action.id}
-              className="flex items-center gap-3 transition-all animate-fade-in"
-              style={{ transformOrigin: "bottom right" }}
-            >
-              <div className="bg-darcare-navy border border-darcare-gold/30 text-darcare-white rounded-full py-1 px-3 text-sm shadow-lg">
-                {action.label}
-              </div>
-              <button
-                onClick={() => {
-                  action.action();
-                  setIsOpen(false);
+      <AnimatePresence>
+        {isOpen && (
+          <div className="absolute bottom-12 right-0 space-y-2">
+            {quickActions.map((action, index) => (
+              <motion.div
+                key={action.id}
+                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                transition={{ 
+                  duration: 0.2,
+                  delay: index * 0.05
                 }}
-                className="w-12 h-12 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity hover:scale-105"
+                className="flex items-center gap-2 transition-all"
               >
-                {action.icon}
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.2 }}
+                  className="bg-darcare-navy border border-darcare-gold/30 text-darcare-white rounded-full py-1 px-3 text-sm shadow-lg"
+                >
+                  {action.label}
+                </motion.div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    action.action();
+                    setIsOpen(false);
+                  }}
+                  className="w-10 h-10 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
+                >
+                  {action.icon}
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </AnimatePresence>
 
-      <button
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all hover:scale-105"
+        className="w-12 h-12 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
       >
-        {isOpen ? <X size={24} /> : <Plus size={24} />}
-      </button>
+        {isOpen ? <X size={20} /> : <Plus size={20} />}
+      </motion.button>
     </div>
   );
 };

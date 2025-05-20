@@ -3,6 +3,7 @@ import { MessageSquarePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 interface NewChatButtonProps {
   onClick: () => void;
@@ -17,13 +18,18 @@ const NewChatButton: React.FC<NewChatButtonProps> = ({ onClick }) => {
   
   return (
     <div className={`fixed right-6 ${isHomePage ? 'bottom-36' : 'bottom-24'}`}>
-      <Button
-        className="h-14 w-14 rounded-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 shadow-lg"
-        onClick={onClick}
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <MessageSquarePlus className="h-6 w-6" />
-        <span className="sr-only">{t('chatbot.newChat')}</span>
-      </Button>
+        <Button
+          className="h-12 w-12 rounded-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 shadow-lg"
+          onClick={onClick}
+        >
+          <MessageSquarePlus className="h-5 w-5" />
+          <span className="sr-only">{t('chatbot.newChat')}</span>
+        </Button>
+      </motion.div>
     </div>
   );
 };
