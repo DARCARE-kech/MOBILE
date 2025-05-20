@@ -35,17 +35,17 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ onClose, expanded = f
 
       <button 
         className={cn(menuItemClass, "hover:bg-muted")} 
-        onClick={() => handleClick('invilla')}
+        onClick={() => handleClick('services')}
       >
-        <span className="text-left">{t('services.invilla')}</span>
+        <span className="text-left">{t('services.services', 'Services')}</span>
         <ChevronRight size={16} />
       </button>
       
       <button 
         className={cn(menuItemClass, "hover:bg-muted")} 
-        onClick={() => handleClick('leisure')}
+        onClick={() => handleClick('external')}
       >
-        <span className="text-left">{t('services.leisure')}</span>
+        <span className="text-left">{t('services.external', 'External')}</span>
         <ChevronRight size={16} />
       </button>
       
@@ -53,7 +53,7 @@ const ServicesSubMenu: React.FC<ServicesSubMenuProps> = ({ onClose, expanded = f
         className={cn(menuItemClass, "hover:bg-muted")} 
         onClick={() => handleClick('requests')}
       >
-        <span className="text-left">{t('services.requests')}</span>
+        <span className="text-left">{t('services.requests', 'Requests')}</span>
         <ChevronRight size={16} />
       </button>
     </div>

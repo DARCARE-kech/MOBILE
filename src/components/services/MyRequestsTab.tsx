@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -242,22 +241,33 @@ const MyRequestsTab: React.FC = () => {
       </div>
       
       {!requests || requests.length === 0 ? (
-        <div className="p-6 text-center">
-          <AlertTriangle className="mx-auto h-10 w-10 text-darcare-gold/70 mb-4" />
-          <p className={cn(
-            isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
+        <div className={cn(
+          "relative overflow-hidden rounded-xl mx-4 p-8 flex flex-col items-center justify-center text-center",
+          isDarkMode 
+            ? "bg-gradient-to-b from-darcare-navy/60 to-[#1A1D27] border border-darcare-gold/10" 
+            : "bg-white/80 border border-darcare-deepGold/5 shadow-sm"
+        )}>
+          <div className={cn(
+            "absolute inset-0 opacity-5 pointer-events-none",
+            isDarkMode ? "bg-[url('/placeholder.svg')] bg-center bg-no-repeat bg-contain" : ""
+          )} />
+          
+          <h3 className={cn(
+            "font-serif text-lg mb-2",
+            isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
           )}>
             {showHistory 
               ? t('services.noHistoryRequests', "You don't have any completed requests") 
               : t('services.noActiveRequests', "You don't have any active requests")}
-          </p>
+          </h3>
+          
           <p className={cn(
-            "mt-2 mb-6",
-            isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
+            "text-sm mb-5 max-w-md",
+            isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
           )}>
             {showHistory
               ? t('services.switchToActiveRequests', "Switch back to active requests")
-              : t('services.switchToReserveTab', "Switch to the Reserve tab to request a new service")}
+              : t('services.emptyRequestsMessage', "Would you like to make a new service request?")}
           </p>
           
           {!showHistory && (
@@ -266,7 +276,7 @@ const MyRequestsTab: React.FC = () => {
               className={cn(
                 isDarkMode
                   ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-                  : "bg-secondary text-white hover:bg-secondary/90"
+                  : "bg-darcare-deepGold text-white hover:bg-darcare-deepGold/90"
               )}
             >
               {t('services.requestService', "Request a Service")}

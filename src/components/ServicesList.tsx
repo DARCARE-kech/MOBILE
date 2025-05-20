@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ChevronRight, User, Plus, Loader2, Clock } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
@@ -46,20 +45,40 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
   if (!services || services.length === 0) {
     return (
       <div className={cn(
-        "luxury-card p-6 flex flex-col items-center justify-center text-center",
-        isDarkMode ? "bg-[#1C1F2A] border-darcare-gold/10" : "bg-white border-darcare-deepGold/10"
+        "relative overflow-hidden rounded-xl p-6 flex flex-col items-center justify-center text-center",
+        isDarkMode 
+          ? "bg-gradient-to-b from-darcare-navy/80 to-[#1C1F2A] border border-darcare-gold/10" 
+          : "bg-white border border-darcare-deepGold/10 shadow-sm"
       )}>
+        <div className={cn(
+          "absolute inset-0 opacity-10 pointer-events-none",
+          isDarkMode ? "bg-[url('/placeholder.svg')] bg-center bg-no-repeat bg-contain" : ""
+        )} />
+        
         <h3 className={cn(
-          "text-foreground font-medium mb-3",
-          isDarkMode ? "text-darcare-beige" : "text-primary"
-        )}>{t('services.noServicesMessage')}</h3>
+          "font-serif text-lg mb-2",
+          isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+        )}>
+          {t('services.noServicesMessage')}
+        </h3>
+        
+        <p className={cn(
+          "text-sm mb-4 max-w-md",
+          isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+        )}>
+          {t('services.scheduleServiceHelp')}
+        </p>
+        
         <Button 
           className={cn(
-            "bg-primary text-primary-foreground hover:bg-primary/90",
-            isDarkMode && "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            "flex items-center gap-2",
+            isDarkMode 
+              ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90" 
+              : "bg-darcare-deepGold text-white hover:bg-darcare-deepGold/90"
           )}
           onClick={() => navigate('/services')}
         >
+          <Plus size={16} />
           {t('services.scheduleServiceCTA')}
         </Button>
       </div>
@@ -86,13 +105,13 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           // Get service name from services object or title property
           let serviceName = '';
 
-if (service.services?.name) {
-  serviceName = t(`services.${service.services.name}`, service.services.name);
-} else if (service.space_id && service.name) {
-  serviceName = t(`services.${service.name}`, service.name); // for Club Access / space bookings
-} else if (service.title) {
-  serviceName = t(`services.${service.title}`, service.title);
-} else {
+          if (service.services?.name) {
+            serviceName = t(`services.${service.services.name}`, service.services.name);
+          } else if (service.space_id && service.name) {
+            serviceName = t(`services.${service.name}`, service.name); // for Club Access / space bookings
+          } else if (service.title) {
+            serviceName = t(`services.${service.title}`, service.title);
+          } else {
             serviceName = t('services.untitled');
           }
           
