@@ -832,6 +832,10 @@ export type Database = {
           price: number
         }[]
       }
+      jwt_custom_claims: {
+        Args: { uid: string }
+        Returns: Json
+      }
     }
     Enums: {
       admin_message_category: "report" | "external_request" | "issue" | "other"

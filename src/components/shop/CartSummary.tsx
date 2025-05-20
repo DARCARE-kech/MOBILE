@@ -31,9 +31,13 @@ const CartSummary = ({ items, onPlaceOrder, isSubmitting = false }: CartSummaryP
         disabled={isSubmitting || items.length === 0}
       >
         {isSubmitting ? (
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-        ) : null}
-        {t('shop.placeOrder')}
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            {t('shop.processing')}
+          </>
+        ) : (
+          t('shop.placeOrder')
+        )}
       </Button>
     </div>
   );

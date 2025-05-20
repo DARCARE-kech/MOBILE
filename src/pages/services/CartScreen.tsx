@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,6 +20,8 @@ const CartScreen = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: cartItems, isLoading } = useQuery({
     queryKey: ['cart-items'],
@@ -70,6 +72,8 @@ const CartScreen = () => {
   const handlePlaceOrder = async () => {
     if (!user?.id || !cartItems || cartItems.length === 0) return;
     
+    setIsSubmitting(true);
+    
     try {
       // Get the current cart order ID
       const { data: order } = await supabase
@@ -85,6 +89,10 @@ const CartScreen = () => {
           .from('shop_orders')
           .update({ status: 'submitted' })
           .eq('id', order.id);
+        
+        // Invalidate cart queries to update UI
+        queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+        queryClient.invalidateQueries({ queryKey: ['cart-count'] });
       }
       
       toast({
@@ -92,7 +100,11 @@ const CartScreen = () => {
         description: t('shop.orderChargedToRoom'),
       });
       
-      navigate('/services');
+      // Navigate after successful submission, ensuring we don't unmount before state updates
+      setTimeout(() => {
+        navigate('/services');
+      }, 100);
+      
     } catch (err) {
       console.error('Error placing order:', err);
       toast({
@@ -100,6 +112,8 @@ const CartScreen = () => {
         description: 'Could not place your order',
         variant: 'destructive',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -139,6 +153,7 @@ const CartScreen = () => {
           <CartSummary 
             items={cartItems}
             onPlaceOrder={handlePlaceOrder}
+            isSubmitting={isSubmitting}
           />
         </div>
       </div>
