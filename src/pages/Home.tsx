@@ -14,19 +14,15 @@ import { supabase } from "@/integrations/supabase/client";
 import FloatingAction from "@/components/FloatingAction";
 import ShopButton from "@/components/shop/ShopButton";
 
+const { data } = await supabase.auth.getSession();
+console.log(data.session?.access_token);
+
+
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   
-  // Debug auth token - moved from top level to inside component with useEffect
-  useEffect(() => {
-    const checkSession = async () => {
-      const session = await supabase.auth.getSession();
-      console.log(session.data?.session?.access_token);
-    };
-    
-    checkSession();
-  }, []);
+
   
   const { 
     data: currentStay, 
