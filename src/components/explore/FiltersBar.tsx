@@ -88,16 +88,7 @@ export const FiltersBar = ({
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-2 mt-2">
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${!selectedCategory ? 'text-darcare-gold' : 'text-darcare-beige'}`}
-              onClick={() => {
-                onCategoryChange(null);
-                setShowFiltersDialog(false);
-              }}
-            >
-             
-            </Button>
+           
             
             {RECOMMENDATION_CATEGORIES.map((category) => (
               <Button 
