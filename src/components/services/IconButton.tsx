@@ -1,13 +1,17 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface IconButtonProps {
   icon: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   badge?: number;
+  className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  // Add other button props you need here
 }
 
 const IconButton: React.FC<IconButtonProps> = ({ 
@@ -17,6 +21,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   badge,
   className,
   disabled,
+  onClick,
   ...props 
 }) => {
   const sizeClasses = {
@@ -43,7 +48,7 @@ const IconButton: React.FC<IconButtonProps> = ({
         className
       )}
       disabled={disabled}
-      {...props}
+      onClick={onClick}
     >
       {icon}
       {badge !== undefined && badge > 0 && (
