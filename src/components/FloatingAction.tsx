@@ -25,18 +25,7 @@ const FloatingAction: React.FC = () => {
   };
 
   const quickActions: QuickAction[] = [
-    {
-      id: "space",
-      label: t('navigation.bookSpace'),
-      icon: <DoorOpen size={18} />,
-      action: () => navigate("/services/spaces"),
-    },
-    {
-      id: "service",
-      label: t('navigation.requestService'),
-      icon: <Wrench size={18} />,
-      action: () => navigate("/services"),
-    },
+    
     {
       id: "whatsapp",
       label: t('navigation.chatWithUs'),
@@ -52,7 +41,7 @@ const FloatingAction: React.FC = () => {
   ];
 
   return (
-    <div className="fixed right-6 bottom-24 z-40">
+    <div className="fixed right-6 bottom-40 z-40">
       <AnimatePresence>
         {isOpen && (
           <div className="absolute bottom-12 right-0 space-y-2">
@@ -98,9 +87,9 @@ const FloatingAction: React.FC = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
+        className="w-10 h-10 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
       >
-        {isOpen ? <X size={20} /> : <Plus size={20} />}
+        {isOpen ? <X size={18} /> : <Plus size={18} />}
       </motion.button>
     </div>
   );
