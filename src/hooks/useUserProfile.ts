@@ -6,6 +6,7 @@ import { useCurrentStay } from "./useCurrentStay";
 import { useProfileMutations } from "./useProfileMutations";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useUserProfile = () => {
   const { user, signOut } = useAuth();
@@ -65,9 +66,9 @@ export const useUserProfile = () => {
     try {
       const { error } = await supabase.auth.signOut();
 
-    if (error) {
-      throw error;
-    }
+      if (error) {
+        throw error;
+      }
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
