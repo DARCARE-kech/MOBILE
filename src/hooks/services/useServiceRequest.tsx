@@ -70,6 +70,9 @@ export function useServiceRequest(): UseServiceRequestResult {
           if (serviceType === 'kids') {
             return { name: 'Kids Club', category: 'kids' };
           }
+          if (serviceType === 'reservation') {
+            return { name: 'Reservation', category: 'external' };
+          }
           throw error;
         }
         console.log('Service data fetched by type:', data);
@@ -87,7 +90,7 @@ export function useServiceRequest(): UseServiceRequestResult {
     queryKey: ['service-details', service?.id, serviceType],
     queryFn: async () => {
       // Special handling for service types without ID
-      if (!service?.id && (serviceType === 'hair' || serviceType === 'kids')) {
+      if (!service?.id && (serviceType === 'hair' || serviceType === 'kids' || serviceType === 'reservation')) {
         console.log(`Creating default service details for ${serviceType}`);
         
         // Return category-specific default details
@@ -149,6 +152,37 @@ export function useServiceRequest(): UseServiceRequestResult {
                   name: 'activities',
                   label: 'Activities',
                   options: ['Drawing', 'Games', 'Storytelling', 'Outdoor play']
+                }
+              ]
+            }
+          } as ServiceDetail;
+        }
+        
+        if (serviceType === 'reservation') {
+          return { 
+            category: 'reservation',
+            service_id: serviceType,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'type',
+                  label: 'Reservation Type',
+                  options: ['restaurant', 'activity', 'excursion', 'other']
+                }
+              ],
+              numberFields: [
+                {
+                  name: 'people_count',
+                  label: 'Number of People',
+                  min: 1,
+                  max: 50
+                }
+              ],
+              inputFields: [
+                {
+                  name: 'name',
+                  label: 'Reservation Name',
+                  placeholder: 'Enter name or place'
                 }
               ]
             }
@@ -244,6 +278,37 @@ export function useServiceRequest(): UseServiceRequestResult {
           } as ServiceDetail;
         }
         
+        if (service.name?.toLowerCase().includes('reservation')) {
+          return { 
+            category: 'reservation',
+            service_id: service.id,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'type',
+                  label: 'Reservation Type',
+                  options: ['restaurant', 'activity', 'excursion', 'other']
+                }
+              ],
+              numberFields: [
+                {
+                  name: 'people_count',
+                  label: 'Number of People',
+                  min: 1,
+                  max: 50
+                }
+              ],
+              inputFields: [
+                {
+                  name: 'name',
+                  label: 'Reservation Name',
+                  placeholder: 'Enter name or place'
+                }
+              ]
+            }
+          } as ServiceDetail;
+        }
+        
         return null;
       }
       
@@ -316,6 +381,37 @@ export function useServiceRequest(): UseServiceRequestResult {
             }
           } as ServiceDetail;
         }
+        
+        if (service.name?.toLowerCase().includes('reservation')) {
+          return { 
+            category: 'reservation',
+            service_id: service.id,
+            optional_fields: {
+              selectFields: [
+                {
+                  name: 'type',
+                  label: 'Reservation Type',
+                  options: ['restaurant', 'activity', 'excursion', 'other']
+                }
+              ],
+              numberFields: [
+                {
+                  name: 'people_count',
+                  label: 'Number of People',
+                  min: 1,
+                  max: 50
+                }
+              ],
+              inputFields: [
+                {
+                  name: 'name',
+                  label: 'Reservation Name',
+                  placeholder: 'Enter name or place'
+                }
+              ]
+            }
+          } as ServiceDetail;
+        }
       }
       
       // Ensure the optional_fields is correctly typed
@@ -328,7 +424,7 @@ export function useServiceRequest(): UseServiceRequestResult {
       
       return data as ServiceDetail;
     },
-    enabled: !!(service?.id || serviceType === 'hair' || serviceType === 'kids')
+    enabled: !!(service?.id || serviceType === 'hair' || serviceType === 'kids' || serviceType === 'reservation')
   });
 
   return {

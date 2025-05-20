@@ -87,6 +87,34 @@ export const enhanceOptionalFields = (
       };
     }
     
+    // Default fields for Reservation service
+    if (serviceDetails?.category === 'reservation') {
+      return {
+        selectFields: [
+          {
+            name: 'type',
+            label: 'Reservation Type',
+            options: ['restaurant', 'activity', 'excursion', 'other']
+          }
+        ],
+        numberFields: [
+          {
+            name: 'people_count',
+            label: 'Number of People',
+            min: 1,
+            max: 50
+          }
+        ],
+        inputFields: [
+          {
+            name: 'name',
+            label: 'Reservation Name',
+            placeholder: 'Enter name or place'
+          }
+        ]
+      };
+    }
+    
     return {};
   }
   
@@ -123,6 +151,7 @@ export const getServiceTitle = (service: any, serviceType?: string) => {
   if (serviceType) {
     if (serviceType === 'hair') return 'Hair Salon';
     if (serviceType === 'kids') return 'Kids Club';
+    if (serviceType === 'reservation') return 'Reservation';
     return `${serviceType.charAt(0).toUpperCase() + serviceType.slice(1).replace(/_/g, ' ')} Service`;
   }
   

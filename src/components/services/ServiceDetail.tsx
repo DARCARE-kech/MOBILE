@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -9,6 +10,7 @@ import ShopService from '@/pages/services/ShopService';
 import LaundryService from '@/pages/services/LaundryService';
 import HairSalonService from '@/pages/services/HairSalonService';
 import KidsClubService from '@/pages/services/KidsClubService';
+import ReservationService from '@/pages/services/ReservationService';
 import { Loader2 } from 'lucide-react';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -160,6 +162,8 @@ const ServiceDetail: React.FC = () => {
           return { category: 'kids', service_id: service.id } as ServiceDetailType;
         } else if (serviceNameLower.includes('club') && serviceNameLower.includes('access')) {
           return { category: 'club-access', service_id: service.id } as ServiceDetailType;
+        } else if (serviceNameLower.includes('reservation')) {
+          return { category: 'reservation', service_id: service.id } as ServiceDetailType;
         }
         return null;
       }
@@ -173,6 +177,8 @@ const ServiceDetail: React.FC = () => {
           return { category: 'kids', service_id: service.id } as ServiceDetailType;
         } else if (serviceNameLower.includes('club') && serviceNameLower.includes('access')) {
           return { category: 'club-access', service_id: service.id } as ServiceDetailType;
+        } else if (serviceNameLower.includes('reservation')) {
+          return { category: 'reservation', service_id: service.id } as ServiceDetailType;
         }
         
         // For other services without data, return a basic structure
@@ -320,6 +326,20 @@ const ServiceDetail: React.FC = () => {
         <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <KidsClubService 
+            serviceData={enhancedServiceDetails}
+            existingRequest={existingRequest}
+            editMode={editMode}
+          />
+        </div>
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  } else if (serviceNameLower?.includes('reservation')) {
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <div className="pt-20">
+          <ReservationService
             serviceData={enhancedServiceDetails}
             existingRequest={existingRequest}
             editMode={editMode}

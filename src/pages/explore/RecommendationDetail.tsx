@@ -9,6 +9,7 @@ import { RecommendationDetailError } from "@/components/explore/RecommendationDe
 import { RecommendationTabs } from "@/components/explore/RecommendationTabs";
 import { useRecommendationDetail } from "@/hooks/useRecommendationDetail";
 import { RecommendationHeader } from "@/components/RecommendationHeader";
+import { supabase } from "@/integrations/supabase/client";
 
 const RecommendationDetail = () => {
   const { id } = useParams();
@@ -33,13 +34,35 @@ const RecommendationDetail = () => {
 
   const handleBack = () => navigate(-1);
 
-  const handleReserve = () => {
-    navigate('/contact-admin', { 
-      state: { 
-        preselectedCategory: 'external_request',
-        subject: recommendation?.title 
+  const handleReserve = async () => {
+    if (!recommendation) return;
+    
+    try {
+      // Find the reservation service ID
+      const { data: reservationService, error: serviceError } = await supabase
+        .from('services')
+        .select('id')
+        .eq('name', 'Reservation')
+        .maybeSingle();
+      
+      if (serviceError || !reservationService) {
+        console.error("Could not find reservation service:", serviceError);
+        throw new Error("Reservation service not found");
       }
-    });
+      
+      // Navigate to the service detail page with query parameters for pre-filling
+      navigate(`/services/${reservationService.id}?title=${encodeURIComponent(recommendation.title)}&type=${encodeURIComponent(recommendation.category || 'other')}`);
+    } catch (error) {
+      console.error("Error finding reservation service:", error);
+      
+      // Fallback to contact-admin as it was before
+      navigate('/contact-admin', { 
+        state: { 
+          preselectedCategory: 'external_request',
+          subject: recommendation?.title 
+        }
+      });
+    }
   };
 
   if (!id) {

@@ -1,3 +1,4 @@
+
 {
   "common": {
     "back": "Back",
@@ -226,20 +227,29 @@
     "requestUpdated": "Request Updated",
     "requestUpdatedDesc": "Your cleaning request has been updated.",
     "requestErrorDesc": "There was an error processing your request. Please try again.",
+    "reservation": "Reservation",
+    "reservationType": "Reservation Type",
+    "peopleCount": "Number of People",
+    "reservationName": "Reservation Name",
+    "requestReservation": "Request Reservation",
+    "reservationDescription": "Book a table at a restaurant, an activity, excursion, or other experience.",
+    "reservationRequest": "Reservation Request",
     "labels": {
       "cleaning": "Cleaning",
       "maintenance": "Maintenance",
       "transport": "Transport",
       "laundry": "Laundry",
       "shop": "Shop",
-      "bookSpace": "Book a Space"
+      "bookSpace": "Book a Space",
+      "reservation": "Reservation"
     },
     "instructions": {
       "cleaning": "Please choose the type of cleaning and the rooms to be cleaned.",
       "maintenance": "Describe the issue and preferred time for maintenance.",
       "transport": "Specify the pickup time and additional transport preferences.",
       "laundry": "Select the laundry services and specify fabric types if needed.",
-      "bookSpace": "Choose the date and time for your space reservation."
+      "bookSpace": "Choose the date and time for your space reservation.",
+      "reservation": "Specify the details for your reservation request."
     },
     "status": {
       "pending": "Pending",
