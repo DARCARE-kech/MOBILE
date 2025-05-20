@@ -36,27 +36,21 @@ export const useRequestStatusNotification = (requestId: string | undefined) => {
       // Mark this notification as shown
       shownNotifications.add(notificationKey);
       
-      // Use a consistent ID for each status to prevent duplicates
-      const toastId = `request-${requestId}-${status}`;
-      
       switch (status) {
         case 'pending':
           toast({
-            id: toastId,
             title: t('notifications.requestSubmitted'),
             description: t('notifications.awaitingConfirmation'),
           });
           break;
         case 'inprogress':
           toast({
-            id: toastId,
             title: t('notifications.requestInProgress'),
             description: t('notifications.staffHandlingRequest'),
           });
           break;
         case 'completed':
           toast({
-            id: toastId,
             title: t('notifications.requestCompleted'),
             description: t('notifications.requestSuccessfullyCompleted'),
             variant: "success"
@@ -64,7 +58,6 @@ export const useRequestStatusNotification = (requestId: string | undefined) => {
           break;
         case 'cancelled':
           toast({
-            id: toastId,
             title: t('notifications.requestCancelled'),
             description: t('notifications.requestHasBeenCancelled'),
             variant: "destructive"
