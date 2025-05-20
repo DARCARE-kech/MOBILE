@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -79,6 +78,7 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
     setIsSubmitting(true);
 
     try {
+      // Format the date and time into ISO string
       const dateTime = new Date(
         data.date.getFullYear(),
         data.date.getMonth(),
@@ -87,12 +87,15 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
         parseInt(data.time.split(':')[1])
       ).toISOString();
 
+      // Properly structure the request data
       const requestData = {
+        // Root level fields
         service_id: serviceData?.service_id,
         user_id: user.id,
         profile_id: user.id,
         preferred_time: dateTime,
         note: data.note || null,
+        // Only form-specific data in selected_options
         selected_options: {
           client_gender: data.client_gender,
           service_type: data.service_type,

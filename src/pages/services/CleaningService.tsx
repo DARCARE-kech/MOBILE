@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -124,6 +124,7 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
     setIsSubmitting(true);
     
     try {
+      // Format the date and time for the preferred time
       const isoDateTime = new Date(
         data.date.getFullYear(),
         data.date.getMonth(),
@@ -137,12 +138,16 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
         .filter(([_, isSelected]) => isSelected)
         .map(([room]) => room);
       
+      // Properly structure the request data with root fields
+      // and form-specific fields in selected_options
       const requestData = {
+        // Root level fields for the database
         service_id: serviceData?.service_id,
         user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
+        profile_id: user.id,
         preferred_time: isoDateTime,
-        note: data.note || null, // Make sure note is included
+        note: data.note || null,
+        // Only form-specific fields in selected_options
         selected_options: {
           cleaningType: data.cleaningType,
           selectedRooms

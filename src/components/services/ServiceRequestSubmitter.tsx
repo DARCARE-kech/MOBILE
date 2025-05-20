@@ -37,13 +37,30 @@ export const useServiceSubmitter = ({
     onSubmitStart();
     
     try {
-      // Convert the form data to the structure needed for the service_requests table
+      // Extract the form-specific data for selectedOptions
+      // Clone formData to avoid mutating the original object
+      const { 
+        preferredDate, 
+        preferredTime, 
+        note,
+        selectedOptions: formSelectedOptions,
+        ...otherFormData 
+      } = { ...formData };
+      
+      // Combine form-specific fields with any passed selectedOptions
       const selectedOptions = {
-        ...formData,
+        ...otherFormData,
+        ...(formSelectedOptions || {}),
         category: category || formData.selectedCategory,
         option: option || formData.selectedOption,
         tripType: tripType
       };
+
+      // Remove any root-level fields that should not be in the request object
+      delete selectedOptions.preferredDate;
+      delete selectedOptions.preferredTime;
+      delete selectedOptions.note;
+      delete selectedOptions.date;
 
       // Make sure service_id is properly defined
       console.log('Submitting service request with service:', service);
@@ -55,16 +72,25 @@ export const useServiceSubmitter = ({
         console.warn('Warning: service_id is undefined - this will cause naming issues in My Requests');
       }
 
-      // Insert request into database
+      // Format the preferred time
+      let preferredTimeISO = null;
+      if (preferredDate && preferredTime) {
+        const [hours, minutes] = preferredTime.split(':').map(Number);
+        const dateObj = new Date(preferredDate);
+        dateObj.setHours(hours, minutes);
+        preferredTimeISO = dateObj.toISOString();
+      }
+
+      // Insert request into database with properly structured data
       const { data, error } = await supabase
         .from('service_requests')
         .insert({
-          service_id: service?.id, // Ensure service_id is included
-          profile_id: user.id, // Ensure profile_id is included
-          user_id: user.id,
-          preferred_time: new Date(`${formData.preferredDate}T${formData.preferredTime}`).toISOString(),
-          note: formData.note || null, // Ensure note is included
-          selected_options: selectedOptions
+          service_id: service?.id, // Root level field
+          profile_id: user.id, // Root level field
+          user_id: user.id, // Root level field
+          preferred_time: preferredTimeISO, // Root level field
+          note: note || null, // Root level field
+          selected_options: selectedOptions // Only form-specific data
         });
       
       if (error) {
