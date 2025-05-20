@@ -280,7 +280,9 @@
     "welcomeReturn": "Vous êtes maintenant connecté.",
     "noAccountFound": "Aucun compte trouvé avec ce courriel.",
     "incorrectPassword": "Mot de passe incorrect. Veuillez réessayer.",
-    "emailNotVerified": "Veuillez vérifier votre courriel avant de vous connecter."
+    "emailNotVerified": "Veuillez vérifier votre courriel avant de vous connecter.",
+      "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "logoutConfirmation": "Confirmation de déconnexion"
   },
   "home": {
     "quickServices": "Services Rapides",

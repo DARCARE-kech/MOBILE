@@ -38,7 +38,9 @@
     "next": "التالي",
     "previous": "السابق",
     "required": "مطلوب",
-    "optional": "اختياري"
+    "optional": "اختياري",
+      "confirmLogout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "logoutConfirmation": "تأكيد تسجيل الخروج"
   },
   "auth": {
     "signIn": "تسجيل الدخول",

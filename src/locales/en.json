@@ -39,7 +39,9 @@
     "next": "Next",
     "previous": "Previous",
     "required": "Required",
-    "success": "Success"
+    "success": "Success",
+      "confirmLogout": "Are you sure you want to log out?",
+    "logoutConfirmation": "Logout Confirmation"
   },
   "auth": {
     "signIn": "Sign In",
