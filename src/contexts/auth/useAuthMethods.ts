@@ -15,20 +15,7 @@ export const useAuthMethods = () => {
     setIsLoading(true);
     try {
       // Check if email already exists in user_profiles instead of directly checking auth.users
-      const { data: existingUser, error: lookupError } = await supabase
-        .from('user_profiles')
-        .select('email')
-        .eq('email', email)
-        .single();
-
-      if (existingUser) {
-        toast({
-          title: t("auth.signupFailed"),
-          description: t("auth.emailAlreadyRegistered"),
-          variant: "destructive",
-        });
-        throw new Error("Email already in use");
-      }
+     
 
       const { data, error } = await supabase.auth.signUp({
         email,
