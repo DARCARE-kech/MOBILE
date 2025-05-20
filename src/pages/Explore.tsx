@@ -27,13 +27,15 @@ const ExplorePage = () => {
       <div className="pt-16 pb-24 space-y-4">
         <div className="p-4">
           <div className="luxury-card">
-            <SearchBar onSearch={setSearchQuery} />
-            <FiltersBar 
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-            />
+            <div className="flex items-center gap-2">
+              <SearchBar onSearch={setSearchQuery} />
+              <FiltersBar 
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+              />
+            </div>
           </div>
         </div>
         
