@@ -269,7 +269,9 @@
     "orderSubmitted": "تم تقديم الطلب",
     "orderChargedToRoom": "سيتم إضافة العناصر إلى حساب غرفتك.",
     "quantity": "الكمية",
-    "price": "السعر"
+    "price": "السعر",
+      "cartEmpty": "سلة التسوق فارغة",
+    "browseItems": "تصفح المنتجات"
   },
   "chatbot": {
     "newChat": "محادثة جديدة",

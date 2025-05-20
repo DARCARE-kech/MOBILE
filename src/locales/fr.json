@@ -383,7 +383,9 @@
       "hygiene": "Hygiène",
       "local": "Spécialités Locales",
       "essentials": "Essentiels"
-    }
+    },
+    "cartEmpty": "Votre panier est vide",
+    "browseItems": "Parcourir les articles"
   },
   "chat": {
     "history": "Historique des conversations",

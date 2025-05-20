@@ -352,7 +352,9 @@
       "hygiene": "Hygiene",
       "local": "Local Specialties",
       "essentials": "Essentials"
-    }
+    },
+    "cartEmpty": "Your cart is empty",
+    "browseItems": "Browse items"
   },
   "chatbot": {
     "newChat": "New Chat",
