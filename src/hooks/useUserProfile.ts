@@ -63,7 +63,11 @@ export const useUserProfile = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      throw error;
+    }
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
