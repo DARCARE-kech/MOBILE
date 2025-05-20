@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -109,17 +110,22 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
         parseInt(data.preferredTime.split(':')[1])
       ).toISOString();
 
+      // Fix: Modify the object to match ServiceFormData structure
       const requestData = {
+        preferredDate: data.preferredDate.toISOString().split('T')[0], // Add missing preferredDate
+        preferredTime: data.preferredTime, // Add missing preferredTime
+        note: data.note || null,
+        // Include all data as selected options
+        selectedOptions: {
+          reservationType: data.reservationType,
+          peopleCount: data.peopleCount,
+          reservationName: data.reservationName
+        },
+        // Add these as extra properties that ServiceSubmitter will use
         service_id: serviceData?.service_id,
         user_id: user.id,
         profile_id: user.id,
         preferred_time: isoDateTime,
-        note: data.note || null,
-        selected_options: {
-          reservationType: data.reservationType,
-          peopleCount: data.peopleCount,
-          reservationName: data.reservationName
-        }
       };
 
       const success = await handleSubmitRequest(requestData);
