@@ -37,7 +37,7 @@ export const useServiceSubmitter = ({
     onSubmitStart();
     
     try {
-      // Extract the form-specific data for selectedOptions
+      // Extract the form-specific data and root-level fields
       // Clone formData to avoid mutating the original object
       const { 
         preferredDate, 
@@ -47,30 +47,17 @@ export const useServiceSubmitter = ({
         ...otherFormData 
       } = { ...formData };
       
-      // Combine form-specific fields with any passed selectedOptions
+      // Properly structure service-specific options for selected_options
+      // This should only contain form-specific fields, not root-level fields
       const selectedOptions = {
+        ...formSelectedOptions || {},
         ...otherFormData,
-        ...(formSelectedOptions || {}),
-        category: category || formData.selectedCategory,
-        option: option || formData.selectedOption,
-        tripType: tripType
       };
 
-      // Remove any root-level fields that should not be in the request object
-      delete selectedOptions.preferredDate;
-      delete selectedOptions.preferredTime;
-      delete selectedOptions.note;
-      delete selectedOptions.date;
-
-      // Make sure service_id is properly defined
-      console.log('Submitting service request with service:', service);
-      console.log('Service ID used for submission:', service?.id);
-      console.log('Form data being submitted:', formData);
-      console.log('Selected options for submission:', selectedOptions);
-
-      if (!service?.id) {
-        console.warn('Warning: service_id is undefined - this will cause naming issues in My Requests');
-      }
+      // Add category, option, tripType to selectedOptions if provided in serviceState
+      if (category) selectedOptions.category = category;
+      if (option) selectedOptions.option = option;
+      if (tripType) selectedOptions.tripType = tripType;
 
       // Format the preferred time
       let preferredTimeISO = null;
@@ -81,16 +68,25 @@ export const useServiceSubmitter = ({
         preferredTimeISO = dateObj.toISOString();
       }
 
+      console.log('Submitting service request with data:', {
+        service_id: service?.id,
+        user_id: user.id,
+        profile_id: user.id,
+        preferred_time: preferredTimeISO,
+        note: note || null,
+        selected_options: selectedOptions
+      });
+
       // Insert request into database with properly structured data
       const { data, error } = await supabase
         .from('service_requests')
         .insert({
-          service_id: service?.id, // Root level field
-          profile_id: user.id, // Root level field
-          user_id: user.id, // Root level field
-          preferred_time: preferredTimeISO, // Root level field
-          note: note || null, // Root level field
-          selected_options: selectedOptions // Only form-specific data
+          service_id: service?.id,            // Root level field
+          user_id: user.id,                   // Root level field
+          profile_id: user.id,                // Root level field
+          preferred_time: preferredTimeISO,   // Root level field
+          note: note || null,                 // Root level field
+          selected_options: selectedOptions    // Only form-specific data
         });
       
       if (error) {
@@ -100,9 +96,10 @@ export const useServiceSubmitter = ({
       
       console.log('Service request submitted successfully:', data);
       
-      // Show success message
+      // Show success message only once
       toast.success(t('services.requestSubmitted'), {
-        description: t('services.requestSubmittedDesc')
+        description: t('services.requestSubmittedDesc'),
+        id: 'service-request-success', // Add an ID to prevent duplicate toasts
       });
       
       // Return true for successful submission
@@ -111,7 +108,8 @@ export const useServiceSubmitter = ({
     } catch (error) {
       console.error('Error submitting request:', error);
       toast.error(t('common.error'), {
-        description: t('services.requestErrorDesc')
+        description: t('services.requestErrorDesc'),
+        id: 'service-request-error', // Add an ID to prevent duplicate toasts
       });
       return false;
     } finally {

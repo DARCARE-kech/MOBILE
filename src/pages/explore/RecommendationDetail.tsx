@@ -45,13 +45,32 @@ const RecommendationDetail = () => {
         .eq('name', 'Reservation')
         .maybeSingle();
       
-      if (serviceError || !reservationService) {
+      if (serviceError) {
         console.error("Could not find reservation service:", serviceError);
         throw new Error("Reservation service not found");
       }
-      
-      // Navigate to the service detail page with query parameters for pre-filling
-      navigate(`/services/${reservationService.id}?title=${encodeURIComponent(recommendation.title)}&type=${encodeURIComponent(recommendation.category || 'other')}`);
+
+      if (reservationService) {
+        // Navigate directly to the service form with state parameters
+        navigate(`/services/${reservationService.id}`, {
+          state: {
+            serviceId: reservationService.id,
+            serviceType: 'reservation',
+            category: recommendation.category || 'restaurant',
+            option: recommendation.title
+          }
+        });
+      } else {
+        console.error("Reservation service not found");
+        
+        // Fallback to contact-admin as it was before
+        navigate('/contact-admin', { 
+          state: { 
+            preselectedCategory: 'external_request',
+            subject: recommendation?.title 
+          }
+        });
+      }
     } catch (error) {
       console.error("Error finding reservation service:", error);
       
