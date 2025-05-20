@@ -256,7 +256,10 @@
       "in_progress": "En Cours",
       "completed": "Terminé",
       "cancelled": "Annulé",
-      "active": "Actif"
+      "active": "Actif",
+      "noServicesMessage": "Aucun service programmé",
+      "scheduleServiceHelp": "Souhaitez-vous programmer un service?",
+      "scheduleServiceCTA": "Programmer un Service"
     }
   },
   "explore": {

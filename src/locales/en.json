@@ -114,7 +114,6 @@
   "services": {
     "invilla": "In Villa",
     "leisure": "Leisure",
-    "title": "Services",
     "reserve": "Reserve",
     "requests": "Requests",
     "history": "History",
@@ -128,6 +127,9 @@
     "noTimeSpecified": "Time not specified",
     "untitled": "Untitled Service",
     "unassigned": "Not yet assigned",
+    "noServicesMessage": "No services scheduled",
+    "scheduleServiceHelp": "Would you like to schedule a service?",
+    "scheduleServiceCTA": "Schedule Service",
     "book": "Book",
     "capacity": "Capacity",
     "available": "Available",
