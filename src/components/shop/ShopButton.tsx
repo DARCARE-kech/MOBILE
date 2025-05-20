@@ -40,7 +40,7 @@ const ShopButton: React.FC = () => {
           side="left" 
           className="py-1 px-3 text-sm bg-darcare-navy border border-darcare-gold/30 text-darcare-beige rounded-full shadow-lg"
         >
-          {t('shop.title', 'Luxury Shop')}
+          {t('shop.title', 'Shop')}
         </PopoverContent>
       </Popover>
     </div>
