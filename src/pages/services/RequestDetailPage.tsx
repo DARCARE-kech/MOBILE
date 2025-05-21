@@ -84,6 +84,13 @@ const RequestDetailPage: React.FC = () => {
 
   const serviceName = request.services?.name || '';
   
+  // Convert the selected_options from Json to Record<string, any> or default to empty object
+  const selectedOptions = request.selected_options 
+    ? (typeof request.selected_options === 'string' 
+        ? JSON.parse(request.selected_options) 
+        : request.selected_options)
+    : null;
+  
   return (
     <div className="min-h-screen bg-background pb-24">
       <MainHeader 
@@ -115,7 +122,7 @@ const RequestDetailPage: React.FC = () => {
               JSON.parse(request.note) : null}
             imageUrl={request.image_url}
             staffAssignments={request.staff_assignments}
-            selectedOptions={request.selected_options}
+            selectedOptions={selectedOptions}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
             spaceId={request.space_id}
