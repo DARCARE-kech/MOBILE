@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
 import type { ServiceDetail } from './types';
@@ -75,7 +76,7 @@ export const getStatusHistoryForRequest = async (requestId: string): Promise<any
   }
 };
 
-// Add the missing enhanceOptionalFields function
+// Add the enhanceOptionalFields function that was missing
 export const enhanceOptionalFields = (
   serviceDetails: ServiceDetail | null | undefined,
   category?: string,
@@ -90,7 +91,7 @@ export const enhanceOptionalFields = (
   return serviceDetails.optional_fields;
 };
 
-// Add the missing getServiceTitle function
+// Add the getServiceTitle function that was missing
 export const getServiceTitle = (
   service: any | null | undefined,
   serviceType?: string

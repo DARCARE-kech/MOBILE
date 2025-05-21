@@ -41,7 +41,13 @@ const Home: React.FC = () => {
         .select(`
           *,
           services (name, category),
-          staff_assignments (staff_name)
+          staff_assignments (
+            id,
+            staff_id,
+            staff_services (
+              staff_name
+            )
+          )
         `)
         .eq('user_id', user.id)
         .in('status', ['pending', 'in_progress', 'active'])
@@ -55,14 +61,21 @@ const Home: React.FC = () => {
       
       console.log("Service requests data fetched for home page:", data);
       
-      // Convert to Service type with correct status handling
-      return (data || []).map(item => ({
-        ...item,
-        // Convert status to a valid enum value or default to "pending"
-        status: item.status === "pending" || item.status === "active" || 
-               item.status === "completed" || item.status === "cancelled" 
-               ? item.status : "pending"
-      }));
+      // Transform the data to match the Service interface expected by ServicesList
+      return (data || []).map(item => {
+        // Process staff assignments to extract staff_name
+        const staffAssignments = item.staff_assignments?.map(assignment => ({
+          staff_name: assignment.staff_services?.staff_name || null
+        })) || [];
+
+        return {
+          ...item,
+          status: item.status === "pending" || item.status === "active" || 
+                  item.status === "completed" || item.status === "cancelled" 
+                  ? item.status : "pending",
+          staff_assignments: staffAssignments
+        };
+      });
     },
     enabled: !!user?.id,
   });
