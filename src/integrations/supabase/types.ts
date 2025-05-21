@@ -51,13 +51,6 @@ export type Database = {
             foreignKeyName: "admin_messages_manager_id_fkey"
             columns: ["manager_id"]
             isOneToOne: false
-            referencedRelation: "tenant_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "admin_messages_manager_id_fkey"
-            columns: ["manager_id"]
-            isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["id"]
           },
@@ -322,6 +315,8 @@ export type Database = {
           id: string
           rating: number
           request_id: string
+          staff_id: string | null
+          staff_rating: number | null
           user_id: string | null
         }
         Insert: {
@@ -330,6 +325,8 @@ export type Database = {
           id?: string
           rating: number
           request_id: string
+          staff_id?: string | null
+          staff_rating?: number | null
           user_id?: string | null
         }
         Update: {
@@ -338,6 +335,8 @@ export type Database = {
           id?: string
           rating?: number
           request_id?: string
+          staff_id?: string | null
+          staff_rating?: number | null
           user_id?: string | null
         }
         Relationships: [
@@ -347,6 +346,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "service_requests"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_ratings_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_services"
+            referencedColumns: ["staff_id"]
           },
         ]
       }
@@ -391,13 +397,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "fk_profile"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "tenant_profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "fk_profile"
             columns: ["profile_id"]
@@ -584,29 +583,45 @@ export type Database = {
       staff_assignments: {
         Row: {
           assigned_at: string | null
+          comment: string | null
+          end_time: string | null
           id: string
-          phone_number: string | null
+          private_note: string | null
           request_id: string
           staff_id: string | null
-          staff_name: string | null
+          start_time: string | null
+          status: string | null
         }
         Insert: {
           assigned_at?: string | null
+          comment?: string | null
+          end_time?: string | null
           id?: string
-          phone_number?: string | null
+          private_note?: string | null
           request_id: string
           staff_id?: string | null
-          staff_name?: string | null
+          start_time?: string | null
+          status?: string | null
         }
         Update: {
           assigned_at?: string | null
+          comment?: string | null
+          end_time?: string | null
           id?: string
-          phone_number?: string | null
+          private_note?: string | null
           request_id?: string
           staff_id?: string | null
-          staff_name?: string | null
+          start_time?: string | null
+          status?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_staff_id"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_services"
+            referencedColumns: ["staff_id"]
+          },
           {
             foreignKeyName: "staff_assignments_request_id_fkey"
             columns: ["request_id"]
@@ -619,6 +634,7 @@ export type Database = {
       staff_services: {
         Row: {
           created_at: string | null
+          id: string
           phone_number: string | null
           service_id: string | null
           staff_id: string
@@ -626,6 +642,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          id?: string
           phone_number?: string | null
           service_id?: string | null
           staff_id?: string
@@ -633,6 +650,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          id?: string
           phone_number?: string | null
           service_id?: string | null
           staff_id?: string
@@ -644,6 +662,38 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      status_history: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          id: string
+          request_id: string | null
+          status: string | null
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "status_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -685,7 +735,22 @@ export type Database = {
           user_id?: string | null
           villa_number?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_stays_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_stays_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "view_all_staff"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_profiles: {
         Row: {
@@ -737,29 +802,37 @@ export type Database = {
       }
     }
     Views: {
-      tenant_profiles: {
+      tenant_stays_view: {
         Row: {
-          avatar_url: string | null
+          check_in: string | null
+          check_out: string | null
+          city: string | null
           email: string | null
           full_name: string | null
-          id: string | null
-          phone: string | null
+          guests: number | null
+          reservation_number: string | null
+          role: string | null
+          status: string | null
+          stay_id: string | null
+          user_id: string | null
+          villa_number: string | null
         }
-        Insert: {
-          avatar_url?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          phone?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          phone?: string | null
-        }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_stays_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_stays_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "view_all_staff"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       view_all_staff: {
         Row: {

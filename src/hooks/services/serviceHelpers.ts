@@ -1,196 +1,69 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import type { ServiceDetail } from './types';
+import type { StaffAssignment, ServiceRating } from '@/integrations/supabase/rpc';
 
-// Helper functions for service requests
-export const getStaffAssignmentsForRequest = async (requestId: string) => {
-  const { data } = await supabase
-    .from('staff_assignments')
-    .select('*')
-    .eq('request_id', requestId);
-  
-  return data || [];
-};
-
-export const getServiceRatingsForRequest = async (requestId: string) => {
-  const { data } = await supabase
-    .from('service_ratings')
-    .select('*')
-    .eq('request_id', requestId);
-  
-  return data || [];
-};
-
-// Function to enhance optional fields with prefilled selected values
-export const enhanceOptionalFields = (
-  serviceDetails: ServiceDetail | null,
-  category?: string,
-  option?: string,
-  tripType?: string
-) => {
-  if (!serviceDetails || !serviceDetails.optional_fields) {
-    // Default fields for Hair Salon service
-    if (serviceDetails?.category === 'hair') {
-      return {
-        selectFields: [
-          {
-            name: 'client_gender',
-            label: 'Client Gender',
-            options: ['Man', 'Woman']
-          },
-          {
-            name: 'stylist_gender_preference',
-            label: 'Stylist Gender Preference',
-            options: ['Any', 'Male', 'Female']
-          }
-        ],
-        multiSelectFields: [
-          {
-            name: 'services',
-            label: 'Services',
-            options: ['Haircut', 'Beard trim', 'Coloring', 'Blow dry', 'Shaving', 'Hair wash']
-          }
-        ]
-      };
-    }
-    
-    // Default fields for Kids Club service
-    if (serviceDetails?.category === 'kids') {
-      return {
-        selectFields: [
-          {
-            name: 'age_range',
-            label: 'Age Range',
-            options: ['0-3', '4-7', '8-12']
-          },
-          {
-            name: 'time_slot',
-            label: 'Time Slot',
-            options: ['Morning', 'Afternoon', 'Evening']
-          }
-        ],
-        numberFields: [
-          {
-            name: 'number_of_children',
-            label: 'Number of Children',
-            min: 1,
-            max: 10
-          }
-        ],
-        multiSelectFields: [
-          {
-            name: 'activities',
-            label: 'Activities',
-            options: ['Drawing', 'Games', 'Storytelling', 'Outdoor play']
-          }
-        ]
-      };
-    }
-    
-    // Default fields for Reservation service
-    if (serviceDetails?.category === 'reservation') {
-      return {
-        selectFields: [
-          {
-            name: 'type',
-            label: 'Reservation Type',
-            options: ['restaurant', 'activity', 'excursion', 'other']
-          }
-        ],
-        numberFields: [
-          {
-            name: 'people_count',
-            label: 'Number of People',
-            min: 1,
-            max: 50
-          }
-        ],
-        inputFields: [
-          {
-            name: 'name',
-            label: 'Reservation Name',
-            placeholder: 'Enter name or place'
-          }
-        ]
-      };
-    }
-    
-    return {};
-  }
-  
-  // Safely cast the optional_fields to Record<string, any>
-  const optionalFields = serviceDetails.optional_fields as Record<string, any>;
-  
-  // Create a copy of optional_fields to avoid modifying the original data
-  const enhanced: Record<string, any> = { ...optionalFields };
-  
-  // Pre-select the category if provided
-  if (category && enhanced.categories) {
-    enhanced.selectedCategory = category;
-  }
-  
-  // Pre-select the option if provided
-  if (option && enhanced.options) {
-    enhanced.selectedOption = option;
-  }
-  
-  // Pre-select the trip type if provided
-  if (tripType && enhanced.trip_types) {
-    enhanced.selectedTripType = tripType;
-  }
-  
-  return enhanced;
-};
-
-// Function to create a title based on the service type
-export const getServiceTitle = (service: any, serviceType?: string) => {
-  if (service?.name) {
-    return service.name;
-  }
-  
-  if (serviceType) {
-    if (serviceType === 'hair') return 'Hair Salon';
-    if (serviceType === 'kids') return 'Kids Club';
-    if (serviceType === 'reservation') return 'Reservation';
-    return `${serviceType.charAt(0).toUpperCase() + serviceType.slice(1).replace(/_/g, ' ')} Service`;
-  }
-  
-  return 'New Request';
-};
-
-// Function to get service image URL with proper error handling
-export const getServiceImageUrl = (imagePath?: string) => {
-  if (!imagePath) return '/placeholder.svg';
-  
-  // If it's already a full URL, return it
-  if (imagePath.startsWith('http')) {
-    return imagePath;
-  }
-  
-  // Handle Supabase storage paths
+// Get staff assignments for a specific request
+export const getStaffAssignmentsForRequest = async (requestId: string): Promise<StaffAssignment[]> => {
   try {
-    return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${imagePath}`;
-  } catch (error) {
-    console.error('Error formatting image URL:', error);
-    return '/placeholder.svg';
+    // Use a direct query instead of an rpc call since the database doesn't match the types.ts file
+    const { data, error } = await supabase
+      .from('staff_assignments')
+      .select(`
+        *,
+        staff_services(*)
+      `)
+      .eq('request_id', requestId);
+    
+    if (error) {
+      console.error('Error in getStaffAssignmentsForRequest:', error);
+      return [];
+    }
+    
+    return data as StaffAssignment[];
+  } catch (err) {
+    console.error('Caught error in getStaffAssignmentsForRequest:', err);
+    return [];
   }
 };
 
-// Define or export additional functions for getting space details
-export const getSpaceById = async (id: string) => {
-  if (!id) return null;
-  
+// Get service ratings for a specific request
+export const getServiceRatingsForRequest = async (requestId: string): Promise<ServiceRating[]> => {
+  try {
+    // Use a direct query instead of an rpc call since the database doesn't match the types.ts file
+    const { data, error } = await supabase
+      .from('service_ratings')
+      .select('*')
+      .eq('request_id', requestId);
+    
+    if (error) {
+      console.error('Error in getServiceRatingsForRequest:', error);
+      return [];
+    }
+    
+    return data as ServiceRating[];
+  } catch (err) {
+    console.error('Caught error in getServiceRatingsForRequest:', err);
+    return [];
+  }
+};
+
+// Get status history for a specific request
+export const getStatusHistoryForRequest = async (requestId: string): Promise<any[]> => {
   try {
     const { data, error } = await supabase
-      .from('spaces')
+      .from('status_history')
       .select('*')
-      .eq('id', id)
-      .single();
+      .eq('request_id', requestId)
+      .order('changed_at', { ascending: true });
     
-    if (error) throw error;
-    return data;
+    if (error) {
+      console.error('Error in getStatusHistoryForRequest:', error);
+      return [];
+    }
+    
+    return data || [];
   } catch (err) {
-    console.error('Error in getSpaceById:', err);
-    return null;
+    console.error('Caught error in getStatusHistoryForRequest:', err);
+    return [];
   }
 };
