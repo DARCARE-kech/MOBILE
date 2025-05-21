@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -30,6 +31,7 @@ export const useStaffRatingMutation = (requestId: string, staffId: string | unde
           .from('service_ratings')
           .update({
             staff_rating: rating,
+            rating: rating, // Include both fields to satisfy type constraints
             comment: comment.trim() || null
           })
           .eq('id', existingRating.id);
@@ -43,6 +45,7 @@ export const useStaffRatingMutation = (requestId: string, staffId: string | unde
             request_id: requestId,
             staff_id: staffId,
             staff_rating: rating,
+            rating: rating, // Include both fields to satisfy type constraints
             comment: comment.trim() || null
           });
           

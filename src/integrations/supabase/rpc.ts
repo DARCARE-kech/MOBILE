@@ -1,13 +1,25 @@
-
 import { supabase } from './client';
 
 // Define RPC functions types here
 export interface StaffAssignment {
   id: string;
   request_id: string;
-  staff_id: string | null;
+  staff_id: string;
   staff_name: string | null;
+  start_time: string;
+  end_time: string;
+  status: string;
+  comment: string;
+  private_note: string;
   assigned_at: string;
+  staff_services?: {
+    id: string;
+    staff_id: string;
+    staff_name: string;
+    service_id: string;
+    phone_number: string;
+    created_at: string;
+  };
 }
 
 export interface ServiceRating {
@@ -15,8 +27,10 @@ export interface ServiceRating {
   request_id: string;
   user_id: string | null;
   rating: number;
-  comment: string | null;
-  created_at: string | null;
+  staff_rating?: number | null; 
+  staff_id?: string | null;
+  comment?: string | null;
+  created_at?: string | null;
 }
 
 export interface ShopProduct {
