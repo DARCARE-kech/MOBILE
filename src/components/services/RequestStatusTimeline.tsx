@@ -24,11 +24,17 @@ const RequestStatusTimeline: React.FC<RequestStatusTimelineProps> = ({ statusHis
   const { t } = useTranslation();
   
   // Define standard statuses based on current status
-  let standardStatuses = ['pending', 'in_progress', 'completed'];
+  let standardStatuses: string[] = [];
   
-  // Only show "cancelled" if the current status is cancelled
+  // Only show relevant statuses based on the current status
   if (currentStatus === 'cancelled') {
     standardStatuses = ['pending', 'cancelled'];
+  } else if (currentStatus === 'pending') {
+    standardStatuses = ['pending'];
+  } else if (currentStatus === 'in_progress') {
+    standardStatuses = ['pending', 'in_progress'];
+  } else if (currentStatus === 'completed') {
+    standardStatuses = ['pending', 'in_progress', 'completed'];
   }
   
   // Sort history by date
@@ -42,8 +48,9 @@ const RequestStatusTimeline: React.FC<RequestStatusTimelineProps> = ({ statusHis
     return acc;
   }, {} as Record<string, string>);
   
-  // Function to get status display name
+  // Function to get status display name from translation
   const getStatusDisplayName = (status: string): string => {
+    // Use specific translation key for each status
     return t(`status.${status}`, status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' '));
   };
 

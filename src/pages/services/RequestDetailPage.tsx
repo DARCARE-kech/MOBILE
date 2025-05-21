@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useServiceRequestById } from '@/hooks/services/useServiceRequestById';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
@@ -10,7 +10,6 @@ import StaffRating from '@/components/services/StaffRating';
 import { Button } from '@/components/ui/button';
 import { useStaffRatingMutation } from '@/hooks/useStaffRatingMutation';
 import RequestStatusTimeline from '@/components/services/RequestStatusTimeline';
-import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import RequestDetailsContent from '@/components/services/RequestDetailsContent';
 import RequestDetailHeader from '@/components/services/RequestDetailHeader';
@@ -22,14 +21,17 @@ const RequestDetailPage: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [isSubmittingStaffRating, setIsSubmittingStaffRating] = useState(false);
   
-  const { data: request, isLoading, error } = useServiceRequestById(id);
+  // Assurons-nous que id est un UUID valide avant de l'utiliser
+  const validId = id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ? id : undefined;
+  
+  const { data: request, isLoading, error } = useServiceRequestById(validId);
   
   const staffId = request?.staff_assignments?.[0]?.staff_id;
   const existingRating = request?.service_ratings?.find(
     (rating) => rating.staff_id === staffId
   );
   
-  const { mutate: submitStaffRating } = useStaffRatingMutation(id || '', staffId);
+  const { mutate: submitStaffRating } = useStaffRatingMutation(validId || '', staffId);
   
   const handleStaffRatingSubmit = async (rating: number, comment: string) => {
     setIsSubmittingStaffRating(true);
@@ -46,7 +48,13 @@ const RequestDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate('/services/requests')} />
+        <div className="fixed top-0 left-0 right-0 z-50 bg-darcare-navy">
+          <div className="flex items-center justify-center h-16 px-4">
+            <h1 className="font-serif text-xl text-darcare-gold">
+              {t('services.requestDetails', 'Request Details')}
+            </h1>
+          </div>
+        </div>
         <div className="flex justify-center items-center py-24">
           <Loader2 className={cn(
             "h-8 w-8 animate-spin",
@@ -58,10 +66,30 @@ const RequestDetailPage: React.FC = () => {
     );
   }
   
-  if (error || !request) {
+  // Gérons le cas d'erreur de façon non bloquante
+  const hasError = !!error;
+
+  // Si aucune donnée n'est récupérée, afficher un message d'erreur mais ne pas bloquer l'interface
+  if (!request && hasError) {
     return (
       <div className="min-h-screen bg-background">
-        <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate('/services/requests')} />
+        <div className="fixed top-0 left-0 right-0 z-50 bg-darcare-navy">
+          <div className="flex items-center h-16 px-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/services/requests')}
+              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+              aria-label={t('common.back')}
+            >
+              <ArrowLeft size={20} />
+            </Button>
+            <h1 className="font-serif text-xl text-darcare-gold mx-auto">
+              {t('services.requestDetails', 'Request Details')}
+            </h1>
+            <div className="w-10"></div> {/* Placeholder pour l'alignement */}
+          </div>
+        </div>
         <div className="p-4 text-center py-24">
           <AlertTriangle className="mx-auto h-10 w-10 text-red-500 mb-4" />
           <p className="text-lg font-medium mb-2">
@@ -82,10 +110,11 @@ const RequestDetailPage: React.FC = () => {
     );
   }
 
-  const serviceName = request.services?.name || '';
+  // Si nous avons des données mais une erreur partielle, on continue l'affichage
+  const serviceName = request?.services?.name || '';
   
   // Convert the selected_options from Json to Record<string, any> or default to empty object
-  const selectedOptions = request.selected_options 
+  const selectedOptions = request?.selected_options 
     ? (typeof request.selected_options === 'string' 
         ? JSON.parse(request.selected_options) 
         : request.selected_options)
@@ -93,39 +122,52 @@ const RequestDetailPage: React.FC = () => {
   
   return (
     <div className="min-h-screen bg-background pb-24">
-      <MainHeader 
-        title={t('services.requestDetails', 'Request Details')} 
-        onBack={() => navigate('/services/requests')} 
-      />
+      <div className="fixed top-0 left-0 right-0 z-50 bg-darcare-navy">
+        <div className="flex items-center h-16 px-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/services/requests')}
+            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+            aria-label={t('common.back')}
+          >
+            <ArrowLeft size={20} />
+          </Button>
+          <h1 className="font-serif text-xl text-darcare-gold mx-auto">
+            {t('services.requestDetails', 'Request Details')}
+          </h1>
+          <div className="w-10"></div> {/* Placeholder pour l'alignement */}
+        </div>
+      </div>
       
       <div className="pt-20 px-4 pb-4">
         <RequestDetailHeader
           serviceName={serviceName}
-          status={request.status}
-          preferredTime={request.preferred_time}
-          createdAt={request.created_at}
+          status={request?.status}
+          preferredTime={request?.preferred_time}
+          createdAt={request?.created_at}
         />
         
-        {/* Request Timeline */}
+        {/* Request Timeline - Afficher uniquement les étapes atteintes */}
         <div className="mt-6 mb-8">
           <RequestStatusTimeline 
-            statusHistory={request.status_history || []} 
-            currentStatus={request.status || 'pending'} 
+            statusHistory={request?.status_history || []} 
+            currentStatus={request?.status || 'pending'} 
           />
         </div>
         
         <div className="grid grid-cols-1 gap-6">
           {/* Request Details Content */}
           <RequestDetailsContent 
-            note={request.note}
-            parsedNote={typeof request.note === 'string' && request.note.startsWith('{') ? 
+            note={request?.note}
+            parsedNote={typeof request?.note === 'string' && request?.note.startsWith('{') ? 
               JSON.parse(request.note) : null}
-            imageUrl={request.image_url}
-            staffAssignments={request.staff_assignments}
+            imageUrl={request?.image_url}
+            staffAssignments={request?.staff_assignments}
             selectedOptions={selectedOptions}
-            preferredTime={request.preferred_time}
-            createdAt={request.created_at}
-            spaceId={request.space_id}
+            preferredTime={request?.preferred_time}
+            createdAt={request?.created_at}
+            spaceId={request?.space_id}
           />
           
           {/* Staff Rating Section - Only show if completed and staff assigned */}
@@ -153,7 +195,7 @@ const RequestDetailPage: React.FC = () => {
           )}
         </div>
         
-        <div className="mt-8 pb-4">
+        <div className="mt-8 pb-16">
           <Button 
             onClick={() => navigate('/services/requests')}
             className={cn(
