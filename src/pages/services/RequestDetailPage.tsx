@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useServiceRequestById } from '@/hooks/useServiceRequest';
+import { useServiceRequestById } from '@/hooks/services/useServiceRequestById';
 import { Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -9,6 +10,10 @@ import StaffRating from '@/components/services/StaffRating';
 import { Button } from '@/components/ui/button';
 import { useStaffRatingMutation } from '@/hooks/useStaffRatingMutation';
 import RequestStatusTimeline from '@/components/services/RequestStatusTimeline';
+import MainHeader from '@/components/MainHeader';
+import BottomNavigation from '@/components/BottomNavigation';
+import RequestDetailsContent from '@/components/services/RequestDetailsContent';
+import RequestDetailHeader from '@/components/services/RequestDetailHeader';
 
 const RequestDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,93 +40,99 @@ const RequestDetailPage: React.FC = () => {
     }
   };
   
+  // Check if this request is completed and has staff assigned for showing the rating component
+  const showStaffRating = request?.status === 'completed' && !!staffId;
+  
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-10">
-        <Loader2 className={cn(
-          "h-8 w-8 animate-spin",
-          isDarkMode ? "text-darcare-gold" : "text-secondary"
-        )} />
+      <div className="min-h-screen bg-background">
+        <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate('/services/requests')} />
+        <div className="flex justify-center items-center py-24">
+          <Loader2 className={cn(
+            "h-8 w-8 animate-spin",
+            isDarkMode ? "text-darcare-gold" : "text-secondary"
+          )} />
+        </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
   
   if (error || !request) {
     return (
-      <div className="p-4 text-center">
-        <AlertTriangle className="mx-auto h-10 w-10 text-red-500 mb-4" />
-        <p className="text-lg font-medium mb-2">
-          {t('common.error', "Error")}
-        </p>
-        <p className={cn(
-          "mb-4",
-          isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
-        )}>
-          {t('common.fetchDataError', "Could not fetch request details. Please try again.")}
-        </p>
-        <Button onClick={() => navigate('/services/requests')}>
-          {t('common.backToRequests', "Back to My Requests")}
-        </Button>
+      <div className="min-h-screen bg-background">
+        <MainHeader title={t('services.requestDetails', 'Request Details')} onBack={() => navigate('/services/requests')} />
+        <div className="p-4 text-center py-24">
+          <AlertTriangle className="mx-auto h-10 w-10 text-red-500 mb-4" />
+          <p className="text-lg font-medium mb-2">
+            {t('common.error', "Error")}
+          </p>
+          <p className={cn(
+            "mb-4",
+            isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
+          )}>
+            {t('common.fetchDataError', "Could not fetch request details. Please try again.")}
+          </p>
+          <Button onClick={() => navigate('/services/requests')}>
+            {t('common.backToRequests', "Back to My Requests")}
+          </Button>
+        </div>
+        <BottomNavigation activeTab="services" />
       </div>
     );
   }
+
+  const serviceName = request.services?.name || '';
   
   return (
-    <div className="container py-8">
-      <h2 className={cn(
-        "text-3xl font-serif mb-6",
-        isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-      )}>
-        {t('services.requestDetails', 'Request Details')}
-      </h2>
+    <div className="min-h-screen bg-background pb-24">
+      <MainHeader 
+        title={t('services.requestDetails', 'Request Details')} 
+        onBack={() => navigate('/services/requests')} 
+      />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Request Details */}
-        <div>
-          <div className="mb-4">
-            <h3 className={cn(
-              "text-xl font-medium mb-2",
-              isDarkMode ? "text-darcare-beige" : "text-foreground"
-            )}>
-              {t('services.serviceDetails', 'Service Details')}
-            </h3>
-            <p className={cn(
-              "text-sm",
-              isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
-            )}>
-              {t('services.serviceName', 'Service Name')}: {request.services?.name}
-            </p>
-            <p className={cn(
-              "text-sm",
-              isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
-            )}>
-              {t('services.preferredTime', 'Preferred Time')}: {request.preferred_time}
-            </p>
-            <p className={cn(
-              "text-sm",
-              isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
-            )}>
-              {t('services.status', 'Status')}: {request.status}
-            </p>
-            {request.note && (
-              <p className={cn(
-                "text-sm",
-                isDarkMode ? "text-darcare-beige/80" : "text-foreground/80"
-              )}>
-                {t('services.note', 'Note')}: {request.note}
-              </p>
-            )}
-          </div>
+      <div className="pt-20 px-4 pb-4">
+        <RequestDetailHeader
+          serviceName={serviceName}
+          status={request.status}
+          preferredTime={request.preferred_time}
+          createdAt={request.created_at}
+        />
+        
+        {/* Request Timeline */}
+        <div className="mt-6 mb-8">
+          <RequestStatusTimeline 
+            statusHistory={request.status_history || []} 
+            currentStatus={request.status || 'pending'} 
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6">
+          {/* Request Details Content */}
+          <RequestDetailsContent 
+            note={request.note}
+            parsedNote={typeof request.note === 'string' && request.note.startsWith('{') ? 
+              JSON.parse(request.note) : null}
+            imageUrl={request.image_url}
+            staffAssignments={request.staff_assignments}
+            selectedOptions={request.selected_options}
+            preferredTime={request.preferred_time}
+            createdAt={request.created_at}
+            spaceId={request.space_id}
+          />
           
-          {/* Staff Rating Section */}
-          <div className="mb-6">
-            <h3 className={cn(
-              "text-xl font-medium mb-2",
-              isDarkMode ? "text-darcare-beige" : "text-foreground"
+          {/* Staff Rating Section - Only show if completed and staff assigned */}
+          {showStaffRating && (
+            <div className={cn(
+              "mt-6 pt-4 border-t",
+              isDarkMode ? "border-darcare-gold/20" : "border-primary/10"
             )}>
-              {t('services.staffRating', 'Staff Rating')}
-            </h3>
-            {staffId && (
+              <h3 className={cn(
+                "text-lg mb-4 font-serif",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
+                {t('services.staffRating', 'Staff Rating')}
+              </h3>
               <StaffRating
                 onSubmit={handleStaffRatingSubmit}
                 isSubmitting={isSubmittingStaffRating}
@@ -131,19 +142,25 @@ const RequestDetailPage: React.FC = () => {
                   created_at: existingRating.created_at
                 } : null}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
         
-        {/* Request Timeline */}
-        <div>
-          <RequestStatusTimeline statusHistory={request.status_history || []} currentStatus={request.status || 'pending'} />
+        <div className="mt-8 pb-4">
+          <Button 
+            onClick={() => navigate('/services/requests')}
+            className={cn(
+              isDarkMode 
+                ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90" 
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
+          >
+            {t('common.backToRequests', 'Back to My Requests')}
+          </Button>
         </div>
       </div>
       
-      <Button onClick={() => navigate('/services/requests')}>
-        {t('common.backToRequests', 'Back to My Requests')}
-      </Button>
+      <BottomNavigation activeTab="services" />
     </div>
   );
 };

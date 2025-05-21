@@ -23,8 +23,13 @@ const RequestStatusTimeline: React.FC<RequestStatusTimelineProps> = ({ statusHis
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
   
-  // Define standard statuses and their order
-  const standardStatuses = ['pending', 'in_progress', 'completed', 'cancelled'];
+  // Define standard statuses based on current status
+  let standardStatuses = ['pending', 'in_progress', 'completed'];
+  
+  // Only show "cancelled" if the current status is cancelled
+  if (currentStatus === 'cancelled') {
+    standardStatuses = ['pending', 'cancelled'];
+  }
   
   // Sort history by date
   const sortedHistory = [...statusHistory].sort((a, b) => 
@@ -39,18 +44,7 @@ const RequestStatusTimeline: React.FC<RequestStatusTimelineProps> = ({ statusHis
   
   // Function to get status display name
   const getStatusDisplayName = (status: string): string => {
-    switch (status) {
-      case 'pending':
-        return t('services.pending', 'Pending');
-      case 'in_progress':
-        return t('services.inProgress', 'In Progress');
-      case 'completed':
-        return t('services.completed', 'Completed');
-      case 'cancelled':
-        return t('services.cancelled', 'Cancelled');
-      default:
-        return status.charAt(0).toUpperCase() + status.slice(1);
-    }
+    return t(`status.${status}`, status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' '));
   };
 
   return (
@@ -74,20 +68,11 @@ const RequestStatusTimeline: React.FC<RequestStatusTimelineProps> = ({ statusHis
           {standardStatuses.map((status, index) => {
             const isVisited = statusMap[status] || status === currentStatus;
             const isCurrent = status === currentStatus;
-            const isLast = index === standardStatuses.length - 1;
-            
-            // Skip cancelled if the current status is completed
-            if (status === 'cancelled' && currentStatus === 'completed') return null;
-            // Skip completed if the current status is cancelled
-            if (status === 'completed' && currentStatus === 'cancelled') return null;
             
             return (
               <div 
                 key={status} 
-                className={cn(
-                  "flex flex-col items-center",
-                  isLast ? "flex-1" : "flex-1"
-                )}
+                className="flex flex-col items-center flex-1"
               >
                 <div className={cn(
                   "rounded-full w-8 h-8 flex items-center justify-center",
