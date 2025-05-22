@@ -84,6 +84,7 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
     mode: 'onChange'
   });
 
+  // Fixed validateTimeRange function to not cause re-renders
   const validateTimeRange = (start: string, end: string): boolean => {
     if (!start || !end) return false;
 
@@ -91,23 +92,31 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
     const [endHour, endMinute] = end.split(':').map(Number);
 
     if (startHour > endHour) {
-      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
       return false;
     }
 
     if (startHour === endHour && startMinute >= endMinute) {
-      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
       return false;
     }
 
-    setTimeError(null);
     return true;
   };
 
+  // Memoized validation to prevent re-renders
   const isFormValid = () => {
     const values = form.getValues();
-    return values.number_of_children > 0 && 
+    const isValid = values.number_of_children > 0 && 
       validateTimeRange(values.time_slot_start, values.time_slot_end);
+    
+    // Only update timeError if validation fails and we don't already have an error
+    const shouldHaveError = !validateTimeRange(values.time_slot_start, values.time_slot_end);
+    if (shouldHaveError && !timeError) {
+      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
+    } else if (!shouldHaveError && timeError) {
+      setTimeError(null);
+    }
+    
+    return isValid;
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -118,8 +127,9 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
       return;
     }
 
-    // Validate time range before submission
+    // Validate time range before submission but don't update state here
     if (!validateTimeRange(data.time_slot_start, data.time_slot_end)) {
+      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
       return;
     }
 
@@ -197,6 +207,29 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
     }
   };
 
+  // Create handlers for time field changes that don't cause re-renders
+  const handleTimeStartChange = (value: string) => {
+    const end = form.getValues('time_slot_end');
+    const isValid = validateTimeRange(value, end);
+    
+    if (!isValid && !timeError) {
+      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
+    } else if (isValid && timeError) {
+      setTimeError(null);
+    }
+  };
+
+  const handleTimeEndChange = (value: string) => {
+    const start = form.getValues('time_slot_start');
+    const isValid = validateTimeRange(start, value);
+    
+    if (!isValid && !timeError) {
+      setTimeError(t('services.endTimeMustBeAfterStartTime', 'End time must be after start time'));
+    } else if (isValid && timeError) {
+      setTimeError(null);
+    }
+  };
+
   return (
     <div className="p-4 pb-24">
       <ServiceHeader
@@ -242,20 +275,14 @@ const KidsClubService: React.FC<KidsClubServiceProps> = ({
                   fieldType="time"
                   name="time_slot_start"
                   label={t('services.startTime', 'Start Time')}
-                  onChange={value => {
-                    const end = form.getValues('time_slot_end');
-                    validateTimeRange(value as string, end);
-                  }}
+                  onChange={handleTimeStartChange}
                 />
                 <OptionField
                   form={form}
                   fieldType="time"
                   name="time_slot_end"
                   label={t('services.endTime', 'End Time')}
-                  onChange={value => {
-                    const start = form.getValues('time_slot_start');
-                    validateTimeRange(start, value as string);
-                  }}
+                  onChange={handleTimeEndChange}
                 />
               </div>
             </div>
