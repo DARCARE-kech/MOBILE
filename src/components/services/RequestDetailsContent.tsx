@@ -97,8 +97,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       
       {/* For space bookings, show space details */}
       {(finalSpaceId || parsedNote?.people) && (
-       
-          
+        <div className="space-y-2">
           {finalSpaceId && (
             <div className="flex justify-between">
               <span className="text-darcare-beige/80">{t('services.spaceName', 'Space')}</span>
@@ -167,12 +166,12 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
          staffAssignments[0] && staffAssignments[0].staff_name ? (
           <div className="text-darcare-beige">
             {[...new Map(
-  staffAssignments.map((s) => [s.staff_name, s])
-).values()].map((staff) => (
-  <div key={staff.staff_id} className="py-1">
-    {staff.staff_name}
-  </div>
-))}
+              staffAssignments.map((s) => [s.staff_name, s])
+            ).values()].map((staff) => (
+              <div key={staff.staff_id} className="py-1">
+                {staff.staff_name}
+              </div>
+            ))}
           </div>
         ) : (
           <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
