@@ -16,11 +16,55 @@ interface RequestRatingProps {
 
 const RequestRating: React.FC<RequestRatingProps> = ({ 
   onSubmit,
+  const [submittedRating, setSubmittedRating] = useState<{
+  rating: number;
+  comment?: string;
+  created_at?: string;
+} | null>(null);
+
   isSubmitting = false,
   existingRating = null 
 }) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
+
+  if (submittedRating) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <div className="flex">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <Star
+              key={value}
+              className={value <= submittedRating.rating 
+                ? 'fill-darcare-gold text-darcare-gold w-5 h-5' 
+                : 'text-darcare-gold/40 w-5 h-5'
+              }
+            />
+          ))}
+        </div>
+        <span className="text-darcare-white ml-2">{submittedRating.rating}/5</span>
+      </div>
+
+      {submittedRating.comment && (
+        <div className="mt-3">
+          <p className="text-darcare-beige/80 text-sm mb-1">Your comment:</p>
+          <p className="text-darcare-beige bg-darcare-navy/40 p-3 rounded-md">
+            {submittedRating.comment}
+          </p>
+        </div>
+      )}
+
+      {submittedRating.created_at && (
+        <p className="text-darcare-beige/60 text-sm mt-2">
+          Rated on {new Date(submittedRating.created_at).toLocaleDateString()}
+        </p>
+      )}
+    </div>
+  );
+}
+
+  
 
   if (existingRating) {
     return (
@@ -93,7 +137,15 @@ const RequestRating: React.FC<RequestRatingProps> = ({
       
       <Button 
         className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-        onClick={() => onSubmit(rating, comment)}
+        onClick={() => {
+  onSubmit(rating, comment);
+  setSubmittedRating({
+    rating,
+    comment,
+    created_at: new Date().toISOString()
+  });
+}}
+
         disabled={rating === 0 || isSubmitting}
       >
         {isSubmitting ? (
