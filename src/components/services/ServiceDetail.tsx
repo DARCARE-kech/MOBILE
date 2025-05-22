@@ -337,7 +337,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('reservation')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true}  onBack={() => navigate(-1)} />
         <div className="pt-20">
           <ReservationService
             serviceData={enhancedServiceDetails}
