@@ -91,6 +91,12 @@ const RequestDetailPage = () => {
     serviceName = t('services.bookSpace', 'Book Space');
   }
   
+  // Get staff name from staff_assignments if available
+  const staffName = request.staff_assignments && 
+                    request.staff_assignments.length > 0 && 
+                    request.staff_assignments[0] ? 
+                    request.staff_assignments[0].staff_name : null;
+  
   return (
     <div className="bg-darcare-navy min-h-screen pb-24">
       <MainHeader 
@@ -106,9 +112,7 @@ const RequestDetailPage = () => {
             status={request.status}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
-            staffName={request.staff_assignments && request.staff_assignments.length > 0 
-              ? request.staff_assignments[0].staff_name 
-              : null}
+            staffName={staffName}
           />
           
           <RequestDetailsContent

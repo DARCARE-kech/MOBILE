@@ -4,12 +4,41 @@ import type { ServiceDetail } from './types';
 
 // Helper functions for service requests
 export const getStaffAssignmentsForRequest = async (requestId: string) => {
-  const { data } = await supabase
-    .from('staff_assignments')
-    .select('*')
-    .eq('request_id', requestId);
-  
-  return data || [];
+  try {
+    // Join staff_assignments with staff_services to get staff_name
+    const { data, error } = await supabase
+      .from('staff_assignments')
+      .select(`
+        id,
+        request_id,
+        staff_id,
+        assigned_at,
+        status,
+        start_time,
+        end_time,
+        comment,
+        private_note,
+        staff_services!staff_id(staff_name)
+      `)
+      .eq('request_id', requestId);
+    
+    if (error) {
+      console.error('Error in getStaffAssignmentsForRequest:', error);
+      return [];
+    }
+    
+    // Transform the data to flatten the staff_name from staff_services
+    return data.map(assignment => {
+      return {
+        ...assignment,
+        staff_name: assignment.staff_services ? assignment.staff_services.staff_name : null,
+        staff_services: undefined // Remove this property as it's now flattened
+      };
+    });
+  } catch (err) {
+    console.error('Caught error in getStaffAssignmentsForRequest:', err);
+    return [];
+  }
 };
 
 export const getServiceRatingsForRequest = async (requestId: string) => {
