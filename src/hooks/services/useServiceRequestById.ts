@@ -1,7 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { getStaffAssignmentsForRequest, getServiceRatingsForRequest, getStatusHistoryForRequest } from './serviceHelpers';
+import { getStaffAssignmentsForRequest, getServiceRatingsForRequest } from './serviceHelpers';
 
 /**
  * Hook for fetching a single service request by ID
@@ -30,18 +30,12 @@ export const useServiceRequestById = (id: string | undefined) => {
       // Fetch service ratings using our helper
       const serviceRatings = await getServiceRatingsForRequest(id);
       
-      // Fetch status history using our helper
-      const statusHistory = await getStatusHistoryForRequest(id);
-      
       return {
         ...data,
         staff_assignments: staffAssignments,
-        service_ratings: serviceRatings,
-        status_history: statusHistory
+        service_ratings: serviceRatings
       };
     },
     enabled: !!id
   });
 };
-
-export default useServiceRequestById;

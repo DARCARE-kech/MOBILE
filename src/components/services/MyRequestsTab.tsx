@@ -1,19 +1,18 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Clock, User, Pencil, Trash2, AlertTriangle, History, Filter, ArrowUp, ArrowDown, Check } from 'lucide-react';
+import { Loader2, Clock, User, Pencil, Trash2, AlertTriangle, History } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
 import { getStaffAssignmentsForRequest } from '@/integrations/supabase/rpc';
 import type { StaffAssignment } from '@/integrations/supabase/rpc';
 import { useNavigate } from 'react-router-dom';
-import { format, startOfDay, startOfWeek, parseISO, isWithinInterval, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,16 +23,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface Service {
   id: string;
@@ -57,11 +46,6 @@ interface ServiceRequest {
   space_id?: string | null;
 }
 
-// Types for filtering and sorting
-type StatusFilterType = 'all' | 'pending' | 'in_progress';
-type DateFilterType = 'all' | 'today' | 'week' | 'custom';
-type SortType = 'preferred_time_asc' | 'preferred_time_desc' | 'created_at_asc' | 'created_at_desc';
-
 const MyRequestsTab: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -72,77 +56,27 @@ const MyRequestsTab: React.FC = () => {
   const [requestToDelete, setRequestToDelete] = React.useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   
-  // New state for filtering and sorting
-  const [statusFilter, setStatusFilter] = useState<StatusFilterType>('all');
-  const [serviceFilter, setServiceFilter] = useState<string>('all');
-  const [dateFilter, setDateFilter] = useState<DateFilterType>('all');
-  const [sortOption, setSortOption] = useState<SortType>('preferred_time_desc');
-  const [serviceTypes, setServiceTypes] = useState<{id: string, name: string}[]>([]);
-  
-  // Fetch available service types for the filter
-  useEffect(() => {
-    const fetchServiceTypes = async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('id, name')
-        .order('name', { ascending: true });
-      
-      if (!error && data) {
-        setServiceTypes(data);
-      }
-    };
-    
-    fetchServiceTypes();
-  }, []);
-  
   const { data: requests, isLoading, error } = useQuery({
-    queryKey: ['my-service-requests', user?.id, showHistory, statusFilter, serviceFilter, dateFilter, sortOption],
+    queryKey: ['my-service-requests', user?.id, showHistory],
     queryFn: async () => {
       if (!user?.id) throw new Error("User ID is required");
       
       console.log("Fetching service requests for user:", user.id);
       
       // Filter requests based on showHistory flag
-      let statusFilters: string[];
+      const statusFilter = showHistory 
+        ? ['completed', 'cancelled'] // History view: only completed and cancelled
+        : ['pending', 'in_progress']; // Active view: only pending and in_progress
       
-      if (showHistory) {
-        statusFilters = ['completed', 'cancelled']; // History view: only completed and cancelled
-      } else {
-        if (statusFilter === 'all') {
-          statusFilters = ['pending', 'in_progress']; // All active
-        } else if (statusFilter === 'pending') {
-          statusFilters = ['pending']; // Only pending
-        } else {
-          statusFilters = ['in_progress']; // Only in progress
-        }
-      }
-      
-      let query = supabase
+      const { data: requestsData, error: requestsError } = await supabase
         .from('service_requests')
         .select(`
           *,
           services(*)
         `)
         .eq('user_id', user.id) // Filter by the current user's ID
-        .in('status', statusFilters);
-      
-      // Apply service type filter if not 'all'
-      if (serviceFilter !== 'all') {
-        query = query.eq('service_id', serviceFilter);
-      }
-      
-      // Apply sorting
-      if (sortOption === 'preferred_time_asc') {
-        query = query.order('preferred_time', { ascending: true });
-      } else if (sortOption === 'preferred_time_desc') {
-        query = query.order('preferred_time', { ascending: false });
-      } else if (sortOption === 'created_at_asc') {
-        query = query.order('created_at', { ascending: true });
-      } else {
-        query = query.order('created_at', { ascending: false }); // Default: created_at_desc
-      }
-      
-      const { data: requestsData, error: requestsError } = await query;
+        .in('status', statusFilter)
+        .order('created_at', { ascending: false });
       
       if (requestsError) {
         console.error('Error fetching service requests:', requestsError);
@@ -152,7 +86,7 @@ const MyRequestsTab: React.FC = () => {
       console.log("Service requests data:", requestsData);
       
       // For each request, fetch staff assignments separately using our helper function
-      let enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
+      const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
         const staffAssignments = await getStaffAssignmentsForRequest(request.id);
         
         return {
@@ -160,38 +94,6 @@ const MyRequestsTab: React.FC = () => {
           staff_assignments: staffAssignments
         };
       }));
-      
-      // Apply date filter after fetching (since we can't filter by calculated fields in the query)
-      if (dateFilter !== 'all') {
-        enhancedRequests = enhancedRequests.filter(request => {
-          if (!request.preferred_time) return false;
-          
-          const preferredDate = parseISO(request.preferred_time);
-          const today = startOfDay(new Date());
-          
-          if (dateFilter === 'today') {
-            return isWithinInterval(preferredDate, { 
-              start: today, 
-              end: new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1) 
-            });
-          } else if (dateFilter === 'week') {
-            const startOfCurrentWeek = startOfWeek(new Date());
-            return isWithinInterval(preferredDate, { 
-              start: startOfCurrentWeek, 
-              end: new Date(startOfCurrentWeek.getTime() + 7 * 24 * 60 * 60 * 1000 - 1) 
-            });
-          } else if (dateFilter === 'custom') {
-            // Custom date range - for now we'll use last 30 days
-            // In a real app this would be connected to a date range picker
-            return isWithinInterval(preferredDate, { 
-              start: subDays(new Date(), 30), 
-              end: new Date() 
-            });
-          }
-          
-          return true;
-        });
-      }
       
       return enhancedRequests as ServiceRequest[];
     },
@@ -268,10 +170,6 @@ const MyRequestsTab: React.FC = () => {
 
   const toggleHistory = () => {
     setShowHistory(!showHistory);
-    // Reset filters when toggling between active and history views
-    setStatusFilter('all');
-    setServiceFilter('all');
-    setDateFilter('all');
   };
 
   if (isLoading) {
@@ -342,160 +240,6 @@ const MyRequestsTab: React.FC = () => {
         </Button>
       </div>
       
-      {/* New filter section - only show for active requests */}
-      {!showHistory && (
-        <div className={cn(
-          "px-4 mb-4 space-y-3",
-          isDarkMode ? "text-darcare-beige" : "text-darcare-charcoal"
-        )}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Filter size={16} className={isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"} />
-              <span className="text-sm font-medium">{t('services.filters', "Filters")}</span>
-            </div>
-            
-            {/* Sort dropdown */}
-            <Select
-              value={sortOption}
-              onValueChange={(value) => setSortOption(value as SortType)}
-            >
-              <SelectTrigger className={cn(
-                "w-[140px] h-8 text-xs border",
-                isDarkMode
-                  ? "bg-darcare-navy border-darcare-gold/30 text-darcare-beige"
-                  : "bg-white border-darcare-deepGold/30 text-darcare-charcoal"
-              )}>
-                <SelectValue placeholder={t('services.sortBy', "Sort by")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="preferred_time_desc">{t('services.newestPreferred', "Newest (Preferred)")}</SelectItem>
-                <SelectItem value="preferred_time_asc">{t('services.oldestPreferred', "Oldest (Preferred)")}</SelectItem>
-                <SelectItem value="created_at_desc">{t('services.newestCreated', "Newest (Created)")}</SelectItem>
-                <SelectItem value="created_at_asc">{t('services.oldestCreated', "Oldest (Created)")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Filter tabs */}
-          <div className="flex flex-wrap gap-2">
-            {/* Status filter */}
-            <Tabs 
-              value={statusFilter} 
-              onValueChange={(value) => setStatusFilter(value as StatusFilterType)}
-              className="w-auto"
-            >
-              <TabsList className={cn(
-                "h-8 p-0.5",
-                isDarkMode ? "bg-darcare-navy/60" : "bg-gray-100"
-              )}>
-                <TabsTrigger 
-                  value="all"
-                  className={cn(
-                    "text-xs h-7 px-3",
-                    statusFilter === 'all'
-                      ? isDarkMode 
-                        ? "bg-darcare-gold text-darcare-navy" 
-                        : "bg-darcare-deepGold text-white"
-                      : ""
-                  )}
-                >
-                  {t('services.all', "All")}
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="pending"
-                  className={cn(
-                    "text-xs h-7 px-3",
-                    statusFilter === 'pending'
-                      ? isDarkMode 
-                        ? "bg-darcare-gold text-darcare-navy" 
-                        : "bg-darcare-deepGold text-white"
-                      : ""
-                  )}
-                >
-                  {t('services.pending', "Pending")}
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="in_progress"
-                  className={cn(
-                    "text-xs h-7 px-3",
-                    statusFilter === 'in_progress'
-                      ? isDarkMode 
-                        ? "bg-darcare-gold text-darcare-navy" 
-                        : "bg-darcare-deepGold text-white"
-                      : ""
-                  )}
-                >
-                  {t('services.inProgress', "In Progress")}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            
-            {/* Service type filter */}
-            <Select
-              value={serviceFilter}
-              onValueChange={setServiceFilter}
-            >
-              <SelectTrigger className={cn(
-                "w-[120px] h-8 text-xs border",
-                isDarkMode
-                  ? "bg-darcare-navy border-darcare-gold/30 text-darcare-beige"
-                  : "bg-white border-darcare-deepGold/30 text-darcare-charcoal"
-              )}>
-                <SelectValue placeholder={t('services.serviceType', "Service Type")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('services.allServices', "All Services")}</SelectItem>
-                {serviceTypes.map(service => (
-                  <SelectItem key={service.id} value={service.id}>
-                    {t(`services.${service.name}`, service.name)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
-            {/* Date filter */}
-            <Select
-              value={dateFilter}
-              onValueChange={(value) => setDateFilter(value as DateFilterType)}
-            >
-              <SelectTrigger className={cn(
-                "w-[100px] h-8 text-xs border",
-                isDarkMode
-                  ? "bg-darcare-navy border-darcare-gold/30 text-darcare-beige"
-                  : "bg-white border-darcare-deepGold/30 text-darcare-charcoal"
-              )}>
-                <SelectValue placeholder={t('services.date', "Date")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('services.allDates', "All Dates")}</SelectItem>
-                <SelectItem value="today">{t('services.today', "Today")}</SelectItem>
-                <SelectItem value="week">{t('services.thisWeek', "This Week")}</SelectItem>
-                <SelectItem value="custom">{t('services.custom', "Custom")}</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            {/* Clear filters button */}
-            {(statusFilter !== 'all' || serviceFilter !== 'all' || dateFilter !== 'all') && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className={cn(
-                  "h-8 text-xs",
-                  isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-                )}
-                onClick={() => {
-                  setStatusFilter('all');
-                  setServiceFilter('all');
-                  setDateFilter('all');
-                }}
-              >
-                {t('services.clearFilters', "Clear")}
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-      
       {!requests || requests.length === 0 ? (
         <div className={cn(
           "relative overflow-hidden rounded-xl mx-4 p-8 flex flex-col items-center justify-center text-center",
@@ -547,7 +291,7 @@ const MyRequestsTab: React.FC = () => {
             
             if (request.space_id) {
               // For space reservations
-              serviceName = t(`services.${request.services?.name}`);
+              serviceName = t(`services.${request.services.name}`);
             } else if (request.services && request.services.name) {
               // For standard services with a valid name
               serviceName = t(`services.${request.services.name}`);
@@ -555,13 +299,6 @@ const MyRequestsTab: React.FC = () => {
               // Fallback for services without a name
               serviceName = t('services.untitled', 'Untitled Service');
             }
-            
-            // Get assigned staff member if available
-            const assignedStaff = request.staff_assignments && 
-                                 request.staff_assignments.length > 0 && 
-                                 request.staff_assignments[0].staff_services.staff_name
-                                   ? request.staff_assignments[0].staff_services.staff_name
-                                   : null;
             
             return (
               <div 
@@ -605,19 +342,25 @@ const MyRequestsTab: React.FC = () => {
                   "mt-2 pt-2 border-t flex justify-between items-center",
                   isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
                 )}>
-                  <div className={cn(
-                    "flex items-center gap-1 text-xs",
-                    isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
-                  )}>
-                    <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                    {assignedStaff ? (
+                  {request.staff_assignments && request.staff_assignments.length > 0 ? (
+                    <div className={cn(
+                      "flex items-center gap-1 text-xs",
+                      isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+                    )}>
+                      <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
                       <span className="truncate">
-                        {t('services.assignedTo', 'Assigned to')}: {assignedStaff}
+                        {request.staff_assignments[0].staff_name || t('services.unassigned', 'Unassigned')}
                       </span>
-                    ) : (
-                      <span className="truncate">{t('services.notYetAssigned', 'Not yet assigned')}</span>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className={cn(
+                      "flex items-center gap-1 text-xs",
+                      isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
+                    )}>
+                      <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
+                      <span className="truncate">{t('services.unassigned', 'Unassigned')}</span>
+                    </div>
+                  )}
                   
                   {/* Only show edit/delete buttons for pending or in_progress requests */}
                   {(!request.status || request.status === 'pending' || request.status === 'in_progress') && (
