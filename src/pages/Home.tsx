@@ -36,15 +36,16 @@ const Home: React.FC = () => {
       
       console.log("Fetching service requests for home page, user ID:", user.id);
       
+      // Updated query to properly join staff_services to get staff_name
       const { data, error } = await supabase
         .from('service_requests')
         .select(`
           *,
           services (name, category),
-          staff_assignments (
+          staff_assignments!inner (
             id,
             staff_id,
-            staff_name
+            staff_services (staff_name)
           )
         `)
         .eq('user_id', user.id)
@@ -59,14 +60,25 @@ const Home: React.FC = () => {
       
       console.log("Service requests data fetched for home page:", data);
       
-      // Convert to Service type with correct status handling
-      return (data || []).map(item => ({
-        ...item,
-        // Convert status to a valid enum value or default to "pending"
-        status: item.status === "pending" || item.status === "active" || 
-               item.status === "completed" || item.status === "cancelled" 
-               ? item.status : "pending"
-      }));
+      // Transform the data to ensure the staff_name is accessible at the right level
+      return (data || []).map(item => {
+        // Process staff assignments to move staff_name to the right level
+        const transformedStaffAssignments = item.staff_assignments?.map(assignment => {
+          return {
+            ...assignment,
+            staff_name: assignment.staff_services?.staff_name || null
+          };
+        }) || [];
+        
+        return {
+          ...item,
+          staff_assignments: transformedStaffAssignments,
+          // Convert status to a valid enum value or default to "pending"
+          status: item.status === "pending" || item.status === "active" || 
+                 item.status === "completed" || item.status === "cancelled" 
+                 ? item.status : "pending"
+        };
+      });
     },
     enabled: !!user?.id,
   });

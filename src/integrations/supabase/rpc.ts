@@ -36,12 +36,20 @@ export interface ShopProduct {
 // Get staff assignments for a specific request
 export const getStaffAssignmentsForRequest = async (requestId: string): Promise<StaffAssignment[]> => {
   try {
-    // Use a query that joins staff_assignments with staff_services to get staff_name
+    // Join staff_assignments with staff_services to get staff_name
     const { data, error } = await supabase
       .from('staff_assignments')
       .select(`
-        *,
-        staff_services(staff_name)
+        id,
+        request_id,
+        staff_id,
+        assigned_at,
+        status,
+        start_time,
+        end_time,
+        comment,
+        private_note,
+        staff_services!staff_id(staff_name)
       `)
       .eq('request_id', requestId);
     
@@ -54,7 +62,8 @@ export const getStaffAssignmentsForRequest = async (requestId: string): Promise<
     const transformedData = data.map(assignment => {
       return {
         ...assignment,
-        staff_name: assignment.staff_services?.staff_name || null
+        staff_name: assignment.staff_services ? assignment.staff_services.staff_name : null,
+        staff_services: undefined // Remove this property as it's now flattened
       };
     });
     
