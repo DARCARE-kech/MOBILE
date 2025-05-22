@@ -1,9 +1,12 @@
 
 import React from "react";
-import { Bell } from "lucide-react";
+import { Bell, Heart, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import WeatherDisplay from "./WeatherDisplay";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import Logo from "./Logo";
 
 export interface AppHeaderProps {
