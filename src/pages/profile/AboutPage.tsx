@@ -63,63 +63,7 @@ const AboutPage: React.FC = () => {
 </Card>
 
         
-        <Card className={cn(
-          "p-6 mb-6",
-          isDarkMode 
-            ? "bg-darcare-navy/50 border-darcare-gold/20" 
-            : "bg-white border-secondary/20"
-        )}>
-          <h2 className={cn(
-            "text-xl font-serif mb-4",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>Legal</h2>
-          
-          <div className="space-y-5">
-            <div className="flex items-center gap-3 py-2 cursor-pointer" onClick={() => {}}>
-              <FileText className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <div className="flex-1">
-                <span className={cn(
-                  isDarkMode ? "text-darcare-beige" : "text-foreground"
-                )}>Terms of Service</span>
-              </div>
-            </div>
-            
-            <Separator className={cn(
-              isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"
-            )} />
-            
-            <div className="flex items-center gap-3 py-2 cursor-pointer" onClick={() => {}}>
-              <FileText className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <div className="flex-1">
-                <span className={cn(
-                  isDarkMode ? "text-darcare-beige" : "text-foreground"
-                )}>Privacy Policy</span>
-              </div>
-            </div>
-            
-            <Separator className={cn(
-              isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"
-            )} />
-            
-            <div className="flex items-center gap-3 py-2 cursor-pointer" onClick={() => {}}>
-              <Info className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <div className="flex-1">
-                <span className={cn(
-                  isDarkMode ? "text-darcare-beige" : "text-foreground"
-                )}>Licenses</span>
-              </div>
-            </div>
-          </div>
-        </Card>
+        
         
         <div className="flex justify-center items-center mt-8 text-center text-sm">
           <Heart className={cn(
