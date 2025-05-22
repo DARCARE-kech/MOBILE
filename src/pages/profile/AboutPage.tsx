@@ -30,23 +30,38 @@ const AboutPage: React.FC = () => {
         </div>
         
         <Card className={cn(
-          "p-6 mb-6",
-          isDarkMode 
-            ? "bg-darcare-navy/50 border-darcare-gold/20" 
-            : "bg-white border-secondary/20"
-        )}>
-          <h2 className={cn(
-            "text-xl font-serif mb-4",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>About DarCare</h2>
-          <p className={cn(
-            "leading-relaxed",
-            isDarkMode ? "text-darcare-beige" : "text-foreground"
-          )}>
-            DarCare is a luxury villa management app that provides a seamless experience for guests staying in our exclusive properties. 
-            Manage your stay, request services, explore local attractions, and connect with our staff - all from one elegant application.
-          </p>
-        </Card>
+  "p-6 mb-6",
+  isDarkMode 
+    ? "bg-darcare-navy/50 border-darcare-gold/20" 
+    : "bg-white border-secondary/20"
+)}>
+  <h2 className={cn(
+    "text-xl font-serif mb-4",
+    isDarkMode ? "text-darcare-gold" : "text-primary"
+  )}>About The View</h2>
+  <div className={cn(
+    "space-y-4 leading-relaxed",
+    isDarkMode ? "text-darcare-beige" : "text-foreground"
+  )}>
+    <p>
+      Welcome to <strong>The View</strong>, your exclusive residence nestled in the heart of Marrakech.
+      More than just a home, The View is a lifestyle experience designed for comfort, elegance, and seamless living.
+    </p>
+    <p>
+      <strong>Our Complex:</strong> The View offers a secure and serene environment combining modern architecture with traditional Moroccan charm.
+      Residents enjoy access to high-end amenities such as private swimming pools, sports courts, wellness zones, gardens, and 24/7 concierge services.
+    </p>
+    <p>
+      <strong>Our Services:</strong> From daily housekeeping to on-demand maintenance and external reservations, our platform simplifies your entire stay.
+      You can request cleaning, laundry, grocery delivery, technical assistance, transport, or book exclusive experiences — all from one app.
+    </p>
+    <p>
+      <strong>Our Commitment:</strong> At The View, we are dedicated to providing a luxurious and worry-free experience.
+      Our team is always available to ensure your comfort, safety, and satisfaction throughout your stay.
+    </p>
+  </div>
+</Card>
+
         
         <Card className={cn(
           "p-6 mb-6",
@@ -113,7 +128,7 @@ const AboutPage: React.FC = () => {
           )} /> 
           <span className={cn(
             isDarkMode ? "text-darcare-beige/50" : "text-foreground/50"
-          )}>Made with care by DarCare Team © 2025</span>
+          )}>Made with care by The View Team © 2025</span>
         </div>
       </div>
     </div>
