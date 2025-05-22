@@ -45,7 +45,7 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
-        title={t('profile.personalInfo')} 
+        title={t('profile.profile')} 
       />
       
       <div className="pt-16 pb-24">
