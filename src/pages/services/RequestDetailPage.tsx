@@ -36,7 +36,7 @@ const RequestDetailPage = () => {
       <div className="bg-darcare-navy min-h-screen">
         <MainHeader 
           title={t('services.requestDetails', 'Request Details')} 
-          showBack={true}
+          showBack 
           onBack={() => navigate(-1)} 
           rightContent={<div />} // Empty div to prevent default icons
         />
