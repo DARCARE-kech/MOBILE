@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import WeatherDisplay from "@/components/weather/WeatherDisplay";
 
 interface RecommendationDetailHeaderProps {
   title: string;
@@ -13,7 +14,9 @@ interface RecommendationDetailHeaderProps {
 
 export const RecommendationDetailHeader = ({ 
   title, 
-  onBack
+  onBack,
+  isFavorite,
+  onToggleFavorite
 }: RecommendationDetailHeaderProps) => {
   const navigate = useNavigate();
   
@@ -43,18 +46,21 @@ export const RecommendationDetailHeader = ({
           </svg>
         </Button>
         
-        <h1 className="font-serif text-darcare-gold text-lg font-medium truncate">
+        <h1 className="font-serif text-darcare-gold text-lg font-medium truncate px-3">
           {title}
         </h1>
         
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate('/explore/favorites')}
-          className="text-darcare-gold"
-        >
-          <Heart size={20} />
-        </Button>
+        <div className="flex items-center gap-2">
+          <WeatherDisplay />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggleFavorite || (() => navigate('/explore/favorites'))}
+            className="text-darcare-gold"
+          >
+            <Heart size={20} className={isFavorite ? "fill-current" : ""} />
+          </Button>
+        </div>
       </div>
     </div>
   );
