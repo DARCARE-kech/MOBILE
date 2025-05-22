@@ -53,6 +53,7 @@ const RequestDetailPage = () => {
       <div className="bg-darcare-navy min-h-screen">
         <MainHeader 
           title={t('services.requestDetails', 'Request Details')} 
+          showBack={true}
           onBack={() => navigate(-1)} 
           rightContent={<div />} // Empty div to prevent default icons
         />
@@ -102,6 +103,7 @@ const RequestDetailPage = () => {
     <div className="bg-darcare-navy min-h-screen pb-24">
       <MainHeader 
         title={t('services.requestDetails', 'Request Details')} 
+        showBack={true}
         onBack={() => navigate(-1)} 
         rightContent={<div />} // Empty div to prevent default icons
       />
