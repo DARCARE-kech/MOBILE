@@ -106,6 +106,9 @@ const RequestDetailPage = () => {
             status={request.status}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
+            staffName={request.staff_assignments && request.staff_assignments.length > 0 
+              ? request.staff_assignments[0].staff_name 
+              : null}
           />
           
           <RequestDetailsContent
@@ -117,6 +120,7 @@ const RequestDetailPage = () => {
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
             spaceId={request.space_id}
+            status={request.status}
           />
         </div>
         

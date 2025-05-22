@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { formatFieldKey } from '@/utils/formattingUtils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import StatusTimeline from './StatusTimeline';
 
 interface RequestDetailsContentProps {
   note: string | null;
@@ -15,6 +16,7 @@ interface RequestDetailsContentProps {
   preferredTime: string | null;
   createdAt: string | null;
   spaceId?: string | null;
+  status: string | null;
 }
 
 const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
@@ -26,6 +28,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   preferredTime,
   createdAt,
   spaceId,
+  status,
 }) => {
   const { t } = useTranslation();
   
@@ -158,24 +161,26 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       )}
       
       {/* Staff Assignments */}
-      {staffAssignments && staffAssignments.length > 0 && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-darcare-gold uppercase">
-            {t('services.assignedStaff', 'Assigned Staff')}
-          </h3>
-          
-          {staffAssignments.map((staff) => (
-            <div key={staff.id} className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-darcare-gold/20 rounded-full flex items-center justify-center">
-                <span className="text-darcare-gold text-xs font-bold">
-                  {staff.staff_name?.substring(0, 1) || 'S'}
-                </span>
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-darcare-gold uppercase">
+          {t('services.assignedStaff', 'Assigned Staff')}
+        </h3>
+        
+        {staffAssignments && staffAssignments.length > 0 && staffAssignments[0].staff_name ? (
+          <div className="text-darcare-beige">
+            {staffAssignments.map((staff) => (
+              <div key={staff.id} className="py-1">
+                {staff.staff_name}
               </div>
-              <span className="text-darcare-beige">{staff.staff_name || t('services.pendingAssignment')}</span>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
+        )}
+      </div>
+      
+      {/* Status Timeline */}
+      <StatusTimeline currentStatus={status} />
     </div>
   );
 };
