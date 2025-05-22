@@ -88,7 +88,7 @@ const RequestDetailPage = () => {
   
   // If this is a space booking with no service name, use a default name
   if (request.space_id && (!serviceName || serviceName.trim() === '')) {
-    serviceName = t('services.bookSpace', 'Book Space');
+    serviceName = t('services.clubAcess', 'Club Acess');
   }
   
   // Get staff name from staff_assignments if available
@@ -111,8 +111,7 @@ const RequestDetailPage = () => {
             serviceName={serviceName}
             status={request.status}
             preferredTime={request.preferred_time}
-            createdAt={request.created_at}
-            staffName={staffName}
+            
           />
           
           <RequestDetailsContent
@@ -122,7 +121,7 @@ const RequestDetailPage = () => {
             staffAssignments={request.staff_assignments}
             selectedOptions={selectedOptions}
             preferredTime={request.preferred_time}
-            createdAt={request.created_at}
+           
             spaceId={request.space_id}
             status={request.status}
           />
