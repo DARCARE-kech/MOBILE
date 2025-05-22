@@ -97,10 +97,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       
       {/* For space bookings, show space details */}
       {(finalSpaceId || parsedNote?.people) && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-darcare-gold uppercase">
-            {t('services.spaceDetails', 'Space Details')}
-          </h3>
+       
           
           {finalSpaceId && (
             <div className="flex justify-between">
