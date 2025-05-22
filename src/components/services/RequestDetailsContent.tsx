@@ -169,11 +169,13 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
         {staffAssignments && staffAssignments.length > 0 && 
          staffAssignments[0] && staffAssignments[0].staff_name ? (
           <div className="text-darcare-beige">
-            {staffAssignments.map((staff) => (
-              <div key={staff.id} className="py-1">
-                {staff.staff_name}
-              </div>
-            ))}
+            {[...new Map(
+  staffAssignments.map((s) => [s.staff_name, s])
+).values()].map((staff) => (
+  <div key={staff.staff_id} className="py-1">
+    {staff.staff_name}
+  </div>
+))}
           </div>
         ) : (
           <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
