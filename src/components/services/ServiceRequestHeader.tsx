@@ -8,10 +8,6 @@ interface ServiceRequestHeaderProps {
   serviceTitle: string;
 }
 
-interface ServiceRequestHeaderProps {
-  serviceTitle: string;
-}
-
 const ServiceRequestHeader: React.FC<ServiceRequestHeaderProps> = ({ serviceTitle }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -19,6 +15,7 @@ const ServiceRequestHeader: React.FC<ServiceRequestHeaderProps> = ({ serviceTitl
   return (
     <MainHeader 
       title={serviceTitle || t('services.newRequest')} 
+      showBack={true}
       onBack={() => navigate(-1)}
       rightContent={<div />} // Empty div to prevent default icons on service request screens
     />

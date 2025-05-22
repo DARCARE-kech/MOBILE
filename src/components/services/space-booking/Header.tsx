@@ -15,6 +15,7 @@ const Header = ({ title }: HeaderProps) => {
   return (
     <AppHeader 
       title={title} 
+      showBack={true}
       onBack={() => navigate('/services/spaces')}
       rightContent={<div />} // Empty div to prevent default icons
     />
