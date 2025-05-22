@@ -1,3 +1,4 @@
+
 import React from "react";
 import { ChevronRight, User, Plus, Loader2, Clock } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
@@ -12,7 +13,10 @@ interface Service {
   title?: string;
   status: "pending" | "active" | "completed" | "cancelled" | string;
   preferred_time?: string | null;
-  staff_assignments?: { staff_name?: string | null }[] | null;
+  staff_assignments?: { 
+    staff_id?: string | null;
+    staff_name?: string | null;
+  }[] | null;
   services?: {
     name?: string;
     category?: string;
@@ -116,16 +120,22 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           }
           
           console.log("Rendering service:", service.id, "Name:", serviceName, "Service ID:", service.service_id);
+          console.log("Staff assignments:", service.staff_assignments);
           
           // Format time or use placeholder
           const formattedTime = service.preferred_time 
             ? new Date(service.preferred_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             : t('services.noTimeSpecified');
           
-          // Extract staff name with fallback
-          const staffName = service.staff_assignments && service.staff_assignments.length > 0 && service.staff_assignments[0].staff_name
-            ? service.staff_assignments[0].staff_name
-            : t('services.unassigned');
+          // Extract staff name with better fallback handling
+          let staffName = t('services.notYetAssigned', 'Not yet assigned');
+          
+          if (service.staff_assignments && service.staff_assignments.length > 0) {
+            const assignment = service.staff_assignments[0];
+            if (assignment.staff_name) {
+              staffName = assignment.staff_name;
+            }
+          }
 
           return (
             <div 

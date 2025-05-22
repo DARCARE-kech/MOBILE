@@ -10,6 +10,7 @@ interface RequestDetailHeaderProps {
   status: string | null;
   preferredTime: string | null;
   createdAt: string | null;
+  staffName?: string | null;
 }
 
 const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
@@ -17,6 +18,7 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
   status,
   preferredTime,
   createdAt,
+  staffName,
 }) => {
   const { t } = useTranslation();
   
@@ -28,6 +30,30 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
         </h2>
         <StatusBadge status={status || 'pending'} />
       </div>
+      
+      {preferredTime && (
+        <div className="text-sm text-darcare-beige/80">
+          <p>
+            {t('services.scheduledFor')}: {format(new Date(preferredTime), 'PPp')}
+          </p>
+        </div>
+      )}
+      
+      {staffName && (
+        <div className="text-sm text-darcare-beige/80">
+          <p>
+            {t('services.assignedTo')}: {staffName}
+          </p>
+        </div>
+      )}
+      
+      {createdAt && (
+        <div className="text-xs text-darcare-beige/60 mt-2">
+          <p>
+            {t('services.requestedOn')}: {format(new Date(createdAt), 'PPp')}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

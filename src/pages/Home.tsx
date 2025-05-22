@@ -41,7 +41,11 @@ const Home: React.FC = () => {
         .select(`
           *,
           services (name, category),
-          staff_assignments (staff_name)
+          staff_assignments (
+            id,
+            staff_id,
+            staff_name
+          )
         `)
         .eq('user_id', user.id)
         .in('status', ['pending', 'in_progress', 'active'])

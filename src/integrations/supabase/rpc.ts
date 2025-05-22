@@ -6,8 +6,13 @@ export interface StaffAssignment {
   id: string;
   request_id: string;
   staff_id: string | null;
-  staff_name: string | null;
+  staff_name: string | null; // This will come from the join with staff_services
   assigned_at: string;
+  status?: string;
+  start_time?: string | null;
+  end_time?: string | null;
+  comment?: string | null;
+  private_note?: string | null;
 }
 
 export interface ServiceRating {
@@ -31,10 +36,13 @@ export interface ShopProduct {
 // Get staff assignments for a specific request
 export const getStaffAssignmentsForRequest = async (requestId: string): Promise<StaffAssignment[]> => {
   try {
-    // Use a direct query instead of an rpc call since the database doesn't match the types.ts file
+    // Use a query that joins staff_assignments with staff_services to get staff_name
     const { data, error } = await supabase
       .from('staff_assignments')
-      .select('*')
+      .select(`
+        *,
+        staff_services(staff_name)
+      `)
       .eq('request_id', requestId);
     
     if (error) {
@@ -42,7 +50,15 @@ export const getStaffAssignmentsForRequest = async (requestId: string): Promise<
       return [];
     }
     
-    return data as StaffAssignment[];
+    // Transform the data to flatten the staff_name from staff_services
+    const transformedData = data.map(assignment => {
+      return {
+        ...assignment,
+        staff_name: assignment.staff_services?.staff_name || null
+      };
+    });
+    
+    return transformedData as StaffAssignment[];
   } catch (err) {
     console.error('Caught error in getStaffAssignmentsForRequest:', err);
     return [];
