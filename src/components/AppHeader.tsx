@@ -60,7 +60,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-darcare-navy border-b border-darcare-gold/10">
       <div className="flex items-center justify-between p-3 h-16">
-        <div className="flex items-center flex-1 gap-2 overflow-hidden">
+        <div className="flex items-center flex-1 gap-1 overflow-hidden">
   {showBack && (
     <Button
       variant="ghost"
