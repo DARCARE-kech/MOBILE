@@ -3,7 +3,7 @@ import React from "react";
 import { Bell, Heart, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import WeatherDisplay from "./WeatherDisplay";
+import WeatherDisplay from "./weather/WeatherDisplay";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +15,10 @@ export interface AppHeaderProps {
   onBack?: () => void;
   showLogo?: boolean;
   showNotifications?: boolean;
+  showWeather?: boolean;
+  showFavorite?: boolean;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
   rightContent?: React.ReactNode;
 }
 
@@ -24,6 +28,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   onBack,
   showLogo = true,
   showNotifications = true,
+  showWeather = false,
+  showFavorite = false,
+  isFavorite = false,
+  onToggleFavorite,
   rightContent,
 }) => {
   const navigate = useNavigate();
@@ -39,6 +47,14 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 
   const handleNotificationsClick = () => {
     navigate("/notifications");
+  };
+
+  const handleFavoriteClick = () => {
+    if (onToggleFavorite) {
+      onToggleFavorite();
+    } else {
+      navigate("/explore/favorites");
+    }
   };
 
   return (
@@ -77,14 +93,30 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           )}
 
           {title && (
-            <h1 className="text-darcare-gold text-lg font-serif">{title}</h1>
+            <h1 className="text-darcare-gold text-lg font-serif pl-2">{title}</h1>
           )}
         </div>
 
         <div className="flex items-center space-x-2">
-          {rightContent
-            ? rightContent
-            : showNotifications && (
+          {rightContent ? (
+            rightContent
+          ) : (
+            <>
+              {showWeather && <WeatherDisplay />}
+
+              {showFavorite && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleFavoriteClick}
+                  className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+                  aria-label={t("common.favorite")}
+                >
+                  <Heart size={20} className={isFavorite ? "fill-darcare-gold" : ""} />
+                </Button>
+              )}
+
+              {showNotifications && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -95,6 +127,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   <Bell size={20} />
                 </Button>
               )}
+            </>
+          )}
         </div>
       </div>
     </header>
