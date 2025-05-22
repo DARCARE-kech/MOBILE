@@ -7,7 +7,6 @@ import { SearchBar } from "@/components/explore/SearchBar";
 import { FiltersBar } from "@/components/explore/FiltersBar";
 import { useTranslation } from "react-i18next";
 import FloatingAction from "@/components/FloatingAction";
-import DrawerMenu from "@/components/DrawerMenu";
 import { type RecommendationCategory } from "@/utils/recommendationCategories";
 import ShopButton from "@/components/shop/ShopButton";
 
@@ -21,7 +20,6 @@ const ExplorePage = () => {
     <div className="min-h-screen bg-background">
       <AppHeader 
         title={t('navigation.explore')}
-        drawerContent={<DrawerMenu />}
       />
       
       <div className="pt-16 pb-24 space-y-4">

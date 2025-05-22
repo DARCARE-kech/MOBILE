@@ -1,98 +1,98 @@
 
-import { Bell, Heart, ArrowLeft } from "lucide-react";
-import { Button } from "./ui/button";
-import WeatherDisplay from "./WeatherDisplay";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import React from "react";
+import { Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import Logo from "./Logo";
 
 export interface AppHeaderProps {
   title?: string;
-  children?: React.ReactNode;
+  showBack?: boolean;
   onBack?: () => void;
+  showLogo?: boolean;
+  showNotifications?: boolean;
   rightContent?: React.ReactNode;
-  drawerContent?: React.ReactNode;// Added prop to accept drawer content
 }
 
-const AppHeader = ({ title, children, onBack, rightContent, drawerContent }: AppHeaderProps) => {
+const AppHeader: React.FC<AppHeaderProps> = ({
+  title,
+  showBack = false,
+  onBack,
+  showLogo = true,
+  showNotifications = true,
+  rightContent,
+}) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  const { data: notifications } = useQuery({
-    queryKey: ['notifications', 'unread'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('is_read', false);
-      
-      if (error) throw error;
-      return data;
-    },
-  });
 
-  const hasUnreadNotifications = notifications && notifications.length > 0;
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
-  // Custom title for home page
-  const isHome = window.location.pathname === "/" || window.location.pathname === "/home";
-  const displayTitle = isHome ? "DarCare" : title;
-
-  console.log("🧪 AppHeader reçoit :", title);
-
+  const handleNotificationsClick = () => {
+    navigate("/notifications");
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center bg-darcare-navy">
-      <div className="flex items-center gap-3">
-        {onBack ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onBack}
-            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            aria-label={t('common.back')}
-          >
-            <ArrowLeft size={20} />
-          </Button>
-        ) : drawerContent ? (
-          drawerContent
-        ) : null}
-        
-        {displayTitle && (
-          <h1 className={cn("font-serif text-darcare-gold", isHome ? "text-2xl" : "text-xl")}>
-            {displayTitle}
-          </h1>
-        )}
-      </div>
-      
-      <div className="flex items-center">
-        {rightContent || children || (
-          <div className="flex items-center gap-2">
-            <WeatherDisplay expanded={false} />
+    <header className="fixed top-0 left-0 right-0 z-40 bg-darcare-navy border-b border-darcare-gold/10">
+      <div className="flex items-center justify-between p-3 h-16">
+        <div className="flex items-center space-x-3">
+          {showBack && (
             <Button
               variant="ghost"
               size="icon"
-              className="text-darcare-beige hover:text-darcare-gold hover:bg-darcare-gold/10"
-              onClick={() => navigate('/explore/favorites')}
-              aria-label={t('common.favorites')}
+              onClick={handleBack}
+              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+              aria-label={t("common.back")}
             >
-              <Heart size={20} />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-6"
+              >
+                <path d="m15 18-6-6 6-6" />
+              </svg>
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative text-darcare-beige hover:text-darcare-gold hover:bg-darcare-gold/10"
-              onClick={() => navigate('/notifications')}
-              aria-label={t('common.notifications')}
-            >
-              <Bell size={20} />
-              {hasUnreadNotifications && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-darcare-gold rounded-full" />
+          )}
+
+          {showLogo && !title && (
+            <div className="flex-1 ml-2">
+              <Logo size="sm" color="gold" />
+            </div>
+          )}
+
+          {title && (
+            <h1 className="text-darcare-gold text-lg font-serif">{title}</h1>
+          )}
+        </div>
+
+        <div className="flex items-center space-x-2">
+          {rightContent
+            ? rightContent
+            : showNotifications && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleNotificationsClick}
+                  className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+                  aria-label={t("common.notifications")}
+                >
+                  <Bell size={20} />
+                </Button>
               )}
-            </Button>
-          </div>
-        )}
+        </div>
       </div>
     </header>
   );

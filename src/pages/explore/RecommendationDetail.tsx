@@ -69,7 +69,7 @@ const RecommendationDetail = () => {
       } else {
         console.error("Reservation service not found");
         
-        // Fallback to contact-admin as it was before
+        // Fallback to contact-admin
         navigate('/contact-admin', { 
           state: { 
             preselectedCategory: 'external_request',
@@ -80,7 +80,7 @@ const RecommendationDetail = () => {
     } catch (error) {
       console.error("Error finding reservation service:", error);
       
-      // Fallback to contact-admin as it was before
+      // Fallback to contact-admin
       navigate('/contact-admin', { 
         state: { 
           preselectedCategory: 'external_request',
