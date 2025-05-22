@@ -80,7 +80,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   )}
 
   {title && (
-    <h1 className="text-darcare-gold text-lg font-serif truncate">
+    <h1 className="text-darcare-gold text-lg font-serif truncate ml-4">
       {title}
     </h1>
   )}
