@@ -44,7 +44,7 @@ const EditProfile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MainHeader title={t('profile.editProfile')} onBack={() => navigate('/profile')} />
+      <MainHeader title={t('profile.editProfile')} showBack={true}  onBack={() => navigate('/profile')} />
       
       <div className="pt-20 pb-24 px-4">
         <Card className="p-6 mb-6 border-darcare-gold/20 bg-card">

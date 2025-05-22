@@ -18,7 +18,7 @@ const AboutPage: React.FC = () => {
       "min-h-screen",
       isDarkMode ? "bg-darcare-navy" : "bg-background"
     )}>
-      <MainHeader title="About" onBack={() => navigate('/profile')} />
+      <MainHeader title="About" showBack={true} onBack={() => navigate('/profile')} />
       
       <div className="pt-20 pb-24 px-4">
         <div className="flex flex-col items-center mb-8">
