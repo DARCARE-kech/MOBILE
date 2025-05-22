@@ -203,7 +203,7 @@ const ServiceDetail: React.FC = () => {
   if (id === 'shop') {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('services.shop')} onBack={() => navigate('/services')} />
+        <MainHeader title={t('services.shop')} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <ShopService />
         </div>
@@ -215,7 +215,7 @@ const ServiceDetail: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen bg-darcare-navy">
-        <MainHeader title={t('common.loading')} onBack={() => navigate('/services')} />
+        <MainHeader title={t('common.loading')} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
@@ -253,7 +253,7 @@ const ServiceDetail: React.FC = () => {
   if (serviceNameLower?.includes('laundry')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <LaundryService 
             serviceData={enhancedServiceDetails} 
@@ -267,7 +267,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('cleaning')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <CleaningService 
             serviceData={enhancedServiceDetails}
@@ -281,7 +281,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('maintenance')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true}  onBack={() => navigate('/services')} />
         <div className="pt-20">
           <MaintenanceService 
             serviceData={enhancedServiceDetails}
@@ -295,7 +295,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('transport')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <TransportService 
             serviceData={enhancedServiceDetails}
@@ -309,7 +309,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('hair') || serviceNameLower?.includes('salon')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <HairSalonService 
             serviceData={enhancedServiceDetails}
@@ -323,7 +323,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('kids') || serviceNameLower?.includes('club')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <KidsClubService 
             serviceData={enhancedServiceDetails}
@@ -337,7 +337,7 @@ const ServiceDetail: React.FC = () => {
   } else if (serviceNameLower?.includes('reservation')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={pageTitle} onBack={() => navigate('/services')} />
+        <MainHeader title={pageTitle} showBack={true} onBack={() => navigate('/services')} />
         <div className="pt-20">
           <ReservationService
             serviceData={enhancedServiceDetails}

@@ -43,9 +43,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Log service data for debugging
-  console.log('TransportService - serviceData:', serviceData);
-  console.log('TransportService - service_id:', serviceData?.service_id);
+ 
   
   const optionalFields = serviceData?.optional_fields || {};
 
