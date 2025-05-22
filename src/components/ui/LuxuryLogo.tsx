@@ -25,7 +25,7 @@ const LuxuryLogo: React.FC<LogoProps> = ({
         sizeClass[size],
         "flex items-center justify-center rounded-full bg-gradient-to-br from-darcare-gold to-darcare-gold/80 shadow-lg shadow-darcare-gold/20"
       )}>
-        <span className="font-serif text-2xl font-bold text-darcare-navy">D</span>
+        <span className="font-serif text-2xl font-bold text-darcare-navy">T</span>
       </div>
       {withText && (
         <div className={cn(
@@ -33,7 +33,7 @@ const LuxuryLogo: React.FC<LogoProps> = ({
           size === "sm" ? "text-xl" : "text-2xl",
           "text-darcare-gold"
         )}>
-          DarCare
+          The View
         </div>
       )}
     </div>

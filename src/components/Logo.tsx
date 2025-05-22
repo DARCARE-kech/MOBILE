@@ -27,11 +27,11 @@ const Logo: React.FC<LogoProps> = ({
   return (
     <div className="flex items-center gap-3">
       <div className={`${sizeClass[size]} ${colorClass[color]} flex items-center justify-center border-2 border-current rounded-full`}>
-        <span className="font-serif text-2xl font-bold">D</span>
+        <span className="font-serif text-2xl font-bold">T</span>
       </div>
       {withText && (
         <div className={`text-${size === "sm" ? "xl" : "2xl"} font-serif font-medium ${colorClass[color]}`}>
-          DarCare
+          The View
         </div>
       )}
     </div>

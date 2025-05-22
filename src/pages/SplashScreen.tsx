@@ -37,7 +37,7 @@ const SplashScreen: React.FC = () => {
       </div>
       
       <div className={`mt-6 transition-all duration-1000 ${showText ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-        <h1 className="font-serif text-4xl text-darcare-gold">DarCare</h1>
+        <h1 className="font-serif text-4xl text-darcare-gold">The View</h1>
       </div>
       
       <div className={`mt-3 transition-all duration-1000 delay-300 ${showTagline ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>

@@ -166,10 +166,10 @@ const Notifications = () => {
         </div>
       </header>
 
-      <div className="pt-20 p-4 space-y-6 pb-24">
-        {/* Mark all as read button moved below header */}
+      <div className="pt-24 p-4 space-y-6 pb-24">
+        {/* Mark all as read button moved below header and outside of it */}
         {notifications && notifications.some(n => !n.is_read) && (
-          <div className="flex justify-end mb-2">
+          <div className="flex justify-end mb-4">
             <Button
               variant="outline"
               size="sm"
