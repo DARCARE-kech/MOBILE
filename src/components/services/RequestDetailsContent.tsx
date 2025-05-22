@@ -102,7 +102,14 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
             {t('services.spaceDetails', 'Space Details')}
           </h3>
           
-          
+          {finalSpaceId && (
+            <div className="flex justify-between">
+              <span className="text-darcare-beige/80">{t('services.spaceName', 'Space')}</span>
+              <span className="text-darcare-beige font-medium">
+                {spaceData?.name || t('common.loading')}
+              </span>
+            </div>
+          )}
           
           {parsedNote?.people && (
             <div className="flex justify-between">
