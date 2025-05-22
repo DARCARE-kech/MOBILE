@@ -80,7 +80,7 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <MainHeader 
-        title="DarCare"
+        title="The View"
         showWeather={true}
         showNotifications={true}
         showFavorite={true}
