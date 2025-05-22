@@ -153,35 +153,36 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="fixed top-0 left-0 right-0 z-40 bg-darcare-navy border-b border-darcare-gold/10">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="mr-2 text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-              onClick={() => navigate(-1)}
-            >
-              <ChevronLeft className="size-6" />
-            </Button>
-            <h1 className="font-serif text-xl text-darcare-gold">{t('navigation.notifications')}</h1>
-          </div>
-          
-          {notifications && notifications.some(n => !n.is_read) && (
+        <div className="flex items-center p-4">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="mr-2 text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+            onClick={() => navigate(-1)}
+          >
+            <ChevronLeft className="size-6" />
+          </Button>
+          <h1 className="font-serif text-xl text-darcare-gold">{t('navigation.notifications')}</h1>
+        </div>
+      </header>
+
+      <div className="pt-20 p-4 space-y-6 pb-24">
+        {/* Mark all as read button moved below header */}
+        {notifications && notifications.some(n => !n.is_read) && (
+          <div className="flex justify-end mb-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 flex items-center gap-1"
+              className="text-darcare-gold border-darcare-gold/30 hover:bg-darcare-gold/10 flex items-center gap-1"
               onClick={handleMarkAllAsRead}
               disabled={markAllAsReadMutation.isPending}
             >
               <Check size={16} />
               <span>{t('notifications.markAllAsRead')}</span>
             </Button>
-          )}
-        </div>
-      </header>
+          </div>
+        )}
 
-      <div className="pt-16 p-4 space-y-6 pb-24">
         {isLoading ? (
           <div className="text-center text-muted-foreground py-8">
             {t('common.loading')}
