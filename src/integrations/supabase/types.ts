@@ -159,7 +159,8 @@ export type Database = {
           id: string
           is_read: boolean | null
           title: string
-          user_id: string | null
+          type: string | null
+          user_id: string
         }
         Insert: {
           body?: string | null
@@ -168,7 +169,8 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           title: string
-          user_id?: string | null
+          type?: string | null
+          user_id: string
         }
         Update: {
           body?: string | null
@@ -177,7 +179,8 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           title?: string
-          user_id?: string | null
+          type?: string | null
+          user_id?: string
         }
         Relationships: []
       }
