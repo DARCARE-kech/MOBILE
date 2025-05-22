@@ -36,7 +36,9 @@
     "awaitingConfirmation": "En attente de confirmation de l'administration.",
     "staffHandlingRequest": "Un membre du personnel traite actuellement votre demande.",
     "requestSuccessfullyCompleted": "Votre demande a été complétée avec succès.",
-    "requestHasBeenCancelled": "Cette demande a été annulée."
+    "requestHasBeenCancelled": "Cette demande a été annulée.",
+      "markAllAsRead": "Marquer tout comme lu",
+    "allMarkedAsRead": "Toutes les notifications ont été marquées comme lues"
   },
   "drawer": {
     "services": "Services",

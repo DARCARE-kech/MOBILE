@@ -344,7 +344,9 @@
     "accountSettings": "إعدادات الحساب"
   },
   "notifications": {
-    "noNotifications": "لا توجد إشعارات حتى الآن"
+    "noNotifications": "لا توجد إشعارات حتى الآن",
+      "markAllAsRead": "تمييز الكل كمقروء",
+    "allMarkedAsRead": "تم تمييز جميع الإشعارات كمقروءة"
   },
   "languages": {
     "en": "الإنجليزية",

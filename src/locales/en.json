@@ -435,7 +435,9 @@
     "requestSuccessfullyCompleted": "Your request has been successfully completed",
     "requestCancelled": "Request Cancelled",
     "requestHasBeenCancelled": "Your request has been cancelled",
-    "noNotifications": "No notifications yet"
+    "noNotifications": "No notifications yet",
+       "markAllAsRead": "Mark all as read",
+    "allMarkedAsRead": "All notifications marked as read"
   },
   "languages": {
     "en": "English",
