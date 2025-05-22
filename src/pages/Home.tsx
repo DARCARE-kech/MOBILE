@@ -82,6 +82,8 @@ const Home: React.FC = () => {
       <MainHeader 
         title="DarCare"
         showWeather={true}
+        showNotifications={true}
+        showFavorite={true}
       />
       
       <div className="pt-20 pb-24">

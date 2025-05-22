@@ -20,6 +20,9 @@ const ExplorePage = () => {
     <div className="min-h-screen bg-background">
       <AppHeader 
         title={t('navigation.explore')}
+        showWeather={true}
+        showNotifications={true}
+        showFavorite={true}
       />
       
       <div className="pt-16 pb-24 space-y-4">

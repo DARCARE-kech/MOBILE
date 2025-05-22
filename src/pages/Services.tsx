@@ -37,7 +37,10 @@ const ServicesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
-        title={t('navigation.services')} 
+        title={t('navigation.services')}
+        showWeather={true}
+        showNotifications={true}
+        showFavorite={true}
       />
       
       <div className="pt-16 pb-20">
