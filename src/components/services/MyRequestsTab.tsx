@@ -559,8 +559,8 @@ const MyRequestsTab: React.FC = () => {
             // Get assigned staff member if available
             const assignedStaff = request.staff_assignments && 
                                  request.staff_assignments.length > 0 && 
-                                 request.staff_assignments[0].staff_name
-                                   ? request.staff_assignments[0].staff_name
+                                 request.staff_assignments[0].staff_services.staff_name
+                                   ? request.staff_assignments[0].staff_services.staff_name
                                    : null;
             
             return (
