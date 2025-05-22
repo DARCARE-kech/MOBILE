@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -8,7 +9,6 @@ import FloatingAction from "@/components/FloatingAction";
 import ShopButton from "@/components/shop/ShopButton";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
-import DrawerMenu from "@/components/DrawerMenu";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InternalServicesTab from "@/components/services/InternalServicesTab";
 import ExternalServicesTab from "@/components/services/ExternalServicesTab";
@@ -38,7 +38,6 @@ const ServicesPage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <AppHeader 
         title={t('navigation.services')} 
-        drawerContent={<DrawerMenu />}
       />
       
       <div className="pt-16 pb-20">

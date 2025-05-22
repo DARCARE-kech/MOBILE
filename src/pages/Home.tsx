@@ -8,21 +8,15 @@ import { useCurrentStay } from "@/hooks/useCurrentStay";
 import RecommendationsList from "@/components/RecommendationsList";
 import ServicesList from "@/components/ServicesList";
 import { useTranslation } from "react-i18next";
-import DrawerMenu from "@/components/DrawerMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import FloatingAction from "@/components/FloatingAction";
 import ShopButton from "@/components/shop/ShopButton";
 
-
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
 
-  
-  
-
-  
   const { 
     data: currentStay, 
     isLoading: isStayLoading,
@@ -87,7 +81,6 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-background">
       <MainHeader 
         title="DarCare" 
-        drawerContent={<DrawerMenu />}
       />
       
       <div className="pt-20 pb-24">

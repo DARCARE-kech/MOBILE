@@ -11,7 +11,6 @@ import { getFallbackImage } from '@/utils/imageUtils';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
-import DrawerMenu from '@/components/DrawerMenu';
 
 interface Space {
   id: string;
@@ -50,7 +49,6 @@ const SpacesListPage: React.FC = () => {
         <AppHeader
           title={t('services.clubAccess', 'Club Access')}
           onBack={() => navigate('/services')}
-          drawerContent={<DrawerMenu />}
         />
         
         <div className="flex justify-center items-center h-[80vh]">
@@ -71,7 +69,6 @@ const SpacesListPage: React.FC = () => {
         <AppHeader
           title={t('services.clubAccess', 'Club Access')}
           onBack={() => navigate('/services')}
-          drawerContent={<DrawerMenu />}
         />
         
         <div className="p-4 pt-24 pb-24 text-destructive">
@@ -88,7 +85,6 @@ const SpacesListPage: React.FC = () => {
       <AppHeader
         title={t('services.clubAccess', 'Club Access')}
         onBack={() => navigate('/services')}
-        drawerContent={<DrawerMenu />}
       />
       
       <div className="p-4 pt-24 pb-24">

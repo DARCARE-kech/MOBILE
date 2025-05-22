@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import AppHeader from '@/components/AppHeader';
-import DrawerMenu from "@/components/DrawerMenu";
 import { UserInfoBlock } from '@/components/profile/UserInfoBlock';
 import { PreferencesSection } from '@/components/profile/PreferencesSection';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -47,8 +46,7 @@ const ProfilePage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <AppHeader 
         title={t('profile.personalInfo')} 
-        drawerContent={<DrawerMenu />}
-        />
+      />
       
       <div className="pt-16 pb-24">
         <div className="p-4 space-y-6">
@@ -67,7 +65,6 @@ const ProfilePage: React.FC = () => {
           {/* Preferences Section */}
           <PreferencesSection
             language={profile?.language || 'en'}
-           
             onUpdatePreference={handlePreferenceUpdate}
           />
 

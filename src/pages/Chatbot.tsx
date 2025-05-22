@@ -84,28 +84,29 @@ const ChatbotPage: React.FC = () => {
       <MainHeader 
         title={t('navigation.chatbot')}
         onBack={() => navigate("/home")}
-      >
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/chat-history')}
-            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            title={t('chatbot.history')}
-          >
-            <History className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/contact-admin')}
-            className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-            title={t('chatbot.contactAdmin')}
-          >
-            <Mail className="h-5 w-5" />
-          </Button>
-        </div>
-      </MainHeader>
+        rightContent={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/chat-history')}
+              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+              title={t('chatbot.history')}
+            >
+              <History className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/contact-admin')}
+              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
+              title={t('chatbot.contactAdmin')}
+            >
+              <Mail className="h-5 w-5" />
+            </Button>
+          </div>
+        }
+      />
       
       <ScrollArea 
         className="flex-1 p-4 pt-20 pb-36"
@@ -142,12 +143,12 @@ const ChatbotPage: React.FC = () => {
       </ScrollArea>
 
       <div className="fixed bottom-20 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20 z-20">
-  <ChatInput
-    onSend={handleSend}
-    disabled={isLoading}
-    placeholder={t('chatbot.typeMessage')}
-  />
-</div>
+        <ChatInput
+          onSend={handleSend}
+          disabled={isLoading}
+          placeholder={t('chatbot.typeMessage')}
+        />
+      </div>
       
       <BottomNavigation activeTab="chatbot" />
     </div>
