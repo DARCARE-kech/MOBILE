@@ -119,6 +119,7 @@
     "leisure": "Leisure",
     "reserve": "Reserve",
     "requests": "Requests",
+      "requestedOn": "Requested on",
     "history": "History",
     "todaySchedule": "Today's Schedule",
     "noActivitiesScheduled": "No Activities Scheduled",

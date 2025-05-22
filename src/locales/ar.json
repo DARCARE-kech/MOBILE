@@ -134,6 +134,7 @@
     "available": "متاح",
     "request": "طلب",
     "spaces": "المساحات",
+      "requestedOn": "تم الطلب في",
     "details": "تفاصيل الخدمة",
     "preferredTime": "الوقت المفضل",
     "preferredDate": "التاريخ المفضل",

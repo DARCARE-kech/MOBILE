@@ -58,6 +58,7 @@
     "leisure": "Loisirs",
     "reserve": "Réserver",
     "requests": "Demandes",
+      "requestedOn": "Demandé le",
     "history": "Historique",
     "todaySchedule": "Programme du jour",
     "noActivitiesScheduled": "Aucune activité programmée",
