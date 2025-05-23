@@ -35,6 +35,7 @@ const ChatbotPage: React.FC = () => {
     isLoading, 
     sendMessage, 
     initializeThread, 
+    setMessages,
     currentThread
   } = useChatbot(threadParam || undefined);
   
@@ -58,6 +59,19 @@ const ChatbotPage: React.FC = () => {
       navigate('/auth');
     }
   }, [user, navigate]);
+
+  // Add default assistant message if chat is empty and no thread is started
+useEffect(() => {
+  if (!isLoading && messages.length === 0 && !currentThread?.thread_id) {
+    setMessages([{
+      id: 'default-message',
+      role: 'assistant',
+      content: t('chatbot.defaultMessage', 'Hi! How can I help you today?'),
+      created_at: new Date().toISOString()
+    }]);
+  }
+}, [isLoading, messages, currentThread, setMessages, t]);
+
 
   const handleSend = async (content: string) => {
     console.log(`handleSend called with content: ${content.substring(0, 50)}${content.length > 50 ? '...' : ''}`);

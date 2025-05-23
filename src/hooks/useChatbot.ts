@@ -150,6 +150,7 @@ export const useChatbot = (initialThreadId?: string) => {
     switchThread,
     initializeThread: initializeThreadWithMessages,
     updateThreadTitle,
+    setMessages,
     deleteThread
   };
 };
