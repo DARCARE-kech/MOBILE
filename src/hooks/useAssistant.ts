@@ -9,7 +9,7 @@ export const useAssistant = () => {
   const handleSendMessage = async (content: string) => {
     if (!threadId) {
       try {
-        // Create a new thread only when user sends first message
+        // Create a new thread automatically if one doesn't exist
         const { user } = await import('@/contexts/AuthContext').then(m => m.useAuth());
         const newThread = await createThread();
         if (user && newThread) {
