@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
@@ -13,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import useChatbot from '@/hooks/useChatbot';
+import { ChatMessage } from '@/types/chat';
 
 const ChatbotPage: React.FC = () => {
   console.log("Rendering ChatbotPage component");
@@ -42,13 +42,32 @@ const ChatbotPage: React.FC = () => {
   console.log("isLoading:", isLoading);
   console.log("currentThread:", currentThread);
 
+  // Create a welcome message if there are no messages
+  const displayMessages = React.useMemo(() => {
+    // If we have actual messages from the database, show them
+    if (messages && messages.length > 0) {
+      return messages;
+    }
+    
+    // Otherwise, create a virtual welcome message
+    const welcomeMessage: ChatMessage = {
+      id: 'welcome-message',
+      thread_id: '',
+      content: t('chatbot.aiResponse'),
+      sender: 'assistant',
+      created_at: new Date().toISOString()
+    };
+    
+    return [welcomeMessage];
+  }, [messages, t]);
+
   // Scroll to bottom whenever messages change
   useEffect(() => {
-    console.log("Messages changed, scrolling to bottom. Messages count:", messages?.length);
+    console.log("Messages changed, scrolling to bottom. Messages count:", displayMessages?.length);
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]);
+  }, [displayMessages]);
 
   // Redirect to auth if not logged in
   useEffect(() => {
@@ -111,14 +130,14 @@ const ChatbotPage: React.FC = () => {
       <ScrollArea 
         className="flex-1 p-4 pt-20 pb-36"
       >
-        {isLoading && messages?.length === 0 ? (
+        {isLoading && displayMessages?.length <= 1 ? (
           <div className="flex items-center justify-center h-40">
             <Loader2 className="h-6 w-6 animate-spin text-darcare-gold" />
           </div>
         ) : (
           <div className="space-y-4">
-            {messages && messages.length > 0 ? (
-              messages.map((message) => (
+            {displayMessages && displayMessages.length > 0 ? (
+              displayMessages.map((message) => (
                 <ChatMessageComponent
                   key={message.id}
                   message={message}
@@ -131,7 +150,7 @@ const ChatbotPage: React.FC = () => {
               </div>
             )}
             
-            {isLoading && messages?.length > 0 && (
+            {isLoading && displayMessages?.length > 1 && (
               <div className="flex items-center gap-2 text-darcare-beige/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>{t('chatbot.thinking')}</span>
