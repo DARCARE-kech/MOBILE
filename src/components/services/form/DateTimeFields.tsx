@@ -51,10 +51,15 @@ const DateTimeFields: React.FC<DateTimeFieldsProps> = ({ form }) => {
               <div className="relative">
                 <Input
                   type="time"
-                  className="pl-10"
+                  className="pl-10 appearance-none"
+                  style={{ 
+                    // Override default time input appearance
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                  }}
                   {...field}
                 />
-                <Clock size={16} className="absolute left-3 top-3 text-darcare-gold" />
+                <Clock size={16} className="absolute left-3 top-3 text-darcare-gold pointer-events-none" />
               </div>
             </FormControl>
             <FormMessage />

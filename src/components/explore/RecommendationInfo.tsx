@@ -1,10 +1,9 @@
 
-import { MapPin, Star, Clock, Phone, Globe, Calendar } from "lucide-react";
+import { MapPin, Star, Clock, Phone, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { TagsList } from "./TagsList";
-import IconButton from "@/components/services/IconButton";
 
 interface RecommendationInfoProps {
   recommendation: Recommendation;
@@ -57,9 +56,6 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
           </p>
         </section>
       )}
-
-      {/* Reserve button */}
-      
 
       {/* Subtle divider */}
       {hasContactOrLocation && <div className="h-[1px] bg-darcare-gold/10 mx-6 mb-3" />}
@@ -120,7 +116,6 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
         <section className="px-6 pb-6 pt-3">
           <TagsList tags={recommendation.tags} />
         </section>
-       
       )}
 
       <section className="px-6 pb-4 flex justify-center">

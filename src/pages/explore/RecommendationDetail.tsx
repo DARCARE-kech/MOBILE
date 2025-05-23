@@ -53,6 +53,8 @@ const RecommendationDetail = () => {
       }
 
       if (reservationService) {
+        console.log("Found reservation service:", reservationService);
+        
         // Navigate directly to the reservation form with pre-populated data
         navigate(`/services/${reservationService.id}`, {
           state: {
@@ -62,7 +64,9 @@ const RecommendationDetail = () => {
             option: recommendation.title,
             prefilledData: {
               reservationType: recommendation.category || 'restaurant',
-              reservationName: recommendation.title
+              reservationName: recommendation.title,
+              location: recommendation.location || recommendation.address,
+              contact: recommendation.contact_phone
             }
           }
         });
