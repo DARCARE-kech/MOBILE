@@ -43,7 +43,7 @@ const RecommendationDetail = () => {
     const { data: reservationService, error } = await supabase
       .from('services')
       .select('id')
-      .eq('name', 'Reservation')
+      .eq('name', 'reservation')
       .maybeSingle();
 
     if (error || !reservationService) {
