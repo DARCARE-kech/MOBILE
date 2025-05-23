@@ -65,7 +65,7 @@ useEffect(() => {
   if (!isLoading && messages.length === 0 && !currentThread?.thread_id) {
     setMessages([{
       id: 'default-message',
-      role: 'assistant',
+      sender: 'assistant',
       content: t('chatbot.defaultMessage', 'Hi! How can I help you today?'),
       created_at: new Date().toISOString()
     }]);
