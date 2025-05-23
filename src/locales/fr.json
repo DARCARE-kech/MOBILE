@@ -357,7 +357,15 @@
     "favorites": "Favoris",
     "assistant": "Assistant",
     "bookSpace": "Réserver un Espace",
-    "requestService": "Demander un Service"
+    "requestService": "Demander un Service",
+    "cleaning": "Nettoyage",
+    "maintenance": "Entretien",
+    "transport": "Transport",
+    "laundry": "Blanchisserie",
+    "shop": "Boutique",
+    "clubAccess": "Accès Club",
+    "hairSalon": "Salon de Coiffure",
+    "kidsClub": "Club Enfants"
   },
   "shop": {
     "title": "Boutique de Luxe",

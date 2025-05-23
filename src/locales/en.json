@@ -324,7 +324,15 @@
     "favorites": "Favorites",
     "assistant": "Assistant",
     "bookSpace": "Book a Space",
-    "requestService": "Request a Service"
+    "requestService": "Request a Service",
+    "cleaning": "Cleaning",
+    "maintenance": "Maintenance",
+    "transport": "Transport",
+    "laundry": "Laundry",
+    "shop": "Shop",
+    "clubAccess": "Club Access",
+    "hairSalon": "Hair Salon",
+    "kidsClub": "Kids Club"
   },
   "shop": {
     "title": "Luxury Shop",
