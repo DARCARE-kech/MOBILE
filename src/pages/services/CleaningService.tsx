@@ -202,7 +202,10 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
     <div className="p-4 pb-24">
       {/* Service Header with instructions */}
       <ServiceHeader 
-        serviceName={serviceData?.category || t('services.cleaning', 'Cleaning')}
+        serviceName={serviceData?.category 
+  ? serviceData.category.charAt(0).toUpperCase() + serviceData.category.slice(1) 
+  : t('services.cleaning', 'Cleaning')}
+
         serviceDetail={serviceData}
       />
       
