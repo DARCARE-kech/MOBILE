@@ -33,7 +33,10 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
     setIsVisible(!shouldHide);
   }, [location.pathname]);
 
-  
+  // Define the handleTabChange function to navigate to different routes
+  const handleTabChange = (path: string) => {
+    navigate(path);
+  };
 
   const tabs = [
     { id: "services", label: t('navigation.services'), icon: <Calendar size={20} />, path: "/services" },
@@ -44,8 +47,8 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   ];
 
   const handleAssistantClick = () => {
-  navigate(`/chatbot`);
-};
+    navigate(`/chatbot`);
+  };
 
   if (!isVisible) return null;
 
