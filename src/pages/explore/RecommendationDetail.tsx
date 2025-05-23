@@ -37,62 +37,51 @@ const RecommendationDetail = () => {
   const handleBack = () => navigate(-1);
 
   const handleReserve = async () => {
-    if (!recommendation) return;
-    
-    try {
-      // Find the reservation service ID
-      const { data: reservationService, error: serviceError } = await supabase
-        .from('services')
-        .select('id')
-        .eq('name', 'Reservation')
-        .maybeSingle();
-      
-      if (serviceError) {
-        console.error("Could not find reservation service:", serviceError);
-        throw new Error("Reservation service not found");
-      }
+  if (!recommendation) return;
 
-      if (reservationService) {
-        console.log("Found reservation service:", reservationService);
-        
-        // Navigate directly to the reservation form with pre-populated data
-        navigate(`/services/${reservationService.id}`, {
-          state: {
-            serviceId: reservationService.id,
-            serviceType: 'reservation',
-            category: recommendation.category || 'restaurant',
-            option: recommendation.title,
-            prefilledData: {
-              reservationType: recommendation.category || 'restaurant',
-              reservationName: recommendation.title,
-              location: recommendation.location || recommendation.address,
-              contact: recommendation.contact_phone
-            }
-          }
-        });
-      } else {
-        console.error("Reservation service not found");
-        
-        // Fallback to contact-admin
-        navigate('/contact-admin', { 
-          state: { 
-            preselectedCategory: 'external_request',
-            subject: recommendation?.title 
-          }
-        });
-      }
-    } catch (error) {
-      console.error("Error finding reservation service:", error);
-      
-      // Fallback to contact-admin
+  try {
+    const { data: reservationService, error } = await supabase
+      .from('services')
+      .select('id')
+      .eq('name', 'Reservation')
+      .maybeSingle();
+
+    if (error || !reservationService) {
+      console.warn("Reservation service not found, redirecting to contact-admin", error);
       navigate('/contact-admin', { 
         state: { 
           preselectedCategory: 'external_request',
-          subject: recommendation?.title 
+          subject: recommendation.title 
         }
       });
+      return;
     }
-  };
+
+    navigate(`/services/${reservationService.id}`, {
+      state: {
+        serviceId: reservationService.id,
+        serviceType: 'reservation',
+        category: recommendation.category ?? 'restaurant',
+        option: recommendation.title,
+        prefilledData: {
+          reservationType: recommendation.category ?? 'restaurant',
+          reservationName: recommendation.title,
+          location: recommendation.location ?? recommendation.address,
+          contact: recommendation.contact_phone ?? ''
+        }
+      }
+    });
+  } catch (err) {
+    console.error("Unexpected error during reservation redirection:", err);
+    navigate('/contact-admin', { 
+      state: { 
+        preselectedCategory: 'external_request',
+        subject: recommendation.title 
+      }
+    });
+  }
+};
+
 
   if (!id) {
     return <RecommendationDetailSkeleton onBack={handleBack} />;
