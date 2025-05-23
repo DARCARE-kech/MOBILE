@@ -61,10 +61,10 @@ const RecommendationDetail = () => {
       state: {
         serviceId: reservationService.id,
         serviceType: 'reservation',
-        category: recommendation.category ?? 'restaurant',
+        category: recommendation.category || 'restaurant',
         option: recommendation.title,
         prefilledData: {
-          reservationType: recommendation.category ?? 'restaurant',
+          reservationType: recommendation.category || 'restaurant',
           reservationName: recommendation.title,
           location: recommendation.location ?? recommendation.address,
           contact: recommendation.contact_phone ?? ''
