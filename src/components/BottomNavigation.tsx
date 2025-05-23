@@ -43,26 +43,9 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
     { id: "chatbot", label: t('navigation.chatbot'), icon: <MessageSquare size={20} />, path: "/chatbot" },
   ];
 
-  const handleAssistantClick = async () => {
-    if (!user?.id) return;
-
-    try {
-      const newThread = await createNewThread(user.id);
-      if (newThread?.thread_id) {
-        navigate(`/chatbot?thread=${newThread.thread_id}`);
-      }
-    } catch (error) {
-      toast({
-        title: t('common.error'),
-        description: t('chat.messageError') || 'Could not start a new chat',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleTabChange = (path: string) => {
-    navigate(path);
-  };
+  const handleAssistantClick = () => {
+  navigate(`/chatbot`);
+};
 
   if (!isVisible) return null;
 
