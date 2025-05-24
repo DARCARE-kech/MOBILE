@@ -83,6 +83,13 @@ export const RecommendationHeader = ({
         ) : null}
       </div>
     )}
+    <Button 
+  onClick={onReserve}
+  variant="ghost"
+  className="text-darcare-gold border border-darcare-gold px-4 py-0.5 h-7 text-xs font-serif rounded-md hover:bg-darcare-gold/10 transition"
+>
+  {t('explore.reserve', 'Reserve')}
+</Button>
   </div>
 </div>
 
