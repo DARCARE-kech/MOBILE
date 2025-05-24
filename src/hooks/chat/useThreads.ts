@@ -71,10 +71,8 @@ export const useThreads = () => {
         console.log("Found existing thread:", data);
         thread = data;
       } else {
-        console.log("No threadId provided, getting or creating thread");
-        // Get or create new thread
-        thread = await getOrCreateUserThread(user.id);
-        console.log("Got or created thread:", thread);
+        console.log("No threadId provided, skipping automatic thread creation");
+  return null;
       }
 
       setCurrentThread(thread);
