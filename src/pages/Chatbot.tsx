@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { History, Mail, Loader2, MessageSquare } from 'lucide-react';
+import { History, Mail, Loader2, MessageSquare, User} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
 import ChatInput from '@/components/chat/ChatInput';
@@ -115,7 +115,7 @@ const ChatbotPage: React.FC = () => {
               className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
               title={t('chatbot.contactAdmin')}
             >
-              <Mail className="h-5 w-5" />
+              <User className="h-5 w-5" />
             </Button>
           </div>
         }
