@@ -33,7 +33,7 @@ const ChangePassword: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MainHeader title={t('profile.changePassword')} showBack={true} onBack={() => navigate('/profile/privacy')} />
+      <MainHeader title={t('profile.changePassword')} showBack={true} onBack={() => navigate('/profile')} />
       
       <div className="pt-20 pb-24 px-4">
         <Card className="p-6 border-darcare-gold/20 bg-card">
