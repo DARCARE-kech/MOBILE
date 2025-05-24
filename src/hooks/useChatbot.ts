@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThreads } from "./chat/useThreads";
 import { useMessages } from "./chat/useMessages";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Main hook for managing chatbot logic
@@ -103,35 +104,34 @@ export const useChatbot = (initialThreadId?: string) => {
 
     // Create a thread on-the-fly if it doesn't exist
     if (!threadId) {
-  // 🧠 Crée un nouveau thread manuellement
-  const { data: inserted, error } = await supabase
-    .from("chat_threads")
-    .insert({
-      user_id: user?.id,
-      thread_id: `thread_${crypto.randomUUID()}`,
-      title: "New conversation",
-    })
-    .select()
-    .single();
+      // 🧠 Crée un nouveau thread manuellement
+      const { data: inserted, error } = await supabase
+        .from("chat_threads")
+        .insert({
+          user_id: user?.id,
+          thread_id: `thread_${crypto.randomUUID()}`,
+          title: "New conversation",
+        })
+        .select()
+        .single();
 
-  if (error || !inserted) {
-    console.error("Thread creation failed:", error);
-    toast({
-      title: "Error",
-      description: "Could not start a new conversation.",
-      variant: "destructive"
-    });
-    return;
-  }
+      if (error || !inserted) {
+        console.error("Thread creation failed:", error);
+        toast({
+          title: "Error",
+          description: "Could not start a new conversation.",
+          variant: "destructive"
+        });
+        return;
+      }
 
-  threadId = inserted.thread_id;
-  setCurrentThread(inserted);
-  setCurrentThreadId(threadId);
-}
-
+      threadId = inserted.thread_id;
+      setCurrentThread(inserted);
+      setCurrentThreadId(threadId);
+    }
 
     await sendMessageToThread(content, threadId);
-  }, [currentThreadId, initializeThread, sendMessageToThread, setCurrentThreadId, toast]);
+  }, [currentThreadId, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast, user?.id]);
 
   // Initialize on component mount
   useEffect(() => {
@@ -142,16 +142,15 @@ export const useChatbot = (initialThreadId?: string) => {
     console.log("hasInitialized =", hasInitialized);
     
     if (user?.id && !hasInitialized) {
-  loadThreads();
+      loadThreads();
 
-  if (initialThreadId) {
-    initializeThreadWithMessages(initialThreadId);
-  }
+      if (initialThreadId) {
+        initializeThreadWithMessages(initialThreadId);
+      }
 
-  // Ne rien faire si pas d'ID, on attend que l'utilisateur écrive
-  setHasInitialized(true);
-}
-
+      // Ne rien faire si pas d'ID, on attend que l'utilisateur écrive
+      setHasInitialized(true);
+    }
   }, [user?.id, hasInitialized, initialThreadId, currentThreadId, loadThreads, initializeThreadWithMessages]);
 
   return {
