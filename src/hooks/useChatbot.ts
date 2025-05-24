@@ -99,26 +99,25 @@ export const useChatbot = (initialThreadId?: string) => {
    * Send a message in the current thread
    */
   const sendMessage = useCallback(async (content: string) => {
-  let threadId = currentThreadId;
+    let threadId = currentThreadId;
 
-  // Create a thread on-the-fly if it doesn't exist
-  if (!threadId) {
-    const newThread = await initializeThread();
-    if (!newThread) {
-      toast({
-        title: "Error",
-        description: "Could not start a new conversation.",
-        variant: "destructive"
-      });
-      return;
+    // Create a thread on-the-fly if it doesn't exist
+    if (!threadId) {
+      const newThread = await initializeThread();
+      if (!newThread) {
+        toast({
+          title: "Error",
+          description: "Could not start a new conversation.",
+          variant: "destructive"
+        });
+        return;
+      }
+      threadId = newThread.thread_id;
+      setCurrentThreadId(threadId); // update context
     }
-    threadId = newThread.thread_id;
-    setCurrentThreadId(threadId); // update context
-  }
 
-  await sendMessageToThread(content, threadId);
-}, [currentThreadId, initializeThread, sendMessageToThread, setCurrentThreadId, toast]);
-
+    await sendMessageToThread(content, threadId);
+  }, [currentThreadId, initializeThread, sendMessageToThread, setCurrentThreadId, toast]);
 
   // Initialize on component mount
   useEffect(() => {
@@ -133,13 +132,12 @@ export const useChatbot = (initialThreadId?: string) => {
       loadThreads();
 
       if (initialThreadId) {
-  console.log("Initializing with provided threadId:", initialThreadId);
-  initializeThreadWithMessages(initialThreadId);
-} else {
-  console.log("No initialThreadId — skipping initialization to avoid creating thread before message");
-};
-
+        console.log("Initializing with provided threadId:", initialThreadId);
+        initializeThreadWithMessages(initialThreadId);
+      } else {
+        console.log("No initialThreadId — skipping initialization to avoid creating thread before message");
       }
+
       setHasInitialized(true);
     }
   }, [user?.id, hasInitialized, initialThreadId, currentThreadId, loadThreads, initializeThreadWithMessages]);
