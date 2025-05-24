@@ -76,6 +76,7 @@ export const RecommendationHeader = ({
         ) : null}
       </div>
     )}
+    <p>{t('explore.categories.attraction')}</p>
     <Button 
   onClick={onReserve}
   variant="ghost"

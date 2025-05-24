@@ -102,7 +102,7 @@ const RecommendationDetail = () => {
         title={recommendation.title} 
         onBack={handleBack}
       />
-      <p>{t('explore.categories.attraction')}</p>
+  </p>
       <RecommendationHeader 
         recommendation={recommendation}
         onToggleFavorite={toggleFavorite}
