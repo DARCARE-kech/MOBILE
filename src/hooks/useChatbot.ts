@@ -128,18 +128,16 @@ export const useChatbot = (initialThreadId?: string) => {
     console.log("hasInitialized =", hasInitialized);
     
     if (user?.id && !hasInitialized) {
-      console.log("Initializing only once");
-      loadThreads();
+  loadThreads();
 
-      if (initialThreadId) {
-        console.log("Initializing with provided threadId:", initialThreadId);
-        initializeThreadWithMessages(initialThreadId);
-      } else {
-        console.log("No initialThreadId — skipping initialization to avoid creating thread before message");
-      }
+  if (initialThreadId) {
+    initializeThreadWithMessages(initialThreadId);
+  }
 
-      setHasInitialized(true);
-    }
+  // Ne rien faire si pas d'ID, on attend que l'utilisateur écrive
+  setHasInitialized(true);
+}
+
   }, [user?.id, hasInitialized, initialThreadId, currentThreadId, loadThreads, initializeThreadWithMessages]);
 
   return {
