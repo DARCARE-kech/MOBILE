@@ -82,7 +82,6 @@ const RecommendationDetail = () => {
   }
 };
 
-
   if (!id) {
     return <RecommendationDetailSkeleton onBack={handleBack} />;
   }
@@ -101,19 +100,19 @@ const RecommendationDetail = () => {
       <RecommendationDetailHeader 
         title={recommendation.title} 
         onBack={handleBack}
-        onReserve={handleReserve}
       />
       
       <RecommendationHeader 
         recommendation={recommendation}
         onToggleFavorite={toggleFavorite}
+        onReserve={handleReserve}
       />
 
       <RecommendationTabs 
         recommendation={recommendation}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        
+        onReserve={handleReserve}
       />
       
       <ShopButton />
