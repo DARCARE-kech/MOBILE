@@ -133,8 +133,12 @@ export const useChatbot = (initialThreadId?: string) => {
       loadThreads();
 
       if (initialThreadId) {
-        console.log("Initializing with provided threadId:", initialThreadId);
-        initializeThreadWithMessages(initialThreadId);
+  console.log("Initializing with provided threadId:", initialThreadId);
+  initializeThreadWithMessages(initialThreadId);
+} else {
+  console.log("No initialThreadId — skipping initialization to avoid creating thread before message");
+};
+
       }
       setHasInitialized(true);
     }
