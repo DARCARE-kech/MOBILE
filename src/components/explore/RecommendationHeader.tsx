@@ -57,9 +57,10 @@ export const RecommendationHeader = ({
   {/* Titre + Reserve */}
   <div className="flex flex-wrap justify-between items-center gap-3">
     <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
-    <Button 
+   <Button 
   onClick={onReserve}
-  className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-sm px-5 py-1.5 rounded-xl shadow-md transition-all"
+  variant="ghost"
+  className="text-darcare-gold border border-darcare-gold px-4 py-0.5 h-7 text-xs font-serif rounded-md hover:bg-darcare-gold/10 transition"
 >
   {t('explore.reserve', 'Reserve')}
 </Button>
