@@ -99,51 +99,50 @@ export const useChatbot = (initialThreadId?: string) => {
   /**
    * Send a message in the current thread
    */
-const sendMessage = useCallback(async (content: string) => {
-  if (!user?.id || !content.trim()) return;
+  const sendMessage = useCallback(async (content: string) => {
+    if (!user?.id || !content.trim()) return;
 
-  let threadId = currentThreadId;
+    let threadId = currentThreadId;
 
-  // Créer un thread uniquement si l'utilisateur envoie un message
-  if (!threadId) {
-    const newThreadId = `thread_${crypto.randomUUID()}`;
-    const { data, error } = await supabase
-      .from("chat_threads")
-      .insert({
-        user_id: user.id,
-        thread_id: newThreadId,
-        title: "New conversation",
-      })
-      .select();
+    // Create a thread only if the user sends a message
+    if (!threadId) {
+      const newThreadId = `thread_${crypto.randomUUID()}`;
+      const { data, error } = await supabase
+        .from("chat_threads")
+        .insert({
+          user_id: user.id,
+          thread_id: newThreadId,
+          title: "New conversation",
+        })
+        .select();
 
-    const inserted = data?.[0]; // <== c'est ici que tu avais le bug
+      if (error || !data?.[0]?.thread_id) {
+        console.error("Thread creation failed:", error, data);
+        toast({
+          title: "Erreur",
+          description: "Impossible de démarrer une nouvelle conversation.",
+          variant: "destructive"
+        });
+        return;
+      }
 
-    if (error || !inserted?.thread_id) {
-      console.error("Thread creation failed:", error, inserted);
-      toast({
-        title: "Erreur",
-        description: "Impossible de démarrer une nouvelle conversation.",
-        variant: "destructive"
-      });
-      return;
+      const inserted = data[0];
+      threadId = inserted.thread_id;
+      setCurrentThread(inserted);
+      setCurrentThreadId(threadId);
     }
 
-    threadId = inserted.thread_id;
-    setCurrentThread(inserted);        // ✅ met à jour le thread courant
-    setCurrentThreadId(threadId);      // ✅ pour les hooks liés
-  }
-
-  try {
-    await sendMessageToThread(content, threadId);
-  } catch (err) {
-    console.error("Failed to send message:", err);
-    toast({
-      title: "Erreur",
-      description: "Impossible d'envoyer le message",
-      variant: "destructive"
-    });
-  }
-}, [currentThreadId, user?.id, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast]);
+    try {
+      await sendMessageToThread(content, threadId);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer le message",
+        variant: "destructive"
+      });
+    }
+  }, [currentThreadId, user?.id, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast]);
 
   return {
     messages,
