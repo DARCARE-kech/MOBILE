@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { type Recommendation } from "@/types/recommendation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
-import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
+import { getCategoryTranslationKey } from "@/utils/recommendationCategories";
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
@@ -59,12 +59,8 @@ export const RecommendationCard = ({
   // Use fallback image if none provided
   const imageUrl = recommendation.image_url || getFallbackImage(recommendation.title, 0);
   
-  // Get the category for translation - ensure it's a valid category
-  const categoryKey = recommendation.category && 
-    (typeof recommendation.category === 'string') && 
-    RECOMMENDATION_CATEGORIES.includes(recommendation.category as any)
-      ? recommendation.category.toLowerCase()
-      : 'other';
+  // Get the category translation key
+  const categoryKey = getCategoryTranslationKey(recommendation.category);
   
   return (
     <Card 

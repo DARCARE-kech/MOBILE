@@ -6,7 +6,7 @@ import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { getFallbackImage } from "@/utils/imageUtils";
-import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
+import { getCategoryTranslationKey } from "@/utils/recommendationCategories";
 
 interface RecommendationHeaderProps {
   recommendation: Recommendation;
@@ -24,12 +24,8 @@ export const RecommendationHeader = ({
   const fallbackImage = getFallbackImage(recommendation.title, 0);
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
-  // Get the category for translation - ensure it's a valid category
-  const categoryKey = recommendation.category && 
-    (typeof recommendation.category === 'string') && 
-    RECOMMENDATION_CATEGORIES.includes(recommendation.category as any)
-      ? recommendation.category.toLowerCase()
-      : 'other';
+  // Get the category translation key
+  const categoryKey = getCategoryTranslationKey(recommendation.category);
   
   return (
     <div className="space-y-4">
