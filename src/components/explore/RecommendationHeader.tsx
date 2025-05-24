@@ -58,7 +58,8 @@ export const RecommendationHeader = ({
         {/* Catégorie + Avis */}
         <div className="flex flex-wrap items-center gap-3">
           <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${categoryKey}`)}
+            {t(`explore.categories.${getCategoryTranslationKey(recommendation.category)}`)}
+
           </Badge>
           {recommendation.rating && recommendation.rating > 0 && (
             <div className="flex items-center gap-1 text-darcare-gold text-sm">
