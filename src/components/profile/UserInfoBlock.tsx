@@ -32,58 +32,50 @@ export const UserInfoBlock = ({
   return (
     <Card className="p-5 bg-card border-darcare-gold/20 shadow-md">
       <div className="flex items-center gap-4">
-        <Avatar className="h-16 w-16 border border-darcare-gold/20">
-          <AvatarImage src={avatarUrl ?? undefined} alt={fullName} />
-          <AvatarFallback className="bg-darcare-gold/10">
-            <UserRound className="h-8 w-8 text-darcare-gold/70" />
-          </AvatarFallback>
-        </Avatar>
+  <Avatar className="h-20 w-20 border-2 border-darcare-gold/20 shadow-sm">
+    <AvatarImage src={avatarUrl ?? undefined} alt={fullName} />
+    <AvatarFallback className="bg-darcare-gold/10">
+      <UserRound className="h-10 w-10 text-darcare-gold/70" />
+    </AvatarFallback>
+  </Avatar>
 
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-serif text-darcare-gold">{fullName}</h2>
-              <div className="flex gap-3 mt-2">
-                {onViewStay && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
-                    onClick={onViewStay}
-                    aria-label={t('profile.stayDetails')}
-                  >
-                    <Calendar className="h-4 w-4" />
-                  </Button>
-                )}
-                {onEditProfile && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
-                    onClick={onEditProfile}
-                    aria-label={t('profile.editProfile')}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {villaNumber && (
-            <div className="mt-3 px-3 py-2 bg-darcare-navy/40 rounded-md border border-darcare-gold/10">
-              <p className="text-sm text-darcare-beige font-medium">
-                {villaNumber}
-              </p>
-              {checkIn && checkOut && (
-                <p className="text-xs text-darcare-beige/50 mt-1">
-                  {format(new Date(checkIn), 'MMM d')} – {format(new Date(checkOut), 'MMM d, yyyy')}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
+  <div className="flex-1">
+    <div className="flex items-center justify-between">
+      <div>
+        <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
+        <p className="text-sm text-darcare-beige/60 mt-0.5">My profile</p>
       </div>
+
+      {onEditProfile && (
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
+          onClick={onEditProfile}
+          aria-label={t('profile.editProfile')}
+        >
+          <Edit className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+
+    {villaNumber && checkIn && checkOut && onViewStay && (
+      <Button
+        variant="ghost"
+        className="mt-3 px-3 py-2 border border-darcare-gold/10 bg-darcare-navy/40 text-darcare-beige hover:bg-darcare-gold/10 flex items-center justify-start gap-2 rounded-md"
+        onClick={onViewStay}
+      >
+        <Calendar className="h-4 w-4 text-darcare-gold" />
+        <div className="text-left">
+          <p className="text-sm font-medium text-darcare-beige">{villaNumber}</p>
+          <p className="text-xs text-darcare-beige/50">
+            {format(new Date(checkIn), 'MMM d')} – {format(new Date(checkOut), 'MMM d, yyyy')}
+          </p>
+        </div>
+      </Button>
+    )}
+  </div>
+</div>
     </Card>
   );
 };
