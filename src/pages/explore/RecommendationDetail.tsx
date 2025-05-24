@@ -8,7 +8,7 @@ import { RecommendationDetailSkeleton } from "@/components/explore/Recommendatio
 import { RecommendationDetailError } from "@/components/explore/RecommendationDetailError";
 import { RecommendationTabs } from "@/components/explore/RecommendationTabs";
 import { useRecommendationDetail } from "@/hooks/useRecommendationDetail";
-import { RecommendationHeader } from "@/components/RecommendationHeader";
+
 import { RecommendationHeader } from "@/components/explore/RecommendationHeader";
 import { supabase } from "@/integrations/supabase/client";
 import ShopButton from "@/components/shop/ShopButton";
