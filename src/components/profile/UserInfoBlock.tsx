@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { UserRound, Calendar, Edit, ChevronRight } from "lucide-react";
+import { UserRound, Calendar, UserPen, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface UserInfoBlockProps {
@@ -41,23 +41,20 @@ export const UserInfoBlock = ({
 
   <div className="flex-1">
     <div className="flex items-center justify-between">
-      <div>
-        <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
-        <p className="text-sm text-darcare-beige/60 mt-0.5">My profile</p>
-      </div>
-
-      {onEditProfile && (
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
-          onClick={onEditProfile}
-          aria-label={t('profile.editProfile')}
-        >
-          <Edit className="h-4 w-4" />
-        </Button>
-      )}
-    </div>
+  <div className="flex items-center gap-2">
+    <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
+    {onEditProfile && (
+      <button
+        onClick={onEditProfile}
+        aria-label={t('profile.editProfile')}
+        className="p-1 hover:bg-darcare-gold/10 rounded-full border border-darcare-gold/20 text-darcare-gold"
+      >
+        <UserPen className="h-4 w-4" />
+      </button>
+    )}
+  </div>
+  
+</div>
 
     {villaNumber && checkIn && checkOut && onViewStay && (
       <Button
