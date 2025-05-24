@@ -144,7 +144,8 @@ const ChatHistory: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('chatbot.chatHistory')} onBack={() => navigate('/chatbot')} />
+      <MainHeader title={t('chatbot.chatHistory')} showBack={true}
+          onBack={() => navigate('/chatbot')} />
       
       <ScrollArea className="flex-1 p-4 pb-24 pt-20">
         <div className="space-y-4">
