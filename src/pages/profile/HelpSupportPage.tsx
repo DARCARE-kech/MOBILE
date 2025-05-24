@@ -17,7 +17,7 @@ const HelpSupportPage: React.FC = () => {
       "min-h-screen",
       isDarkMode ? "bg-darcare-navy" : "bg-background"
     )}>
-      <MainHeader title="Help & Support" showBack={true} onBack={() => navigate('/profile')} />
+      <MainHeader title="Help Center" showBack={true} onBack={() => navigate('/profile')} />
       
       <div className="pt-20 pb-24 px-4">
         <Card className={cn(
@@ -80,49 +80,6 @@ const HelpSupportPage: React.FC = () => {
           </div>
         </Card>
         
-        <Card className={cn(
-          "p-6",
-          isDarkMode 
-            ? "bg-darcare-navy/50 border-darcare-gold/20" 
-            : "bg-white border-secondary/20"
-        )}>
-          <h2 className={cn(
-            "text-xl font-serif mb-4",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>Resources</h2>
-          
-          <div className="space-y-5">
-            <div className="flex items-center gap-3 py-2 cursor-pointer" onClick={() => {}}>
-              <FileText className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <div className="flex-1">
-                <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>FAQ</span>
-                <p className={cn(
-                  "text-sm",
-                  isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
-                )}>Frequently asked questions</p>
-              </div>
-            </div>
-            
-            <Separator className={isDarkMode ? "bg-darcare-gold/10" : "bg-secondary/10"} />
-            
-            <div className="flex items-center gap-3 py-2 cursor-pointer" onClick={() => {}}>
-              <FileText className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <div className="flex-1">
-                <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>User Guide</span>
-                <p className={cn(
-                  "text-sm",
-                  isDarkMode ? "text-darcare-beige/60" : "text-foreground/60"
-                )}>Learn how to use the app</p>
-              </div>
-            </div>
-          </div>
-        </Card>
       </div>
     </div>
   );
