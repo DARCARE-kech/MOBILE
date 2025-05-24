@@ -104,6 +104,7 @@ const sendMessage = useCallback(async (content: string) => {
 
   let threadId = currentThreadId;
 
+  // Créer un thread uniquement si l'utilisateur envoie un message
   if (!threadId) {
     const newThreadId = `thread_${crypto.randomUUID()}`;
     const { data, error } = await supabase
@@ -113,23 +114,23 @@ const sendMessage = useCallback(async (content: string) => {
         thread_id: newThreadId,
         title: "New conversation",
       })
-      .select("*");
+      .select();
 
-    const inserted = data?.[0];
+    const inserted = data?.[0]; // <== c'est ici que tu avais le bug
 
-    if (error || !inserted || !inserted.thread_id) {
+    if (error || !inserted?.thread_id) {
       console.error("Thread creation failed:", error, inserted);
       toast({
-        title: "Error",
-        description: "Could not start a new conversation.",
+        title: "Erreur",
+        description: "Impossible de démarrer une nouvelle conversation.",
         variant: "destructive"
       });
       return;
     }
 
     threadId = inserted.thread_id;
-    setCurrentThread(inserted);
-    setCurrentThreadId(threadId);
+    setCurrentThread(inserted);        // ✅ met à jour le thread courant
+    setCurrentThreadId(threadId);      // ✅ pour les hooks liés
   }
 
   try {
@@ -143,27 +144,6 @@ const sendMessage = useCallback(async (content: string) => {
     });
   }
 }, [currentThreadId, user?.id, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast]);
-
-
-  // Initialize on component mount
-  useEffect(() => {
-    console.log("useChatbot effect running");
-    console.log("user?.id =", user?.id);
-    console.log("initialThreadId =", initialThreadId);
-    console.log("currentThreadId =", currentThreadId);
-    console.log("hasInitialized =", hasInitialized);
-    
-    if (user?.id && !hasInitialized) {
-      loadThreads();
-
-      if (initialThreadId) {
-        initializeThreadWithMessages(initialThreadId);
-      }
-
-      // Ne rien faire si pas d'ID, on attend que l'utilisateur écrive
-      setHasInitialized(true);
-    }
-  }, [user?.id, hasInitialized, initialThreadId, currentThreadId, loadThreads, initializeThreadWithMessages]);
 
   return {
     messages,
