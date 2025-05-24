@@ -30,17 +30,22 @@ export const UserInfoBlock = ({
   const { t } = useTranslation();
   
   return (
-    <Card className="p-6 bg-card border-darcare-gold/20 shadow-lg">
+    <Card className="p-5 bg-card border-darcare-gold/20 shadow-md">
       <div className="flex items-center gap-4">
-        <Avatar className="h-20 w-20 border-2 border-darcare-gold/20 shadow-sm">
+        <Avatar className="h-16 w-16 border border-darcare-gold/20">
           <AvatarImage src={avatarUrl ?? undefined} alt={fullName} />
           <AvatarFallback className="bg-darcare-gold/10">
-            <UserRound className="h-10 w-10 text-darcare-gold/70" />
+            <UserRound className="h-8 w-8 text-darcare-gold/70" />
           </AvatarFallback>
         </Avatar>
+
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
+            <div>
+              <h2 className="text-lg font-serif text-darcare-gold">{fullName}</h2>
+              <p className="text-sm text-darcare-beige/60">{t('profile.subtitle', 'My profile')}</p>
+            </div>
+
             <div className="flex gap-2">
               {villaNumber && checkIn && checkOut && onViewStay && (
                 <Button 
@@ -66,16 +71,17 @@ export const UserInfoBlock = ({
               )}
             </div>
           </div>
+
           {villaNumber && (
-            <div className="mt-3 bg-darcare-navy/40 rounded-md p-2 border border-darcare-gold/10">
-              <p className="text-sm text-darcare-beige">
+            <div className="mt-3 px-3 py-2 bg-darcare-navy/40 rounded-md border border-darcare-gold/10">
+              <p className="text-sm text-darcare-beige font-medium">
                 {villaNumber}
-                {checkIn && checkOut && (
-                  <span className="block text-darcare-beige/50 text-xs mt-1">
-                    {format(new Date(checkIn), 'MMM d')} - {format(new Date(checkOut), 'MMM d, yyyy')}
-                  </span>
-                )}
               </p>
+              {checkIn && checkOut && (
+                <p className="text-xs text-darcare-beige/50 mt-1">
+                  {format(new Date(checkIn), 'MMM d')} – {format(new Date(checkOut), 'MMM d, yyyy')}
+                </p>
+              )}
             </div>
           )}
         </div>
