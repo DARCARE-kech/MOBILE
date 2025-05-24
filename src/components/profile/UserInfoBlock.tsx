@@ -41,7 +41,7 @@ export const UserInfoBlock = ({
 
   <div className="flex-1">
     <div className="flex items-center justify-between">
-  <div className="flex items-center gap-2">
+  <div className="flex items-center gap-4">
     <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
     {onEditProfile && (
       <button
