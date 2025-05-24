@@ -43,12 +43,8 @@ export const UserInfoBlock = ({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-serif text-darcare-gold">{fullName}</h2>
-              <p className="text-sm text-darcare-beige/60">{t('profile.subtitle', 'My profile')}</p>
-            </div>
-
-            <div className="flex gap-2">
-              {villaNumber && checkIn && checkOut && onViewStay && (
-                <Button 
+              <div className="flex gap-3 mt-2">
+              <Button 
                   variant="ghost" 
                   size="icon" 
                   className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
@@ -68,6 +64,13 @@ export const UserInfoBlock = ({
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
+             </div>
+           
+            </div>
+
+            <div className="flex gap-2">
+              {villaNumber && checkIn && checkOut && onViewStay && (
+                
               )}
             </div>
           </div>
