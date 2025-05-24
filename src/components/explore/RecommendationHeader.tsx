@@ -26,6 +26,7 @@ export const RecommendationHeader = ({
   
   // Get the category translation key
   const categoryKey = getCategoryTranslationKey(recommendation.category);
+  console.log("Trying to translate key:", translationKey);
   
   return (
     <div className="space-y-4">
