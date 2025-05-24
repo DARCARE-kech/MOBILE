@@ -103,18 +103,32 @@ export const useChatbot = (initialThreadId?: string) => {
 
     // Create a thread on-the-fly if it doesn't exist
     if (!threadId) {
-      const newThread = await initializeThread();
-      if (!newThread) {
-        toast({
-          title: "Error",
-          description: "Could not start a new conversation.",
-          variant: "destructive"
-        });
-        return;
-      }
-      threadId = newThread.thread_id;
-      setCurrentThreadId(threadId); // update context
-    }
+  // 🧠 Crée un nouveau thread manuellement
+  const { data: inserted, error } = await supabase
+    .from("chat_threads")
+    .insert({
+      user_id: user?.id,
+      thread_id: `thread_${crypto.randomUUID()}`,
+      title: "New conversation",
+    })
+    .select()
+    .single();
+
+  if (error || !inserted) {
+    console.error("Thread creation failed:", error);
+    toast({
+      title: "Error",
+      description: "Could not start a new conversation.",
+      variant: "destructive"
+    });
+    return;
+  }
+
+  threadId = inserted.thread_id;
+  setCurrentThread(inserted);
+  setCurrentThreadId(threadId);
+}
+
 
     await sendMessageToThread(content, threadId);
   }, [currentThreadId, initializeThread, sendMessageToThread, setCurrentThreadId, toast]);
