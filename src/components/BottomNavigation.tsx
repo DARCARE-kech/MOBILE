@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Calendar, Search, Home, UserCircle, MessageSquare } from "lucide-react";
+import { Calendar, Search, Home, UserCircle, MessageSquare, Bot} from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createNewThread } from '@/utils/chatUtils';
@@ -43,7 +43,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
     { id: "explore", label: t('navigation.explore'), icon: <Search size={20} />, path: "/explore" },
     { id: "home", label: t('navigation.home'), icon: <Home size={20} />, path: "/home" },
     { id: "profile", label: t('navigation.profile'), icon: <UserCircle size={20} />, path: "/profile" },
-    { id: "chatbot", label: t('navigation.chatbot'), icon: <MessageSquare size={20} />, path: "/chatbot" },
+    { id: "chatbot", label: t('navigation.chatbot'), icon: <Bot size={20} />, path: "/chatbot" },
   ];
 
   const handleAssistantClick = () => {
