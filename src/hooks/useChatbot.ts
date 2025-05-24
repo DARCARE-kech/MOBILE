@@ -99,27 +99,26 @@ export const useChatbot = (initialThreadId?: string) => {
   /**
    * Send a message in the current thread
    */
- const sendMessage = useCallback(async (content: string) => {
+const sendMessage = useCallback(async (content: string) => {
   if (!user?.id || !content.trim()) return;
 
   let threadId = currentThreadId;
 
-  // Crée un thread SEULEMENT si le message est valide
   if (!threadId) {
     const newThreadId = `thread_${crypto.randomUUID()}`;
-
-    const { data: inserted, error } = await supabase
+    const { data, error } = await supabase
       .from("chat_threads")
       .insert({
         user_id: user.id,
         thread_id: newThreadId,
         title: "New conversation",
       })
-      .select()
-      .single();
+      .select("*");
 
-    if (error || !inserted) {
-      console.error("Thread creation failed:", error);
+    const inserted = data?.[0];
+
+    if (error || !inserted || !inserted.thread_id) {
+      console.error("Thread creation failed:", error, inserted);
       toast({
         title: "Error",
         description: "Could not start a new conversation.",
@@ -135,8 +134,8 @@ export const useChatbot = (initialThreadId?: string) => {
 
   try {
     await sendMessageToThread(content, threadId);
-  } catch (error) {
-    console.error("Message send failed:", error);
+  } catch (err) {
+    console.error("Failed to send message:", err);
     toast({
       title: "Erreur",
       description: "Impossible d'envoyer le message",
