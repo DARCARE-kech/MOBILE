@@ -53,34 +53,39 @@ export const RecommendationHeader = ({
         </Button>
       </div>
       
-      <div className="flex flex-col gap-2 px-6">
-        <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
-          onClick={onReserve}
-        >
-          {t('explore.reserve', 'Reserve')}
-        </Button>
-        
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${typeof displayCategory === 'string' ? displayCategory.toLowerCase() : 'other'}`)}
-          </Badge>
-          {recommendation.rating && recommendation.rating > 0 && (
-            <div className="flex items-center gap-1 text-darcare-gold">
-              <Star size={16} className="fill-current" />
-              <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
-              {recommendation.review_count ? (
-                <span className="text-darcare-beige/70 text-sm">
-                  ({recommendation.review_count})
-                </span>
-              ) : null}
-            </div>
-          )}
-        </div>
+      <div className="flex flex-col gap-3 px-6">
+  {/* Titre + Reserve */}
+  <div className="flex flex-wrap justify-between items-center gap-3">
+    <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
+    <Button 
+      variant="outline" 
+      size="sm" 
+      className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-5 py-1.5 text-sm"
+      onClick={onReserve}
+    >
+      {t('explore.reserve', 'Reserve')}
+    </Button>
+  </div>
+
+  {/* Catégorie + Avis */}
+  <div className="flex flex-wrap items-center gap-3">
+    <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
+      {t(`explore.categories.${typeof displayCategory === 'string' ? displayCategory.toLowerCase() : 'other'}`)}
+    </Badge>
+    {recommendation.rating && recommendation.rating > 0 && (
+      <div className="flex items-center gap-1 text-darcare-gold text-sm">
+        <Star size={16} className="fill-current" />
+        <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
+        {recommendation.review_count ? (
+          <span className="text-darcare-beige/70">
+            ({recommendation.review_count})
+          </span>
+        ) : null}
       </div>
+    )}
+  </div>
+</div>
+
     </div>
   );
 };
