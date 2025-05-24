@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useThreads } from "./chat/useThreads";
 import { useMessages } from "./chat/useMessages";
 import { supabase } from "@/integrations/supabase/client";
+import * as openaiClient from "@/utils/openaiClient";
 
 /**
  * Main hook for managing chatbot logic
@@ -112,18 +113,45 @@ export const useChatbot = (initialThreadId?: string) => {
 
     // Create a thread only if the user sends a message and no thread exists
     if (!threadId) {
-      const newThreadId = `thread_${crypto.randomUUID()}`;
-      const { data, error } = await supabase
-        .from("chat_threads")
-        .insert({
-          user_id: user.id,
-          thread_id: newThreadId,
-          title: "New conversation",
-        })
-        .select();
+      try {
+        console.log("Creating new OpenAI thread first");
+        
+        // Step 1: Create thread in OpenAI first
+        const openaiThread = await openaiClient.createThread();
+        if (!openaiThread?.id) {
+          throw new Error("Failed to create OpenAI thread");
+        }
+        
+        console.log("OpenAI thread created with ID:", openaiThread.id);
+        
+        // Step 2: Save thread to database using the actual OpenAI thread ID
+        const { data, error } = await supabase
+          .from("chat_threads")
+          .insert({
+            user_id: user.id,
+            thread_id: openaiThread.id, // Use the actual OpenAI thread ID
+            title: "New conversation",
+          })
+          .select();
 
-      if (error || !data?.[0]?.thread_id) {
-        console.error("Thread creation failed:", error, data);
+        if (error || !data?.[0]?.thread_id) {
+          console.error("Thread creation failed:", error, data);
+          toast({
+            title: "Erreur",
+            description: "Impossible de démarrer une nouvelle conversation.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        const inserted = data[0];
+        threadId = inserted.thread_id;
+        setCurrentThread(inserted);
+        setCurrentThreadId(threadId);
+        
+        console.log("Thread created and saved successfully:", threadId);
+      } catch (error) {
+        console.error("Error creating thread:", error);
         toast({
           title: "Erreur",
           description: "Impossible de démarrer une nouvelle conversation.",
@@ -131,11 +159,6 @@ export const useChatbot = (initialThreadId?: string) => {
         });
         return;
       }
-
-      const inserted = data[0];
-      threadId = inserted.thread_id;
-      setCurrentThread(inserted);
-      setCurrentThreadId(threadId);
     }
 
     try {
