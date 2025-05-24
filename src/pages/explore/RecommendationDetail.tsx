@@ -101,6 +101,7 @@ const RecommendationDetail = () => {
       <RecommendationDetailHeader 
         title={recommendation.title} 
         onBack={handleBack}
+        onReserve={handleReserve}
       />
       
       <RecommendationHeader 
@@ -112,7 +113,7 @@ const RecommendationDetail = () => {
         recommendation={recommendation}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        onReserve={handleReserve}
+        
       />
       
       <ShopButton />

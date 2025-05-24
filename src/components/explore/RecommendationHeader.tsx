@@ -11,10 +11,12 @@ import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
 interface RecommendationHeaderProps {
   recommendation: Recommendation;
   onToggleFavorite: () => void;
+   onReserve: () => void;
 }
 
 export const RecommendationHeader = ({ 
   recommendation, 
+  onReserve,
   onToggleFavorite 
 }: RecommendationHeaderProps) => {
   const { t } = useTranslation();
@@ -53,6 +55,14 @@ export const RecommendationHeader = ({
       
       <div className="flex flex-col gap-2 px-6">
         <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-4 py-1 text-sm"
+          onClick={onReserve}
+        >
+          {t('explore.reserve', 'Reserve')}
+        </Button>
         
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
