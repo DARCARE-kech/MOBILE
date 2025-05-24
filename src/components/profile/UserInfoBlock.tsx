@@ -44,34 +44,29 @@ export const UserInfoBlock = ({
             <div>
               <h2 className="text-lg font-serif text-darcare-gold">{fullName}</h2>
               <div className="flex gap-3 mt-2">
-              <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
-                  onClick={onViewStay}
-                  aria-label={t('profile.stayDetails')}
-                >
-                  <Calendar className="h-4 w-4" />
-                </Button>
-              )}
-              {onEditProfile && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
-                  onClick={onEditProfile}
-                  aria-label={t('profile.editProfile')}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-             </div>
-           
-            </div>
-
-            <div className="flex gap-2">
-              {villaNumber && checkIn && checkOut && onViewStay && (
-                
-              )}
+                {onViewStay && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
+                    onClick={onViewStay}
+                    aria-label={t('profile.stayDetails')}
+                  >
+                    <Calendar className="h-4 w-4" />
+                  </Button>
+                )}
+                {onEditProfile && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 rounded-full border border-darcare-gold/20 bg-darcare-navy/30 text-darcare-gold hover:bg-darcare-gold/10"
+                    onClick={onEditProfile}
+                    aria-label={t('profile.editProfile')}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 
