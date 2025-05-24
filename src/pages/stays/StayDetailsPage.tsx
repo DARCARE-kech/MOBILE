@@ -70,7 +70,7 @@ const StayDetailsPage: React.FC = () => {
       "min-h-screen",
       isDarkMode ? "bg-darcare-navy" : "bg-background"
     )}>
-      <MainHeader title="Stay Details" showBack={true} onBack={() => navigate('/profile')} />
+      <MainHeader title="Stay Details" showBack={true} onBack={() => navigate(-1)} />
       
       <div className="pt-20 pb-24 px-4">
         <Card className={cn(
