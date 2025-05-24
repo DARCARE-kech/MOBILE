@@ -40,7 +40,8 @@
     "previous": "السابق",
     "required": "مطلوب",
     "optional": "اختياري",
-      "confirmLogout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "favorite": "المفضلة",
+    "confirmLogout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
     "logoutConfirmation": "تأكيد تسجيل الخروج"
   },
   "auth": {
@@ -110,7 +111,8 @@
     "clubAccess": "دخول النادي",
     "hairSalon": "صالون الحلاقة",
     "kidsClub": "نادي الأطفال",
-    "requestService": "طلب خدمة"
+    "requestService": "طلب خدمة",
+    "contactAdmin": "الاتصال بالإدارة"
   },
   "recommendations": {
     "title": "أبرز معالم مراكش",
@@ -143,7 +145,7 @@
     "available": "متاح",
     "request": "طلب",
     "spaces": "المساحات",
-      "requestedOn": "تم الطلب في",
+    "requestedOn": "تم الطلب في",
     "details": "تفاصيل الخدمة",
     "preferredTime": "الوقت المفضل",
     "preferredDate": "التاريخ المفضل",
@@ -177,7 +179,7 @@
     "passengers": "الركاب",
     "luggageSupport": "مساعدة بالأمتعة",
     "luggageSubtitle": "هل تحتاج إلى مساعدة في حمل الأمتعة؟",
-    "laundryServices": "خدمات ��لغسيل",
+    "laundryServices": "خدمات الغسيل",
     "selectAtLeastOne": "حدد خدمة واحدة على الأقل",
     "specialFabrics": "أقمشة خاصة",
     "fabricsSubtitle": "حدد أي أنواع أقمشة خاصة",
@@ -253,6 +255,7 @@
     "info": "معلومات",
     "map": "الخريطة",
     "reservationAvailable": "الحجز متاح",
+    "reserve": "حجز",
     "categories": {
       "other": "أخرى",
       "events": "فعاليات",
@@ -261,10 +264,10 @@
       "experience": "تجربة",
       "spa": "منتجع صحي",
       "shopping": "تسوق",
-        "activity": "نشاط",
+      "activity": "نشاط",
       "culture": "ثقافة",
       "restaurant": "مطعم",
-      "excursion": "رح��ة"
+      "excursion": "رحلة"
     },
     "filterByCategory": "تصفية حسب الفئة"
   },
@@ -281,7 +284,7 @@
     "orderChargedToRoom": "سيتم إضافة العناصر إلى حساب غرفتك.",
     "quantity": "الكمية",
     "price": "السعر",
-      "cartEmpty": "سلة التسوق فارغة",
+    "cartEmpty": "سلة التسوق فارغة",
     "browseItems": "تصفح المنتجات"
   },
   "chatbot": {
@@ -314,7 +317,7 @@
     "privacySecurity": "الخصوصية والأمان",
     "helpSupport": "مركز المساعدة",
     "about": "حول",
-       "profile": "الملف الشخصي",
+    "profile": "الملف الشخصي",
     "editProfile": "تعديل الملف الشخصي",
     "personalInfo": "المعلومات الشخصية",
     "fullName": "الاسم الكامل",
@@ -357,7 +360,7 @@
   },
   "notifications": {
     "noNotifications": "لا توجد إشعارات حتى الآن",
-      "markAllAsRead": "تمييز الكل كمقروء",
+    "markAllAsRead": "تمييز الكل كمقروء",
     "allMarkedAsRead": "تم تمييز جميع الإشعارات كمقروءة"
   },
   "languages": {

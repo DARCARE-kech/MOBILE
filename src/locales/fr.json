@@ -1,3 +1,4 @@
+
 {
   "chatbot": {
     "startConversation": "Commencez la conversation...",
@@ -37,7 +38,7 @@
     "staffHandlingRequest": "Un membre du personnel traite actuellement votre demande.",
     "requestSuccessfullyCompleted": "Votre demande a été complétée avec succès.",
     "requestHasBeenCancelled": "Cette demande a été annulée.",
-      "markAllAsRead": "Marquer tout comme lu",
+    "markAllAsRead": "Marquer tout comme lu",
     "allMarkedAsRead": "Toutes les notifications ont été marquées comme lues"
   },
   "drawer": {
@@ -58,7 +59,7 @@
     "leisure": "Loisirs",
     "reserve": "Réserver",
     "requests": "Demandes",
-      "requestedOn": "Demandé le",
+    "requestedOn": "Demandé le",
     "history": "Historique",
     "todaySchedule": "Programme du jour",
     "noActivitiesScheduled": "Aucune activité programmée",
@@ -224,7 +225,8 @@
     "next": "Suivant",
     "previous": "Précédent",
     "required": "Requis",
-    "success": "Succès"
+    "success": "Succès",
+    "favorite": "Favori"
   },
   "auth": {
     "signIn": "Se Connecter",
@@ -284,7 +286,7 @@
     "noAccountFound": "Aucun compte trouvé avec ce courriel.",
     "incorrectPassword": "Mot de passe incorrect. Veuillez réessayer.",
     "emailNotVerified": "Veuillez vérifier votre courriel avant de vous connecter.",
-      "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?",
     "logoutConfirmation": "Confirmation de déconnexion"
   },
   "home": {
@@ -303,6 +305,7 @@
   },
   "explore": {
     "title": "Explorer",
+    "reserve": "Réserver",
     "categories": {
       "other": "Autre",
       "events": "Événements",
@@ -341,7 +344,7 @@
     "noCoordinatesProvided": "Aucune coordonnée fournie pour cet emplacement",
     "somethingWentWrong": "Quelque chose s'est mal passé",
     "couldNotLoadRecommendation": "Impossible de charger les détails de la recommandation",
-      "filterByCategory": "Filtrer par catégorie"
+    "filterByCategory": "Filtrer par catégorie"
   },
   "navigation": {
     "home": "Accueil",
@@ -366,7 +369,8 @@
     "shop": "Boutique",
     "clubAccess": "Accès Club",
     "hairSalon": "Salon de Coiffure",
-    "kidsClub": "Club Enfants"
+    "kidsClub": "Club Enfants",
+    "contactAdmin": "Contacter l'Admin"
   },
   "shop": {
     "title": "Boutique de Luxe",
@@ -410,9 +414,9 @@
     "preferences": "Préférences",
     "darkMode": "Mode Sombre",
     "language": "Langue",
-      "profile": "Profil",
+    "profile": "Profil",
     "privacySecurity": "Confidentialité et Sécurité",
-    "helpSupport": "Centre d’aide",
+    "helpSupport": "Centre d'aide",
     "about": "À Propos",
     "editProfile": "Modifier le Profil",
     "personalInfo": "Informations Personnelles",

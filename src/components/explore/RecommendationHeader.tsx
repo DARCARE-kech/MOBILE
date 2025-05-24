@@ -11,7 +11,7 @@ import { RECOMMENDATION_CATEGORIES } from "@/utils/recommendationCategories";
 interface RecommendationHeaderProps {
   recommendation: Recommendation;
   onToggleFavorite: () => void;
-   onReserve: () => void;
+  onReserve: () => void;
 }
 
 export const RecommendationHeader = ({ 
@@ -24,11 +24,11 @@ export const RecommendationHeader = ({
   const fallbackImage = getFallbackImage(recommendation.title, 0);
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
-  // Ensure category is one of the valid categories
-  const displayCategory = recommendation.category && 
+  // Get the category for translation - ensure it's a valid category
+  const categoryKey = recommendation.category && 
     (typeof recommendation.category === 'string') && 
     RECOMMENDATION_CATEGORIES.includes(recommendation.category as any)
-      ? recommendation.category
+      ? recommendation.category.toLowerCase()
       : 'other';
   
   return (
@@ -54,39 +54,37 @@ export const RecommendationHeader = ({
       </div>
       
       <div className="flex flex-col gap-3 px-6">
-  {/* Titre + Reserve */}
-  <div className="flex flex-wrap justify-between items-center gap-3">
-    <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
+        {/* Titre + Reserve */}
+        <div className="flex flex-wrap justify-between items-center gap-3">
+          <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
+        </div>
 
-  </div>
-
-  {/* Catégorie + Avis */}
-  <div className="flex flex-wrap items-center gap-3">
-    <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-      {t(`explore.categories.${typeof displayCategory === 'string' ? displayCategory.toLowerCase() : 'other'}`)}
-    </Badge>
-    {recommendation.rating && recommendation.rating > 0 && (
-      <div className="flex items-center gap-1 text-darcare-gold text-sm">
-        <Star size={16} className="fill-current" />
-        <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
-        {recommendation.review_count ? (
-          <span className="text-darcare-beige/70">
-            ({recommendation.review_count})
-          </span>
-        ) : null}
+        {/* Catégorie + Avis */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
+            {t(`explore.categories.${categoryKey}`)}
+          </Badge>
+          {recommendation.rating && recommendation.rating > 0 && (
+            <div className="flex items-center gap-1 text-darcare-gold text-sm">
+              <Star size={16} className="fill-current" />
+              <span className="font-medium">{recommendation.rating.toFixed(1)}</span>
+              {recommendation.review_count ? (
+                <span className="text-darcare-beige/70">
+                  ({recommendation.review_count})
+                </span>
+              ) : null}
+            </div>
+          )}
+          
+          <Button 
+            onClick={onReserve}
+            variant="ghost"
+            className="text-darcare-gold border border-darcare-gold px-4 py-0.5 h-7 text-xs font-serif rounded-md hover:bg-darcare-gold/10 transition"
+          >
+            {t('explore.reserve')}
+          </Button>
+        </div>
       </div>
-    )}
-    
-    <Button 
-  onClick={onReserve}
-  variant="ghost"
-  className="text-darcare-gold border border-darcare-gold px-4 py-0.5 h-7 text-xs font-serif rounded-md hover:bg-darcare-gold/10 transition"
->
-  {t('explore.reserve', 'Reserve')}
-</Button>
-  </div>
-</div>
-
     </div>
   );
 };
