@@ -40,13 +40,19 @@ export const useChatbot = (initialThreadId?: string) => {
   } = useMessages();
 
   /**
-   * Initialize a thread and load its messages
+   * Initialize a thread and load its messages (only for existing threads)
    */
   const initializeThreadWithMessages = useCallback(async (threadIdToUse?: string) => {
     console.log("initializeThreadWithMessages called with threadIdToUse =", threadIdToUse);
     
     if (!user?.id) {
       console.log("No user.id available, cannot initialize thread");
+      return;
+    }
+
+    // Only initialize if we have a specific threadId (existing thread)
+    if (!threadIdToUse) {
+      console.log("No threadId provided, skipping initialization");
       return;
     }
 
@@ -104,7 +110,7 @@ export const useChatbot = (initialThreadId?: string) => {
 
     let threadId = currentThreadId;
 
-    // Create a thread only if the user sends a message
+    // Create a thread only if the user sends a message and no thread exists
     if (!threadId) {
       const newThreadId = `thread_${crypto.randomUUID()}`;
       const { data, error } = await supabase
@@ -143,6 +149,18 @@ export const useChatbot = (initialThreadId?: string) => {
       });
     }
   }, [currentThreadId, user?.id, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast]);
+
+  // Initialize only if we have a specific thread ID from URL
+  useEffect(() => {
+    if (user?.id && initialThreadId && !hasInitialized) {
+      console.log("Initializing with specific thread ID:", initialThreadId);
+      initializeThreadWithMessages(initialThreadId);
+      setHasInitialized(true);
+    } else if (user?.id && !initialThreadId) {
+      console.log("No initial thread ID, ready for new conversation");
+      setHasInitialized(true);
+    }
+  }, [user?.id, initialThreadId, hasInitialized, initializeThreadWithMessages]);
 
   return {
     messages,
