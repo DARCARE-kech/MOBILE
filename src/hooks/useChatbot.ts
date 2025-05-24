@@ -99,39 +99,52 @@ export const useChatbot = (initialThreadId?: string) => {
   /**
    * Send a message in the current thread
    */
-  const sendMessage = useCallback(async (content: string) => {
-    let threadId = currentThreadId;
+ const sendMessage = useCallback(async (content: string) => {
+  if (!user?.id || !content.trim()) return;
 
-    // Create a thread on-the-fly if it doesn't exist
-    if (!threadId) {
-      // 🧠 Crée un nouveau thread manuellement
-      const { data: inserted, error } = await supabase
-        .from("chat_threads")
-        .insert({
-          user_id: user?.id,
-          thread_id: `thread_${crypto.randomUUID()}`,
-          title: "New conversation",
-        })
-        .select()
-        .single();
+  let threadId = currentThreadId;
 
-      if (error || !inserted) {
-        console.error("Thread creation failed:", error);
-        toast({
-          title: "Error",
-          description: "Could not start a new conversation.",
-          variant: "destructive"
-        });
-        return;
-      }
+  // Crée un thread SEULEMENT si le message est valide
+  if (!threadId) {
+    const newThreadId = `thread_${crypto.randomUUID()}`;
 
-      threadId = inserted.thread_id;
-      setCurrentThread(inserted);
-      setCurrentThreadId(threadId);
+    const { data: inserted, error } = await supabase
+      .from("chat_threads")
+      .insert({
+        user_id: user.id,
+        thread_id: newThreadId,
+        title: "New conversation",
+      })
+      .select()
+      .single();
+
+    if (error || !inserted) {
+      console.error("Thread creation failed:", error);
+      toast({
+        title: "Error",
+        description: "Could not start a new conversation.",
+        variant: "destructive"
+      });
+      return;
     }
 
+    threadId = inserted.thread_id;
+    setCurrentThread(inserted);
+    setCurrentThreadId(threadId);
+  }
+
+  try {
     await sendMessageToThread(content, threadId);
-  }, [currentThreadId, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast, user?.id]);
+  } catch (error) {
+    console.error("Message send failed:", error);
+    toast({
+      title: "Erreur",
+      description: "Impossible d'envoyer le message",
+      variant: "destructive"
+    });
+  }
+}, [currentThreadId, user?.id, sendMessageToThread, setCurrentThread, setCurrentThreadId, toast]);
+
 
   // Initialize on component mount
   useEffect(() => {
