@@ -58,13 +58,12 @@ export const RecommendationHeader = ({
   <div className="flex flex-wrap justify-between items-center gap-3">
     <h1 className="text-2xl font-serif text-darcare-gold">{recommendation.title}</h1>
     <Button 
-      variant="outline" 
-      size="sm" 
-      className="text-darcare-gold border-darcare-gold hover:bg-darcare-gold/10 rounded-full px-5 py-1.5 text-sm"
-      onClick={onReserve}
-    >
-      {t('explore.reserve', 'Reserve')}
-    </Button>
+  onClick={onReserve}
+  className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-sm px-5 py-1.5 rounded-xl shadow-md transition-all"
+>
+  {t('explore.reserve', 'Reserve')}
+</Button>
+
   </div>
 
   {/* Catégorie + Avis */}
