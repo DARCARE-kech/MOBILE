@@ -11,7 +11,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { type Recommendation } from "@/types/recommendation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
-import { getCategoryTranslationKey } from "@/utils/recommendationCategories";
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
@@ -59,8 +58,31 @@ export const RecommendationCard = ({
   // Use fallback image if none provided
   const imageUrl = recommendation.image_url || getFallbackImage(recommendation.title, 0);
   
-  // Get the category translation key
-  const categoryKey = getCategoryTranslationKey(recommendation.category);
+  // Get category translation directly from the recommendation category
+  const getCategoryTranslation = (category: string | null) => {
+    if (!category) return t('explore.categories.other');
+    
+    // Try direct translation key first
+    const directKey = `explore.categories.${category}`;
+    const directTranslation = t(directKey);
+    
+    // If translation exists (not the key itself), use it
+    if (directTranslation !== directKey) {
+      return directTranslation;
+    }
+    
+    // Try with normalized category (lowercase, replace spaces/hyphens with underscores)
+    const normalizedCategory = category.toLowerCase().replace(/[\s-]/g, '_');
+    const normalizedKey = `explore.categories.${normalizedCategory}`;
+    const normalizedTranslation = t(normalizedKey);
+    
+    if (normalizedTranslation !== normalizedKey) {
+      return normalizedTranslation;
+    }
+    
+    // Fallback to capitalized category name
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
   
   return (
     <Card 
@@ -107,7 +129,7 @@ export const RecommendationCard = ({
             variant="outline" 
             className="bg-transparent text-darcare-gold border-darcare-gold/30 font-serif text-xs"
           >
-            {t(`explore.categories.${categoryKey}`)}
+            {getCategoryTranslation(recommendation.category)}
           </Badge>
         </div>
         

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -119,11 +118,11 @@ const CartScreen = () => {
           .update({ status: 'confirmed' })
           .eq('id', cartOrderId);
         
-        // Invalidate cart queries to update UI
+        // Invalidate cart queries to update UI immediately
         await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
         await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
         
-        console.log('Order placed successfully');
+        console.log('Order placed successfully and cart cleared');
       }
       
       toast({

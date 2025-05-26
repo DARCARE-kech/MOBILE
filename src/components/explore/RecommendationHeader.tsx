@@ -23,6 +23,32 @@ export const RecommendationHeader = ({
   const fallbackImage = getFallbackImage(recommendation.title, 0);
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
+  // Get category translation directly from the recommendation category
+  const getCategoryTranslation = (category: string | null) => {
+    if (!category) return t('explore.categories.other');
+    
+    // Try direct translation key first
+    const directKey = `explore.categories.${category}`;
+    const directTranslation = t(directKey);
+    
+    // If translation exists (not the key itself), use it
+    if (directTranslation !== directKey) {
+      return directTranslation;
+    }
+    
+    // Try with normalized category (lowercase, replace spaces/hyphens with underscores)
+    const normalizedCategory = category.toLowerCase().replace(/[\s-]/g, '_');
+    const normalizedKey = `explore.categories.${normalizedCategory}`;
+    const normalizedTranslation = t(normalizedKey);
+    
+    if (normalizedTranslation !== normalizedKey) {
+      return normalizedTranslation;
+    }
+    
+    // Fallback to capitalized category name
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+  
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -55,7 +81,7 @@ export const RecommendationHeader = ({
         <div className="flex flex-wrap items-center gap-3">
           {recommendation.category && (
             <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-              {t(`explore.categories.${recommendation.category}`)}
+              {getCategoryTranslation(recommendation.category)}
             </Badge>
           )}
           {recommendation.rating && recommendation.rating > 0 && (
