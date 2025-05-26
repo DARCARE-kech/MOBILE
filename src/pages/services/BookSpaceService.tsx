@@ -183,6 +183,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
     <div className="bg-darcare-navy min-h-screen pb-20">
       <AppHeader
         title={isEditMode ? t('services.updateBooking', 'Update Booking') : selectedSpace.name}
+        showBack={true}
         onBack={() => navigate('/services/spaces')}
       />
 
