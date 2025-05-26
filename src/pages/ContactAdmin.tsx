@@ -110,7 +110,7 @@ const ContactAdmin: React.FC = () => {
         </form>
       </div>
       
-      <BottomNavigation activeTab="chatbot" />
+      <BottomNavigation activeTab="home" />
     </div>
   );
 };
