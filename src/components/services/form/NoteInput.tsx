@@ -21,7 +21,7 @@ const NoteInput: React.FC<NoteInputProps> = ({ form }) => {
         <FormItem className="mb-4">
           <FormSectionTitle 
             title={t('services.additionalNotes')}
-            subtitle={t('services.notesSubtitle')}
+            
             rawKeys={true}
           />
           <FormControl>
