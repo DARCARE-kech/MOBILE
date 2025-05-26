@@ -5,17 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { getFallbackImage } from '@/utils/imageUtils';
 import type { ShopCartItem } from '@/types/shop';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
-import { useQueryClient } from '@tanstack/react-query';
+import { useShopCart } from '@/hooks/useShopCart';
 
 interface CartItemProps {
   item: ShopCartItem;
 }
 
 const CartItem = ({ item }: CartItemProps) => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { removeFromCart, updateCartItemQuantity } = useShopCart();
 
   // Handle image error fallback
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -32,51 +29,11 @@ const CartItem = ({ item }: CartItemProps) => {
 
   const updateQuantity = async (newQuantity: number) => {
     if (newQuantity < 1) return;
-    
-    try {
-      const { error } = await supabase
-        .from('shop_order_items')
-        .update({ quantity: newQuantity })
-        .eq('id', item.id);
-        
-      if (error) throw error;
-      
-      // Invalidate cart items query
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
-    } catch (err) {
-      console.error('Error updating item quantity:', err);
-      toast({
-        title: 'Error',
-        description: 'Could not update quantity',
-        variant: 'destructive',
-      });
-    }
+    await updateCartItemQuantity(item.id, newQuantity);
   };
 
   const removeItem = async () => {
-    try {
-      const { error } = await supabase
-        .from('shop_order_items')
-        .delete()
-        .eq('id', item.id);
-        
-      if (error) throw error;
-      
-      toast({
-        title: 'Item Removed',
-        description: `${productName} has been removed from your cart`,
-      });
-      
-      // Invalidate cart items query
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
-    } catch (err) {
-      console.error('Error removing item:', err);
-      toast({
-        title: 'Error',
-        description: 'Could not remove item',
-        variant: 'destructive',
-      });
-    }
+    await removeFromCart(item.id);
   };
 
   return (

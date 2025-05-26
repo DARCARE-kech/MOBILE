@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,11 +23,16 @@ const CartScreen = () => {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: cartItems, isLoading } = useQuery({
+  const { data: cartItems, isLoading, error } = useQuery({
     queryKey: ['cart-items'],
     queryFn: async () => {
       try {
-        if (!user?.id) return [];
+        if (!user?.id) {
+          console.log('No user ID available');
+          return [];
+        }
+        
+        console.log('Fetching cart for user:', user.id);
         
         // Get cart order using "submitted" status
         const { data: order, error: orderError } = await supabase
@@ -36,7 +42,17 @@ const CartScreen = () => {
           .eq('status', 'submitted')
           .single();
 
-        if (orderError || !order) return [];
+        if (orderError) {
+          console.log('No cart order found:', orderError);
+          return [];
+        }
+
+        if (!order) {
+          console.log('No order data returned');
+          return [];
+        }
+
+        console.log('Found cart order:', order.id);
 
         const { data: items, error: itemsError } = await supabase
           .from('shop_order_items')
@@ -48,21 +64,27 @@ const CartScreen = () => {
               id,
               name,
               description,
-              image_url
+              image_url,
+              price
             )
           `)
           .eq('order_id', order.id);
 
         if (itemsError) {
           console.error('Error fetching cart items:', itemsError);
-          return [];
+          throw itemsError;
         }
         
+        console.log('Cart items fetched:', items);
+        
         // Filter out any items with missing product data
-        return (items as ShopCartItem[] || []).filter(item => item && item.shop_products);
+        const validItems = (items as ShopCartItem[] || []).filter(item => item && item.shop_products);
+        console.log('Valid cart items:', validItems);
+        
+        return validItems;
       } catch (err) {
         console.error('Error in cart data fetching:', err);
-        return [];
+        throw err;
       }
     },
     enabled: !!user?.id,
@@ -124,6 +146,23 @@ const CartScreen = () => {
         <div className="flex justify-center items-center h-72 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
+        <BottomNavigation activeTab="services" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error('Cart query error:', error);
+    return (
+      <div className="min-h-screen bg-darcare-navy">
+        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
+        <div className="p-4 pt-16 pb-24">
+          <div className="text-center text-darcare-beige">
+            <p>Error loading cart</p>
+            <p className="text-sm text-darcare-beige/60">{error.message}</p>
+          </div>
+        </div>
+        <FloatingAction />
         <BottomNavigation activeTab="services" />
       </div>
     );

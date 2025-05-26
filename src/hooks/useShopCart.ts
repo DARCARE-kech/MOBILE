@@ -39,7 +39,10 @@ export const useShopCart = () => {
           .select()
           .single();
 
-        if (createError) throw createError;
+        if (createError) {
+          console.error('Error creating order:', createError);
+          throw createError;
+        }
         orderId = newOrder.id;
       } else {
         orderId = order.id;
@@ -53,9 +56,9 @@ export const useShopCart = () => {
         .eq('product_id', product.id)
         .single();
 
-      if (existingItemError && !existingItem) {
-        // Add new item
-        await supabase
+      if (existingItemError && existingItemError.code === 'PGRST116') {
+        // Item doesn't exist, add new item
+        const { error: insertError } = await supabase
           .from('shop_order_items')
           .insert({
             order_id: orderId,
@@ -63,12 +66,25 @@ export const useShopCart = () => {
             price_at_time: product.price,
             quantity: 1
           });
+
+        if (insertError) {
+          console.error('Error inserting item:', insertError);
+          throw insertError;
+        }
       } else if (existingItem) {
         // Update quantity
-        await supabase
+        const { error: updateError } = await supabase
           .from('shop_order_items')
           .update({ quantity: existingItem.quantity + 1 })
           .eq('id', existingItem.id);
+
+        if (updateError) {
+          console.error('Error updating quantity:', updateError);
+          throw updateError;
+        }
+      } else if (existingItemError) {
+        console.error('Error checking existing item:', existingItemError);
+        throw existingItemError;
       }
 
       // Invalidate cart data queries to update UI
@@ -89,5 +105,62 @@ export const useShopCart = () => {
     }
   };
 
-  return { addToCart };
+  const removeFromCart = async (itemId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('shop_order_items')
+        .delete()
+        .eq('id', itemId);
+
+      if (error) throw error;
+
+      // Invalidate cart data queries to update UI
+      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+
+      toast({
+        title: "Item Removed",
+        description: "Item has been removed from your cart",
+      });
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      toast({
+        title: "Error",
+        description: "Could not remove item from cart",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateCartItemQuantity = async (itemId: string, newQuantity: number) => {
+    if (!user || newQuantity < 1) return;
+
+    try {
+      const { error } = await supabase
+        .from('shop_order_items')
+        .update({ quantity: newQuantity })
+        .eq('id', itemId);
+
+      if (error) throw error;
+
+      // Invalidate cart data queries to update UI
+      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+    } catch (error) {
+      console.error('Error updating cart item quantity:', error);
+      toast({
+        title: "Error",
+        description: "Could not update quantity",
+        variant: "destructive",
+      });
+    }
+  };
+
+  return { 
+    addToCart, 
+    removeFromCart, 
+    updateCartItemQuantity 
+  };
 };

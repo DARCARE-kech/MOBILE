@@ -30,31 +30,40 @@ const ShopService = () => {
     queryFn: async () => {
       if (!user?.id) return 0;
       
-      // First get the cart order (using "submitted" status)
-      const { data: order } = await supabase
-        .from('shop_orders')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('status', 'submitted')
-        .single();
-      
-      if (!order) return 0;
-      
-      // Then count the items in the cart
-      const { data: items, error } = await supabase
-        .from('shop_order_items')
-        .select('quantity')
-        .eq('order_id', order.id);
-      
-      if (error) {
-        console.error('Error fetching cart count:', error);
+      try {
+        // First get the cart order (using "submitted" status)
+        const { data: order, error: orderError } = await supabase
+          .from('shop_orders')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('status', 'submitted')
+          .single();
+        
+        if (orderError || !order) {
+          console.log('No cart order found for count');
+          return 0;
+        }
+        
+        // Then count the items in the cart
+        const { data: items, error } = await supabase
+          .from('shop_order_items')
+          .select('quantity')
+          .eq('order_id', order.id);
+        
+        if (error) {
+          console.error('Error fetching cart count:', error);
+          return 0;
+        }
+        
+        // Calculate total quantity from all items
+        const totalQuantity = items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+        console.log('Cart count:', totalQuantity);
+        
+        return totalQuantity;
+      } catch (error) {
+        console.error('Error in cart count query:', error);
         return 0;
       }
-      
-      // Calculate total quantity from all items
-      const totalQuantity = items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
-      
-      return totalQuantity;
     },
     enabled: !!user?.id,
     refetchInterval: 5000, // Refetch every 5 seconds to keep cart updated
@@ -138,7 +147,7 @@ const ShopService = () => {
             className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium py-6 px-8 rounded-full shadow-lg flex items-center gap-2"
             onClick={() => navigate('/services/cart')}
           >
-            Go to Cart
+            Go to Cart ({cartItemsCount})
             <ArrowRight size={18} />
           </Button>
         </div>
