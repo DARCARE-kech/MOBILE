@@ -151,7 +151,7 @@ const CartScreen = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
+        <MainHeader title={t('shop.cart')}  showBack={true} onBack={() => navigate(-1)} />
         <div className="flex justify-center items-center h-72 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
