@@ -6,7 +6,6 @@ import type { Recommendation } from "@/types/recommendation";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { getFallbackImage } from "@/utils/imageUtils";
-import { getCategoryTranslationKey } from "@/utils/recommendationCategories";
 
 interface RecommendationHeaderProps {
   recommendation: Recommendation;
@@ -24,9 +23,6 @@ export const RecommendationHeader = ({
   const fallbackImage = getFallbackImage(recommendation.title, 0);
   const imageSource = !imageError && recommendation.image_url ? recommendation.image_url : fallbackImage;
   
-  // Get the category translation key
-  const categoryKey = getCategoryTranslationKey(recommendation.category);
- 
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -57,10 +53,11 @@ export const RecommendationHeader = ({
 
         {/* Catégorie + Avis */}
         <div className="flex flex-wrap items-center gap-3">
-          <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
-            {t(`explore.categories.${getCategoryTranslationKey(recommendation.category)}`)}
-
-          </Badge>
+          {recommendation.category && (
+            <Badge variant="outline" className="bg-transparent text-darcare-beige border-darcare-gold/20 font-serif">
+              {t(`explore.categories.${recommendation.category}`)}
+            </Badge>
+          )}
           {recommendation.rating && recommendation.rating > 0 && (
             <div className="flex items-center gap-1 text-darcare-gold text-sm">
               <Star size={16} className="fill-current" />

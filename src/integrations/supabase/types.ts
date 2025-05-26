@@ -503,21 +503,21 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
-          status: string
+          status: Database["public"]["Enums"]["order_status"]
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
-          status?: string
+          status: Database["public"]["Enums"]["order_status"]
           updated_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
           updated_at?: string | null
           user_id?: string
         }
@@ -532,6 +532,7 @@ export type Database = {
           image_url: string | null
           name: string
           price: number
+          stock: number | null
         }
         Insert: {
           category?: string | null
@@ -541,6 +542,7 @@ export type Database = {
           image_url?: string | null
           name: string
           price: number
+          stock?: number | null
         }
         Update: {
           category?: string | null
@@ -550,6 +552,7 @@ export type Database = {
           image_url?: string | null
           name?: string
           price?: number
+          stock?: number | null
         }
         Relationships: []
       }
@@ -593,7 +596,7 @@ export type Database = {
           request_id: string
           staff_id: string | null
           start_time: string | null
-          status: string | null
+          status: Database["public"]["Enums"]["affectation_status"] | null
         }
         Insert: {
           assigned_at?: string | null
@@ -604,7 +607,7 @@ export type Database = {
           request_id: string
           staff_id?: string | null
           start_time?: string | null
-          status?: string | null
+          status?: Database["public"]["Enums"]["affectation_status"] | null
         }
         Update: {
           assigned_at?: string | null
@@ -615,7 +618,7 @@ export type Database = {
           request_id?: string
           staff_id?: string | null
           start_time?: string | null
-          status?: string | null
+          status?: Database["public"]["Enums"]["affectation_status"] | null
         }
         Relationships: [
           {
@@ -805,6 +808,48 @@ export type Database = {
       }
     }
     Views: {
+      staff_schedule_view: {
+        Row: {
+          assigned_at: string | null
+          assignment_id: string | null
+          assignment_status:
+            | Database["public"]["Enums"]["affectation_status"]
+            | null
+          duration_minutes: number | null
+          end_time: string | null
+          estimated_duration: string | null
+          is_future: boolean | null
+          phone_number: string | null
+          preferred_time: string | null
+          request_created_at: string | null
+          request_id: string | null
+          request_status: string | null
+          resident_name: string | null
+          service_category: string | null
+          service_name: string | null
+          space_name: string | null
+          staff_id: string | null
+          staff_name: string | null
+          start_time: string | null
+          villa_number: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_staff_id"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_services"
+            referencedColumns: ["staff_id"]
+          },
+          {
+            foreignKeyName: "staff_assignments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_stays_view: {
         Row: {
           check_in: string | null
@@ -906,6 +951,7 @@ export type Database = {
           image_url: string | null
           name: string
           price: number
+          stock: number | null
         }[]
       }
       jwt_custom_claims: {
@@ -916,6 +962,21 @@ export type Database = {
     Enums: {
       admin_message_category: "report" | "external_request" | "issue" | "other"
       admin_message_status: "unread" | "read" | "responded" | "in_progress"
+      affectation_status:
+        | "assigned"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "reassigned"
+        | "failed"
+        | "no_show"
+      order_status:
+        | "submitted"
+        | "confirmed"
+        | "preparing"
+        | "delivering"
+        | "delivered"
+        | "cancelled"
       sender_type: "user" | "bot" | "admin"
     }
     CompositeTypes: {
@@ -1034,6 +1095,23 @@ export const Constants = {
     Enums: {
       admin_message_category: ["report", "external_request", "issue", "other"],
       admin_message_status: ["unread", "read", "responded", "in_progress"],
+      affectation_status: [
+        "assigned",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "reassigned",
+        "failed",
+        "no_show",
+      ],
+      order_status: [
+        "submitted",
+        "confirmed",
+        "preparing",
+        "delivering",
+        "delivered",
+        "cancelled",
+      ],
       sender_type: ["user", "bot", "admin"],
     },
   },
