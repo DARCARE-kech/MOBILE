@@ -150,7 +150,7 @@ const CartScreen = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')}  showBack={true} onBack={() => navigate('services/shop')} />
+        <MainHeader title={t('shop.cart')}  showBack={true} onBack={() => navigate("/services/shop")} />
         <div className="flex justify-center items-center h-72 pt-16">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
@@ -163,7 +163,7 @@ const CartScreen = () => {
     console.error('Cart query error:', error);
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate('services/shop')} />
+        <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate("/services/shop")} />
         <div className="p-4 pt-16 pb-24">
           <div className="text-center text-darcare-beige">
             <p>Error loading cart</p>
@@ -179,7 +179,7 @@ const CartScreen = () => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate('services/shop')} />
+        <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate("/services/shop")} />
         <div className="p-4 pt-16 pb-24">
           <CartEmpty onContinueShopping={() => navigate('services/shop')} />
         </div>
