@@ -179,7 +179,7 @@ const CartScreen = () => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-darcare-navy">
-        <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
+        <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate(-1)} />
         <div className="p-4 pt-16 pb-24">
           <CartEmpty onContinueShopping={() => navigate('/services')} />
         </div>
@@ -191,7 +191,7 @@ const CartScreen = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('shop.cart')} onBack={() => navigate('/services')} />
+      <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate(-1)} />
       <div className="p-4 pt-16 pb-24">
         <div className="space-y-4">
           {cartItems.map((item) => (
