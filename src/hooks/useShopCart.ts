@@ -21,17 +21,24 @@ export const useShopCart = () => {
     }
 
     try {
-      // Get or create cart (using "submitted" status for cart items)
-      const { data: order, error: orderError } = await supabase
+      console.log('Adding product to cart:', product.name);
+      
+      // Get or create cart order (using "submitted" status for active cart)
+      let { data: orders, error: orderError } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
         .eq('status', 'submitted')
-        .single();
+        .order('created_at', { ascending: false });
+
+      if (orderError) {
+        console.error('Error fetching orders:', orderError);
+        throw orderError;
+      }
 
       let orderId;
 
-      if (orderError || !order) {
+      if (!orders || orders.length === 0) {
         console.log('Creating new cart order');
         const { data: newOrder, error: createError } = await supabase
           .from('shop_orders')
@@ -45,7 +52,9 @@ export const useShopCart = () => {
         }
         orderId = newOrder.id;
       } else {
-        orderId = order.id;
+        // Use the most recent cart order
+        orderId = orders[0].id;
+        console.log('Using existing cart order:', orderId);
       }
       
       // Check if item already exists in cart
@@ -54,10 +63,28 @@ export const useShopCart = () => {
         .select('id, quantity')
         .eq('order_id', orderId)
         .eq('product_id', product.id)
-        .single();
+        .maybeSingle();
 
-      if (existingItemError && existingItemError.code === 'PGRST116') {
-        // Item doesn't exist, add new item
+      if (existingItemError) {
+        console.error('Error checking existing item:', existingItemError);
+        throw existingItemError;
+      }
+
+      if (existingItem) {
+        // Update quantity
+        console.log('Updating existing item quantity');
+        const { error: updateError } = await supabase
+          .from('shop_order_items')
+          .update({ quantity: existingItem.quantity + 1 })
+          .eq('id', existingItem.id);
+
+        if (updateError) {
+          console.error('Error updating quantity:', updateError);
+          throw updateError;
+        }
+      } else {
+        // Add new item
+        console.log('Adding new item to cart');
         const { error: insertError } = await supabase
           .from('shop_order_items')
           .insert({
@@ -71,30 +98,18 @@ export const useShopCart = () => {
           console.error('Error inserting item:', insertError);
           throw insertError;
         }
-      } else if (existingItem) {
-        // Update quantity
-        const { error: updateError } = await supabase
-          .from('shop_order_items')
-          .update({ quantity: existingItem.quantity + 1 })
-          .eq('id', existingItem.id);
-
-        if (updateError) {
-          console.error('Error updating quantity:', updateError);
-          throw updateError;
-        }
-      } else if (existingItemError) {
-        console.error('Error checking existing item:', existingItemError);
-        throw existingItemError;
       }
 
       // Invalidate cart data queries to update UI
-      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+      await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+      await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
 
       toast({
         title: "Added to Cart",
         description: `${product.name} has been added to your cart`,
       });
+      
+      console.log('Product added to cart successfully');
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast({
@@ -109,6 +124,8 @@ export const useShopCart = () => {
     if (!user) return;
 
     try {
+      console.log('Removing item from cart:', itemId);
+      
       const { error } = await supabase
         .from('shop_order_items')
         .delete()
@@ -117,13 +134,15 @@ export const useShopCart = () => {
       if (error) throw error;
 
       // Invalidate cart data queries to update UI
-      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+      await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+      await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
 
       toast({
         title: "Item Removed",
         description: "Item has been removed from your cart",
       });
+      
+      console.log('Item removed successfully');
     } catch (error) {
       console.error('Error removing from cart:', error);
       toast({
@@ -138,6 +157,8 @@ export const useShopCart = () => {
     if (!user || newQuantity < 1) return;
 
     try {
+      console.log('Updating cart item quantity:', itemId, newQuantity);
+      
       const { error } = await supabase
         .from('shop_order_items')
         .update({ quantity: newQuantity })
@@ -146,8 +167,10 @@ export const useShopCart = () => {
       if (error) throw error;
 
       // Invalidate cart data queries to update UI
-      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+      await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+      await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+      
+      console.log('Quantity updated successfully');
     } catch (error) {
       console.error('Error updating cart item quantity:', error);
       toast({

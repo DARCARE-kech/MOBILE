@@ -32,27 +32,29 @@ const CartScreen = () => {
           return [];
         }
         
-        console.log('Fetching cart for user:', user.id);
+        console.log('Fetching cart items for user:', user.id);
         
-        // Get cart order using "submitted" status
-        const { data: order, error: orderError } = await supabase
+        // Get cart orders (using "submitted" status)
+        const { data: orders, error: orderError } = await supabase
           .from('shop_orders')
           .select('id')
           .eq('user_id', user.id)
           .eq('status', 'submitted')
-          .single();
+          .order('created_at', { ascending: false });
 
         if (orderError) {
-          console.log('No cart order found:', orderError);
+          console.error('Error fetching cart orders:', orderError);
           return [];
         }
 
-        if (!order) {
-          console.log('No order data returned');
+        if (!orders || orders.length === 0) {
+          console.log('No cart orders found');
           return [];
         }
 
-        console.log('Found cart order:', order.id);
+        // Use the most recent cart order
+        const cartOrderId = orders[0].id;
+        console.log('Found cart order:', cartOrderId);
 
         const { data: items, error: itemsError } = await supabase
           .from('shop_order_items')
@@ -68,7 +70,7 @@ const CartScreen = () => {
               price
             )
           `)
-          .eq('order_id', order.id);
+          .eq('order_id', cartOrderId);
 
         if (itemsError) {
           console.error('Error fetching cart items:', itemsError);
@@ -88,7 +90,7 @@ const CartScreen = () => {
       }
     },
     enabled: !!user?.id,
-    refetchInterval: 5000, // Refetch every 5 seconds to keep cart updated
+    refetchInterval: 2000, // Refetch every 2 seconds to keep cart updated
   });
 
   const handlePlaceOrder = async () => {
@@ -97,24 +99,31 @@ const CartScreen = () => {
     setIsSubmitting(true);
     
     try {
-      // Get the current cart order ID (using "submitted" status)
-      const { data: order } = await supabase
+      console.log('Placing order for cart items:', cartItems.length);
+      
+      // Get the current cart orders (using "submitted" status)
+      const { data: orders } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
         .eq('status', 'submitted')
-        .single();
+        .order('created_at', { ascending: false });
       
-      if (order) {
+      if (orders && orders.length > 0) {
+        const cartOrderId = orders[0].id;
+        console.log('Finalizing order:', cartOrderId);
+        
         // Update the order status to 'confirmed' (finalizing the order)
         await supabase
           .from('shop_orders')
           .update({ status: 'confirmed' })
-          .eq('id', order.id);
+          .eq('id', cartOrderId);
         
         // Invalidate cart queries to update UI
-        queryClient.invalidateQueries({ queryKey: ['cart-items'] });
-        queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+        await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+        await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+        
+        console.log('Order placed successfully');
       }
       
       toast({
@@ -122,7 +131,7 @@ const CartScreen = () => {
         description: t('shop.orderChargedToRoom'),
       });
       
-      // Navigate after successful submission, ensuring we don't unmount before state updates
+      // Navigate after successful submission
       setTimeout(() => {
         navigate('/services');
       }, 100);

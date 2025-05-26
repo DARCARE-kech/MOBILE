@@ -24,31 +24,42 @@ const ShopService = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  // Query to get cart items count - Using "submitted" status for cart items
+  // Query to get cart items count
   const { data: cartItemsCount = 0 } = useQuery({
     queryKey: ['cart-count'],
     queryFn: async () => {
       if (!user?.id) return 0;
       
       try {
-        // First get the cart order (using "submitted" status)
-        const { data: order, error: orderError } = await supabase
+        console.log('Fetching cart count for user:', user.id);
+        
+        // Get all cart orders (using "submitted" status)
+        const { data: orders, error: orderError } = await supabase
           .from('shop_orders')
           .select('id')
           .eq('user_id', user.id)
           .eq('status', 'submitted')
-          .single();
+          .order('created_at', { ascending: false });
         
-        if (orderError || !order) {
-          console.log('No cart order found for count');
+        if (orderError) {
+          console.error('Error fetching cart orders:', orderError);
           return 0;
         }
         
-        // Then count the items in the cart
+        if (!orders || orders.length === 0) {
+          console.log('No cart orders found');
+          return 0;
+        }
+        
+        // Get the most recent cart order
+        const cartOrderId = orders[0].id;
+        console.log('Using cart order:', cartOrderId);
+        
+        // Count items in this cart
         const { data: items, error } = await supabase
           .from('shop_order_items')
           .select('quantity')
-          .eq('order_id', order.id);
+          .eq('order_id', cartOrderId);
         
         if (error) {
           console.error('Error fetching cart count:', error);
@@ -66,7 +77,7 @@ const ShopService = () => {
       }
     },
     enabled: !!user?.id,
-    refetchInterval: 5000, // Refetch every 5 seconds to keep cart updated
+    refetchInterval: 2000, // Refetch every 2 seconds to keep cart updated
   });
 
   // Query to get unique categories
@@ -91,6 +102,7 @@ const ShopService = () => {
   });
 
   const handleAddToCart = async (product: ShopProduct) => {
+    console.log('Adding product to cart from shop:', product.name);
     await addToCart(product);
   };
 

@@ -29,10 +29,12 @@ const CartItem = ({ item }: CartItemProps) => {
 
   const updateQuantity = async (newQuantity: number) => {
     if (newQuantity < 1) return;
+    console.log('Updating quantity for item:', item.id, 'to:', newQuantity);
     await updateCartItemQuantity(item.id, newQuantity);
   };
 
   const removeItem = async () => {
+    console.log('Removing item:', item.id);
     await removeFromCart(item.id);
   };
 
