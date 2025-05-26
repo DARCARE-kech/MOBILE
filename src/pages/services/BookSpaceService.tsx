@@ -150,6 +150,8 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
       serviceId: effectiveServiceId,
       spaceName: selectedSpace.name,
       spaceId: selectedSpace.id
+      user_id: user?.id,
+      profile_id: user?.id 
     };
     
     console.log('Submitting space booking with data:', requestData);
