@@ -149,7 +149,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
       ...values,
       serviceId: effectiveServiceId,
       spaceName: selectedSpace.name,
-      spaceId: selectedSpace.id
+      spaceId: selectedSpace.id,
       user_id: user?.id,
       profile_id: user?.id 
     };
