@@ -132,7 +132,7 @@ const CartScreen = () => {
       
       // Navigate after successful submission
       setTimeout(() => {
-        navigate('/services');
+        navigate('services/shop');
       }, 100);
       
     } catch (err) {
@@ -181,7 +181,7 @@ const CartScreen = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate(-1)} />
         <div className="p-4 pt-16 pb-24">
-          <CartEmpty onContinueShopping={() => navigate('/services')} />
+          <CartEmpty onContinueShopping={() => navigate('services/shop')} />
         </div>
         <FloatingAction />
         <BottomNavigation activeTab="services" />
