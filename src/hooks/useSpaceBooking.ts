@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -98,9 +97,8 @@ export const useSpaceBooking = (requestId?: string) => {
       const requestData = {
         user_id: userId,
         profile_id: userId,
-        serviceId || null, // From Club Access service
+        service_id: values.serviceId || null, // From Club Access service
         space_id: spaceId,
-        
         status: 'pending',
         preferred_time: preferredTime,
         note: values.note,
