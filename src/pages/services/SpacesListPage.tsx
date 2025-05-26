@@ -69,6 +69,7 @@ const SpacesListPage: React.FC = () => {
       <div className="min-h-screen bg-background">
         <AppHeader
           title={t('services.clubAccess', 'Club Access')}
+           showBack={true}
           onBack={() => navigate('/services')}
         />
         
@@ -85,6 +86,7 @@ const SpacesListPage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <AppHeader
         title={t('services.clubAccess', 'Club Access')}
+         showBack={true}
         onBack={() => navigate('/services')}
       />
       
