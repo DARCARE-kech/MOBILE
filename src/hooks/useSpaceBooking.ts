@@ -97,7 +97,8 @@ export const useSpaceBooking = (requestId?: string) => {
       // Prepare the request data
       const requestData = {
         user_id: userId,
-        service_id: values.serviceId || null, // From Club Access service
+        profile_id: userId,
+        serviceId || null, // From Club Access service
         space_id: spaceId,
         
         status: 'pending',
