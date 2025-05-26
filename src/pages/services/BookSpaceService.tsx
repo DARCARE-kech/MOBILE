@@ -265,11 +265,7 @@ const BookSpaceService: React.FC<BookSpaceServiceProps> = ({
             </LuxuryCard>
 
             <LuxuryCard>
-              <FormSectionTitle 
-                title={t('services.specialRequests', 'Special Requests')} 
-                icon={<PenLine className="w-5 h-5" />}
-                rawKeys={false}
-              />
+              
               <div className="mt-3">
                 <SpecialRequests form={form} />
               </div>
