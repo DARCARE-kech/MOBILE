@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -29,11 +28,12 @@ const CartScreen = () => {
       try {
         if (!user?.id) return [];
         
+        // Get cart order using "submitted" status
         const { data: order, error: orderError } = await supabase
           .from('shop_orders')
           .select('id')
           .eq('user_id', user.id)
-          .eq('status', 'cart')
+          .eq('status', 'submitted')
           .single();
 
         if (orderError || !order) return [];
@@ -75,19 +75,19 @@ const CartScreen = () => {
     setIsSubmitting(true);
     
     try {
-      // Get the current cart order ID
+      // Get the current cart order ID (using "submitted" status)
       const { data: order } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
-        .eq('status', 'cart')
+        .eq('status', 'submitted')
         .single();
       
       if (order) {
-        // Update the order status to 'submitted'
+        // Update the order status to 'confirmed' (finalizing the order)
         await supabase
           .from('shop_orders')
-          .update({ status: 'submitted' })
+          .update({ status: 'confirmed' })
           .eq('id', order.id);
         
         // Invalidate cart queries to update UI

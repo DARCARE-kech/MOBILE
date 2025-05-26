@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShopCart } from '@/hooks/useShopCart';
@@ -23,18 +24,18 @@ const ShopService = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  // Query to get cart items count - Fixed to count total number of items
+  // Query to get cart items count - Using "submitted" status for cart items
   const { data: cartItemsCount = 0 } = useQuery({
     queryKey: ['cart-count'],
     queryFn: async () => {
       if (!user?.id) return 0;
       
-      // First get the cart order
+      // First get the cart order (using "submitted" status)
       const { data: order } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
-        .eq('status', 'cart')
+        .eq('status', 'submitted')
         .single();
       
       if (!order) return 0;

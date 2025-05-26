@@ -21,12 +21,12 @@ export const useShopCart = () => {
     }
 
     try {
-      // Get or create cart
+      // Get or create cart (using "submitted" status for cart items)
       const { data: order, error: orderError } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
-        .eq('status', 'cart')
+        .eq('status', 'submitted')
         .single();
 
       let orderId;
@@ -35,7 +35,7 @@ export const useShopCart = () => {
         console.log('Creating new cart order');
         const { data: newOrder, error: createError } = await supabase
           .from('shop_orders')
-          .insert({ user_id: user.id, status: 'cart' })
+          .insert({ user_id: user.id, status: 'submitted' })
           .select()
           .single();
 
