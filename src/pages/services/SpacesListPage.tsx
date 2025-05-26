@@ -11,6 +11,7 @@ import { getFallbackImage } from '@/utils/imageUtils';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
+import MainHeader from '@/components/MainHeader';
 
 interface Space {
   id: string;
@@ -46,7 +47,7 @@ const SpacesListPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <AppHeader
+        <MainHeader
           title={t('services.clubAccess', 'Club Access')}
           showBack={true}
           onBack={() => navigate('/services')}
