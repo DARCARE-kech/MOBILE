@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShopCart } from '@/hooks/useShopCart';
@@ -6,7 +5,7 @@ import { ProductsGrid } from '@/components/shop/ProductsGrid';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Input } from '@/components/ui/input';
-import { Search, ShoppingCart, ArrowRight } from 'lucide-react';
+import { Search, ShoppingCart, ArrowRight, Package } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ShopProduct } from '@/types/shop';
 import { Button } from '@/components/ui/button';
@@ -112,19 +111,29 @@ const ShopService = () => {
         title={t('services.shop')} 
         onBack={() => navigate('/services')} 
         rightContent={
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/services/cart')}
-            className="relative text-darcare-beige hover:text-darcare-gold"
-          >
-            <ShoppingCart size={22} />
-            {cartItemsCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-darcare-gold text-darcare-navy text-xs font-medium w-5 h-5 flex items-center justify-center rounded-full">
-                {cartItemsCount}
-              </span>
-            )}
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/services/shop/orders')}
+              className="text-darcare-beige hover:text-darcare-gold"
+            >
+              <Package size={22} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/services/cart')}
+              className="relative text-darcare-beige hover:text-darcare-gold"
+            >
+              <ShoppingCart size={22} />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-darcare-gold text-darcare-navy text-xs font-medium w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartItemsCount}
+                </span>
+              )}
+            </Button>
+          </div>
         }
       />
       

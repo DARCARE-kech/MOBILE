@@ -61,6 +61,20 @@ export type Database = {
             referencedRelation: "view_all_staff"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "admin_messages_user_profile_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_messages_user_profile_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "view_all_staff"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chat_messages: {
@@ -525,6 +539,7 @@ export type Database = {
       }
       shop_products: {
         Row: {
+          active: boolean | null
           category: string | null
           created_at: string | null
           description: string | null
@@ -535,6 +550,7 @@ export type Database = {
           stock: number | null
         }
         Insert: {
+          active?: boolean | null
           category?: string | null
           created_at?: string | null
           description?: string | null
@@ -545,6 +561,7 @@ export type Database = {
           stock?: number | null
         }
         Update: {
+          active?: boolean | null
           category?: string | null
           created_at?: string | null
           description?: string | null
@@ -944,6 +961,7 @@ export type Database = {
       get_shop_products: {
         Args: Record<PropertyKey, never>
         Returns: {
+          active: boolean | null
           category: string | null
           created_at: string | null
           description: string | null

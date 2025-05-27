@@ -14,6 +14,8 @@ import SpacesListPage from "@/pages/services/SpacesListPage";
 import BookSpaceService from "@/pages/services/BookSpaceService";
 import ShopService from "@/pages/services/ShopService";
 import CartScreen from "@/pages/services/CartScreen";
+import OrdersListScreen from "@/pages/services/OrdersListScreen";
+import OrderDetailScreen from "@/pages/services/OrderDetailScreen";
 import RecommendationDetail from "@/pages/explore/RecommendationDetail";
 import Chatbot from "@/pages/Chatbot";
 import ChatHistory from "@/pages/ChatHistory";
@@ -30,7 +32,6 @@ import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage";
 import ForgotPassword from "./ForgotPassword";
 import TermsAndPolicy from "./TermsAndPolicy"; 
 import { Toaster } from "@/components/ui/toaster";
-
 
 const MainApp: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -78,9 +79,9 @@ const MainApp: React.FC = () => {
         ),
       },
       {
-  path: "/terms-and-policy",
-  element: <TermsAndPolicy />
-}
+        path: "/terms-and-policy",
+        element: <TermsAndPolicy />
+      }
     ];
 
     // Protected routes - require authentication
@@ -141,6 +142,14 @@ const MainApp: React.FC = () => {
       {
         path: "/services/cart",
         element: <ProtectedRoute element={<CartScreen />} />,
+      },
+      {
+        path: "/services/shop/orders",
+        element: <ProtectedRoute element={<OrdersListScreen />} />,
+      },
+      {
+        path: "/services/shop/orders/:id",
+        element: <ProtectedRoute element={<OrderDetailScreen />} />,
       },
       
       // Stays routes
@@ -224,12 +233,11 @@ const MainApp: React.FC = () => {
   }
 
   return (
-  <>
-    <RouterProvider router={router} />
-    <Toaster /> 
-  </>
-);
-  
+    <>
+      <RouterProvider router={router} />
+      <Toaster /> 
+    </>
+  );
 };
 
 export default MainApp;
