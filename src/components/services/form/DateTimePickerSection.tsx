@@ -85,12 +85,12 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
                 <Input
                   type="time"
                   className={cn(
-                    "pl-12 pr-4 py-3 text-center rounded-2xl shadow-sm transition-all duration-200",
-                    "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
-                    "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
-                    "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
-                    "[&::-webkit-inner-spin-button]:hidden"
-                  )}
+    "pl-12 pr-4 py-3 text-center rounded-2xl shadow-sm transition-all duration-200",
+    "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
+    "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
+    "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
+    "[appearance:textfield] [&::-webkit-inner-spin-button]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+  )}
                   {...field}
                 />
                 <Clock size={16} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-darcare-gold" />
