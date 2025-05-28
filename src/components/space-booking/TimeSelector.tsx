@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Clock } from 'lucide-react';
+import { Clock, ChevronDown } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -12,21 +12,21 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
 interface TimeSelectorProps {
-  selectedTime?: string | null; // Make this prop optional or nullable
+  selectedTime?: string | null;
   onTimeSelect: (time: string) => void;
-  isOpen?: boolean; // Make isOpen optional
-  onOpenChange?: (open: boolean) => void; // Make onOpenChange optional
-  value?: string; // Add value prop for backward compatibility
-  onChange?: (time: string) => void; // Add onChange prop for backward compatibility
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  value?: string;
+  onChange?: (time: string) => void;
 }
 
 export const TimeSelector: React.FC<TimeSelectorProps> = ({
   selectedTime,
   onTimeSelect,
-  isOpen = false, // Default value
-  onOpenChange = () => {}, // Default empty function
-  value, // Get value from props
-  onChange, // Get onChange from props
+  isOpen = false,
+  onOpenChange = () => {},
+  value,
+  onChange,
 }) => {
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
@@ -84,128 +84,131 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-between border",
+            "w-full justify-between rounded-2xl shadow-sm transition-all duration-200",
             isDarkMode 
-              ? "bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige hover:bg-darcare-gold/10" 
-              : "bg-white border-darcare-deepGold/20 text-darcare-charcoal hover:bg-darcare-deepGold/10"
+              ? "bg-darcare-navy/60 border-darcare-gold/30 text-darcare-beige hover:bg-darcare-gold/10 hover:border-darcare-gold/50" 
+              : "bg-white border-darcare-deepGold/30 text-darcare-charcoal hover:bg-darcare-deepGold/10 hover:border-darcare-deepGold/50"
           )}
         >
           <div className="flex items-center">
             <Clock className={cn(
-              "mr-2 h-4 w-4",
+              "mr-3 h-5 w-5",
               isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
             )} />
-            {displayTime ? displayTime : t('services.selectTime', 'Select Time')}
+            <span className="text-base">
+              {displayTime ? displayTime : t('services.selectTime', 'Select Time')}
+            </span>
           </div>
-          <span className={cn(
-            "transform transition-transform",
-            openState ? "rotate-180" : ""
-          )}>
-            ▼
-          </span>
+          <ChevronDown className={cn(
+            "h-4 w-4 transition-transform duration-200",
+            openState ? "rotate-180" : "",
+            isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+          )} />
         </Button>
       </CollapsibleTrigger>
-      <CollapsibleContent className="mt-3 p-3 rounded-md border transition-all" 
+      <CollapsibleContent className="mt-4 rounded-2xl shadow-lg transition-all overflow-hidden" 
         style={{
-          borderColor: isDarkMode ? 'rgba(234, 193, 105, 0.2)' : 'rgba(184, 138, 68, 0.2)',
-          backgroundColor: isDarkMode ? 'rgba(10, 31, 51, 0.3)' : 'rgba(248, 241, 224, 0.2)'
+          borderColor: isDarkMode ? 'rgba(234, 193, 105, 0.3)' : 'rgba(184, 138, 68, 0.3)',
+          backgroundColor: isDarkMode ? 'rgba(10, 31, 51, 0.4)' : 'rgba(248, 241, 224, 0.3)'
         }}
       >
-        {/* Morning slots */}
-        {morningSlots.length > 0 && (
-          <div className="mb-3">
-            <h4 className={cn(
-              "text-xs mb-2 font-medium",
-              isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-            )}>
-              {t('services.morning', 'Morning')}
-            </h4>
-            <div className="grid grid-cols-3 gap-2">
-              {morningSlots.map((slot) => (
-                <div
-                  key={slot.time}
-                  className={cn(
-                    "p-2 rounded-md text-center cursor-pointer transition-all text-sm",
-                    displayTime === slot.time 
-                      ? isDarkMode
-                        ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
-                        : 'bg-darcare-deepGold/20 border border-darcare-deepGold/40 text-darcare-deepGold'
-                      : isDarkMode
-                        ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30'
-                        : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30'
-                  )}
-                  onClick={() => handleTimeSelect(slot.time)}
-                >
-                  {slot.time}
-                </div>
-              ))}
+        <div className="p-5 space-y-6">
+          {/* Morning slots */}
+          {morningSlots.length > 0 && (
+            <div>
+              <h4 className={cn(
+                "text-sm mb-3 font-serif font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
+                {t('services.morning', 'Morning')}
+              </h4>
+              <div className="grid grid-cols-3 gap-3">
+                {morningSlots.map((slot) => (
+                  <div
+                    key={slot.time}
+                    className={cn(
+                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base",
+                      displayTime === slot.time 
+                        ? isDarkMode
+                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-md' 
+                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-md'
+                        : isDarkMode
+                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/20 hover:border-darcare-gold/40 hover:bg-darcare-gold/10'
+                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/20 hover:border-darcare-deepGold/40 hover:bg-darcare-deepGold/10'
+                    )}
+                    onClick={() => handleTimeSelect(slot.time)}
+                  >
+                    {slot.time}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Afternoon slots */}
-        {afternoonSlots.length > 0 && (
-          <div className="mb-3">
-            <h4 className={cn(
-              "text-xs mb-2 font-medium",
-              isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-            )}>
-              {t('services.afternoon', 'Afternoon')}
-            </h4>
-            <div className="grid grid-cols-3 gap-2">
-              {afternoonSlots.map((slot) => (
-                <div
-                  key={slot.time}
-                  className={cn(
-                    "p-2 rounded-md text-center cursor-pointer transition-all text-sm",
-                    displayTime === slot.time 
-                      ? isDarkMode
-                        ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
-                        : 'bg-darcare-deepGold/20 border border-darcare-deepGold/40 text-darcare-deepGold'
-                      : isDarkMode
-                        ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30'
-                        : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30'
-                  )}
-                  onClick={() => handleTimeSelect(slot.time)}
-                >
-                  {slot.time}
-                </div>
-              ))}
+          {/* Afternoon slots */}
+          {afternoonSlots.length > 0 && (
+            <div>
+              <h4 className={cn(
+                "text-sm mb-3 font-serif font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
+                {t('services.afternoon', 'Afternoon')}
+              </h4>
+              <div className="grid grid-cols-3 gap-3">
+                {afternoonSlots.map((slot) => (
+                  <div
+                    key={slot.time}
+                    className={cn(
+                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base",
+                      displayTime === slot.time 
+                        ? isDarkMode
+                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-md' 
+                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-md'
+                        : isDarkMode
+                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/20 hover:border-darcare-gold/40 hover:bg-darcare-gold/10'
+                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/20 hover:border-darcare-deepGold/40 hover:bg-darcare-deepGold/10'
+                    )}
+                    onClick={() => handleTimeSelect(slot.time)}
+                  >
+                    {slot.time}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Evening slots */}
-        {eveningSlots.length > 0 && (
-          <div>
-            <h4 className={cn(
-              "text-xs mb-2 font-medium",
-              isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-            )}>
-              {t('services.evening', 'Evening')}
-            </h4>
-            <div className="grid grid-cols-3 gap-2">
-              {eveningSlots.map((slot) => (
-                <div
-                  key={slot.time}
-                  className={cn(
-                    "p-2 rounded-md text-center cursor-pointer transition-all text-sm",
-                    displayTime === slot.time 
-                      ? isDarkMode
-                        ? 'bg-darcare-gold/20 border border-darcare-gold/40 text-darcare-gold' 
-                        : 'bg-darcare-deepGold/20 border border-darcare-deepGold/40 text-darcare-deepGold'
-                      : isDarkMode
-                        ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30'
-                        : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30'
-                  )}
-                  onClick={() => handleTimeSelect(slot.time)}
-                >
-                  {slot.time}
-                </div>
-              ))}
+          {/* Evening slots */}
+          {eveningSlots.length > 0 && (
+            <div>
+              <h4 className={cn(
+                "text-sm mb-3 font-serif font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
+              )}>
+                {t('services.evening', 'Evening')}
+              </h4>
+              <div className="grid grid-cols-3 gap-3">
+                {eveningSlots.map((slot) => (
+                  <div
+                    key={slot.time}
+                    className={cn(
+                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base",
+                      displayTime === slot.time 
+                        ? isDarkMode
+                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-md' 
+                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-md'
+                        : isDarkMode
+                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/20 hover:border-darcare-gold/40 hover:bg-darcare-gold/10'
+                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/20 hover:border-darcare-deepGold/40 hover:bg-darcare-deepGold/10'
+                    )}
+                    onClick={() => handleTimeSelect(slot.time)}
+                  >
+                    {slot.time}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </CollapsibleContent>
     </Collapsible>
   );

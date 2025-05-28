@@ -55,10 +55,10 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   };
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Date Selector */}
       <div>
-        <h4 className="text-sm mb-2 text-gray-400">{t('services.selectDate', 'Select Date')}</h4>
+        <h4 className="text-base mb-3 text-darcare-gold font-serif font-medium">{t('services.selectDate', 'Select Date')}</h4>
         <Calendar
           mode="single"
           selected={date}
@@ -68,13 +68,13 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
             today.setHours(0, 0, 0, 0);
             return date < today;
           }}
-          className="rounded-md border border-darcare-gold/20 bg-darcare-navy/70 pointer-events-auto"
+          className="rounded-2xl border-0 shadow-lg bg-darcare-navy/70 pointer-events-auto"
         />
       </div>
       
       {/* Time Selector */}
       <div>
-        <h4 className="text-sm mb-2 text-gray-400">{t('services.selectTime', 'Select Time')}</h4>
+        <h4 className="text-base mb-3 text-darcare-gold font-serif font-medium">{t('services.selectTime', 'Select Time')}</h4>
         <TimeSelector
           selectedTime={timeValue}
           onTimeSelect={handleTimeSelect}
