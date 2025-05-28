@@ -90,7 +90,7 @@ const OrdersListScreen = () => {
           showBack={true} 
           onBack={() => navigate('/services/shop')} 
         />
-        <div className="flex justify-center items-center h-72 pt-16">
+        <div className="flex justify-center items-center h-72 pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
         <BottomNavigation activeTab="services" />
@@ -106,7 +106,7 @@ const OrdersListScreen = () => {
           showBack={true} 
           onBack={() => navigate('/services/shop')} 
         />
-        <div className="p-4 pt-16 pb-24">
+        <div className="p-4 pt-20 pb-24">
           <div className="text-center text-darcare-beige">
             <p>{t('common.error', 'Error loading orders')}</p>
           </div>
@@ -125,7 +125,7 @@ const OrdersListScreen = () => {
           showBack={true} 
           onBack={() => navigate('/services/shop')} 
         />
-        <div className="p-4 pt-16 pb-24">
+        <div className="p-4 pt-20 pb-24">
           <div className="text-center text-darcare-beige">
             <p className="text-lg font-medium mb-2">{t('shop.noOrders', 'No orders yet')}</p>
             <p className="text-darcare-beige/60">{t('shop.noOrdersDescription', 'Start shopping to see your orders here')}</p>
@@ -145,34 +145,34 @@ const OrdersListScreen = () => {
         onBack={() => navigate('/services/shop')} 
       />
       
-      <div className="p-4 pt-16 pb-24 space-y-4">
+      <div className="p-4 pt-20 pb-24 space-y-3">
         {orders.map((order) => (
           <Card 
             key={order.id} 
             className="bg-darcare-navy/60 border-darcare-gold/20 cursor-pointer hover:border-darcare-gold/40 transition-colors"
             onClick={() => navigate(`/services/shop/orders/${order.id}`)}
           >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="text-darcare-beige font-medium">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="text-darcare-beige font-medium text-sm">
                     #{order.id.slice(-8)}
                   </div>
-                  <Badge className={getStatusBadgeVariant(order.status)}>
+                  <Badge className={`text-xs px-2 py-0.5 ${getStatusBadgeVariant(order.status)}`}>
                     {getStatusText(order.status)}
                   </Badge>
                 </div>
-                <ChevronRight size={20} className="text-darcare-beige/50" />
+                <ChevronRight size={16} className="text-darcare-beige/50" />
               </div>
               
-              <div className="flex items-center justify-between text-sm">
-                <div className="text-darcare-beige/70">
+              <div className="flex items-center justify-between">
+                <div className="text-darcare-beige/70 text-xs">
                   {formatDistanceToNow(new Date(order.created_at), {
                     addSuffix: true,
                     locale: i18n.language === 'fr' ? fr : enUS
                   })}
                 </div>
-                <div className="text-darcare-gold font-medium">
+                <div className="text-darcare-gold font-medium text-sm">
                   {order.total.toFixed(2)} MAD
                 </div>
               </div>

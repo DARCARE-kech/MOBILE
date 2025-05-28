@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +7,7 @@ import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import FloatingAction from '@/components/FloatingAction';
 import { useTranslation } from 'react-i18next';
-import { Loader2, Package, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -90,21 +89,6 @@ const OrderDetailScreen = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return <CheckCircle size={20} className="text-blue-400" />;
-      case 'preparing':
-        return <Clock size={20} className="text-yellow-400" />;
-      case 'delivered':
-        return <Package size={20} className="text-green-400" />;
-      case 'cancelled':
-        return <XCircle size={20} className="text-red-400" />;
-      default:
-        return <Clock size={20} className="text-gray-400" />;
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-darcare-navy">
@@ -113,7 +97,7 @@ const OrderDetailScreen = () => {
           showBack={true} 
           onBack={() => navigate('/services/shop/orders')} 
         />
-        <div className="flex justify-center items-center h-72 pt-16">
+        <div className="flex justify-center items-center h-72 pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
         </div>
         <BottomNavigation activeTab="services" />
@@ -129,7 +113,7 @@ const OrderDetailScreen = () => {
           showBack={true} 
           onBack={() => navigate('/services/shop/orders')} 
         />
-        <div className="p-4 pt-16 pb-24">
+        <div className="p-4 pt-20 pb-24">
           <div className="text-center text-darcare-beige">
             <p>{t('shop.orderNotFound', 'Order not found')}</p>
           </div>
@@ -148,67 +132,54 @@ const OrderDetailScreen = () => {
         onBack={() => navigate('/services/shop/orders')} 
       />
       
-      <div className="p-4 pt-16 pb-24 space-y-4">
-        {/* Order Info */}
+      <div className="p-4 pt-20 pb-24 space-y-4">
+        {/* Order Info - Compact */}
         <Card className="bg-darcare-navy/60 border-darcare-gold/20">
-          <CardHeader>
-            <CardTitle className="text-darcare-gold flex items-center justify-between">
-              <span>{t('shop.orderNumber', 'Order')} #{order.id.slice(-8)}</span>
-              <Badge className={getStatusBadgeVariant(order.status)}>
+          <CardContent className="p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="text-darcare-gold font-medium text-base">
+                {t('shop.orderNumber', 'Order')} #{order.id.slice(-8)}
+              </div>
+              <Badge className={`text-xs ${getStatusBadgeVariant(order.status)}`}>
                 {getStatusText(order.status)}
               </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between text-darcare-beige">
-              <span>{t('shop.orderDate', 'Order Date')}</span>
-              <span>
-                {format(new Date(order.created_at), 'PPp', {
-                  locale: i18n.language === 'fr' ? fr : enUS
-                })}
-              </span>
             </div>
-            <div className="flex items-center justify-between text-darcare-beige">
-              <span>{t('shop.total', 'Total')}</span>
-              <span className="text-darcare-gold font-medium">
-                {order.total.toFixed(2)} MAD
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Status Timeline */}
-        <Card className="bg-darcare-navy/60 border-darcare-gold/20">
-          <CardHeader>
-            <CardTitle className="text-darcare-gold">{t('shop.orderStatus.title', 'Order Status')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-3">
-              {getStatusIcon(order.status)}
+            
+            <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <div className="text-darcare-beige font-medium">
-                  {getStatusText(order.status)}
-                </div>
-                <div className="text-darcare-beige/60 text-sm">
-                  {t('shop.lastUpdated', 'Last updated')}: {format(new Date(order.updated_at), 'PPp', {
+                <div className="text-darcare-beige/60 text-xs">{t('shop.orderDate', 'Order Date')}</div>
+                <div className="text-darcare-beige">
+                  {format(new Date(order.created_at), 'dd/MM/yyyy HH:mm', {
                     locale: i18n.language === 'fr' ? fr : enUS
                   })}
                 </div>
               </div>
+              <div className="text-right">
+                <div className="text-darcare-beige/60 text-xs">{t('shop.total', 'Total')}</div>
+                <div className="text-darcare-gold font-medium">
+                  {order.total.toFixed(2)} MAD
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-xs text-darcare-beige/50">
+              {t('shop.lastUpdated', 'Last updated')}: {format(new Date(order.updated_at), 'dd/MM HH:mm', {
+                locale: i18n.language === 'fr' ? fr : enUS
+              })}
             </div>
           </CardContent>
         </Card>
 
-        {/* Order Items */}
+        {/* Order Items - Compact */}
         <Card className="bg-darcare-navy/60 border-darcare-gold/20">
-          <CardHeader>
-            <CardTitle className="text-darcare-gold">{t('shop.orderItems', 'Order Items')}</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-darcare-gold text-base">{t('shop.orderItems', 'Order Items')}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="pt-0 space-y-3">
             {order.shop_order_items?.map((item, index) => (
               <div key={item.id}>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-darcare-navy/80 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-darcare-navy/80 rounded-md overflow-hidden flex-shrink-0">
                     {item.shop_products?.image_url && (
                       <img
                         src={item.shop_products.image_url}
@@ -217,20 +188,20 @@ const OrderDetailScreen = () => {
                       />
                     )}
                   </div>
-                  <div className="flex-1">
-                    <div className="text-darcare-beige font-medium">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-darcare-beige font-medium text-sm truncate">
                       {item.shop_products?.name}
                     </div>
-                    <div className="text-darcare-beige/60 text-sm">
-                      {t('shop.quantity', 'Qty')}: {item.quantity}
+                    <div className="text-darcare-beige/60 text-xs">
+                      {t('shop.quantity', 'Qty')}: {item.quantity} × {item.price_at_time.toFixed(2)} MAD
                     </div>
                   </div>
-                  <div className="text-darcare-gold font-medium">
+                  <div className="text-darcare-gold font-medium text-sm">
                     {(item.quantity * item.price_at_time).toFixed(2)} MAD
                   </div>
                 </div>
                 {index < (order.shop_order_items?.length || 0) - 1 && (
-                  <Separator className="mt-4 bg-darcare-gold/10" />
+                  <Separator className="mt-3 bg-darcare-gold/10" />
                 )}
               </div>
             ))}
