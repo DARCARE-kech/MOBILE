@@ -75,130 +75,68 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
   const eveningSlots = timeSlots.filter(slot => slot.period === 'evening');
 
   return (
-    <Collapsible
-      open={openState}
-      onOpenChange={setOpenState}
-      className="w-full"
-    >
-      <CollapsibleTrigger asChild>
-        <Button
-          variant="outline"
+  <Collapsible open={openState} onOpenChange={setOpenState} className="w-full">
+    <CollapsibleTrigger asChild>
+      <Button
+        variant="outline"
+        className={cn(
+          "w-full justify-between items-center px-4 py-3 rounded-2xl shadow-sm transition-all duration-200",
+          isDarkMode
+            ? "bg-darcare-navy/60 border-darcare-gold/30 text-darcare-beige hover:bg-darcare-gold/10 hover:border-darcare-gold/50"
+            : "bg-white border-darcare-deepGold/30 text-darcare-charcoal hover:bg-darcare-deepGold/10 hover:border-darcare-deepGold/50"
+        )}
+      >
+        <span className="mx-auto text-base font-serif">
+          {displayTime ? displayTime : t('services.selectTime', 'Select Time')}
+        </span>
+        <ChevronDown
           className={cn(
-            "w-full justify-between rounded-2xl shadow-sm transition-all duration-200",
-            isDarkMode 
-              ? "bg-darcare-navy/60 border-darcare-gold/30 text-darcare-beige hover:bg-darcare-gold/10 hover:border-darcare-gold/50" 
-              : "bg-white border-darcare-deepGold/30 text-darcare-charcoal hover:bg-darcare-deepGold/10 hover:border-darcare-deepGold/50"
-          )}
-        >
-          <div className="flex items-center">
-            <Clock className={cn(
-              "mr-3 h-5 w-5",
-              isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-            )} />
-            <span className="text-base">
-              {displayTime ? displayTime : t('services.selectTime', 'Select Time')}
-            </span>
-          </div>
-          <ChevronDown className={cn(
-            "h-4 w-4 transition-transform duration-200",
+            "h-4 w-4 absolute right-4 transition-transform duration-200",
             openState ? "rotate-180" : "",
             isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-          )} />
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-4 rounded-2xl shadow-lg transition-all overflow-hidden" 
-        style={{
-          borderColor: isDarkMode ? 'rgba(234, 193, 105, 0.3)' : 'rgba(184, 138, 68, 0.3)',
-          backgroundColor: isDarkMode ? 'rgba(10, 31, 51, 0.4)' : 'rgba(248, 241, 224, 0.3)'
-        }}
-      >
-        <div className="p-5 space-y-6">
-          {/* Morning slots */}
-          {morningSlots.length > 0 && (
-            <div>
-              <h4 className={cn(
-                "text-sm mb-3 font-serif font-medium",
-                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-              )}>
-                {t('services.morning', 'Morning')}
-              </h4>
-              <div className="grid grid-cols-3 gap-3">
-                {morningSlots.map((slot) => (
-                  <div
-                    key={slot.time}
-                    className={cn(
-                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base",
-                      displayTime === slot.time 
-                        ? isDarkMode
-                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-md' 
-                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-md'
-                        : isDarkMode
-                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/20 hover:border-darcare-gold/40 hover:bg-darcare-gold/10'
-                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/20 hover:border-darcare-deepGold/40 hover:bg-darcare-deepGold/10'
-                    )}
-                    onClick={() => handleTimeSelect(slot.time)}
-                  >
-                    {slot.time}
-                  </div>
-                ))}
-              </div>
-            </div>
           )}
+        />
+      </Button>
+    </CollapsibleTrigger>
 
-          {/* Afternoon slots */}
-          {afternoonSlots.length > 0 && (
-            <div>
-              <h4 className={cn(
-                "text-sm mb-3 font-serif font-medium",
-                isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
-              )}>
-                {t('services.afternoon', 'Afternoon')}
-              </h4>
-              <div className="grid grid-cols-3 gap-3">
-                {afternoonSlots.map((slot) => (
-                  <div
-                    key={slot.time}
-                    className={cn(
-                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base",
-                      displayTime === slot.time 
-                        ? isDarkMode
-                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-md' 
-                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-md'
-                        : isDarkMode
-                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/20 hover:border-darcare-gold/40 hover:bg-darcare-gold/10'
-                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/20 hover:border-darcare-deepGold/40 hover:bg-darcare-deepGold/10'
-                    )}
-                    onClick={() => handleTimeSelect(slot.time)}
-                  >
-                    {slot.time}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+    <CollapsibleContent
+      className="mt-4 rounded-2xl shadow-lg transition-all overflow-hidden"
+      style={{
+        borderColor: isDarkMode
+          ? 'rgba(234, 193, 105, 0.3)'
+          : 'rgba(184, 138, 68, 0.3)',
+        backgroundColor: isDarkMode
+          ? 'rgba(10, 31, 51, 0.4)'
+          : 'rgba(248, 241, 224, 0.3)'
+      }}
+    >
+      <div className="p-5 space-y-6">
 
-          {/* Evening slots */}
-          {eveningSlots.length > 0 && (
-            <div>
+        {[{ label: 'morning', slots: morningSlots },
+          { label: 'afternoon', slots: afternoonSlots },
+          { label: 'evening', slots: eveningSlots }]
+          .filter(({ slots }) => slots.length > 0)
+          .map(({ label, slots }) => (
+            <div key={label}>
               <h4 className={cn(
                 "text-sm mb-3 font-serif font-medium",
                 isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
               )}>
-                {t('services.evening', 'Evening')}
+                {t(`services.${label}`, label)}
               </h4>
               <div className="grid grid-cols-3 gap-3">
-                {eveningSlots.map((slot) => (
+                {slots.map((slot) => (
                   <div
                     key={slot.time}
                     className={cn(
-                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base",
-                      displayTime === slot.time 
+                      "p-3 rounded-xl text-center cursor-pointer transition-all duration-200 text-base font-medium",
+                      displayTime === slot.time
                         ? isDarkMode
-                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-md' 
-                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-md'
+                          ? 'bg-darcare-gold/20 border border-darcare-gold/50 text-darcare-gold shadow-sm'
+                          : 'bg-darcare-deepGold/20 border border-darcare-deepGold/50 text-darcare-deepGold shadow-sm'
                         : isDarkMode
-                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/20 hover:border-darcare-gold/40 hover:bg-darcare-gold/10'
-                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/20 hover:border-darcare-deepGold/40 hover:bg-darcare-deepGold/10'
+                          ? 'bg-darcare-navy/60 text-darcare-beige border border-darcare-gold/10 hover:border-darcare-gold/30 hover:bg-darcare-gold/5'
+                          : 'bg-white text-darcare-charcoal border border-darcare-deepGold/10 hover:border-darcare-deepGold/30 hover:bg-darcare-deepGold/5'
                     )}
                     onClick={() => handleTimeSelect(slot.time)}
                   >
@@ -207,9 +145,9 @@ export const TimeSelector: React.FC<TimeSelectorProps> = ({
                 ))}
               </div>
             </div>
-          )}
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
-  );
+          ))}
+      </div>
+    </CollapsibleContent>
+  </Collapsible>
+);
 };
