@@ -19,6 +19,7 @@ import { Loader2, CalendarClock, Users, PenLine } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LuxuryCard } from '@/components/ui/luxury-card';
 import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
+import { Card } from "@/components/ui/card";
 
 interface ReservationServiceProps {
   serviceData: ServiceDetail;
@@ -156,148 +157,135 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
   )?.options || ['restaurant', 'activity', 'excursion', 'other'];
 
   return (
-    <div className="pb-24">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+  <div className="p-4 pb-24">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Card className="bg-darcare-navy/50 border border-darcare-gold/20 rounded-xl p-5 space-y-6">
+
           {/* Scheduling Information */}
-          <LuxuryCard>
-            
-            <div className="mt-3">
-              <DateTimePickerSection form={form} />
-            </div>
-          </LuxuryCard>
+          <DateTimePickerSection form={form} />
 
           {/* Reservation Details */}
-          <LuxuryCard>
-            <FormSectionTitle 
-              title={t('services.requestReservation')} 
-              icon={<Users className="w-5 h-5" />}
-              rawKeys={true}
+          <FormSectionTitle 
+            title={t('services.requestReservation')} 
+            icon={<Users className="w-5 h-5" />}
+            rawKeys={true}
+          />
+
+          <div className="space-y-4">
+            {/* Reservation Type */}
+            <FormField
+              control={form.control}
+              name="reservationType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('services.reservationType')}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={cn(
+                        "w-full bg-darcare-navy/50 border-darcare-gold/30",
+                        "focus:border-darcare-gold/60 focus:ring-0"
+                      )}>
+                        <SelectValue placeholder={t('services.reservationType')} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {reservationTypes.map((type: string) => (
+                        <SelectItem key={type} value={type}>
+                          {t(`explore.categories.${type.toLowerCase()}`, type)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <div className="mt-4 space-y-4">
-              {/* Reservation Type */}
-              <FormField
-                control={form.control}
-                name="reservationType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('services.reservationType')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className={cn(
-                          "w-full bg-darcare-navy/50 border-darcare-gold/30",
-                          "focus:border-darcare-gold/60 focus:ring-0"
-                        )}>
-                          <SelectValue placeholder={t('services.reservationType')} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {reservationTypes.map((type: string) => (
-                          <SelectItem key={type} value={type}>
-                            {t(`explore.categories.${type.toLowerCase()}`, type)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              {/* Number of People */}
-              <FormField
-                control={form.control}
-                name="peopleCount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('services.peopleCount')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        max="50"
-                        className={cn(
-                          "bg-darcare-navy/50 border-darcare-gold/30",
-                          "focus:border-darcare-gold/60 focus:ring-0"
-                        )}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Number of People */}
+            <FormField
+              control={form.control}
+              name="peopleCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('services.peopleCount')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="50"
+                      className={cn(
+                        "bg-darcare-navy/50 border-darcare-gold/30",
+                        "focus:border-darcare-gold/60 focus:ring-0"
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              {/* Reservation Name */}
-              <FormField
-                control={form.control}
-                name="reservationName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('services.reservationName')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        className={cn(
-                          "bg-darcare-navy/50 border-darcare-gold/30",
-                          "focus:border-darcare-gold/60 focus:ring-0"
-                        )}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </LuxuryCard>
+            {/* Reservation Name */}
+            <FormField
+              control={form.control}
+              name="reservationName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('services.reservationName')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      className={cn(
+                        "bg-darcare-navy/50 border-darcare-gold/30",
+                        "focus:border-darcare-gold/60 focus:ring-0"
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Special Requests */}
-          <LuxuryCard>
-            <FormSectionTitle 
-              title={t('services.specialRequests')} 
-              icon={<PenLine className="w-5 h-5" />}
-              rawKeys={true}
-            />
-            <div className="mt-3">
-              <Textarea
-                placeholder={t('services.notesPlaceholder')}
-                className={cn(
-                  "min-h-[120px] bg-darcare-navy/50 border-darcare-gold/30",
-                  "focus:border-darcare-gold/60 focus:ring-0"
-                )}
-                {...form.register('note')}
-              />
-            </div>
-          </LuxuryCard>
+          <FormSectionTitle 
+            title={t('services.specialRequests')} 
+            icon={<PenLine className="w-5 h-5" />}
+            rawKeys={true}
+          />
+          <Textarea
+            placeholder={t('services.notesPlaceholder')}
+            className={cn(
+              "min-h-[120px] bg-darcare-navy/50 border-darcare-gold/30",
+              "focus:border-darcare-gold/60 focus:ring-0"
+            )}
+            {...form.register('note')}
+          />
 
           {/* Submit Button */}
-          <div className="pt-4 pb-16">
-            <Button 
-              type="submit" 
-              disabled={isSubmitting}
-              className={cn(
-                "w-full h-12 font-serif text-lg",
-                isDarkMode 
-                  ? "bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy" 
-                  : "bg-darcare-deepGold hover:bg-darcare-deepGold/90 text-white"
-              )}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center">
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {t('common.submitting')}
-                </span>
-              ) : editMode ? (
-                t('services.updateRequest')
-              ) : (
-                t('services.sendRequest')
-              )}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
-  );
+          <Button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="w-full h-12 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-lg"
+          >
+            {isSubmitting ? (
+              <span className="flex items-center">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                {t('common.submitting')}
+              </span>
+            ) : editMode ? (
+              t('services.updateRequest')
+            ) : (
+              t('services.sendRequest')
+            )}
+          </Button>
+
+        </Card>
+      </form>
+    </Form>
+  </div>
+);
 };
 
 export default ReservationService;
