@@ -101,10 +101,11 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full pl-4 pr-4 py-3 text-center font-normal rounded-2xl shadow-sm transition-all duration-200",
+                      "w-full py-3 font-normal rounded-2xl shadow-sm transition-all duration-200",
                       "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
                       "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
                       "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
+                      "flex items-center justify-center gap-2",
                       !field.value && "text-darcare-beige/70"
                     )}
                   >
@@ -126,6 +127,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
                           variant="ghost"
                           className={cn(
                             "w-full justify-center text-center py-2 rounded-xl transition-all duration-200",
+                            "flex justify-center text-center",
                             field.value === time
                               ? "bg-darcare-gold/20 text-darcare-gold border border-darcare-gold/40"
                               : "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold"
