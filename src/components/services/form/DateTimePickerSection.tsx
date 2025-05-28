@@ -1,11 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { format } from 'date-fns';
 import { CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,21 @@ interface DateTimePickerSectionProps {
 
 const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) => {
   const { t } = useTranslation();
+  const [isTimeOpen, setIsTimeOpen] = useState(false);
+  
+  // Generate time options (every 15 minutes)
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        times.push(timeString);
+      }
+    }
+    return times;
+  };
+
+  const timeOptions = generateTimeOptions();
   
   return (
     <div className="space-y-6 mb-6">
@@ -81,20 +96,52 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
               rawKeys={true}
             />
             <FormControl>
-              <div className="relative">
-                <Input
-                  type="time"
-                  className={cn(
-    "pl-12 pr-4 py-3 text-center rounded-2xl shadow-sm transition-all duration-200",
-    "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
-    "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
-    "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
-    "[appearance:textfield] [&::-webkit-inner-spin-button]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-  )}
-                  {...field}
-                />
-                <Clock size={16} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-darcare-gold" />
-              </div>
+              <Popover open={isTimeOpen} onOpenChange={setIsTimeOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full pl-4 pr-4 py-3 text-center font-normal rounded-2xl shadow-sm transition-all duration-200",
+                      "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
+                      "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
+                      "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
+                      !field.value && "text-darcare-beige/70"
+                    )}
+                  >
+                    <Clock className="mr-3 h-4 w-4 text-darcare-gold" />
+                    <span className="flex-1 text-center">
+                      {field.value || t('services.selectTime', 'Select Time')}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-64 p-0 bg-darcare-navy border-darcare-gold/20 rounded-2xl shadow-lg" 
+                  align="start"
+                >
+                  <ScrollArea className="h-64 p-2">
+                    <div className="space-y-1">
+                      {timeOptions.map((time) => (
+                        <Button
+                          key={time}
+                          variant="ghost"
+                          className={cn(
+                            "w-full justify-center text-center py-2 rounded-xl transition-all duration-200",
+                            field.value === time
+                              ? "bg-darcare-gold/20 text-darcare-gold border border-darcare-gold/40"
+                              : "text-darcare-beige hover:bg-darcare-gold/10 hover:text-darcare-gold"
+                          )}
+                          onClick={() => {
+                            field.onChange(time);
+                            setIsTimeOpen(false);
+                          }}
+                        >
+                          {time}
+                        </Button>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </PopoverContent>
+              </Popover>
             </FormControl>
             <FormMessage />
           </FormItem>
