@@ -89,7 +89,7 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
                     "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
                     "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
                     "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
-                    "[&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
+                    "[&::-webkit-inner-spin-button]:hidden"
                   )}
                   {...field}
                 />
