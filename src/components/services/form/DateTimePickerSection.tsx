@@ -43,22 +43,25 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full pl-3 text-left font-normal bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige",
-                      !field.value && "text-muted-foreground"
+                      "w-full pl-4 pr-4 py-3 text-left font-normal rounded-2xl shadow-sm transition-all duration-200",
+                      "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
+                      "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
+                      "focus:border-darcare-gold/60 focus:ring-0",
+                      !field.value && "text-darcare-beige/70"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4 text-darcare-gold" />
+                    <CalendarIcon className="mr-3 h-4 w-4 text-darcare-gold" />
                     {field.value ? format(field.value, "PPP") : <span>{t('services.pickADate', 'Pick a date')}</span>}
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-darcare-navy border-darcare-gold/20" align="start">
+              <PopoverContent className="w-auto p-0 bg-darcare-navy border-darcare-gold/20 rounded-2xl shadow-lg" align="start">
                 <Calendar
                   mode="single"
                   selected={field.value}
                   onSelect={field.onChange}
                   initialFocus
-                  className="p-3 pointer-events-auto"
+                  className="p-3 pointer-events-auto rounded-2xl"
                 />
               </PopoverContent>
             </Popover>
@@ -81,10 +84,16 @@ const DateTimePickerSection: React.FC<DateTimePickerSectionProps> = ({ form }) =
               <div className="relative">
                 <Input
                   type="time"
-                  className="pl-10 bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige focus:border-darcare-gold/50 rounded-md"
+                  className={cn(
+                    "pl-12 pr-4 py-3 text-center rounded-2xl shadow-sm transition-all duration-200",
+                    "bg-darcare-navy/50 border-darcare-gold/30 text-darcare-beige",
+                    "hover:bg-darcare-gold/10 hover:border-darcare-gold/50 hover:shadow-md",
+                    "focus:border-darcare-gold/60 focus:ring-0 focus:shadow-lg",
+                    "[&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
+                  )}
                   {...field}
                 />
-                <Clock size={16} className="absolute left-3 top-3 text-darcare-gold" />
+                <Clock size={16} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-darcare-gold" />
               </div>
             </FormControl>
             <FormMessage />
