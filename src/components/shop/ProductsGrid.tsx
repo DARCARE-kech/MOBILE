@@ -23,7 +23,9 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   const { data: products, isLoading } = useQuery({
     queryKey: ['shop-products', searchQuery, categoryFilter],
     queryFn: async () => {
-      let query = supabase.from('shop_products').select('*');
+      let query = supabase.from('shop_products')
+    .select('*')
+    .eq('active', true);
       
       if (searchQuery) {
         query = query.ilike('name', `%${searchQuery}%`);
