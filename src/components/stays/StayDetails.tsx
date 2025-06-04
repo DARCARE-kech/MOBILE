@@ -32,7 +32,7 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
     )}>
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h2 className="font-serif text-primary text-xl mb-1">{currentStay.villa_number}</h2>
+          <h2 className="font-serif text-primary text-xl mb-1"> Villa {currentStay.villa_number}</h2>
           <p className="text-foreground/80 text-sm">{currentStay.city}</p>
         </div>
         <div className={cn(
