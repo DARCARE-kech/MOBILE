@@ -730,6 +730,7 @@ export type Database = {
           guests: number | null
           id: string
           reservation_number: string | null
+          resident_name: string | null
           status: string
           user_id: string | null
           villa_number: string
@@ -742,6 +743,7 @@ export type Database = {
           guests?: number | null
           id?: string
           reservation_number?: string | null
+          resident_name?: string | null
           status: string
           user_id?: string | null
           villa_number: string
@@ -754,6 +756,7 @@ export type Database = {
           guests?: number | null
           id?: string
           reservation_number?: string | null
+          resident_name?: string | null
           status?: string
           user_id?: string | null
           villa_number?: string
@@ -787,6 +790,7 @@ export type Database = {
           notifications_enabled: boolean | null
           phone_number: string | null
           role: string
+          status: string | null
           terms_accepted: boolean | null
           terms_accepted_at: string | null
           whatsapp_number: string | null
@@ -802,6 +806,7 @@ export type Database = {
           notifications_enabled?: boolean | null
           phone_number?: string | null
           role: string
+          status?: string | null
           terms_accepted?: boolean | null
           terms_accepted_at?: string | null
           whatsapp_number?: string | null
@@ -817,9 +822,31 @@ export type Database = {
           notifications_enabled?: boolean | null
           phone_number?: string | null
           role?: string
+          status?: string | null
           terms_accepted?: boolean | null
           terms_accepted_at?: string | null
           whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      villas: {
+        Row: {
+          active: boolean | null
+          id: string
+          label: string | null
+          villa_number: string
+        }
+        Insert: {
+          active?: boolean | null
+          id?: string
+          label?: string | null
+          villa_number: string
+        }
+        Update: {
+          active?: boolean | null
+          id?: string
+          label?: string | null
+          villa_number?: string
         }
         Relationships: []
       }

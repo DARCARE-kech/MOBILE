@@ -25,7 +25,6 @@ const FloatingAction: React.FC = () => {
   };
 
   const quickActions: QuickAction[] = [
-    
     {
       id: "whatsapp",
       label: t('navigation.chatWithUs'),
@@ -44,25 +43,25 @@ const FloatingAction: React.FC = () => {
     <div className="fixed right-6 bottom-24 z-40">
       <AnimatePresence>
         {isOpen && (
-          <div className="absolute bottom-12 right-0 space-y-2">
+          <div className="absolute bottom-0 right-12 flex items-center space-x-2">
             {quickActions.map((action, index) => (
               <motion.div
                 key={action.id}
-                initial={{ opacity: 0, y: 20, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 10, scale: 0.8 }}
                 transition={{ 
                   duration: 0.2,
                   delay: index * 0.05
                 }}
-                className="flex items-center gap-2 transition-all"
+                className="flex flex-col items-center gap-1 transition-all"
               >
                 <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-darcare-navy border border-darcare-gold/30 text-darcare-white rounded-full py-1 px-3 text-sm shadow-lg"
+                  className="bg-darcare-navy border border-darcare-gold/30 text-darcare-white rounded-full py-1 px-2 text-xs shadow-lg whitespace-nowrap"
                 >
                   {action.label}
                 </motion.div>
