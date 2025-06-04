@@ -64,7 +64,7 @@ export const UserInfoBlock = ({
       >
         <Calendar className="h-4 w-4 text-darcare-gold" />
         <div className="text-left">
-          <p className="text-sm font-medium text-darcare-beige">{villaNumber}</p>
+          <p className="text-sm font-medium text-darcare-beige"> Villa {villaNumber}</p>
           <p className="text-xs text-darcare-beige/50">
             {format(new Date(checkIn), 'MMM d')} – {format(new Date(checkOut), 'MMM d, yyyy')}
           </p>
