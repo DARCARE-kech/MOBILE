@@ -594,8 +594,91 @@ export type Database = {
         }
         Relationships: []
       }
+      space_form_schema: {
+        Row: {
+          created_at: string | null
+          field_name: string
+          id: string
+          input_type: string
+          label: string
+          options: Json | null
+          required: boolean | null
+          space_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          field_name: string
+          id?: string
+          input_type: string
+          label: string
+          options?: Json | null
+          required?: boolean | null
+          space_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          field_name?: string
+          id?: string
+          input_type?: string
+          label?: string
+          options?: Json | null
+          required?: boolean | null
+          space_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "space_form_schema_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      space_reservations: {
+        Row: {
+          created_at: string | null
+          custom_fields: Json | null
+          id: string
+          note: string | null
+          preferred_time: string
+          space_id: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          custom_fields?: Json | null
+          id?: string
+          note?: string | null
+          preferred_time: string
+          space_id?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          custom_fields?: Json | null
+          id?: string
+          note?: string | null
+          preferred_time?: string
+          space_id?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "space_reservations_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       spaces: {
         Row: {
+          active: boolean | null
           capacity: number | null
           created_at: string | null
           description: string | null
@@ -605,6 +688,7 @@ export type Database = {
           rules: string | null
         }
         Insert: {
+          active?: boolean | null
           capacity?: number | null
           created_at?: string | null
           description?: string | null
@@ -614,6 +698,7 @@ export type Database = {
           rules?: string | null
         }
         Update: {
+          active?: boolean | null
           capacity?: number | null
           created_at?: string | null
           description?: string | null
@@ -1010,6 +1095,7 @@ export type Database = {
       get_available_spaces: {
         Args: Record<PropertyKey, never>
         Returns: {
+          active: boolean | null
           capacity: number | null
           created_at: string | null
           description: string | null

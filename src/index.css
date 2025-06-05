@@ -113,6 +113,43 @@
     height: 80px; /* Fixed bottom nav height */
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  /* Optimized form fields for mobile */
+  .mobile-form-field {
+    margin-bottom: 12px; /* Reduced from default 16px */
+  }
+  
+  .mobile-form-input {
+    height: 40px; /* Standard mobile touch target */
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .mobile-form-textarea {
+    min-height: 80px; /* Compact textarea */
+    font-size: 16px;
+  }
+  
+  .mobile-form-button {
+    height: 48px; /* Standard mobile button height */
+    font-size: 16px;
+  }
+  
+  /* Compact form sections */
+  .mobile-form-section {
+    padding: 16px;
+    margin-bottom: 8px;
+  }
+  
+  /* Maximum heights to prevent overflow */
+  .mobile-form-container {
+    max-height: calc(100vh - 160px); /* Account for header + nav */
+    overflow-y: auto;
+  }
+  
+  .mobile-modal-content {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
 }
 
 /* Custom shadow for the luxury cards */
@@ -220,4 +257,49 @@
 /* Button styling for light mode luxury theme */
 .light .luxury-button {
   @apply bg-secondary text-white hover:bg-secondary/90;
+}
+
+/* Space reservation form optimizations */
+.space-reservation-form {
+  @apply mobile-form-container;
+}
+
+.space-reservation-form .form-field {
+  @apply mobile-form-field;
+}
+
+.space-reservation-form input,
+.space-reservation-form select {
+  @apply mobile-form-input;
+}
+
+.space-reservation-form textarea {
+  @apply mobile-form-textarea;
+}
+
+.space-reservation-form button[type="submit"] {
+  @apply mobile-form-button;
+}
+
+/* Compact grid for mobile service cards */
+@media (max-width: 640px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .service-card {
+    padding: 12px;
+    min-height: 120px;
+  }
+  
+  .service-card h3 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .service-card p {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
 }

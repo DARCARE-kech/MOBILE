@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,26 +25,21 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-interface Service {
+interface UnifiedRequest {
   id: string;
-  name: string;
-  description: string | null;
-  category: string | null;
-  estimated_duration: string | null;
-}
-
-interface ServiceRequest {
-  id: string;
+  type: 'service' | 'space';
   user_id: string | null;
-  service_id: string | null;
+  service_id?: string | null;
+  space_id?: string | null;
   preferred_time: string | null;
   status: string | null;
   note: string | null;
-  image_url: string | null;
+  image_url?: string | null;
   created_at: string | null;
-  services: Service | null;
-  staff_assignments: StaffAssignment[] | null;
-  space_id?: string | null;
+  services?: { id: string; name: string; description: string | null; category: string | null; estimated_duration: string | null; } | null;
+  spaces?: { id: string; name: string; description: string | null; } | null;
+  staff_assignments?: StaffAssignment[] | null;
+  custom_fields?: Record<string, any> | null;
 }
 
 const MyRequestsTab: React.FC = () => {
@@ -53,70 +49,108 @@ const MyRequestsTab: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [requestToDelete, setRequestToDelete] = React.useState<string | null>(null);
+  const [requestToDelete, setRequestToDelete] = React.useState<{ id: string; type: 'service' | 'space' } | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   
   const { data: requests, isLoading, error } = useQuery({
-    queryKey: ['my-service-requests', user?.id, showHistory],
+    queryKey: ['unified-requests', user?.id, showHistory],
     queryFn: async () => {
       if (!user?.id) throw new Error("User ID is required");
       
-      console.log("Fetching service requests for user:", user.id);
+      console.log("Fetching unified requests for user:", user.id);
       
-      // Filter requests based on showHistory flag
       const statusFilter = showHistory 
-        ? ['completed', 'cancelled'] // History view: only completed and cancelled
-        : ['pending', 'in_progress']; // Active view: only pending and in_progress
+        ? ['completed', 'cancelled'] 
+        : ['pending', 'in_progress', 'confirmed'];
       
-      const { data: requestsData, error: requestsError } = await supabase
+      // Fetch service requests
+      const { data: serviceRequests, error: serviceError } = await supabase
         .from('service_requests')
         .select(`
           *,
           services(*)
         `)
-        .eq('user_id', user.id) // Filter by the current user's ID
+        .eq('user_id', user.id)
         .in('status', statusFilter)
         .order('created_at', { ascending: false });
       
-      if (requestsError) {
-        console.error('Error fetching service requests:', requestsError);
-        throw requestsError;
+      if (serviceError) {
+        console.error('Error fetching service requests:', serviceError);
+        throw serviceError;
       }
       
-      console.log("Service requests data:", requestsData);
+      // Fetch space reservations
+      const { data: spaceReservations, error: spaceError } = await supabase
+        .from('space_reservations')
+        .select(`
+          *,
+          spaces(*)
+        `)
+        .eq('user_id', user.id)
+        .in('status', statusFilter)
+        .order('created_at', { ascending: false });
       
-      // For each request, fetch staff assignments separately using our helper function
-      const enhancedRequests = await Promise.all((requestsData || []).map(async (request) => {
-        const staffAssignments = await getStaffAssignmentsForRequest(request.id);
-        
-        return {
-          ...request,
-          staff_assignments: staffAssignments
-        };
+      if (spaceError) {
+        console.error('Error fetching space reservations:', spaceError);
+        throw spaceError;
+      }
+      
+      console.log("Service requests data:", serviceRequests);
+      console.log("Space reservations data:", spaceReservations);
+      
+      // Transform and combine the data
+      const transformedServiceRequests: UnifiedRequest[] = await Promise.all(
+        (serviceRequests || []).map(async (request) => {
+          const staffAssignments = await getStaffAssignmentsForRequest(request.id);
+          
+          return {
+            ...request,
+            type: 'service' as const,
+            staff_assignments: staffAssignments
+          };
+        })
+      );
+      
+      const transformedSpaceReservations: UnifiedRequest[] = (spaceReservations || []).map(reservation => ({
+        id: reservation.id,
+        type: 'space' as const,
+        user_id: reservation.user_id,
+        space_id: reservation.space_id,
+        preferred_time: reservation.preferred_time,
+        status: reservation.status,
+        note: reservation.note,
+        created_at: reservation.created_at,
+        spaces: reservation.spaces,
+        custom_fields: reservation.custom_fields
       }));
       
-      return enhancedRequests as ServiceRequest[];
+      // Combine and sort by creation date
+      const allRequests = [...transformedServiceRequests, ...transformedSpaceReservations];
+      allRequests.sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
+      
+      return allRequests;
     },
     enabled: !!user?.id,
     retry: 1
   });
 
-  // Mutation to delete a service request
+  // Mutation to delete requests/reservations
   const deleteMutation = useMutation({
-    mutationFn: async (requestId: string) => {
+    mutationFn: async ({ id, type }: { id: string; type: 'service' | 'space' }) => {
+      const tableName = type === 'service' ? 'service_requests' : 'space_reservations';
       const { error } = await supabase
-        .from('service_requests')
+        .from(tableName)
         .delete()
-        .eq('id', requestId);
+        .eq('id', id);
       
       if (error) throw error;
     },
     onSuccess: () => {
       toast({
         title: t('services.requestDeleted', "Request deleted"),
-        description: t('services.requestDeletedDesc', "Your service request has been successfully deleted"),
+        description: t('services.requestDeletedDesc', "Your request has been successfully deleted"),
       });
-      queryClient.invalidateQueries({ queryKey: ['my-service-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['unified-requests'] });
       setRequestToDelete(null);
     },
     onError: (error) => {
@@ -130,36 +164,38 @@ const MyRequestsTab: React.FC = () => {
     }
   });
 
-  const handleRequestClick = (requestId: string) => {
-    navigate(`/services/requests/${requestId}`);
+  const handleRequestClick = (request: UnifiedRequest) => {
+    if (request.type === 'service') {
+      navigate(`/services/requests/${request.id}`);
+    } else {
+      // For space reservations, we could create a similar detail page or show a simple modal
+      navigate(`/services/requests/${request.id}`);
+    }
   };
 
-  const handleEditRequest = (request: ServiceRequest, e: React.MouseEvent) => {
+  const handleEditRequest = (request: UnifiedRequest, e: React.MouseEvent) => {
     e.stopPropagation();
     
-    // Handle navigation based on service type or space_id
-    if (request.space_id) {
-      // If it's a space booking request
-      navigate(`/services/space/${request.space_id}`, {
-        state: {
-          editMode: true,
-          requestId: request.id
-        }
-      });
-    } else if (request.service_id) {
-      // For regular service requests
+    if (request.type === 'service') {
       navigate(`/services/${request.service_id}`, {
         state: {
           editMode: true,
           requestId: request.id
         }
       });
+    } else {
+      navigate(`/spaces/${request.space_id}`, {
+        state: {
+          editMode: true,
+          reservationId: request.id
+        }
+      });
     }
   };
 
-  const handleDeleteRequest = (requestId: string, e: React.MouseEvent) => {
+  const handleDeleteRequest = (request: UnifiedRequest, e: React.MouseEvent) => {
     e.stopPropagation();
-    setRequestToDelete(requestId);
+    setRequestToDelete({ id: request.id, type: request.type });
   };
 
   const confirmDelete = () => {
@@ -198,7 +234,7 @@ const MyRequestsTab: React.FC = () => {
           {t('common.fetchDataError', "Could not fetch your data. Please try again.")}
         </p>
         <Button 
-          onClick={() => queryClient.invalidateQueries({ queryKey: ['my-service-requests'] })}
+          onClick={() => queryClient.invalidateQueries({ queryKey: ['unified-requests'] })}
           className={cn(
             isDarkMode
               ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
@@ -247,11 +283,6 @@ const MyRequestsTab: React.FC = () => {
             ? "bg-gradient-to-b from-darcare-navy/60 to-[#1A1D27] border border-darcare-gold/10" 
             : "bg-white/80 border border-darcare-deepGold/5 shadow-sm"
         )}>
-          <div className={cn(
-            "absolute inset-0 opacity-5 pointer-events-none",
-            isDarkMode ? "bg-[url('/placeholder.svg')] bg-center bg-no-repeat bg-contain" : ""
-          )} />
-          
           <h3 className={cn(
             "font-serif text-lg mb-2",
             isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
@@ -286,39 +317,46 @@ const MyRequestsTab: React.FC = () => {
       ) : (
         <div className="space-y-2 p-2">
           {requests.map(request => {
-            // Get service name based on context (service or space)
-            let serviceName = "";
+            // Get request name based on type
+            let requestName = "";
             
-            if (request.space_id) {
-              // For space reservations
-              serviceName = t(`services.${request.services.name}`);
-            } else if (request.services && request.services.name) {
-              // For standard services with a valid name
-              serviceName = t(`services.${request.services.name}`);
+            if (request.type === 'service' && request.services?.name) {
+              requestName = t(`services.${request.services.name}`, request.services.name);
+            } else if (request.type === 'space' && request.spaces?.name) {
+              requestName = t(`services.${request.spaces.name}`, request.spaces.name);
             } else {
-              // Fallback for services without a name
-              serviceName = t('services.untitled', 'Untitled Service');
+              requestName = t('services.untitled', 'Untitled Request');
             }
             
             return (
               <div 
-                key={request.id} 
+                key={`${request.type}-${request.id}`}
                 className={cn(
                   "request-card cursor-pointer transition-all duration-200 p-3 rounded-lg border",
                   isDarkMode 
                     ? "border-darcare-gold/10 hover:border-darcare-gold/20 bg-darcare-navy/60" 
                     : "border-primary/5 hover:border-primary/10 bg-card shadow-sm"
                 )}
-                onClick={() => handleRequestClick(request.id)}
+                onClick={() => handleRequestClick(request)}
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className={cn(
-                      "font-medium truncate",
-                      isDarkMode ? "text-darcare-gold" : "text-primary"
-                    )}>
-                      {serviceName}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className={cn(
+                        "font-medium truncate",
+                        isDarkMode ? "text-darcare-gold" : "text-primary"
+                      )}>
+                        {requestName}
+                      </h3>
+                      <span className={cn(
+                        "text-xs px-2 py-0.5 rounded-full",
+                        request.type === 'service' 
+                          ? isDarkMode ? "bg-blue-500/20 text-blue-300" : "bg-blue-100 text-blue-700"
+                          : isDarkMode ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"
+                      )}>
+                        {request.type === 'service' ? 'Service' : 'Space'}
+                      </span>
+                    </div>
                     
                     <div className="flex items-center gap-2 mt-1">
                       <div className={cn(
@@ -342,7 +380,7 @@ const MyRequestsTab: React.FC = () => {
                   "mt-2 pt-2 border-t flex justify-between items-center",
                   isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
                 )}>
-                  {request.staff_assignments && request.staff_assignments.length > 0 ? (
+                  {request.type === 'service' && request.staff_assignments && request.staff_assignments.length > 0 ? (
                     <div className={cn(
                       "flex items-center gap-1 text-xs",
                       isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
@@ -358,12 +396,13 @@ const MyRequestsTab: React.FC = () => {
                       isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
                     )}>
                       <User size={12} className={isDarkMode ? "text-darcare-beige/50" : "text-secondary/70"} />
-                      <span className="truncate">{t('services.unassigned', 'Unassigned')}</span>
+                      <span className="truncate">
+                        {request.type === 'space' ? t('services.spaceReservation', 'Space Reservation') : t('services.unassigned', 'Unassigned')}
+                      </span>
                     </div>
                   )}
                   
-                  {/* Only show edit/delete buttons for pending or in_progress requests */}
-                  {(!request.status || request.status === 'pending' || request.status === 'in_progress') && (
+                  {(!request.status || request.status === 'pending' || request.status === 'in_progress' || request.status === 'confirmed') && (
                     <div className="flex gap-1">
                       <Button
                         variant="ghost" 
@@ -389,7 +428,7 @@ const MyRequestsTab: React.FC = () => {
                             ? "text-red-400 hover:bg-red-500/10 hover:text-red-500" 
                             : "text-red-500 hover:bg-red-500/10"
                         )}
-                        onClick={(e) => handleDeleteRequest(request.id, e)}
+                        onClick={(e) => handleDeleteRequest(request, e)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         <span className="sr-only">Delete</span>
@@ -410,7 +449,7 @@ const MyRequestsTab: React.FC = () => {
               {t('services.confirmDelete', 'Confirm Deletion')}
             </AlertDialogTitle>
             <AlertDialogDescription className={isDarkMode ? "text-darcare-beige/70" : ""}>
-              {t('services.deleteWarning', 'Are you sure you want to delete this service request? This action cannot be undone.')}
+              {t('services.deleteWarning', 'Are you sure you want to delete this request? This action cannot be undone.')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
