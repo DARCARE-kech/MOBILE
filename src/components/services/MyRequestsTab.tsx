@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
-import { fr, en, ar } from 'date-fns/locale';
+import { fr, enUS, ar } from 'date-fns/locale';
 
 interface ServiceRequest {
   id: string;
@@ -181,7 +180,7 @@ const MyRequestsTab: React.FC = () => {
       case 'ar':
         return ar;
       default:
-        return en;
+        return enUS;
     }
   };
 
