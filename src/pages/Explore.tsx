@@ -17,7 +17,7 @@ const ExplorePage = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mobile-safe-area">
       <AppHeader 
         title={t('navigation.explore')}
         showWeather={true}
@@ -25,8 +25,8 @@ const ExplorePage = () => {
         showFavorite={true}
       />
       
-      <div className="pt-16 pb-24 space-y-4">
-        <div className="p-4">
+      <div className="mobile-content-padding space-y-4">
+        <div className="px-4">
           <div className="luxury-card">
             <div className="flex items-center gap-2">
               <SearchBar onSearch={setSearchQuery} />

@@ -58,36 +58,35 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-darcare-navy border-b border-darcare-gold/10">
-      <div className="flex items-center justify-between p-3 h-16">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-darcare-navy border-b border-darcare-gold/10 mobile-safe-area">
+      <div className="flex items-center justify-between p-3 mobile-header-height">
         <div className="flex items-center flex-1 gap-1 overflow-hidden">
-  {showBack && (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={handleBack}
-      className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10"
-      aria-label={t("common.back")}
-    >
-      <ArrowLeft size={20} />
-    </Button>
-  )}
+          {showBack && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBack}
+              className="text-darcare-gold hover:text-darcare-gold/80 hover:bg-darcare-gold/10 flex-shrink-0"
+              aria-label={t("common.back")}
+            >
+              <ArrowLeft size={20} />
+            </Button>
+          )}
 
-  {showLogo && !title && (
-    <div className="ml-2">
-      <Logo size="sm" color="gold" />
-    </div>
-  )}
+          {showLogo && !title && (
+            <div className="ml-2 flex-shrink-0">
+              <Logo size="sm" color="gold" />
+            </div>
+          )}
 
-  {title && (
-    <h1 className="text-darcare-gold text-lg font-serif truncate ml-4">
-      {title}
-    </h1>
-  )}
-</div>
+          {title && (
+            <h1 className="text-darcare-gold text-lg font-serif truncate ml-4">
+              {title}
+            </h1>
+          )}
+        </div>
 
-
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 flex-shrink-0">
           {rightContent ? (
             rightContent
           ) : (

@@ -78,6 +78,40 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+  
+  /* Ensure proper mobile viewport */
+  html {
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  #root {
+    min-height: 100vh;
+    height: 100%;
+  }
+}
+
+/* Mobile optimized layout */
+@media (max-width: 768px) {
+  .mobile-safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .mobile-header-height {
+    height: 64px; /* Fixed header height for mobile */
+  }
+  
+  .mobile-content-padding {
+    padding-top: 64px; /* Match header height */
+    padding-bottom: 80px; /* Bottom navigation height */
+  }
+  
+  .mobile-bottom-nav-height {
+    height: 80px; /* Fixed bottom nav height */
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 

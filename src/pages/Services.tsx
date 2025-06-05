@@ -35,7 +35,7 @@ const ServicesPage: React.FC = () => {
   }, [location.state]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mobile-safe-area">
       <AppHeader 
         title={t('navigation.services')}
         showWeather={true}
@@ -43,8 +43,8 @@ const ServicesPage: React.FC = () => {
         showFavorite={true}
       />
       
-      <div className="pt-16 pb-20">
-        <div className="px-2 mb-1">
+      <div className="mobile-content-padding">
+        <div className="px-2 mb-2">
           <Tabs 
             defaultValue="services" 
             value={activeTab} 
@@ -104,7 +104,7 @@ const ServicesPage: React.FC = () => {
               </TabsTrigger>
             </TabsList>
 
-            <div className="mt-1">
+            <div className="mt-2">
               <TabsContent value="services" className="mt-0">
                 <InternalServicesTab />
               </TabsContent>

@@ -51,6 +51,13 @@ export type Database = {
             foreignKeyName: "admin_messages_manager_id_fkey"
             columns: ["manager_id"]
             isOneToOne: false
+            referencedRelation: "manager_profiles_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_messages_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["id"]
           },
@@ -59,6 +66,13 @@ export type Database = {
             columns: ["manager_id"]
             isOneToOne: false
             referencedRelation: "view_all_staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_messages_user_profile_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles_view"
             referencedColumns: ["id"]
           },
           {
@@ -418,6 +432,13 @@ export type Database = {
             foreignKeyName: "fk_profile"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "manager_profiles_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_profile"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["id"]
           },
@@ -766,6 +787,13 @@ export type Database = {
             foreignKeyName: "fk_stays_user"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "manager_profiles_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_stays_user"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["id"]
           },
@@ -852,6 +880,18 @@ export type Database = {
       }
     }
     Views: {
+      manager_profiles_view: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string | null
+          role: string | null
+          status: string | null
+        }
+        Relationships: []
+      }
       staff_schedule_view: {
         Row: {
           assigned_at: string | null
@@ -910,6 +950,13 @@ export type Database = {
           villa_number: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_stays_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "fk_stays_user"
             columns: ["user_id"]

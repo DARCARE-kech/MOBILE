@@ -78,7 +78,7 @@ const Home: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mobile-safe-area">
       <MainHeader 
         title="The View"
         showWeather={true}
@@ -86,7 +86,7 @@ const Home: React.FC = () => {
         showFavorite={true}
       />
       
-      <div className="pt-20 pb-24">
+      <div className="mobile-content-padding overflow-hidden">
         <CurrentStay 
           currentStay={currentStay} 
           userId={user?.id} 
@@ -94,14 +94,14 @@ const Home: React.FC = () => {
           isLoading={isStayLoading}
         />
         
-        <div className="p-4">
+        <div className="px-4 py-2">
           <ServicesList 
             services={serviceRequests || []} 
             isLoading={isRequestsLoading} 
           />
         </div>
         
-        <div className="mt-8">
+        <div className="mt-4">
           <RecommendationsList />
         </div>
       </div>

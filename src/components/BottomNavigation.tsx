@@ -53,12 +53,12 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
   if (!isVisible) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 py-3 px-4 z-50 border-t border-primary/20 bg-gradient-to-b from-darcare-navy to-[#1C1F2A]">
-      <div className="flex justify-between items-center max-w-screen-xl mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-primary/20 bg-gradient-to-b from-darcare-navy to-[#1C1F2A] mobile-bottom-nav-height mobile-safe-area">
+      <div className="flex justify-between items-center max-w-screen-xl mx-auto h-full px-4 py-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            className={`flex flex-col items-center ${tab.id === 'home' ? 'relative -mt-6' : ''}`}
+            className={`flex flex-col items-center justify-center ${tab.id === 'home' ? 'relative -mt-4' : ''} flex-1 min-w-0`}
             onClick={() => {
               if (tab.id === 'chatbot') {
                 handleAssistantClick();
@@ -68,7 +68,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
             }}
           >
             {tab.id === 'home' ? (
-              <div className="rounded-full p-4 border border-darcare-gold/30 bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 shadow-lg">
+              <div className="rounded-full p-3 border border-darcare-gold/30 bg-gradient-to-b from-darcare-gold/20 to-darcare-gold/10 shadow-lg">
                 <span className="text-darcare-gold">
                   {tab.icon}
                 </span>
@@ -80,7 +80,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab: propActi
                 {tab.icon}
               </span>
             )}
-            <span className={`text-xs mt-1 ${
+            <span className={`text-xs mt-1 truncate ${
               activeTab === tab.id 
                 ? "text-darcare-gold"
                 : "text-darcare-beige/70"
