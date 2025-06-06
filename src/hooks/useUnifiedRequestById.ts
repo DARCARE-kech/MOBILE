@@ -73,7 +73,8 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
           // Mapper les champs pour compatibilité
           service_id: null,
           services: null,
-          selected_options: data.custom_fields
+          selected_options: data.custom_fields,
+          image_url: null // Ajouter image_url pour les espaces
         };
       }
     },
