@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,6 +16,13 @@ const SPACE_SERVICE_NAMES = [
   'Padel',
   'Club Access'
 ];
+
+// Catégories de services organisées par section
+const SERVICE_CATEGORIES = {
+  villa: ['cleaning', 'maintenance', 'laundry'],
+  wellness: ['padel', 'gym', 'kids-club', 'hair-salon'],
+  ondemand: ['reservation', 'transport']
+};
 
 const InternalServicesTab: React.FC = () => {
   const { t } = useTranslation();
@@ -115,15 +121,72 @@ const InternalServicesTab: React.FC = () => {
     }
   };
 
+  // Organiser les items par sections
+  const getItemsForSection = (sectionType: keyof typeof SERVICE_CATEGORIES) => {
+    const categories = SERVICE_CATEGORIES[sectionType];
+    return allItems.filter(item => {
+      if (item.type === 'space') {
+        // Mapper les espaces vers les catégories
+        const spaceName = item.name.toLowerCase();
+        if (sectionType === 'wellness') {
+          return spaceName.includes('padel') || 
+                 spaceName.includes('gym') || 
+                 spaceName.includes('sport') ||
+                 spaceName.includes('kids') ||
+                 spaceName.includes('hair') ||
+                 spaceName.includes('salon');
+        }
+        return false;
+      } else {
+        return categories.includes(item.category);
+      }
+    });
+  };
+
+  const villaServices = getItemsForSection('villa');
+  const wellnessServices = getItemsForSection('wellness');
+  const onDemandServices = getItemsForSection('ondemand');
+
+  const ServiceSection = ({ title, items }: { title: string; items: any[] }) => {
+    if (items.length === 0) return null;
+
+    return (
+      <div className="mb-6">
+        <h3 className="text-lg font-serif text-primary mb-3 px-2">
+          {title}
+        </h3>
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-3 px-2 pb-1" style={{ width: 'max-content' }}>
+            {items.map(item => (
+              <div key={`${item.type}-${item.id}`} className="flex-shrink-0 w-40">
+                <ServiceCard 
+                  service={item}
+                  onSelect={() => handleItemSelect(item)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="grid grid-cols-2 gap-2 p-2">
-      {allItems.map(item => (
-        <ServiceCard 
-          key={`${item.type}-${item.id}`}
-          service={item}
-          onSelect={() => handleItemSelect(item)}
-        />
-      ))}
+    <div className="py-4 space-y-2">
+      <ServiceSection 
+        title={t('services.villaServices', 'Villa Services')}
+        items={villaServices}
+      />
+      
+      <ServiceSection 
+        title={t('services.wellnessActivities', 'Wellness & Activities')}
+        items={wellnessServices}
+      />
+      
+      <ServiceSection 
+        title={t('services.onDemandServices', 'On-Demand Services')}
+        items={onDemandServices}
+      />
     </div>
   );
 };
