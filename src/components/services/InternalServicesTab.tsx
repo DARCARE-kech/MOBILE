@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -138,7 +139,8 @@ const InternalServicesTab: React.FC = () => {
         }
         return false;
       } else {
-        return categories.includes(item.category);
+        // Pour les services, vérifier que la propriété category existe
+        return item.category && categories.includes(item.category);
       }
     });
   };
