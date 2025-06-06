@@ -237,6 +237,10 @@
     "requestReservation": "Request Reservation",
     "reservationDescription": "Book a table at a restaurant, an activity, excursion, or other experience.",
     "reservationRequest": "Reservation Request",
+     "services.todaysSchedule": "Today's Schedule",
+  "services.viewAll": "View All",
+  "services.activeRequests": "Active Requests",
+  "services.viewHistory": "View History",
     "labels": {
       "cleaning": "Cleaning",
       "maintenance": "Maintenance",
