@@ -13,6 +13,26 @@ import { supabase } from "@/integrations/supabase/client";
 import FloatingAction from "@/components/FloatingAction";
 import ShopButton from "@/components/shop/ShopButton";
 
+// Unified request type for today's schedule
+type UnifiedRequest = {
+  id: string;
+  type: 'service' | 'space';
+  name: string;
+  preferred_time: string | null;
+  status: string;
+  created_at: string | null;
+  staff_assignments?: { 
+    staff_id?: string | null;
+    staff_name?: string | null;
+  }[] | null;
+  services?: {
+    name?: string;
+    category?: string;
+  } | null;
+  service_id?: string | null;
+  space_id?: string | null;
+};
+
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -23,15 +43,21 @@ const Home: React.FC = () => {
     refetch: refetchStay 
   } = useCurrentStay(user?.id);
 
-  const { data: serviceRequests, isLoading: isRequestsLoading } = useQuery({
-    queryKey: ['home-service-requests', user?.id],
-    queryFn: async () => {
+  // Unified query for today's schedule (services + spaces)
+  const { data: todaysSchedule, isLoading: isScheduleLoading } = useQuery({
+    queryKey: ['todays-schedule', user?.id],
+    queryFn: async (): Promise<UnifiedRequest[]> => {
       if (!user?.id) return [];
       
-      console.log("Fetching service requests for home page, user ID:", user.id);
+      console.log("Fetching unified schedule for home page, user ID:", user.id);
       
-      // Updated query to properly join staff_services to get staff_name
-      const { data, error } = await supabase
+      // Get today's date range
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+      // Fetch service requests
+      const { data: services, error: serviceError } = await supabase
         .from('service_requests')
         .select(`
           *,
@@ -44,35 +70,87 @@ const Home: React.FC = () => {
         `)
         .eq('user_id', user.id)
         .in('status', ['pending', 'in_progress', 'active'])
-        .order('created_at', { ascending: false })
-        .limit(3);
-      
-      if (error) {
-        console.error("Error fetching service requests for home page:", error);
-        throw error;
+        .order('created_at', { ascending: false });
+
+      // Fetch space reservations
+      const { data: spaces, error: spaceError } = await supabase
+        .from('space_reservations')
+        .select(`
+          *,
+          spaces (name)
+        `)
+        .eq('user_id', user.id)
+        .in('status', ['pending'])
+        .order('created_at', { ascending: false });
+
+      if (serviceError || spaceError) {
+        console.error("Error fetching schedule:", serviceError || spaceError);
+        throw serviceError || spaceError;
       }
-      
-      console.log("Service requests data fetched for home page:", data);
-      
-      // Transform the data to ensure the staff_name is accessible at the right level
-      return (data || []).map(item => {
-        // Process staff assignments to move staff_name to the right level
-        const transformedStaffAssignments = item.staff_assignments?.map(assignment => {
-          return {
-            ...assignment,
-            staff_name: assignment.staff_services?.staff_name || null
-          };
-        }) || [];
+
+      // Transform services
+      const transformedServices: UnifiedRequest[] = (services || []).map(item => {
+        const transformedStaffAssignments = item.staff_assignments?.map(assignment => ({
+          ...assignment,
+          staff_name: assignment.staff_services?.staff_name || null
+        })) || [];
         
         return {
-          ...item,
-          staff_assignments: transformedStaffAssignments,
-          // Convert status to a valid enum value or default to "pending"
+          id: item.id,
+          type: 'service' as const,
+          name: item.services?.name || 'Service',
+          preferred_time: item.preferred_time,
           status: item.status === "pending" || item.status === "active" || 
                  item.status === "completed" || item.status === "cancelled" 
-                 ? item.status : "pending"
+                 ? item.status : "pending",
+          created_at: item.created_at,
+          staff_assignments: transformedStaffAssignments,
+          services: item.services,
+          service_id: item.service_id
         };
       });
+
+      // Transform spaces
+      const transformedSpaces: UnifiedRequest[] = (spaces || []).map(item => ({
+        id: item.id,
+        type: 'space' as const,
+        name: item.spaces?.name || 'Space',
+        preferred_time: item.preferred_time,
+        status: item.status || 'pending',
+        created_at: item.created_at,
+        space_id: item.space_id
+      }));
+
+      // Combine and sort: prioritize today's schedule, then by creation date
+      const allRequests = [...transformedServices, ...transformedSpaces];
+      
+      const sortedRequests = allRequests.sort((a, b) => {
+        // Check if preferred_time is today
+        const aIsToday = a.preferred_time && 
+          new Date(a.preferred_time) >= startOfDay && 
+          new Date(a.preferred_time) <= endOfDay;
+        const bIsToday = b.preferred_time && 
+          new Date(b.preferred_time) >= startOfDay && 
+          new Date(b.preferred_time) <= endOfDay;
+
+        // Prioritize today's schedule
+        if (aIsToday && !bIsToday) return -1;
+        if (!aIsToday && bIsToday) return 1;
+
+        // If both are today or both are not today, sort by preferred_time then creation date
+        if (a.preferred_time && b.preferred_time) {
+          return new Date(a.preferred_time).getTime() - new Date(b.preferred_time).getTime();
+        }
+        
+        // Finally sort by creation date
+        return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
+      });
+
+      // Limit to 3 items
+      const limitedRequests = sortedRequests.slice(0, 3);
+      
+      console.log("Unified schedule data fetched for home page:", limitedRequests);
+      return limitedRequests;
     },
     enabled: !!user?.id,
   });
@@ -96,8 +174,8 @@ const Home: React.FC = () => {
         
         <div className="px-4 py-2">
           <ServicesList 
-            services={serviceRequests || []} 
-            isLoading={isRequestsLoading} 
+            services={todaysSchedule || []} 
+            isLoading={isScheduleLoading} 
           />
         </div>
         

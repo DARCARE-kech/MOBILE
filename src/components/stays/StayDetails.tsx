@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import type { Tables } from "@/integrations/supabase/types";
 import { useTranslation } from "react-i18next";
 
-
 type Stay = Tables<"stays">;
 
 interface StayDetailsProps {
@@ -19,11 +18,14 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
 
-  
   const checkIn = new Date(currentStay.check_in || "");
   const checkOut = new Date(currentStay.check_out || "");
   const guestCount = typeof currentStay.guests === 'number' ? currentStay.guests : 0;
 
+  // Force English date formatting regardless of interface language
+  const formatDateEnglish = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
 
   return (
     <div className={cn(
@@ -32,7 +34,7 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
     )}>
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h2 className="font-serif text-primary text-xl mb-1"> Villa {currentStay.villa_number}</h2>
+          <h2 className="font-serif text-primary text-xl mb-1">Villa {currentStay.villa_number}</h2>
           <p className="text-foreground/80 text-sm">{currentStay.city}</p>
         </div>
         <div className={cn(
@@ -58,9 +60,7 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
           <div className="flex items-center gap-2 text-foreground">
             <Calendar size={16} className="text-primary" />
             <span>
-              {checkIn.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} 
-              {" - "}
-              {checkOut.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+              {formatDateEnglish(checkIn)} - {formatDateEnglish(checkOut)}
             </span>
           </div>
           <span className="text-foreground/70">
@@ -75,10 +75,10 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
           <div className="flex items-center gap-2 text-foreground">
             <Users size={16} className="text-primary" />
             <span>
-  {guestCount === 0
-    ? 'No guest'
-    : `${guestCount} ${guestCount === 1 ? 'Guest' : 'Guests'}`}
-</span>
+              {guestCount === 0
+                ? 'No guest'
+                : `${guestCount} ${guestCount === 1 ? 'Guest' : 'Guests'}`}
+            </span>
           </div>
           <button 
             className="text-primary flex items-center gap-1 hover:text-primary/80 transition-colors"
