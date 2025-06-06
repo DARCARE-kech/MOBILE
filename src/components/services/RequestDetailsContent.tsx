@@ -17,6 +17,7 @@ interface RequestDetailsContentProps {
   createdAt: string | null;
   spaceId?: string | null;
   status: string | null;
+  requestType: 'space' | 'service';
 }
 
 const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
