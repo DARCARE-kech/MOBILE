@@ -17,7 +17,6 @@ interface RequestDetailsContentProps {
   createdAt: string | null;
   spaceId?: string | null;
   status: string | null;
-  requestType?: 'service' | 'space';
 }
 
 const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
@@ -30,6 +29,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   createdAt,
   spaceId,
   status,
+  requestType,
 }) => {
   const { t } = useTranslation();
   
@@ -158,32 +158,29 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       )}
       
       {/* Staff Assignments */}
-      {requestType !== 'space' && (
-  <div className="space-y-2">
-    <h3 className="text-sm font-medium text-darcare-gold uppercase">
-      {t('services.assignedStaff', 'Assigned Staff')}
-    </h3>
-
-    {staffAssignments && staffAssignments.length > 0 &&
-     staffAssignments[0] && staffAssignments[0].staff_name ? (
-      <div className="text-darcare-beige">
-        {[...new Map(
-          staffAssignments.map((s) => [s.staff_name, s])
-        ).values()].map((staff) => (
-          <div key={staff.staff_id} className="py-1">
-            {staff.staff_name}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-darcare-gold uppercase">
+          {t('services.assignedStaff', 'Assigned Staff')}
+        </h3>
+        
+        {staffAssignments && staffAssignments.length > 0 && 
+         staffAssignments[0] && staffAssignments[0].staff_name ? (
+          <div className="text-darcare-beige">
+            {[...new Map(
+              staffAssignments.map((s) => [s.staff_name, s])
+            ).values()].map((staff) => (
+              <div key={staff.staff_id} className="py-1">
+                {staff.staff_name}
+              </div>
+            ))}
           </div>
-        ))}
+        ) : (
+          <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
+        )}
       </div>
-    ) : (
-      <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
-    )}
-  </div>
-)}
       
-      {requestType !== 'space' && (
-  <StatusTimeline currentStatus={status} />
-)}
+      {/* Status Timeline */}
+      <StatusTimeline currentStatus={status} />
     </div>
   );
 };
