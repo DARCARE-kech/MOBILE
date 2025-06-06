@@ -48,6 +48,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
             onClick={() => navigate('/services')}
           >
             {t('services.viewAll')} <ChevronRight size={14} />
+            console.log(t('services.viewAll'));
           </Button>
         </div>
         <div className="luxury-card p-6 sm:p-8 flex flex-col items-center justify-center text-center">
