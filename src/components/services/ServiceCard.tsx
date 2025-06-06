@@ -52,7 +52,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
   return (
     <Card
       className={cn(
-        "overflow-hidden cursor-pointer hover:shadow-md transition-all duration-200 border w-[160px] h-[180px] rounded-2xl flex-shrink-0",
+        "overflow-hidden cursor-pointer hover:shadow-md transition-all duration-200 border w-[140px] h-[140px] rounded-2xl flex-shrink-0",
         isDarkMode
           ? "bg-darcare-navy/50 border-darcare-gold/10 hover:border-darcare-gold/30"
           : "bg-white border-darcare-deepGold/10 hover:border-darcare-deepGold/30"
