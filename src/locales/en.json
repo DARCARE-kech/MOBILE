@@ -8,7 +8,6 @@
     "viewAll": "View All",
     "loading": "Loading...",
     "error": "Error",
-    "loading": "Loading",
     "submit": "Submit",
     "cancel": "Cancel",
     "save": "Save",
@@ -25,7 +24,6 @@
     "processing": "Processing...",
     "submitting": "Submitting...",
     "image": "Image",
-    "cancel": "Cancel",
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
@@ -39,21 +37,15 @@
     "view": "View",
     "edit": "Edit",
     "continue": "Continue",
-    "back": "Back",
     "next": "Next",
     "previous": "Previous",
     "required": "Required",
     "close": "Close",
     "open": "Open",
-    "edit": "Edit",
-    "delete": "Delete",
     "add": "Add",
     "remove": "Remove",
-    "search": "Search",
     "filter": "Filter",
     "sort": "Sort",
-    "view": "View",
-    "submit": "Submit",
     "reset": "Reset",
     "refresh": "Refresh",
     "more": "More",
@@ -103,7 +95,6 @@
     "warning": "Warning",
     "info": "Info",
     "help": "Help",
-    "settings": "Settings",
     "preferences": "Preferences",
     "account": "Account",
     "profile": "Profile",
@@ -229,10 +220,10 @@
     "conferenceRoom": "Conference Room",
     "businessCenter": "Business Center"
   },
-  "languages": 
+  "languages": {
     "en": "English",
     "fr": "French",
-    "ar": "Arabic",s
+    "ar": "Arabic",
     "settings": "Settings",
     "notifications": "Notifications"
   }
