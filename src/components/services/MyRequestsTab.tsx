@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,6 @@ interface ServiceRequest {
   user_id: string;
   preferred_time: string;
   status: string;
-  note: string;
   created_at: string;
   services: {
     name: string;
@@ -29,7 +28,6 @@ interface SpaceReservation {
   user_id: string;
   preferred_time: string;
   status: string;
-  note: string;
   created_at: string;
   custom_fields: any;
   spaces: {
@@ -43,20 +41,16 @@ interface UnifiedRequest {
   id: string;
   type: 'service' | 'space';
   name: string;
-  description: string;
   image_url: string;
   preferred_time: string;
   status: string;
-  note: string;
   created_at: string;
-  custom_fields?: any;
 }
 
 const MyRequestsTab: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
-  // Fetch service requests
   const { data: serviceRequests, isLoading: loadingServices } = useQuery({
     queryKey: ['user-service-requests'],
     queryFn: async () => {
@@ -65,14 +59,7 @@ const MyRequestsTab: React.FC = () => {
 
       const { data, error } = await supabase
         .from('service_requests')
-        .select(`
-          *,
-          services (
-            name,
-            description,
-            image_url
-          )
-        `)
+        .select(`*, services (name, description, image_url)`)
         .eq('user_id', user.user.id)
         .order('created_at', { ascending: false });
 
@@ -81,7 +68,6 @@ const MyRequestsTab: React.FC = () => {
     }
   });
 
-  // Fetch space reservations
   const { data: spaceReservations, isLoading: loadingSpaces } = useQuery({
     queryKey: ['user-space-reservations'],
     queryFn: async () => {
@@ -90,14 +76,7 @@ const MyRequestsTab: React.FC = () => {
 
       const { data, error } = await supabase
         .from('space_reservations')
-        .select(`
-          *,
-          spaces (
-            name,
-            description,
-            image_url
-          )
-        `)
+        .select(`*, spaces (name, description, image_url)`)
         .eq('user_id', user.user.id)
         .order('created_at', { ascending: false });
 
@@ -108,70 +87,31 @@ const MyRequestsTab: React.FC = () => {
 
   const isLoading = loadingServices || loadingSpaces;
 
-  // Combine and transform data
   const unifiedRequests: UnifiedRequest[] = React.useMemo(() => {
-    const serviceReqs: UnifiedRequest[] = (serviceRequests || []).map(req => ({
+    const serviceReqs = (serviceRequests || []).map(req => ({
       id: req.id,
       type: 'service' as const,
       name: req.services?.name || 'Service',
-      description: req.services?.description || '',
       image_url: req.services?.image_url || '',
       preferred_time: req.preferred_time,
       status: req.status,
-      note: req.note || '',
       created_at: req.created_at
     }));
 
-    const spaceReqs: UnifiedRequest[] = (spaceReservations || []).map(res => ({
+    const spaceReqs = (spaceReservations || []).map(res => ({
       id: res.id,
       type: 'space' as const,
       name: res.spaces?.name || 'Space',
-      description: res.spaces?.description || '',
       image_url: res.spaces?.image_url || '',
       preferred_time: res.preferred_time,
       status: res.status,
-      note: res.note || '',
-      created_at: res.created_at,
-      custom_fields: res.custom_fields
+      created_at: res.created_at
     }));
 
-    return [...serviceReqs, ...spaceReqs].sort((a, b) => 
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    return [...serviceReqs, ...spaceReqs].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
   }, [serviceRequests, spaceReservations]);
-
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'secondary';
-      case 'confirmed':
-      case 'in_progress':
-        return 'default';
-      case 'completed':
-        return 'default';
-      case 'cancelled':
-        return 'destructive';
-      default:
-        return 'secondary';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'text-yellow-600';
-      case 'confirmed':
-        return 'text-blue-600';
-      case 'in_progress':
-        return 'text-orange-600';
-      case 'completed':
-        return 'text-green-600';
-      case 'cancelled':
-        return 'text-red-600';
-      default:
-        return 'text-gray-600';
-    }
-  };
 
   const getDateLocale = () => {
     switch (i18n.language) {
@@ -188,12 +128,8 @@ const MyRequestsTab: React.FC = () => {
     if (request.type === 'service') {
       navigate(`/services/requests/${request.id}`);
     } else {
-      // For space reservations, we can navigate to edit or view
-      navigate(`/spaces/${request.id}`, { 
-        state: { 
-          editMode: true, 
-          reservationId: request.id 
-        } 
+      navigate(`/spaces/${request.id}`, {
+        state: { editMode: true, reservationId: request.id }
       });
     }
   };
@@ -235,7 +171,6 @@ const MyRequestsTab: React.FC = () => {
                   />
                 </div>
               )}
-              
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between mb-2">
                   <div>
@@ -246,38 +181,27 @@ const MyRequestsTab: React.FC = () => {
                       {request.type === 'space' ? t('services.spaceReservation') : t('services.serviceRequest')}
                     </p>
                   </div>
-                  <Badge 
-                    variant={getStatusBadgeVariant(request.status)}
-                    className="text-xs"
-                  >
+                  <Badge className="text-xs">
                     {t(`services.status.${request.status}`, request.status)}
                   </Badge>
                 </div>
 
-                <div className="space-y-1">
-                  <p className="text-xs text-foreground/70">
-                    <span className="font-medium">{t('services.preferredTime')}:</span>{' '}
-                    {new Date(request.preferred_time).toLocaleDateString(i18n.language, {
-                      day: 'numeric',
-                      month: 'short',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                  
-                  {request.note && (
-                    <p className="text-xs text-foreground/60 line-clamp-2">
-                      <span className="font-medium">{t('services.note')}:</span> {request.note}
-                    </p>
-                  )}
-                  
-                  <p className="text-xs text-foreground/50">
-                    {formatDistanceToNow(new Date(request.created_at), {
-                      addSuffix: true,
-                      locale: getDateLocale()
-                    })}
-                  </p>
+                <div className="text-xs text-foreground/70">
+                  <span className="font-medium">{t('services.preferredTime')}:</span>{' '}
+                  {new Date(request.preferred_time).toLocaleDateString(i18n.language, {
+                    day: 'numeric',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
                 </div>
+
+                <p className="text-xs text-foreground/50">
+                  {formatDistanceToNow(new Date(request.created_at), {
+                    addSuffix: true,
+                    locale: getDateLocale()
+                  })}
+                </p>
               </div>
             </div>
           </div>
