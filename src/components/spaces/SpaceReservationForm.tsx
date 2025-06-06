@@ -6,13 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Clock, Loader2 } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useSpaceReservation } from '@/hooks/useSpaceReservation';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import DynamicFormFields from './DynamicFormFields';
+import { Card } from '@/components/ui/card';
 
 interface SpaceReservationFormProps {
   spaceId: string;
@@ -36,10 +37,7 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
     isSubmitting,
     handleSubmit
   } = useSpaceReservation(spaceId, existingReservationId);
-  console.log("Loaded formFields for space", spaceId, formFields);
 
-
-  // Set default values when existingReservation is loaded
   useEffect(() => {
     if (existingReservation) {
       if (existingReservation.preferred_time) {
@@ -48,7 +46,6 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
       if (existingReservation.note) {
         form.setValue('note', existingReservation.note);
       }
-      // Set custom fields values
       if (existingReservation.custom_fields && formFields) {
         formFields.forEach((field) => {
           const value = existingReservation.custom_fields[field.field_name];
@@ -61,7 +58,6 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
   }, [existingReservation, formFields, form]);
 
   const onSubmit = async (values: any) => {
-    console.log('Form values:', values);
     const success = await handleSubmit(values);
     if (success && onSuccess) {
       onSuccess();
@@ -77,8 +73,8 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
   }
 
   return (
-    <div className="mobile-form-container space-reservation-form">
-      <div className="p-4">
+    <div className="p-4 pb-24">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
         <div className="mb-6">
           <h2 className={cn(
             "text-xl font-serif mb-2",
@@ -97,107 +93,65 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Date and Time Selection */}
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="preferred_time"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <FormItem className="mobile-form-field">
-                    <FormLabel className={cn(
-                      "text-sm font-medium",
-                      isDarkMode ? "text-darcare-gold" : "text-primary"
-                    )}>
-                      {t('services.dateAndTime', 'Date & Time')} *
-                    </FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "mobile-form-input w-full justify-start text-left font-normal",
-                              !field.value && "text-muted-foreground",
-                              isDarkMode 
-                                ? "border-darcare-gold/30 hover:border-darcare-gold/60 bg-darcare-navy" 
-                                : "border-primary/30 hover:border-primary/60 bg-background"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP 'à' HH:mm") : t('services.selectDateTime', 'Select date and time')}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <div className="p-3">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(date) => {
-                              if (date) {
-                                // Keep existing time if any, otherwise set to current time
-                                const newDate = new Date(date);
-                                if (field.value) {
-                                  newDate.setHours(field.value.getHours());
-                                  newDate.setMinutes(field.value.getMinutes());
-                                }
-                                field.onChange(newDate);
+            <FormField
+              control={form.control}
+              name="preferred_time"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <FormItem className="mobile-form-field">
+                  <FormLabel className={cn("text-sm font-medium", isDarkMode ? "text-darcare-gold" : "text-primary")}>
+                    {t('services.dateAndTime', 'Date & Time')} *
+                  </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "mobile-form-input w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                            isDarkMode 
+                              ? "border-darcare-gold/30 hover:border-darcare-gold/60 bg-darcare-navy" 
+                              : "border-primary/30 hover:border-primary/60 bg-background"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? format(field.value, "PPP 'à' HH:mm") : t('services.selectDateTime', 'Select date and time')}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <div className="p-3">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={(date) => {
+                            if (date) {
+                              const newDate = new Date(date);
+                              if (field.value) {
+                                newDate.setHours(field.value.getHours());
+                                newDate.setMinutes(field.value.getMinutes());
                               }
-                            }}
-                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                            initialFocus
-                          />
-                          <div className="mt-3 border-t pt-3">
-                            <label className="text-sm font-medium mb-2 block">
-                              {t('services.selectTime', 'Select Time')}
-                            </label>
-                            <Select
-                              value={field.value ? format(field.value, 'HH:mm') : ''}
-                              onValueChange={(time) => {
-                                if (field.value && time) {
-                                  const [hours, minutes] = time.split(':');
-                                  const newDate = new Date(field.value);
-                                  newDate.setHours(parseInt(hours), parseInt(minutes));
-                                  field.onChange(newDate);
-                                }
-                              }}
-                            >
-                              <SelectTrigger className="mobile-form-input">
-                                <SelectValue placeholder={t('services.selectTime', 'Select time')} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {Array.from({ length: 14 }, (_, i) => {
-                                  const hour = i + 8; // 8 AM to 9 PM
-                                  return ['00', '30'].map(minute => {
-                                    const time = `${hour.toString().padStart(2, '0')}:${minute}`;
-                                    return (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    );
-                                  });
-                                }).flat()}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                              field.onChange(newDate);
+                            }
+                          }}
+                          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                          initialFocus
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Dynamic Form Fields */}
             {formFields && formFields.length > 0 && (
               <div className="space-y-3">
-                <h3 className={cn(
-                  "text-base font-medium",
-                  isDarkMode ? "text-darcare-gold" : "text-primary"
-                )}>
+                <h3 className="text-lg font-serif text-darcare-gold mb-2">
                   {t('services.serviceDetails', 'Service Details')}
                 </h3>
                 <DynamicFormFields formFields={formFields} form={form} />
@@ -210,10 +164,7 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
               name="note"
               render={({ field }) => (
                 <FormItem className="mobile-form-field">
-                  <FormLabel className={cn(
-                    "text-sm font-medium",
-                    isDarkMode ? "text-darcare-gold" : "text-primary"
-                  )}>
+                  <FormLabel className={cn("text-sm font-medium", isDarkMode ? "text-darcare-gold" : "text-primary")}>
                     {t('services.specialRequests', 'Special requests')}
                   </FormLabel>
                   <FormControl>
@@ -233,15 +184,13 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
               )}
             />
 
-            <div className="pt-4">
+            {/* Submit Button */}
+            <div className="pt-2">
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
                 className={cn(
-                  "mobile-form-button w-full font-serif text-base",
-                  isDarkMode 
-                    ? "bg-darcare-gold hover:bg-darcare-gold/90 text-darcare-navy" 
-                    : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                  "w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-base"
                 )}
               >
                 {isSubmitting ? (
@@ -258,7 +207,7 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
             </div>
           </form>
         </Form>
-      </div>
+      </Card>
     </div>
   );
 };
