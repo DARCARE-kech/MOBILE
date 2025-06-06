@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,9 +30,8 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedTime, setSelectedTime] = useState<string>('');
 
-  
   const {
     space,
     formFields,
@@ -44,10 +44,10 @@ const [selectedTime, setSelectedTime] = useState<string>('');
   useEffect(() => {
     if (existingReservation) {
       if (existingReservation.preferred_time) {
-  const dt = new Date(existingReservation.preferred_time);
-  setSelectedDate(dt);
-  setSelectedTime(`${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}`);
-}
+        const dt = new Date(existingReservation.preferred_time);
+        setSelectedDate(dt);
+        setSelectedTime(`${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}`);
+      }
 
       if (existingReservation.note) {
         form.setValue('note', existingReservation.note);
@@ -64,6 +64,14 @@ const [selectedTime, setSelectedTime] = useState<string>('');
   }, [existingReservation, formFields, form]);
 
   const onSubmit = async (values: any) => {
+    // Combine selected date and time
+    if (selectedDate && selectedTime) {
+      const [hours, minutes] = selectedTime.split(':');
+      const combinedDateTime = new Date(selectedDate);
+      combinedDateTime.setHours(parseInt(hours), parseInt(minutes));
+      values.preferred_time = combinedDateTime;
+    }
+
     const success = await handleSubmit(values);
     if (success && onSuccess) {
       onSuccess();
@@ -100,85 +108,75 @@ const [selectedTime, setSelectedTime] = useState<string>('');
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Date and Time Selection */}
-            <FormField
-              control={form.control}
-              name="preferred_time"
-              rules={{ required: true }}
-              render={({ field }) => (
-                {/* Date Picker */}
-<FormItem>
-  <FormLabel className={cn(
-    "text-sm font-medium",
-    isDarkMode ? "text-darcare-gold" : "text-primary"
-  )}>
-    {t('services.date')} *
-  </FormLabel>
-  <Popover>
-    <PopoverTrigger asChild>
-      <FormControl>
-        <Button
-          variant="outline"
-          className={cn(
-            "mobile-form-input w-full justify-start text-left font-normal",
-            !selectedDate && "text-muted-foreground",
-            isDarkMode 
-              ? "border-darcare-gold/30 hover:border-darcare-gold/60 bg-darcare-navy" 
-              : "border-primary/30 hover:border-primary/60 bg-background"
-          )}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {selectedDate ? format(selectedDate, "PPP") : t('services.selectDate', 'Select date')}
-        </Button>
-      </FormControl>
-    </PopoverTrigger>
-    <PopoverContent className="w-auto p-0" align="start">
-      <Calendar
-        mode="single"
-        selected={selectedDate ?? new Date()}
-        onSelect={setSelectedDate}
-        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-        initialFocus
-      />
-    </PopoverContent>
-  </Popover>
-</FormItem>
+            {/* Date Selection */}
+            <FormItem>
+              <FormLabel className={cn(
+                "text-sm font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-primary"
+              )}>
+                {t('services.date', 'Date')} *
+              </FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "mobile-form-input w-full justify-start text-left font-normal",
+                      !selectedDate && "text-muted-foreground",
+                      isDarkMode 
+                        ? "border-darcare-gold/30 hover:border-darcare-gold/60 bg-darcare-navy" 
+                        : "border-primary/30 hover:border-primary/60 bg-background"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "PPP") : t('services.selectDate', 'Select date')}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate || undefined}
+                    onSelect={setSelectedDate}
+                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+            </FormItem>
 
-{/* Time Picker */}
-<FormItem>
-  <FormLabel className={cn(
-    "text-sm font-medium",
-    isDarkMode ? "text-darcare-gold" : "text-primary"
-  )}>
-    {t('services.time')} *
-  </FormLabel>
-  <Select onValueChange={setSelectedTime} value={selectedTime}>
-    <SelectTrigger className={cn(
-      "mobile-form-input h-10",
-      isDarkMode 
-        ? "border-darcare-gold/30 focus:border-darcare-gold/60 bg-darcare-navy" 
-        : "border-primary/30 focus:border-primary/60 bg-background"
-    )}>
-      <SelectValue placeholder={t('services.selectTime')} />
-    </SelectTrigger>
-    <SelectContent>
-      {Array.from({ length: 14 }, (_, i) => {
-        const hour = i + 8;
-        return ['00', '30'].map(minute => {
-          const time = `${hour.toString().padStart(2, '0')}:${minute}`;
-          return (
-            <SelectItem key={time} value={time}>
-              {time}
-            </SelectItem>
-          );
-        });
-      }).flat()}
-    </SelectContent>
-  </Select>
-</FormItem>
-
-              )}
-            />
+            {/* Time Selection */}
+            <FormItem>
+              <FormLabel className={cn(
+                "text-sm font-medium",
+                isDarkMode ? "text-darcare-gold" : "text-primary"
+              )}>
+                {t('services.time', 'Time')} *
+              </FormLabel>
+              <Select onValueChange={setSelectedTime} value={selectedTime}>
+                <SelectTrigger className={cn(
+                  "mobile-form-input h-10",
+                  isDarkMode 
+                    ? "border-darcare-gold/30 focus:border-darcare-gold/60 bg-darcare-navy" 
+                    : "border-primary/30 focus:border-primary/60 bg-background"
+                )}>
+                  <SelectValue placeholder={t('services.selectTime', 'Select time')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 14 }, (_, i) => {
+                    const hour = i + 8;
+                    return ['00', '30'].map(minute => {
+                      const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+                      return (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      );
+                    });
+                  }).flat()}
+                </SelectContent>
+              </Select>
+            </FormItem>
 
             {/* Dynamic Form Fields */}
             {formFields && formFields.length > 0 && (
@@ -220,7 +218,7 @@ const [selectedTime, setSelectedTime] = useState<string>('');
             <div className="pt-2">
               <Button 
                 type="submit" 
-                disabled={isSubmitting}
+                disabled={isSubmitting || !selectedDate || !selectedTime}
                 className={cn(
                   "w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-base"
                 )}
