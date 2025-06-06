@@ -11,6 +11,8 @@ interface RequestActionsProps {
   isSubmitting?: boolean;
   request?: any;
   serviceId?: string;
+  requestType?: 'service' | 'space';
+  requestStatus?: string | null;
 }
 
 const RequestActions: React.FC<RequestActionsProps> = ({
@@ -18,7 +20,9 @@ const RequestActions: React.FC<RequestActionsProps> = ({
   onCancel,
   isSubmitting = false,
   request,
-  serviceId
+  serviceId,
+  requestType,
+  requestStatus
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -36,17 +40,31 @@ const RequestActions: React.FC<RequestActionsProps> = ({
       });
     }
   };
+
+  // Determine if Modify button should be shown based on type and status
+  let showModifyButton = true;
+  if (requestType === 'service') {
+    // For services: hide if in_progress, completed, or cancelled
+    showModifyButton = requestStatus !== 'in_progress' && 
+                     requestStatus !== 'completed' && 
+                     requestStatus !== 'cancelled';
+  } else if (requestType === 'space') {
+    // For spaces: show only if pending
+    showModifyButton = requestStatus === 'pending';
+  }
   
   return (
     <div className="grid grid-cols-2 gap-3">
-      <Button
-        variant="outline"
-        className="bg-transparent border-darcare-gold/30 text-darcare-gold hover:border-darcare-gold hover:text-darcare-gold/90 hover:bg-transparent"
-        onClick={handleEdit}
-      >
-        <Pencil className="h-4 w-4 mr-2" />
-        {t('common.modify', 'Modify')}
-      </Button>
+      {showModifyButton && (
+        <Button
+          variant="outline"
+          className="bg-transparent border-darcare-gold/30 text-darcare-gold hover:border-darcare-gold hover:text-darcare-gold/90 hover:bg-transparent"
+          onClick={handleEdit}
+        >
+          <Pencil className="h-4 w-4 mr-2" />
+          {t('common.modify', 'Modify')}
+        </Button>
+      )}
       
       <Button
         variant="destructive"

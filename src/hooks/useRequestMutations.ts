@@ -26,7 +26,7 @@ export const useRequestMutations = (requestId: string) => {
       });
       
       queryClient.invalidateQueries({
-        queryKey: ['service-request', requestId],
+        queryKey: ['unified-request', requestId],
       });
     },
     onError: (error: any) => {
@@ -40,21 +40,54 @@ export const useRequestMutations = (requestId: string) => {
   
   const cancelRequestMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
+      // First, determine if this is a service request or space reservation
+      // Try service_requests first
+      const { data: serviceRequest } = await supabase
         .from('service_requests')
-        .update({ status: 'cancelled' })
-        .eq('id', requestId);
+        .select('id')
+        .eq('id', requestId)
+        .single();
       
-      if (error) throw error;
+      if (serviceRequest) {
+        // It's a service request
+        const { error } = await supabase
+          .from('service_requests')
+          .update({ status: 'cancelled' })
+          .eq('id', requestId);
+        
+        if (error) throw error;
+        return { type: 'service' };
+      } else {
+        // It's a space reservation
+        const { error } = await supabase
+          .from('space_reservations')
+          .update({ status: 'cancelled' })
+          .eq('id', requestId);
+        
+        if (error) throw error;
+        return { type: 'space' };
+      }
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      const message = result?.type === 'space' 
+        ? "Space reservation cancelled"
+        : "Service request cancelled";
+      
+      const description = result?.type === 'space'
+        ? "Your space reservation has been cancelled"
+        : "Your service request has been cancelled";
+      
       toast({
-        title: "Request cancelled",
-        description: "Your service request has been cancelled",
+        title: message,
+        description: description,
       });
       
+      // Invalidate unified queries instead of specific ones
       queryClient.invalidateQueries({
-        queryKey: ['service-request', requestId],
+        queryKey: ['unified-request', requestId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['unified-requests'],
       });
     },
     onError: (error: any) => {

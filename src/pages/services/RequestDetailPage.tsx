@@ -79,7 +79,19 @@ const RequestDetailPage = () => {
   
   const isCompleted = request.status === 'completed';
   const isCancelled = request.status === 'cancelled';
-  const canModify = !isCompleted && !isCancelled;
+  
+  // New logic for canModify based on request type
+  let canModify = false;
+  if (request.type === 'service') {
+    // For services: visible except if in_progress, completed, or cancelled
+    canModify = request.status !== 'in_progress' && 
+                request.status !== 'completed' && 
+                request.status !== 'cancelled';
+  } else if (request.type === 'space') {
+    // For spaces: visible only if pending
+    canModify = request.status === 'pending';
+  }
+  
   const existingRating = request.service_ratings && request.service_ratings.length > 0 
     ? request.service_ratings[0] 
     : null;
@@ -143,6 +155,8 @@ const RequestDetailPage = () => {
               onEdit={handleEdit}
               onCancel={() => cancelRequest()}
               isSubmitting={isCancelling}
+              requestType={request.type}
+              requestStatus={request.status}
             />
           </div>
         )}
