@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, User, Pencil, Trash2, AlertTriangle, History } from 'lucide-react';
+import { Clock, User, Pencil, Trash2, AlertTriangle, History, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -76,14 +77,14 @@ const MyRequestsTab: React.FC = () => {
         ? ['completed', 'cancelled']
         : ['pending', 'in_progress', 'confirmed'];
 
-      const [services, serviceError] = await supabase
+      const { data: services, error: serviceError } = await supabase
         .from('service_requests')
         .select(`*, services(name)`)
         .eq('user_id', user.id)
         .in('status', statusFilter)
         .order('created_at', { ascending: false });
 
-      const [spaces, spaceError] = await supabase
+      const { data: spaces, error: spaceError } = await supabase
         .from('space_reservations')
         .select(`*, spaces(name)`)
         .eq('user_id', user.id)
@@ -97,7 +98,7 @@ const MyRequestsTab: React.FC = () => {
           const staff = await getStaffAssignmentsForRequest(s.id);
           return {
             id: s.id,
-            type: 'service',
+            type: 'service' as const,
             name: s.services?.name || 'Service',
             preferred_time: s.preferred_time,
             status: s.status,
@@ -110,7 +111,7 @@ const MyRequestsTab: React.FC = () => {
 
       const transformedSpaces = (spaces || []).map((s) => ({
         id: s.id,
-        type: 'space',
+        type: 'space' as const,
         name: s.spaces?.name || 'Space',
         preferred_time: s.preferred_time,
         status: s.status,
@@ -188,7 +189,7 @@ const MyRequestsTab: React.FC = () => {
             {showHistory ? t('services.noHistoryRequests') : t('services.noActiveRequests')}
           </div>
         ) : (
-          requests.map((r) => (
+          requests?.map((r) => (
             <div
               key={r.id}
               onClick={() => handleClick(r)}
@@ -218,10 +219,10 @@ const MyRequestsTab: React.FC = () => {
 
               {(r.status === 'pending' || r.status === 'in_progress' || r.status === 'confirmed') && (
                 <div className="flex gap-1 justify-end mt-2">
-                  <Button variant="ghost" size="icon-sm" onClick={(e) => handleEdit(r, e)}>
+                  <Button variant="ghost" size="icon" onClick={(e) => handleEdit(r, e)}>
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="icon-sm" onClick={(e) => handleDelete(r, e)}>
+                  <Button variant="ghost" size="icon" onClick={(e) => handleDelete(r, e)}>
                     <Trash2 className="w-4 h-4 text-red-500" />
                   </Button>
                 </div>
