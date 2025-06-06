@@ -28,6 +28,9 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
 }) => {
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+const [selectedTime, setSelectedTime] = useState<string>('');
+
   
   const {
     space,
@@ -41,8 +44,11 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
   useEffect(() => {
     if (existingReservation) {
       if (existingReservation.preferred_time) {
-        form.setValue('preferred_time', new Date(existingReservation.preferred_time));
-      }
+  const dt = new Date(existingReservation.preferred_time);
+  setSelectedDate(dt);
+  setSelectedTime(`${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}`);
+}
+
       if (existingReservation.note) {
         form.setValue('note', existingReservation.note);
       }
@@ -100,51 +106,77 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
               name="preferred_time"
               rules={{ required: true }}
               render={({ field }) => (
-                <FormItem className="mobile-form-field">
-                  <FormLabel className={cn("text-sm font-medium", isDarkMode ? "text-darcare-gold" : "text-primary")}>
-                    {t('services.dateAndTime', 'Date & Time')} *
-                  </FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "mobile-form-input w-full justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground",
-                            isDarkMode 
-                              ? "border-darcare-gold/30 hover:border-darcare-gold/60 bg-darcare-navy" 
-                              : "border-primary/30 hover:border-primary/60 bg-background"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? format(field.value, "PPP 'à' HH:mm") : t('services.selectDateTime', 'Select date and time')}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <div className="p-3">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => {
-                            if (date) {
-                              const newDate = new Date(date);
-                              if (field.value) {
-                                newDate.setHours(field.value.getHours());
-                                newDate.setMinutes(field.value.getMinutes());
-                              }
-                              field.onChange(newDate);
-                            }
-                          }}
-                          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                          initialFocus
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
+                {/* Date Picker */}
+<FormItem>
+  <FormLabel className={cn(
+    "text-sm font-medium",
+    isDarkMode ? "text-darcare-gold" : "text-primary"
+  )}>
+    {t('services.date')} *
+  </FormLabel>
+  <Popover>
+    <PopoverTrigger asChild>
+      <FormControl>
+        <Button
+          variant="outline"
+          className={cn(
+            "mobile-form-input w-full justify-start text-left font-normal",
+            !selectedDate && "text-muted-foreground",
+            isDarkMode 
+              ? "border-darcare-gold/30 hover:border-darcare-gold/60 bg-darcare-navy" 
+              : "border-primary/30 hover:border-primary/60 bg-background"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {selectedDate ? format(selectedDate, "PPP") : t('services.selectDate', 'Select date')}
+        </Button>
+      </FormControl>
+    </PopoverTrigger>
+    <PopoverContent className="w-auto p-0" align="start">
+      <Calendar
+        mode="single"
+        selected={selectedDate ?? new Date()}
+        onSelect={setSelectedDate}
+        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+        initialFocus
+      />
+    </PopoverContent>
+  </Popover>
+</FormItem>
+
+{/* Time Picker */}
+<FormItem>
+  <FormLabel className={cn(
+    "text-sm font-medium",
+    isDarkMode ? "text-darcare-gold" : "text-primary"
+  )}>
+    {t('services.time')} *
+  </FormLabel>
+  <Select onValueChange={setSelectedTime} value={selectedTime}>
+    <SelectTrigger className={cn(
+      "mobile-form-input h-10",
+      isDarkMode 
+        ? "border-darcare-gold/30 focus:border-darcare-gold/60 bg-darcare-navy" 
+        : "border-primary/30 focus:border-primary/60 bg-background"
+    )}>
+      <SelectValue placeholder={t('services.selectTime')} />
+    </SelectTrigger>
+    <SelectContent>
+      {Array.from({ length: 14 }, (_, i) => {
+        const hour = i + 8;
+        return ['00', '30'].map(minute => {
+          const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+          return (
+            <SelectItem key={time} value={time}>
+              {time}
+            </SelectItem>
+          );
+        });
+      }).flat()}
+    </SelectContent>
+  </Select>
+</FormItem>
+
               )}
             />
 
