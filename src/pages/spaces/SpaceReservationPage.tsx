@@ -7,7 +7,6 @@ import SpaceReservationForm from '@/components/spaces/SpaceReservationForm';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { translateSpaceName } from '@/utils/spaceTranslations';
 
 const SpaceReservationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,9 +34,43 @@ const SpaceReservationPage: React.FC = () => {
     enabled: !!id
   });
 
+  // Function to get space translation key
+  const getSpaceTranslationKey = (spaceName: string): string | null => {
+    const spaceMapping: Record<string, string> = {
+      'Kids Club': 'spaces.kidsClub',
+      'Gym': 'spaces.gym',
+      'Pool': 'spaces.pool',
+      'Spa': 'spaces.spa',
+      'Restaurant': 'spaces.restaurant',
+      'Meeting Room': 'spaces.meetingRoom',
+      'Fitness Suite': 'spaces.fitnessSuite',
+      'Padel Court': 'spaces.padelCourt',
+      'Game Room': 'spaces.gameRoom',
+      'Cinema': 'spaces.cinema',
+      'Library': 'spaces.library',
+      'Terrace': 'spaces.terrace',
+      'Garden': 'spaces.garden',
+      'Conference Room': 'spaces.conferenceRoom',
+      'Business Center': 'spaces.businessCenter'
+    };
+    
+    return spaceMapping[spaceName] || null;
+  };
+  
+  // Function to translate space name
+  const translateSpaceName = (spaceName: string): string => {
+    const translationKey = getSpaceTranslationKey(spaceName);
+    if (translationKey) {
+      const translated = t(translationKey);
+      // If translation returns the key (not found), use original name
+      return translated === translationKey ? spaceName : translated;
+    }
+    return spaceName;
+  };
+
   const getPageTitle = () => {
     if (spaceData?.name) {
-      return translateSpaceName(spaceData.name, t);
+      return translateSpaceName(spaceData.name);
     }
     return editMode ? t('services.editReservation', 'Edit Reservation') : t('services.newReservation', 'New Reservation');
   };
