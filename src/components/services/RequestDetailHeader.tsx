@@ -33,8 +33,8 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
 
   return (
     <div className="space-y-2 sm:space-y-3">
-      <div>
-        <h1 className="text-darcare-gold font-serif text-lg sm:text-xl mb-1 sm:mb-2">{serviceName}</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-darcare-gold font-serif text-lg sm:text-xl">{serviceName}</h1>
         <StatusBadge status={status} />
       </div>
       
