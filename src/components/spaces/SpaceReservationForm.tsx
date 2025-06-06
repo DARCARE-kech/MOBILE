@@ -36,6 +36,8 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
     isSubmitting,
     handleSubmit
   } = useSpaceReservation(spaceId, existingReservationId);
+  console.log("Loaded formFields for space", spaceId, formFields);
+
 
   // Set default values when existingReservation is loaded
   useEffect(() => {

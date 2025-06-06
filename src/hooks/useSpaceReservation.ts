@@ -52,13 +52,26 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
         .from('space_form_schema')
         .select('*')
         .eq('space_id', spaceId)
-        .order('created_at');
+        .order('created_at', { ascending: true });
       
       if (error) {
         console.error('Error fetching form fields:', error);
         return [];
       }
-      return data as SpaceFormField[];
+      return (data || []).map((field) => {
+  let parsedOptions = null;
+  if (Array.isArray(field.options)) {
+    // Auto-wrap flat array into { choices: [...] }
+    parsedOptions = { choices: field.options };
+  } else if (typeof field.options === 'object') {
+    parsedOptions = field.options;
+  }
+  return {
+    ...field,
+    options: parsedOptions
+  };
+}) as SpaceFormField[];
+
     },
     enabled: !!spaceId
   });
