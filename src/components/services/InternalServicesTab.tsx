@@ -8,29 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ServiceCard from './ServiceCard';
 
-// Liste des services qui sont maintenant des espaces
-const SPACE_SERVICE_NAMES = [
-  'Kids Club',
-  'Hair Salon', 
-  'Piscine',
-  'Salle de sport',
-  'Padel',
-  'Club Access'
-];
-
-// Catégories de services organisées par section
-const SERVICE_CATEGORIES = {
-  villa: ['cleaning', 'maintenance', 'laundry'],
-  wellness: ['padel', 'gym', 'kids-club', 'hair-salon'],
-  ondemand: ['reservation', 'transport']
-};
-
 const InternalServicesTab: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   // Fetch internal services from Supabase
-  const { data: services, isLoading, error } = useQuery({
+  const { data: internalServices, isLoading: isLoadingInternal, error: internalError } = useQuery({
     queryKey: ['services-internal'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -45,6 +28,26 @@ const InternalServicesTab: React.FC = () => {
       }
       
       console.log('Internal services fetched:', data);
+      return data || [];
+    }
+  });
+
+  // Fetch external services (for on-demand services like reservation, transport)
+  const { data: externalServices, isLoading: isLoadingExternal, error: externalError } = useQuery({
+    queryKey: ['services-external'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('category', 'external')
+        .order('name');
+        
+      if (error) {
+        console.error('Error fetching external services:', error);
+        throw error;
+      }
+      
+      console.log('External services fetched:', data);
       return data || [];
     }
   });
@@ -70,7 +73,7 @@ const InternalServicesTab: React.FC = () => {
   });
 
   // Loading state
-  if (isLoading || isLoadingSpaces) {
+  if (isLoadingInternal || isLoadingExternal || isLoadingSpaces) {
     return (
       <div className="p-4 flex flex-col items-center justify-center h-48">
         <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
@@ -80,7 +83,7 @@ const InternalServicesTab: React.FC = () => {
   }
 
   // Error state
-  if (error || !services) {
+  if (internalError || externalError || (!internalServices && !externalServices)) {
     return (
       <div className="p-4 flex flex-col items-center justify-center h-48">
         <AlertTriangle className="h-8 w-8 text-destructive mb-2" />
@@ -89,25 +92,14 @@ const InternalServicesTab: React.FC = () => {
     );
   }
 
-  // Filter services to exclude those that are now spaces
-  const actualServices = services.filter(service => 
-    !SPACE_SERVICE_NAMES.includes(service.name)
-  );
-
-  // Combine spaces and services for display
-  const allItems = [
-    ...(spaces || []).map(space => ({ ...space, type: 'space' })),
-    ...actualServices.map(service => ({ ...service, type: 'service' }))
+  // Combine all services
+  const allServices = [
+    ...(internalServices || []).map(service => ({ ...service, type: 'service' })),
+    ...(externalServices || []).map(service => ({ ...service, type: 'service' }))
   ];
 
-  // Empty state
-  if (allItems.length === 0) {
-    return (
-      <div className="p-4 text-center py-12">
-        <p className="text-foreground/70">{t('services.noServicesAvailable')}</p>
-      </div>
-    );
-  }
+  // Add spaces
+  const allSpaces = (spaces || []).map(space => ({ ...space, type: 'space' }));
 
   // Handle item selection - route to appropriate page
   const handleItemSelect = (item: any) => {
@@ -122,32 +114,32 @@ const InternalServicesTab: React.FC = () => {
     }
   };
 
-  // Organiser les items par sections
-  const getItemsForSection = (sectionType: keyof typeof SERVICE_CATEGORIES) => {
-    const categories = SERVICE_CATEGORIES[sectionType];
-    return allItems.filter(item => {
-      if (item.type === 'space') {
-        // Mapper les espaces vers les catégories
-        const spaceName = item.name.toLowerCase();
-        if (sectionType === 'wellness') {
-          return spaceName.includes('padel') || 
-                 spaceName.includes('gym') || 
-                 spaceName.includes('sport') ||
-                 spaceName.includes('kids') ||
-                 spaceName.includes('hair') ||
-                 spaceName.includes('salon');
-        }
-        return false;
-      } else {
-        // Pour les services, vérifier que la propriété category existe
-        return item.category && categories.includes(item.category);
-      }
-    });
-  };
+  // Filter services for Villa Services (cleaning, maintenance, laundry)
+  const villaServices = allServices.filter(service => {
+    const serviceName = service.name.toLowerCase();
+    return serviceName.includes('cleaning') || 
+           serviceName.includes('maintenance') || 
+           serviceName.includes('laundry');
+  });
 
-  const villaServices = getItemsForSection('villa');
-  const wellnessServices = getItemsForSection('wellness');
-  const onDemandServices = getItemsForSection('ondemand');
+  // Filter services for On-Demand Services (reservation, transport)
+  const onDemandServices = allServices.filter(service => {
+    const serviceName = service.name.toLowerCase();
+    return serviceName.includes('reservation') || 
+           serviceName.includes('transport');
+  });
+
+  // Wellness & Activities are all the spaces
+  const wellnessServices = allSpaces;
+
+  // Empty state
+  if (villaServices.length === 0 && wellnessServices.length === 0 && onDemandServices.length === 0) {
+    return (
+      <div className="p-4 text-center py-12">
+        <p className="text-foreground/70">{t('services.noServicesAvailable')}</p>
+      </div>
+    );
+  }
 
   const ServiceSection = ({ title, items }: { title: string; items: any[] }) => {
     if (items.length === 0) return null;
