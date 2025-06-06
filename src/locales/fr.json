@@ -1,4 +1,4 @@
-   
+
 {
   "common": {
     "loading": "Chargement...",
@@ -98,10 +98,32 @@
     "doNotDisturb": "Ne pas déranger",
     "invisible": "Invisible",
     "errorLoading": "Erreur lors du chargement",
-    "invalidSpace": "ID d'espace invalide"
+    "invalidSpace": "ID d'espace invalide",
+    "menu": "Menu",
+    "favorites": "Favoris",
+    "viewAll": "Voir Tout",
+    "notFound": "Non Trouvé",
+    "update": "Mettre à Jour",
+    "optional": "Optionnel",
+    "unknownService": "Service Inconnu",
+    "fetchDataError": "Impossible de récupérer vos données",
+    "signInRequired": "Connexion Requise",
+    "modify": "Modifier",
+    "processing": "Traitement...",
+    "submitting": "Soumission...",
+    "image": "Image",
+    "hour": "heure",
+    "minute": "minute",
+    "addedToFavorites": "Ajouté aux favoris",
+    "removedFromFavorites": "Supprimé des favoris",
+    "tryAgain": "Réessayer",
+    "errorOccurred": "Une erreur est survenue",
+    "continue": "Continuer",
+    "required": "Requis",
+    "favorite": "Favori",
+    "logout": "Déconnexion",
+    "notifications": "Notifications"
   },
-
-  
   "services": {
     "services": "Services",
     "external": "Externe",
@@ -156,48 +178,6 @@
     "conferenceRoom": "Salle de Conférence",
     "businessCenter": "Centre d'Affaires"
   },
-  "common":
-    "back": "Retour",
-    "menu": "Menu",
-    "favorites": "Favoris",
-    "notifications": "Notifications",
-    "viewAll": "Voir Tout",
-    "error": "Erreur",
-    "loading": "Chargement",
-    "submit": "Soumettre",
-    "cancel": "Annuler",
-    "save": "Enregistrer",
-    "search": "Rechercher",
-    "logout": "Déconnexion",
-    "notFound": "Non Trouvé",
-    "update": "Mettre à Jour",
-    "optional": "Optionnel",
-    "settings": "Paramètres",
-    "unknownService": "Service Inconnu",
-    "fetchDataError": "Impossible de récupérer vos données",
-    "signInRequired": "Connexion Requise",
-    "modify": "Modifier",
-    "processing": "Traitement...",
-    "submitting": "Soumission...",
-    "image": "Image",
-    "yes": "Oui",
-    "no": "Non",
-    "hour": "heure",
-    "minute": "minute",
-    "addedToFavorites": "Ajouté aux favoris",
-    "removedFromFavorites": "Supprimé des favoris",
-    "delete": "Supprimer",
-    "tryAgain": "Réessayer",
-    "errorOccurred": "Une erreur est survenue",
-    "view": "Voir",
-    "edit": "Modifier",
-    "continue": "Continuer",
-    "next": "Suivant",
-    "previous": "Précédent",
-    "required": "Requis",
-    "success": "Succès",
-    "favorite": "Favori"
-  },
   "auth": {
     "signIn": "Se Connecter",
     "signUp": "S'inscrire",
@@ -233,7 +213,6 @@
     "invalidEmail": "Adresse courriel invalide",
     "rateLimitExceeded": "Trop de tentatives de connexion. Veuillez réessayer plus tard.",
     "passwordResetSent": "Courriel de réinitialisation du mot de passe envoyé",
-    "checkEmail": "Veuillez vérifier votre courriel",
     "termsAgreement": "J'accepte les",
     "termsAndPolicy": "Conditions d'utilisation et Politique de confidentialité",
     "termsOfService": "Conditions d'utilisation",
@@ -297,7 +276,6 @@
     "noRecommendationsFound": "Aucune recommandation trouvée",
     "searchPlaceholder": "Rechercher des lieux et des expériences...",
     "filters": "Filtres",
-    "categories": "Catégories",
     "distance": "Distance",
     "rating": "Évaluation",
     "features": "Caractéristiques",
@@ -323,7 +301,6 @@
     "profile": "Profil",
     "chat": "Chat",
     "chatbot": "Assistant",
-    "notifications": "Notifications",
     "shop": "Boutique",
     "chatWithUs": "Discuter avec nous",
     "requests": "Mes Demandes",
@@ -336,7 +313,6 @@
     "maintenance": "Entretien",
     "transport": "Transport",
     "laundry": "Blanchisserie",
-    "shop": "Boutique",
     "clubAccess": "Accès Club",
     "hairSalon": "Salon de Coiffure",
     "kidsClub": "Club Enfants",
@@ -425,15 +401,12 @@
     "passwordUpdated": "Mot de Passe Mis à Jour",
     "passwordUpdatedMessage": "Votre mot de passe a été mis à jour avec succès",
     "passwordChangeFailedMessage": "Impossible de mettre à jour votre mot de passe",
-    "notifications": "Notifications",
     "accountSettings": "Paramètres du Compte"
   },
-  
   "languages": {
     "en": "Anglais",
-    "fr": "Français",Add commentMore actions
+    "fr": "Français",
     "ar": "Arabe",
-    "settings": "Paramètres",
-    "notifications": "Notifications"
+    "settings": "Paramètres"
   }
 }
