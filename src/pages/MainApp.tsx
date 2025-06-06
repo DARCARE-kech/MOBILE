@@ -32,6 +32,7 @@ import PrivacySecurityPage from "@/pages/profile/PrivacySecurityPage";
 import ForgotPassword from "./ForgotPassword";
 import TermsAndPolicy from "./TermsAndPolicy"; 
 import { Toaster } from "@/components/ui/toaster";
+import SpaceReservationPage from "@/pages/spaces/SpaceReservationPage";
 
 const MainApp: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -127,10 +128,12 @@ const MainApp: React.FC = () => {
         path: "/services/request-form",
         element: <ProtectedRoute element={<ServiceRequestForm serviceType="general" />} />,
       },
-      {
-        path: "/services/space/:id",
-        element: <ProtectedRoute element={<BookSpaceService />} />,
-      },
+{
+  path: "/spaces/:id",
+  element: <ProtectedRoute element={<SpaceReservationPage />} />,
+},
+
+      
       {
         path: "/services/spaces",
         element: <ProtectedRoute element={<SpacesListPage />} />,
