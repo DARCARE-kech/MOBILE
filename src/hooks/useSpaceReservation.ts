@@ -107,17 +107,21 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
     // Add defaults for custom fields
     if (formFields) {
       formFields.forEach(field => {
-        switch (field.input_type) {
-          case 'checkbox':
-            defaults[field.field_name] = false;
-            break;
-          case 'number':
-            defaults[field.field_name] = field.options?.min || 0;
-            break;
-          default:
-            defaults[field.field_name] = '';
-        }
-      });
+  switch (field.input_type) {
+    case 'checkbox':
+      defaults[field.field_name] = false;
+      break;
+    case 'number':
+      defaults[field.field_name] = field.options?.min || 0;
+      break;
+    case 'multiselect':
+      defaults[field.field_name] = [];
+      break;
+    default:
+      defaults[field.field_name] = '';
+  }
+});
+
     }
 
     return defaults;
@@ -159,9 +163,15 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
       if (formFields) {
         formFields.forEach(field => {
           const fieldValue = values[field.field_name];
-          if (fieldValue !== undefined && fieldValue !== '' && fieldValue !== null) {
-            customFields[field.field_name] = fieldValue;
-          }
+          const isValid =
+  field.input_type === 'multiselect'
+    ? Array.isArray(fieldValue) && fieldValue.length > 0
+    : fieldValue !== undefined && fieldValue !== '' && fieldValue !== null;
+
+if (isValid) {
+  customFields[field.field_name] = fieldValue;
+}
+
         });
       }
 

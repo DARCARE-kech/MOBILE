@@ -250,6 +250,56 @@ const DynamicFormFields: React.FC<DynamicFormFieldsProps> = ({
           />
         );
 
+              case 'multiselect':
+        return (
+          <FormField
+            key={fieldName}
+            control={form.control}
+            name={fieldName}
+            render={({ field: formField }) => (
+              <FormItem className="mobile-form-field">
+                <FormLabel className={cn(
+                  "text-sm font-medium mb-2 block",
+                  isDarkMode ? "text-darcare-gold" : "text-primary"
+                )}>
+                  {fieldLabel}
+                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                </FormLabel>
+                <div className="space-y-2">
+                  {field.options?.choices?.map((choice) => {
+                    const selected = Array.isArray(formField.value) && formField.value.includes(choice);
+                    return (
+                      <label key={choice} className="flex items-center space-x-2">
+                        <Checkbox
+                          checked={selected}
+                          onCheckedChange={(checked) => {
+                            const current = Array.isArray(formField.value) ? [...formField.value] : [];
+                            if (checked) {
+                              formField.onChange([...current, choice]);
+                            } else {
+                              formField.onChange(current.filter((val) => val !== choice));
+                            }
+                          }}
+                          className={cn(
+                            isDarkMode 
+                              ? "border-darcare-gold/30 data-[state=checked]:bg-darcare-gold data-[state=checked]:text-darcare-navy" 
+                              : "border-primary/30 data-[state=checked]:bg-primary"
+                          )}
+                        />
+                        <span className={cn("text-sm", isDarkMode ? "text-darcare-beige" : "text-foreground")}>
+                          {t(`services.${choice.toLowerCase().replace(/\s+/g, '')}`, choice)}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        );
+
+
       default:
         return null;
     }
