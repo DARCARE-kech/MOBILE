@@ -8,11 +8,10 @@ import RequestActions from "@/components/services/RequestActions";
 import RequestRating from "@/components/services/RequestRating";
 import RequestDetailsContent from "@/components/services/RequestDetailsContent";
 import RequestNotFound from "@/components/services/RequestNotFound";
-import { useServiceRequestById } from "@/hooks/useServiceRequest";
+import { useUnifiedRequestById } from "@/hooks/useUnifiedRequestById";
 import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
-import { Json } from "@/integrations/supabase/types"; 
 import { useRequestStatusNotification } from "@/hooks/useRequestStatusNotification";
 
 const RequestDetailPage = () => {
@@ -23,7 +22,7 @@ const RequestDetailPage = () => {
   // Initialize the status notification hook
   useRequestStatusNotification(id);
   
-  const { data: request, isLoading } = useServiceRequestById(id);
+  const { data: request, isLoading } = useUnifiedRequestById(id);
   const { 
     submitRating, 
     isSubmittingRating, 
@@ -38,7 +37,7 @@ const RequestDetailPage = () => {
           title={t('services.requestDetails', 'Request Details')} 
           showBack={true}
           onBack={() => navigate(-1)} 
-          rightContent={<div />} // Empty div to prevent default icons
+          rightContent={<div />}
         />
         <div className="flex justify-center items-center h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
@@ -55,7 +54,7 @@ const RequestDetailPage = () => {
           title={t('services.requestDetails', 'Request Details')} 
           showBack={true}
           onBack={() => navigate(-1)} 
-          rightContent={<div />} // Empty div to prevent default icons
+          rightContent={<div />}
         />
         <RequestNotFound />
         <BottomNavigation activeTab="services" />
@@ -85,19 +84,26 @@ const RequestDetailPage = () => {
     ? request.service_ratings[0] 
     : null;
   
-  // Determine service name, handling the "Book Space" special case
-  let serviceName = request.services?.name || '';
+  // Determine service/space name
+  const itemName = request.name || t('services.clubAccess', 'Club Access');
   
-  // If this is a space booking with no service name, use a default name
-  if (request.space_id && (!serviceName || serviceName.trim() === '')) {
-    serviceName = t('services.clubAcess', 'Club Acess');
-  }
-  
-  // Get staff name from staff_assignments if available
-  const staffName = request.staff_assignments && 
+  // Get staff name from staff_assignments if available (only for services)
+  const staffName = request.type === 'service' && request.staff_assignments && 
                     request.staff_assignments.length > 0 && 
                     request.staff_assignments[0] ? 
                     request.staff_assignments[0].staff_name : null;
+  
+  const handleEdit = () => {
+    if (request.type === 'service') {
+      navigate(`/services/${request.service_id}`, {
+        state: { editMode: true, requestId: request.id }
+      });
+    } else {
+      navigate(`/spaces/${request.space_id}`, {
+        state: { editMode: true, reservationId: request.id }
+      });
+    }
+  };
   
   return (
     <div className="bg-darcare-navy min-h-screen pb-24">
@@ -105,13 +111,13 @@ const RequestDetailPage = () => {
         title={t('services.requestDetails', 'Request Details')} 
         showBack={true}
         onBack={() => navigate(-1)} 
-        rightContent={<div />} // Empty div to prevent default icons
+        rightContent={<div />}
       />
       
-      <div className="p-4 space-y-6 pt-24"> {/* Increased padding-top to prevent header overlap */}
+      <div className="p-4 space-y-6 pt-24">
         <div className="luxury-card">
           <RequestDetailHeader
-            serviceName={serviceName}
+            serviceName={itemName}
             status={request.status}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
@@ -134,16 +140,14 @@ const RequestDetailPage = () => {
         {canModify && (
           <div className="mt-4">
             <RequestActions
-              onEdit={() => navigate(`/services/${request.service_id}`, {
-                state: { editMode: true, requestId: request.id }
-              })}
+              onEdit={handleEdit}
               onCancel={() => cancelRequest()}
               isSubmitting={isCancelling}
             />
           </div>
         )}
         
-        {isCompleted && (
+        {isCompleted && request.type === 'service' && (
           <div className="luxury-card">
             <h3 className="text-darcare-gold font-serif text-lg mb-4">{t('services.serviceRating', 'Service Rating')}</h3>
             <RequestRating

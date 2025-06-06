@@ -158,8 +158,7 @@ const MyRequestsTab: React.FC = () => {
   };
 
   const handleClick = (r: UnifiedRequest) => {
-    if (r.type === 'service') navigate(`/services/requests/${r.id}`);
-    else navigate(`/spaces/${r.id}`);
+    navigate(`/services/requests/${r.id}`);
   };
 
   return (
@@ -194,36 +193,38 @@ const MyRequestsTab: React.FC = () => {
               key={r.id}
               onClick={() => handleClick(r)}
               className={cn(
-                "rounded-xl p-4 border cursor-pointer",
-                isDarkMode ? "bg-[#181a23] border-darcare-gold/10" : "bg-white border-gray-200"
+                "rounded-lg p-3 border cursor-pointer transition-colors", // Réduction de padding et border radius
+                isDarkMode ? "bg-[#181a23] border-darcare-gold/10 hover:bg-[#1e2028]" : "bg-white border-gray-200 hover:bg-gray-50"
               )}
             >
-              <div className="flex justify-between items-start mb-1">
-                <h3 className={cn("font-semibold", isDarkMode ? "text-darcare-gold" : "text-primary")}>
+              <div className="flex justify-between items-start mb-2"> {/* Réduction de margin bottom */}
+                <h3 className={cn("font-semibold text-sm", isDarkMode ? "text-darcare-gold" : "text-primary")}> {/* Réduction de taille de police */}
                   {r.name}
                 </h3>
                 <StatusBadge status={r.status || 'pending'} />
               </div>
 
-              <div className="text-sm text-foreground/70 flex items-center gap-1 mb-1">
-                <Clock size={14} className="opacity-60" />
+              <div className="text-xs text-foreground/70 flex items-center gap-1 mb-1"> {/* Réduction de taille de police et margin */}
+                <Clock size={12} className="opacity-60" /> {/* Réduction de taille d'icône */}
                 {r.preferred_time
                   ? format(new Date(r.preferred_time), 'MMM d, hh:mm a')
                   : t('services.unscheduled')}
               </div>
 
-              <div className="text-sm text-foreground/60 flex items-center gap-1">
-                <User size={14} className="opacity-60" />
-                {r.staff_name || t('services.unassigned')}
-              </div>
+              {r.type === 'service' && ( // Staff seulement pour les services
+                <div className="text-xs text-foreground/60 flex items-center gap-1 mb-2"> {/* Réduction de taille de police */}
+                  <User size={12} className="opacity-60" /> {/* Réduction de taille d'icône */}
+                  {r.staff_name || t('services.unassigned')}
+                </div>
+              )}
 
               {(r.status === 'pending' || r.status === 'in_progress' || r.status === 'confirmed') && (
-                <div className="flex gap-1 justify-end mt-2">
-                  <Button variant="ghost" size="icon" onClick={(e) => handleEdit(r, e)}>
-                    <Pencil className="w-4 h-4" />
+                <div className="flex gap-1 justify-end mt-1"> {/* Réduction de margin top */}
+                  <Button variant="ghost" size="icon" onClick={(e) => handleEdit(r, e)} className="h-7 w-7"> {/* Réduction de taille des boutons */}
+                    <Pencil className="w-3 h-3" /> {/* Réduction de taille d'icône */}
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={(e) => handleDelete(r, e)}>
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                  <Button variant="ghost" size="icon" onClick={(e) => handleDelete(r, e)} className="h-7 w-7"> {/* Réduction de taille des boutons */}
+                    <Trash2 className="w-3 h-3 text-red-500" /> {/* Réduction de taille d'icône */}
                   </Button>
                 </div>
               )}
