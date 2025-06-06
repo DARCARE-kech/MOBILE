@@ -158,30 +158,34 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
         </div>
       )}
       
-      {/* Staff Assignments */}
-      <div className="space-y-2">
-        <h3 className="text-sm font-medium text-darcare-gold uppercase">
-          {t('services.assignedStaff', 'Assigned Staff')}
-        </h3>
-        
-        {staffAssignments && staffAssignments.length > 0 && 
-         staffAssignments[0] && staffAssignments[0].staff_name ? (
-          <div className="text-darcare-beige">
-            {[...new Map(
-              staffAssignments.map((s) => [s.staff_name, s])
-            ).values()].map((staff) => (
-              <div key={staff.staff_id} className="py-1">
-                {staff.staff_name}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
-        )}
-      </div>
+      {/* Staff Assignments - Only show for services */}
+      {requestType === 'service' && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-darcare-gold uppercase">
+            {t('services.assignedStaff', 'Assigned Staff')}
+          </h3>
+          
+          {staffAssignments && staffAssignments.length > 0 && 
+           staffAssignments[0] && staffAssignments[0].staff_name ? (
+            <div className="text-darcare-beige">
+              {[...new Map(
+                staffAssignments.map((s) => [s.staff_name, s])
+              ).values()].map((staff) => (
+                <div key={staff.staff_id} className="py-1">
+                  {staff.staff_name}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
+          )}
+        </div>
+      )}
       
-      {/* Status Timeline */}
-      <StatusTimeline currentStatus={status} />
+      {/* Status Timeline - Only show for services */}
+      {requestType === 'service' && (
+        <StatusTimeline currentStatus={status} />
+      )}
     </div>
   );
 };

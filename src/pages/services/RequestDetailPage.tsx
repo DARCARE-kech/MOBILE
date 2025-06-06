@@ -13,6 +13,7 @@ import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
 import { useRequestStatusNotification } from "@/hooks/useRequestStatusNotification";
+import { translateSpaceName } from "@/utils/spaceTranslations";
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +30,17 @@ const RequestDetailPage = () => {
     cancelRequest, 
     isCancelling 
   } = useRequestMutations(id || '');
+  
+  // Function to get the appropriate page title
+  const getPageTitle = () => {
+    if (!request) return t('services.requestDetails', 'Request Details');
+    
+    if (request.type === 'space') {
+      return translateSpaceName(request.name, t);
+    }
+    
+    return t('services.requestDetails', 'Request Details');
+  };
   
   if (isLoading) {
     return (
@@ -120,7 +132,7 @@ const RequestDetailPage = () => {
   return (
     <div className="bg-darcare-navy min-h-screen pb-20 sm:pb-24">
       <MainHeader 
-        title={t('services.requestDetails', 'Request Details')} 
+        title={getPageTitle()} 
         showBack={true}
         onBack={() => navigate(-1)} 
         rightContent={<div />}

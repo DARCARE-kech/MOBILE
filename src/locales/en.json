@@ -41,7 +41,8 @@
     "success": "Success",
     "favorite": "Favorite",
     "confirmLogout": "Are you sure you want to log out?",
-    "logoutConfirmation": "Logout Confirmation"
+    "logoutConfirmation": "Logout Confirmation",
+    "invalidSpace": "Invalid space ID"
   },
   "auth": {
     "signIn": "Sign In",
@@ -237,10 +238,21 @@
     "requestReservation": "Request Reservation",
     "reservationDescription": "Book a table at a restaurant, an activity, excursion, or other experience.",
     "reservationRequest": "Reservation Request",
-     "todaysSchedule": "Today's Schedule",
-  "viewAll": "View All",
-  "activeRequests": "Active Requests",
-  "viewHistory": "View History",
+    "todaysSchedule": "Today's Schedule",
+    "viewAll": "View All",
+    "activeRequests": "Active Requests",
+    "viewHistory": "View History",
+    "requestImage": "Request Image",
+    "spaceName": "Space",
+    "numberOfPeople": "Number of People",
+    "person": "Person",
+    "people": "People",
+    "notesTitle": "Notes",
+    "noStaffAssigned": "No staff assigned yet.",
+    "requestProgress": "Request Progress",
+    "newReservation": "New Reservation",
+    "editReservation": "Edit Reservation",
+    "spaceReservation": "Space Reservation",
     "labels": {
       "cleaning": "Cleaning",
       "maintenance": "Maintenance",
@@ -266,6 +278,23 @@
       "completed": "Completed",
       "cancelled": "Cancelled"
     }
+  },
+  "spaces": {
+    "kidsClub": "Kids Club",
+    "gym": "Gym",
+    "pool": "Pool",
+    "spa": "Spa",
+    "restaurant": "Restaurant",
+    "meetingRoom": "Meeting Room",
+    "fitnessSuite": "Fitness Suite",
+    "padelCourt": "Padel Court",
+    "gameRoom": "Game Room",
+    "cinema": "Cinema",
+    "library": "Library",
+    "terrace": "Terrace",
+    "garden": "Garden",
+    "conferenceRoom": "Conference Room",
+    "businessCenter": "Business Center"
   },
   "recommendations": {
     "title": "Marrakech Highlights",

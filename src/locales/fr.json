@@ -1,4 +1,3 @@
-
 {
   "chatbot": {
     "startConversation": "Commencez la conversation...",
@@ -77,10 +76,10 @@
     "book": "Réserver",
     "capacity": "Capacité",
     "available": "Disponible",
-      "todaysSchedule": "Planning du jour",
-  "viewAll": "Voir tout",
-  "activeRequests": "Demandes actives",
-  "viewHistory": "Voir l'historique",
+    "todaysSchedule": "Planning du jour",
+    "viewAll": "Voir tout",
+    "activeRequests": "Demandes actives",
+    "viewHistory": "Voir l'historique",
     "request": "Demande",
     "spaces": "Espaces",
     "cleaning": "Nettoyage",
@@ -164,6 +163,17 @@
     "requestReservation": "Demander une Réservation",
     "reservationDescription": "Réserver une table dans un restaurant, une activité, une excursion ou une autre expérience.",
     "reservationRequest": "Demande de Réservation",
+    "requestImage": "Image de la demande",
+    "spaceName": "Espace",
+    "numberOfPeople": "Nombre de Personnes",
+    "person": "Personne",
+    "people": "Personnes",
+    "notesTitle": "Notes",
+    "noStaffAssigned": "Aucun personnel assigné pour le moment.",
+    "requestProgress": "Progression de la demande",
+    "newReservation": "Nouvelle Réservation",
+    "editReservation": "Modifier la Réservation",
+    "spaceReservation": "Réservation d'Espace",
     "labels": {
       "cleaning": "Nettoyage",
       "maintenance": "Entretien",
@@ -189,6 +199,23 @@
       "completed": "Terminé",
       "cancelled": "Annulé"
     }
+  },
+  "spaces": {
+    "kidsClub": "Club Enfants",
+    "gym": "Salle de Sport",
+    "pool": "Piscine",
+    "spa": "Spa",
+    "restaurant": "Restaurant",
+    "meetingRoom": "Salle de Réunion",
+    "fitnessSuite": "Suite Fitness",
+    "padelCourt": "Court de Padel",
+    "gameRoom": "Salle de Jeux",
+    "cinema": "Cinéma",
+    "library": "Bibliothèque",
+    "terrace": "Terrasse",
+    "garden": "Jardin",
+    "conferenceRoom": "Salle de Conférence",
+    "businessCenter": "Centre d'Affaires"
   },
   "common": {
     "back": "Retour",
