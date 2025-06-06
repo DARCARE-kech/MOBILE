@@ -44,7 +44,7 @@ const ServicesPage: React.FC = () => {
       />
       
       <div className="mobile-content-padding">
-        <div className="px-2 mb-2">
+        <div className="px-1 sm:px-2 mb-2">
           <Tabs 
             defaultValue="services" 
             value={activeTab} 
@@ -52,7 +52,7 @@ const ServicesPage: React.FC = () => {
             className="w-full"
           >
             <TabsList className={cn(
-              "w-full grid grid-cols-3 rounded-full p-0.5", 
+              "w-full grid grid-cols-3 rounded-full p-0.5 h-9 sm:h-10", 
               isDarkMode 
                 ? "bg-white/5 backdrop-blur-sm" 
                 : "bg-white/80 border border-darcare-deepGold/10 shadow-sm"
@@ -60,7 +60,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="services"
                 className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200", 
+                  "rounded-full text-xs font-medium transition-all duration-200 h-8 sm:h-9 px-2", 
                   activeTab === "services" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -75,7 +75,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="external"
                 className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200",
+                  "rounded-full text-xs font-medium transition-all duration-200 h-8 sm:h-9 px-2",
                   activeTab === "external" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 
@@ -90,7 +90,7 @@ const ServicesPage: React.FC = () => {
               <TabsTrigger 
                 value="requests"
                 className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200", 
+                  "rounded-full text-xs font-medium transition-all duration-200 h-8 sm:h-9 px-2", 
                   activeTab === "requests" 
                     ? isDarkMode 
                       ? "bg-darcare-gold text-darcare-navy" 

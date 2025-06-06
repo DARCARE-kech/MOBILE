@@ -93,15 +93,114 @@
   }
 }
 
-/* Mobile optimized layout */
-@media (max-width: 768px) {
+/* Mobile optimized layout for 360x414px */
+@media (max-width: 414px) {
   .mobile-safe-area {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
   }
   
   .mobile-header-height {
-    height: 64px; /* Fixed header height for mobile */
+    height: 56px; /* Reduced header height for mobile */
+  }
+  
+  .mobile-content-padding {
+    padding-top: 56px; /* Match reduced header height */
+    padding-bottom: 72px; /* Reduced bottom navigation height */
+  }
+  
+  .mobile-bottom-nav-height {
+    height: 72px; /* Reduced bottom nav height */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Optimized form fields for small mobile */
+  .mobile-form-field {
+    margin-bottom: 8px; /* Reduced from 12px */
+  }
+  
+  .mobile-form-input {
+    height: 36px; /* Reduced from 40px */
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 8px 12px; /* Reduced padding */
+  }
+  
+  .mobile-form-textarea {
+    min-height: 64px; /* Reduced from 80px */
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+  
+  .mobile-form-button {
+    height: 40px; /* Reduced from 48px */
+    font-size: 14px;
+  }
+  
+  /* Compact form sections */
+  .mobile-form-section {
+    padding: 12px; /* Reduced from 16px */
+    margin-bottom: 6px; /* Reduced from 8px */
+  }
+  
+  /* Maximum heights to prevent overflow on small screens */
+  .mobile-form-container {
+    max-height: calc(100vh - 140px); /* Account for smaller header + nav */
+    overflow-y: auto;
+  }
+  
+  .mobile-modal-content {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  /* Compact service cards for mobile */
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px; /* Reduced from 8px */
+  }
+  
+  .service-card {
+    padding: 8px; /* Reduced from 12px */
+    min-height: 100px; /* Reduced from 120px */
+  }
+  
+  .service-card h3 {
+    font-size: 0.75rem; /* Reduced from 0.875rem */
+    line-height: 1.1;
+  }
+  
+  .service-card p {
+    font-size: 0.6875rem; /* Reduced from 0.75rem */
+    line-height: 0.875rem;
+  }
+
+  /* Compact luxury cards */
+  .luxury-card {
+    padding: 12px; /* Reduced from default */
+    border-radius: 16px; /* Slightly reduced for mobile */
+  }
+
+  /* Compact tabs for mobile */
+  .tabs-mobile {
+    height: 32px;
+  }
+  
+  .tabs-mobile .tab-trigger {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+}
+
+/* Tablet and larger mobile optimizations */
+@media (min-width: 415px) and (max-width: 768px) {
+  .mobile-safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .mobile-header-height {
+    height: 64px; /* Standard header height for larger mobile */
   }
   
   .mobile-content-padding {
@@ -110,39 +209,37 @@
   }
   
   .mobile-bottom-nav-height {
-    height: 80px; /* Fixed bottom nav height */
+    height: 80px; /* Standard bottom nav height */
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Optimized form fields for mobile */
+  /* Standard form optimizations for larger mobile */
   .mobile-form-field {
-    margin-bottom: 12px; /* Reduced from default 16px */
+    margin-bottom: 12px;
   }
   
   .mobile-form-input {
-    height: 40px; /* Standard mobile touch target */
-    font-size: 16px; /* Prevents zoom on iOS */
+    height: 40px;
+    font-size: 16px;
   }
   
   .mobile-form-textarea {
-    min-height: 80px; /* Compact textarea */
+    min-height: 80px;
     font-size: 16px;
   }
   
   .mobile-form-button {
-    height: 48px; /* Standard mobile button height */
+    height: 48px;
     font-size: 16px;
   }
   
-  /* Compact form sections */
   .mobile-form-section {
     padding: 16px;
     margin-bottom: 8px;
   }
   
-  /* Maximum heights to prevent overflow */
   .mobile-form-container {
-    max-height: calc(100vh - 160px); /* Account for header + nav */
+    max-height: calc(100vh - 160px);
     overflow-y: auto;
   }
   
@@ -279,27 +376,4 @@
 
 .space-reservation-form button[type="submit"] {
   @apply mobile-form-button;
-}
-
-/* Compact grid for mobile service cards */
-@media (max-width: 640px) {
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  
-  .service-card {
-    padding: 12px;
-    min-height: 120px;
-  }
-  
-  .service-card h3 {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
-  
-  .service-card p {
-    font-size: 0.75rem;
-    line-height: 1rem;
-  }
 }

@@ -118,7 +118,7 @@ const RequestDetailPage = () => {
   };
   
   return (
-    <div className="bg-darcare-navy min-h-screen pb-24">
+    <div className="bg-darcare-navy min-h-screen pb-20 sm:pb-24">
       <MainHeader 
         title={t('services.requestDetails', 'Request Details')} 
         showBack={true}
@@ -126,14 +126,15 @@ const RequestDetailPage = () => {
         rightContent={<div />}
       />
       
-      <div className="p-4 space-y-6 pt-24">
-        <div className="luxury-card">
+      <div className="p-3 sm:p-4 space-y-4 sm:space-y-6 pt-20 sm:pt-24">
+        <div className="luxury-card p-3 sm:p-4">
           <RequestDetailHeader
             serviceName={itemName}
             status={request.status}
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
             staffName={staffName}
+            hideStatusBar={request.type === 'space'}
           />
           
           <RequestDetailsContent
@@ -150,7 +151,7 @@ const RequestDetailPage = () => {
         </div>
         
         {canModify && (
-          <div className="mt-4">
+          <div className="mt-3 sm:mt-4">
             <RequestActions
               onEdit={handleEdit}
               onCancel={() => cancelRequest()}
@@ -162,8 +163,8 @@ const RequestDetailPage = () => {
         )}
         
         {isCompleted && request.type === 'service' && (
-          <div className="luxury-card">
-            <h3 className="text-darcare-gold font-serif text-lg mb-4">{t('services.serviceRating', 'Service Rating')}</h3>
+          <div className="luxury-card p-3 sm:p-4">
+            <h3 className="text-darcare-gold font-serif text-base sm:text-lg mb-3 sm:mb-4">{t('services.serviceRating', 'Service Rating')}</h3>
             <RequestRating
               onSubmit={submitRating}
               isSubmitting={isSubmittingRating}
