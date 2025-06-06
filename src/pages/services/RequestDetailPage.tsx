@@ -147,6 +147,7 @@ const RequestDetailPage = () => {
             createdAt={request.created_at}
             spaceId={request.space_id}
             status={request.status}
+            requestType={request.type}
           />
         </div>
         
