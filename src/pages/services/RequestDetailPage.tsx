@@ -81,7 +81,7 @@ const RequestDetailPage = () => {
         <MainHeader 
           title={t('services.requestDetails', 'Request Details')} 
           showBack={true}
-          onBack={() => navigate(-1)} 
+          onBack={() => navigate('/services', { state: { activeTab: 'requests' } })} 
           rightContent={<div />}
         />
         <div className="flex justify-center items-center h-[80vh]">
