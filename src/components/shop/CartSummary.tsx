@@ -18,17 +18,19 @@ const CartSummary = ({ items, onPlaceOrder, isSubmitting = false }: CartSummaryP
     return items.reduce((sum, item) => sum + (item.price_at_time * item.quantity), 0);
   };
 
+  const hasItems = items.length > 0;
+
   return (
-    <div className="mt-6 border-t border-darcare-gold/20 pt-4">
-      <div className="flex justify-between text-darcare-white font-medium">
+    <div className="mt-4 border-t border-darcare-gold/20 pt-4">
+      <div className="flex justify-between text-darcare-white font-medium text-base">
         <span>{t('shop.total')}</span>
-        <span>${getTotal().toFixed(2)}</span>
+        <span>{getTotal().toFixed(2)} MAD</span>
       </div>
       
       <Button 
-        className="w-full mt-4 bg-darcare-gold text-darcare-navy"
+        className="w-full mt-4 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 py-3 text-base font-medium"
         onClick={onPlaceOrder}
-        disabled={isSubmitting || items.length === 0}
+        disabled={isSubmitting || !hasItems}
       >
         {isSubmitting ? (
           <>
@@ -39,6 +41,12 @@ const CartSummary = ({ items, onPlaceOrder, isSubmitting = false }: CartSummaryP
           t('shop.placeOrder')
         )}
       </Button>
+      
+      {!hasItems && (
+        <p className="text-darcare-beige/60 text-sm text-center mt-2">
+          {t('shop.addItemsToOrder')}
+        </p>
+      )}
     </div>
   );
 };

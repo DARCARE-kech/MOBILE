@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -121,7 +122,10 @@ const OrderDetailScreen = () => {
         <MainHeader 
           title={t('shop.orderDetails', 'Order Details')} 
           showBack={true} 
-          onBack={() => navigate('/services/shop/orders')} 
+          onBack={() => navigate('/services/shop/orders')}
+          showWeather={false}
+          showFavorite={false}
+          showNotifications={false}
         />
         <div className="flex justify-center items-center h-72 pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
@@ -137,9 +141,12 @@ const OrderDetailScreen = () => {
         <MainHeader 
           title={t('shop.orderDetails', 'Order Details')} 
           showBack={true} 
-          onBack={() => navigate('/services/shop/orders')} 
+          onBack={() => navigate('/services/shop/orders')}
+          showWeather={false}
+          showFavorite={false}
+          showNotifications={false}
         />
-        <div className="p-4 pt-20 pb-24">
+        <div className="p-3 pt-20 pb-24">
           <div className="text-center text-darcare-beige">
             <p>{t('shop.orderNotFound', 'Order not found')}</p>
           </div>
@@ -155,13 +162,16 @@ const OrderDetailScreen = () => {
       <MainHeader 
         title={t('shop.orderDetails', 'Order Details')} 
         showBack={true} 
-        onBack={() => navigate('/services/shop/orders')} 
+        onBack={() => navigate('/services/shop/orders')}
+        showWeather={false}
+        showFavorite={false}
+        showNotifications={false}
       />
       
-      <div className="p-4 pt-20 pb-24 space-y-4">
+      <div className="p-3 pt-20 pb-24 space-y-3">
         {/* Order Info */}
         <Card className="bg-darcare-navy/60 border-darcare-gold/20">
-          <CardContent className="p-4 space-y-3">
+          <CardContent className="p-3 space-y-3">
             <div className="flex items-center justify-between">
               <div className="text-darcare-gold font-medium text-base">
                 {t('shop.orderNumber', 'Order')} #{order.id.slice(-8)}
@@ -202,29 +212,29 @@ const OrderDetailScreen = () => {
                     <Button 
                       variant="destructive" 
                       size="sm"
-                      className="w-full"
+                      className="w-full text-sm py-2"
                       disabled={isCancelling}
                     >
                       <X className="h-4 w-4 mr-2" />
-                      {isCancelling ? t('common.processing') : t('shop.cancelOrder')}
+                      {isCancelling ? t('shop.processing') : t('shop.cancelOrder')}
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-darcare-navy border-darcare-gold/20">
+                  <AlertDialogContent className="bg-darcare-navy border-darcare-gold/20 mx-3">
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="text-darcare-gold">
+                      <AlertDialogTitle className="text-darcare-gold text-base">
                         {t('shop.confirmCancelOrder')}
                       </AlertDialogTitle>
-                      <AlertDialogDescription className="text-darcare-beige/70">
+                      <AlertDialogDescription className="text-darcare-beige/70 text-sm">
                         {t('shop.cancelOrderWarning')}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-darcare-gold/20 text-darcare-beige hover:bg-darcare-gold/10">
+                    <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                      <AlertDialogCancel className="bg-transparent border-darcare-gold/20 text-darcare-beige hover:bg-darcare-gold/10 text-sm">
                         {t('common.cancel')}
                       </AlertDialogCancel>
                       <AlertDialogAction 
                         onClick={handleCancelOrder}
-                        className="bg-red-600 hover:bg-red-700 text-white"
+                        className="bg-red-600 hover:bg-red-700 text-white text-sm"
                       >
                         {t('shop.cancelOrder')}
                       </AlertDialogAction>
@@ -238,14 +248,14 @@ const OrderDetailScreen = () => {
 
         {/* Order Items */}
         <Card className="bg-darcare-navy/60 border-darcare-gold/20">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-2">
             <CardTitle className="text-darcare-gold text-base">{t('shop.orderItems', 'Order Items')}</CardTitle>
           </CardHeader>
           <CardContent className="pt-0 space-y-3">
             {order.shop_order_items?.map((item, index) => (
               <div key={item.id}>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-darcare-navy/80 rounded-md overflow-hidden flex-shrink-0">
+                  <div className="w-10 h-10 bg-darcare-navy/80 rounded-md overflow-hidden flex-shrink-0">
                     {item.shop_products?.image_url && (
                       <img
                         src={item.shop_products.image_url}

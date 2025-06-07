@@ -93,7 +93,8 @@
     "todaySchedule": "Programme du jour",
     "noActivitiesScheduled": "Aucune activité programmée",
     "noRequestsYet": "Pas encore de demandes? Laissez-nous prendre soin de vous.",
-    "requestService": "Demander un service"
+    "requestService": "Demander un service",
+    "shop": "Boutique"
   },
   "shop": {
     "title": "Boutique",
@@ -114,8 +115,19 @@
     "quantity": "Qté",
     "orderNotFound": "Commande introuvable",
     "lastUpdated": "Dernière mise à jour",
+    "processing": "En cours...",
+    "placeOrder": "Passer la commande",
+    "addItemsToOrder": "Ajoutez des articles à votre panier pour passer une commande",
+    "cancelOrder": "Annuler la commande",
+    "confirmCancelOrder": "Annuler la commande?",
+    "cancelOrderWarning": "Êtes-vous sûr de vouloir annuler cette commande? Cette action ne peut pas être annulée.",
+    "orderCancelled": "Commande annulée",
+    "orderCancelledDesc": "Votre commande a été annulée avec succès",
+    "cancelErrorDesc": "Impossible d'annuler la commande. Veuillez réessayer.",
     "orderStatus": {
       "title": "Statut de la commande",
+      "pending": "En attente",
+      "submitted": "Soumise",
       "confirmed": "Confirmée",
       "preparing": "En préparation",
       "delivered": "Livrée",

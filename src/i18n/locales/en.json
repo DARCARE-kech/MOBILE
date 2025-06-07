@@ -93,7 +93,8 @@
     "todaySchedule": "Today's Schedule",
     "noActivitiesScheduled": "No Activities Scheduled",
     "noRequestsYet": "No requests yet? Let us take care of you.",
-    "requestService": "Request a Service"
+    "requestService": "Request a Service",
+    "shop": "Shop"
   },
   "shop": {
     "title": "Shop",
@@ -114,8 +115,19 @@
     "quantity": "Qty",
     "orderNotFound": "Order not found",
     "lastUpdated": "Last updated",
+    "processing": "Processing...",
+    "placeOrder": "Place Order",
+    "addItemsToOrder": "Add items to your cart to place an order",
+    "cancelOrder": "Cancel Order",
+    "confirmCancelOrder": "Cancel Order?",
+    "cancelOrderWarning": "Are you sure you want to cancel this order? This action cannot be undone.",
+    "orderCancelled": "Order Cancelled",
+    "orderCancelledDesc": "Your order has been cancelled successfully",
+    "cancelErrorDesc": "Could not cancel the order. Please try again.",
     "orderStatus": {
       "title": "Order Status",
+      "pending": "Pending",
+      "submitted": "Submitted",
       "confirmed": "Confirmed",
       "preparing": "Preparing",
       "delivered": "Delivered",

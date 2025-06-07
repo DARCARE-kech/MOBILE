@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShopCart } from '@/hooks/useShopCart';
@@ -109,26 +110,29 @@ const ShopService = () => {
     <div className="min-h-screen bg-darcare-navy pb-20 relative">
       <MainHeader 
         title={t('services.shop')} 
-        onBack={() => navigate('/services')} 
+        onBack={() => navigate('/services')}
+        showWeather={false}
+        showFavorite={false}
+        showNotifications={false}
         rightContent={
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate('/services/shop/orders')}
-              className="text-darcare-beige hover:text-darcare-gold"
+              className="text-darcare-beige hover:text-darcare-gold p-2"
             >
-              <Package size={22} />
+              <Package size={20} />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate('/services/cart')}
-              className="relative text-darcare-beige hover:text-darcare-gold"
+              className="relative text-darcare-beige hover:text-darcare-gold p-2"
             >
-              <ShoppingCart size={22} />
+              <ShoppingCart size={20} />
               {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-darcare-gold text-darcare-navy text-xs font-medium w-5 h-5 flex items-center justify-center rounded-full">
+                <span className="absolute -top-0.5 -right-0.5 bg-darcare-gold text-darcare-navy text-xs font-medium w-4 h-4 flex items-center justify-center rounded-full text-[10px]">
                   {cartItemsCount}
                 </span>
               )}
@@ -138,12 +142,12 @@ const ShopService = () => {
       />
       
       <div className="pt-16 pb-24">
-        <div className="p-4">
+        <div className="p-3">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-darcare-beige/50" />
             <Input
               placeholder={t('shop.searchProducts')}
-              className="pl-9 bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50"
+              className="pl-9 bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 h-10"
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
@@ -163,13 +167,13 @@ const ShopService = () => {
       </div>
       
       {cartItemsCount > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4 z-40">
+        <div className="fixed bottom-20 left-0 right-0 flex justify-center px-3 z-40">
           <Button 
-            className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium py-6 px-8 rounded-full shadow-lg flex items-center gap-2"
+            className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium py-3 px-6 rounded-full shadow-lg flex items-center gap-2 text-sm"
             onClick={() => navigate('/services/cart')}
           >
             Go to Cart ({cartItemsCount})
-            <ArrowRight size={18} />
+            <ArrowRight size={16} />
           </Button>
         </div>
       )}

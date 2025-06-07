@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -91,7 +92,10 @@ const OrdersListScreen = () => {
         <MainHeader 
           title={t('shop.myOrders', 'My Orders')} 
           showBack={true} 
-          onBack={() => navigate('/services/shop')} 
+          onBack={() => navigate('/services/shop')}
+          showWeather={false}
+          showFavorite={false}
+          showNotifications={false}
         />
         <div className="flex justify-center items-center h-72 pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-darcare-gold" />
@@ -107,9 +111,12 @@ const OrdersListScreen = () => {
         <MainHeader 
           title={t('shop.myOrders', 'My Orders')} 
           showBack={true} 
-          onBack={() => navigate('/services/shop')} 
+          onBack={() => navigate('/services/shop')}
+          showWeather={false}
+          showFavorite={false}
+          showNotifications={false}
         />
-        <div className="p-4 pt-20 pb-24">
+        <div className="p-3 pt-20 pb-24">
           <div className="text-center text-darcare-beige">
             <p>{t('common.error', 'Error loading orders')}</p>
           </div>
@@ -126,12 +133,15 @@ const OrdersListScreen = () => {
         <MainHeader 
           title={t('shop.myOrders', 'My Orders')} 
           showBack={true} 
-          onBack={() => navigate('/services/shop')} 
+          onBack={() => navigate('/services/shop')}
+          showWeather={false}
+          showFavorite={false}
+          showNotifications={false}
         />
-        <div className="p-4 pt-20 pb-24">
+        <div className="p-3 pt-20 pb-24">
           <div className="text-center text-darcare-beige">
-            <p className="text-lg font-medium mb-2">{t('shop.noOrders', 'No orders yet')}</p>
-            <p className="text-darcare-beige/60">{t('shop.noOrdersDescription', 'Start shopping to see your orders here')}</p>
+            <p className="text-base font-medium mb-2">{t('shop.noOrders', 'No orders yet')}</p>
+            <p className="text-darcare-beige/60 text-sm">{t('shop.noOrdersDescription', 'Start shopping to see your orders here')}</p>
           </div>
         </div>
         <FloatingAction />
@@ -145,10 +155,13 @@ const OrdersListScreen = () => {
       <MainHeader 
         title={t('shop.myOrders', 'My Orders')} 
         showBack={true} 
-        onBack={() => navigate('/services/shop')} 
+        onBack={() => navigate('/services/shop')}
+        showWeather={false}
+        showFavorite={false}
+        showNotifications={false}
       />
       
-      <div className="p-4 pt-20 pb-24 space-y-3">
+      <div className="p-3 pt-20 pb-24 space-y-2">
         {orders.map((order) => (
           <Card 
             key={order.id} 
@@ -165,7 +178,7 @@ const OrdersListScreen = () => {
                     {getStatusText(order.status)}
                   </Badge>
                 </div>
-                <ChevronRight size={16} className="text-darcare-beige/50" />
+                <ChevronRight size={14} className="text-darcare-beige/50" />
               </div>
               
               <div className="flex items-center justify-between">
