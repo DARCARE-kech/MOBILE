@@ -150,7 +150,7 @@ const InternalServicesTab: React.FC = () => {
           {title}
         </h3>
         <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-3 px-2 pb-1" style={{ width: 'max-content' }}>
+          <div className="flex gap-2 px-2 pb-1" style={{ width: 'max-content' }}>
             {items.map(item => (
               <div key={`${item.type}-${item.id}`} className="flex-shrink-0 w-40">
                 <ServiceCard 
