@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,18 +7,23 @@ import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import FloatingAction from '@/components/FloatingAction';
 import { useTranslation } from 'react-i18next';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
+import { useOrderActions } from '@/hooks/useOrderActions';
 
 const OrderDetailScreen = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
+  const { cancelOrder } = useOrderActions();
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const { data: order, isLoading, error } = useQuery({
     queryKey: ['shop-order-detail', id],
@@ -61,6 +66,8 @@ const OrderDetailScreen = () => {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
+      case 'submitted':
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
       case 'confirmed':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'preparing':
@@ -76,6 +83,8 @@ const OrderDetailScreen = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
+      case 'submitted':
+        return t('shop.orderStatus.submitted', 'Submitted');
       case 'confirmed':
         return t('shop.orderStatus.confirmed', 'Confirmed');
       case 'preparing':
@@ -86,6 +95,23 @@ const OrderDetailScreen = () => {
         return t('shop.orderStatus.cancelled', 'Cancelled');
       default:
         return status;
+    }
+  };
+
+  const canCancelOrder = (status: string) => {
+    return status === 'submitted' || status === 'confirmed';
+  };
+
+  const handleCancelOrder = async () => {
+    if (!order?.id) return;
+    
+    setIsCancelling(true);
+    const success = await cancelOrder(order.id);
+    setIsCancelling(false);
+    
+    if (success) {
+      // Navigate back to orders list after successful cancellation
+      navigate('/services/shop/orders');
     }
   };
 
@@ -133,7 +159,7 @@ const OrderDetailScreen = () => {
       />
       
       <div className="p-4 pt-20 pb-24 space-y-4">
-        {/* Order Info - Compact */}
+        {/* Order Info */}
         <Card className="bg-darcare-navy/60 border-darcare-gold/20">
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between">
@@ -167,10 +193,50 @@ const OrderDetailScreen = () => {
                 locale: i18n.language === 'fr' ? fr : enUS
               })}
             </div>
+
+            {/* Cancel Order Button */}
+            {canCancelOrder(order.status) && (
+              <div className="pt-2">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      className="w-full"
+                      disabled={isCancelling}
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      {isCancelling ? t('common.processing') : t('shop.cancelOrder')}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-darcare-navy border-darcare-gold/20">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-darcare-gold">
+                        {t('shop.confirmCancelOrder')}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-darcare-beige/70">
+                        {t('shop.cancelOrderWarning')}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-transparent border-darcare-gold/20 text-darcare-beige hover:bg-darcare-gold/10">
+                        {t('common.cancel')}
+                      </AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={handleCancelOrder}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        {t('shop.cancelOrder')}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Order Items - Compact */}
+        {/* Order Items */}
         <Card className="bg-darcare-navy/60 border-darcare-gold/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-darcare-gold text-base">{t('shop.orderItems', 'Order Items')}</CardTitle>

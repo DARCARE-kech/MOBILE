@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Loading...",
@@ -395,8 +394,15 @@
     "orderItems": "Order Items",
     "orderNotFound": "Order not found",
     "lastUpdated": "Last updated",
+    "cancelOrder": "Cancel Order",
+    "orderCancelled": "Order Cancelled",
+    "orderCancelledDesc": "Your order has been cancelled successfully",
+    "cancelErrorDesc": "Could not cancel order. Please try again.",
+    "confirmCancelOrder": "Cancel Order?",
+    "cancelOrderWarning": "Are you sure you want to cancel this order? This action cannot be undone.",
     "orderStatus": {
       "title": "Order Status",
+      "submitted": "Submitted",
       "confirmed": "Confirmed",
       "preparing": "Preparing",
       "delivered": "Delivered",

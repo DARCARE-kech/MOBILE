@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -37,7 +36,7 @@ const OrdersListScreen = () => {
           )
         `)
         .eq('user_id', user.id)
-        .eq('status', 'confirmed')
+        .in('status', ['submitted', 'confirmed', 'preparing', 'delivered', 'cancelled'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -54,6 +53,8 @@ const OrdersListScreen = () => {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
+      case 'submitted':
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
       case 'confirmed':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'preparing':
@@ -69,6 +70,8 @@ const OrdersListScreen = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
+      case 'submitted':
+        return t('shop.orderStatus.submitted', 'Submitted');
       case 'confirmed':
         return t('shop.orderStatus.confirmed', 'Confirmed');
       case 'preparing':

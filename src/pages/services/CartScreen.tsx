@@ -110,19 +110,19 @@ const CartScreen = () => {
       
       if (orders && orders.length > 0) {
         const cartOrderId = orders[0].id;
-        console.log('Finalizing order:', cartOrderId);
+        console.log('Order placed, keeping as submitted:', cartOrderId);
         
-        // Update the order status to 'confirmed' (finalizing the order)
+        // Create a new empty cart order for future items
         await supabase
           .from('shop_orders')
-          .update({ status: 'confirmed' })
-          .eq('id', cartOrderId);
+          .insert({ user_id: user.id, status: 'submitted' });
         
         // Invalidate cart queries to update UI immediately
         await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
         await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+        await queryClient.invalidateQueries({ queryKey: ['shop-orders'] });
         
-        console.log('Order placed successfully and cart cleared');
+        console.log('Order placed successfully and new cart created');
       }
       
       toast({
@@ -132,7 +132,7 @@ const CartScreen = () => {
       
       // Navigate after successful submission
       setTimeout(() => {
-        navigate('services/shop');
+        navigate('/services/shop');
       }, 100);
       
     } catch (err) {
@@ -181,7 +181,7 @@ const CartScreen = () => {
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate("/services/shop")} />
         <div className="p-4 pt-16 pb-24">
-          <CartEmpty onContinueShopping={() => navigate('services/shop')} />
+          <CartEmpty onContinueShopping={() => navigate('/services/shop')} />
         </div>
         <FloatingAction />
         <BottomNavigation activeTab="services" />
@@ -191,7 +191,7 @@ const CartScreen = () => {
 
   return (
     <div className="min-h-screen bg-darcare-navy">
-      <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate('services/shop')} />
+      <MainHeader title={t('shop.cart')} showBack={true} onBack={() => navigate('/services/shop')} />
       <div className="p-4 pt-16 pb-24">
         <div className="space-y-4">
           {cartItems.map((item) => (

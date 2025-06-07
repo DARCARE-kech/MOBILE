@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "Chargement...",
@@ -397,8 +396,15 @@
     "orderItems": "Articles commandés",
     "orderNotFound": "Commande introuvable",
     "lastUpdated": "Dernière mise à jour",
+    "cancelOrder": "Annuler la Commande",
+    "orderCancelled": "Commande Annulée",
+    "orderCancelledDesc": "Votre commande a été annulée avec succès",
+    "cancelErrorDesc": "Impossible d'annuler la commande. Veuillez réessayer.",
+    "confirmCancelOrder": "Annuler la Commande?",
+    "cancelOrderWarning": "Êtes-vous sûr de vouloir annuler cette commande? Cette action ne peut pas être annulée.",
     "orderStatus": {
       "title": "Statut de la commande",
+      "submitted": "Soumise",
       "confirmed": "Confirmée",
       "preparing": "En préparation",
       "delivered": "Livrée",
