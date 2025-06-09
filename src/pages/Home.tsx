@@ -56,7 +56,7 @@ const Home: React.FC = () => {
       const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
       const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-      // Fetch service requests (excluding Shop services)
+      // Fetch service requests (excluding Shop services) for today only
       const { data: services, error: serviceError } = await supabase
         .from('service_requests')
         .select(`
@@ -71,9 +71,11 @@ const Home: React.FC = () => {
         .eq('user_id', user.id)
         .in('status', ['pending', 'in_progress', 'active'])
         .neq('services.name', 'Shop')
-        .order('created_at', { ascending: false });
+        .gte('preferred_time', startOfDay.toISOString())
+        .lte('preferred_time', endOfDay.toISOString())
+        .order('preferred_time', { ascending: true });
 
-      // Fetch space reservations with proper column hinting
+      // Fetch space reservations for today only
       const { data: spaces, error: spaceError } = await supabase
         .from('space_reservations')
         .select(`
@@ -82,7 +84,9 @@ const Home: React.FC = () => {
         `)
         .eq('user_id', user.id)
         .in('status', ['pending'])
-        .order('created_at', { ascending: false });
+        .gte('preferred_time', startOfDay.toISOString())
+        .lte('preferred_time', endOfDay.toISOString())
+        .order('preferred_time', { ascending: true });
 
       if (serviceError || spaceError) {
         console.error("Error fetching schedule:", serviceError || spaceError);
@@ -122,26 +126,18 @@ const Home: React.FC = () => {
         space_id: item.space_id
       }));
 
-      // Combine and sort: prioritize today's schedule, then by creation date
+      // Combine and sort by preferred_time, then creation date
       const allRequests = [...transformedServices, ...transformedSpaces];
       
       const sortedRequests = allRequests.sort((a, b) => {
-        // Check if preferred_time is today
-        const aIsToday = a.preferred_time && 
-          new Date(a.preferred_time) >= startOfDay && 
-          new Date(a.preferred_time) <= endOfDay;
-        const bIsToday = b.preferred_time && 
-          new Date(b.preferred_time) >= startOfDay && 
-          new Date(b.preferred_time) <= endOfDay;
-
-        // Prioritize today's schedule
-        if (aIsToday && !bIsToday) return -1;
-        if (!aIsToday && bIsToday) return 1;
-
-        // If both are today or both are not today, sort by preferred_time then creation date
+        // Sort by preferred_time first
         if (a.preferred_time && b.preferred_time) {
           return new Date(a.preferred_time).getTime() - new Date(b.preferred_time).getTime();
         }
+        
+        // If one has preferred_time and other doesn't, prioritize the one with preferred_time
+        if (a.preferred_time && !b.preferred_time) return -1;
+        if (!a.preferred_time && b.preferred_time) return 1;
         
         // Finally sort by creation date
         return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
@@ -150,7 +146,7 @@ const Home: React.FC = () => {
       // Limit to 3 items
       const limitedRequests = sortedRequests.slice(0, 3);
       
-      console.log("Unified schedule data fetched for home page (excluding Shop):", limitedRequests);
+      console.log("Today's schedule data fetched for home page (today only, excluding Shop):", limitedRequests);
       return limitedRequests;
     },
     enabled: !!user?.id,
