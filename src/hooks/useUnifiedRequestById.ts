@@ -57,7 +57,7 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
           .from('space_reservations')
           .select(`
             *,
-            spaces(*)
+            spaces!space_reservations_space_id_fkey(*)
           `)
           .eq('id', id)
           .single();

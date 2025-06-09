@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -55,7 +54,7 @@ const MyRequestsTab: React.FC = () => {
         : ['pending', 'in_progress', 'confirmed'];
 
       try {
-        // Fetch services with left join to staff_assignments for staff info
+        // Fetch services with proper staff assignments join
         const { data: services, error: serviceError } = await supabase
           .from('service_requests')
           .select(`
@@ -65,7 +64,11 @@ const MyRequestsTab: React.FC = () => {
             status,
             created_at,
             services(name),
-            staff_assignments(staff_id, staff_name)
+            staff_assignments(
+              id,
+              staff_id,
+              staff_services(staff_name)
+            )
           `)
           .eq('user_id', user.id)
           .in('status', statusFilter)
@@ -76,7 +79,7 @@ const MyRequestsTab: React.FC = () => {
           throw serviceError;
         }
 
-        // Fetch spaces
+        // Fetch spaces with proper column hinting
         const { data: spaces, error: spaceError } = await supabase
           .from('space_reservations')
           .select(`
@@ -85,7 +88,7 @@ const MyRequestsTab: React.FC = () => {
             preferred_time,
             status,
             created_at,
-            spaces(name)
+            spaces!space_reservations_space_id_fkey(name)
           `)
           .eq('user_id', user.id)
           .in('status', statusFilter)
@@ -105,7 +108,7 @@ const MyRequestsTab: React.FC = () => {
           status: s.status,
           created_at: s.created_at,
           service_id: s.service_id,
-          staff_name: s.staff_assignments?.[0]?.staff_name || null,
+          staff_name: s.staff_assignments?.[0]?.staff_services?.staff_name || null,
         }));
 
         // Transform spaces

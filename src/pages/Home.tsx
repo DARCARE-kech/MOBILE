@@ -72,12 +72,12 @@ const Home: React.FC = () => {
         .in('status', ['pending', 'in_progress', 'active'])
         .order('created_at', { ascending: false });
 
-      // Fetch space reservations
+      // Fetch space reservations with proper column hinting
       const { data: spaces, error: spaceError } = await supabase
         .from('space_reservations')
         .select(`
           *,
-          spaces (name)
+          spaces!space_reservations_space_id_fkey (name)
         `)
         .eq('user_id', user.id)
         .in('status', ['pending'])
