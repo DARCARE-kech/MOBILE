@@ -56,12 +56,12 @@ const Home: React.FC = () => {
       const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
       const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-      // Fetch service requests
+      // Fetch service requests (excluding Shop services)
       const { data: services, error: serviceError } = await supabase
         .from('service_requests')
         .select(`
           *,
-          services (name, category),
+          services!inner (name, category),
           staff_assignments!inner (
             id,
             staff_id,
@@ -70,6 +70,7 @@ const Home: React.FC = () => {
         `)
         .eq('user_id', user.id)
         .in('status', ['pending', 'in_progress', 'active'])
+        .neq('services.name', 'Shop')
         .order('created_at', { ascending: false });
 
       // Fetch space reservations with proper column hinting
@@ -149,7 +150,7 @@ const Home: React.FC = () => {
       // Limit to 3 items
       const limitedRequests = sortedRequests.slice(0, 3);
       
-      console.log("Unified schedule data fetched for home page:", limitedRequests);
+      console.log("Unified schedule data fetched for home page (excluding Shop):", limitedRequests);
       return limitedRequests;
     },
     enabled: !!user?.id,
