@@ -116,79 +116,103 @@
 
   /* Optimized form fields for small mobile */
   .mobile-form-field {
-    margin-bottom: 8px; /* Reduced from 12px */
+    margin-bottom: 6px; /* Reduced spacing */
   }
   
   .mobile-form-input {
     height: 36px; /* Reduced from 40px */
     font-size: 16px; /* Prevents zoom on iOS */
-    padding: 8px 12px; /* Reduced padding */
+    padding: 6px 10px; /* Reduced padding */
   }
   
   .mobile-form-textarea {
-    min-height: 64px; /* Reduced from 80px */
+    min-height: 56px; /* Reduced from 80px */
     font-size: 16px;
-    padding: 8px 12px;
+    padding: 6px 10px;
   }
   
   .mobile-form-button {
-    height: 40px; /* Reduced from 48px */
+    height: 36px; /* Reduced from 48px */
     font-size: 14px;
+    padding: 6px 16px;
   }
   
-  /* Compact form sections */
+  /* Compact form sections for mobile services */
   .mobile-form-section {
-    padding: 12px; /* Reduced from 16px */
-    margin-bottom: 6px; /* Reduced from 8px */
+    padding: 8px; /* Reduced padding */
+    margin-bottom: 4px; /* Reduced margin */
   }
   
   /* Maximum heights to prevent overflow on small screens */
   .mobile-form-container {
-    max-height: calc(100vh - 140px); /* Account for smaller header + nav */
+    max-height: calc(100vh - 120px); /* Account for smaller header + nav */
     overflow-y: auto;
   }
   
   .mobile-modal-content {
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 80px);
     overflow-y: auto;
   }
 
   /* Compact service cards for mobile */
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px; /* Reduced from 8px */
+    gap: 4px; /* Reduced gap */
   }
   
   .service-card {
-    padding: 8px; /* Reduced from 12px */
-    min-height: 100px; /* Reduced from 120px */
+    padding: 6px; /* Reduced padding */
+    min-height: 90px; /* Reduced height */
   }
   
   .service-card h3 {
-    font-size: 0.75rem; /* Reduced from 0.875rem */
+    font-size: 0.7rem; /* Smaller text */
     line-height: 1.1;
   }
   
   .service-card p {
-    font-size: 0.6875rem; /* Reduced from 0.75rem */
-    line-height: 0.875rem;
+    font-size: 0.6rem; /* Smaller text */
+    line-height: 0.8rem;
   }
 
   /* Compact luxury cards */
   .luxury-card {
-    padding: 12px; /* Reduced from default */
-    border-radius: 16px; /* Slightly reduced for mobile */
+    padding: 10px; /* Reduced padding */
+    border-radius: 12px; /* Reduced border radius */
   }
 
   /* Compact tabs for mobile */
   .tabs-mobile {
-    height: 32px;
+    height: 28px;
   }
   
   .tabs-mobile .tab-trigger {
-    height: 28px;
-    padding: 0 8px;
-    font-size: 11px;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  /* Service form specific optimizations */
+  .service-form-card {
+    padding: 12px; /* Reduced padding for cards */
+    margin-bottom: 12px; /* Reduced margin */
+  }
+
+  /* Time picker optimization for mobile */
+  .time-picker-popover {
+    max-height: 200px; /* Limit popover height */
+  }
+
+  /* Checkbox and radio optimizations */
+  .form-checkbox-grid {
+    grid-template-columns: repeat(1, 1fr); /* Single column on very small mobile */
+    gap: 6px;
+  }
+
+  /* Icon size adjustments */
+  .mobile-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -215,37 +239,46 @@
 
   /* Standard form optimizations for larger mobile */
   .mobile-form-field {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   
   .mobile-form-input {
     height: 40px;
     font-size: 16px;
+    padding: 8px 12px;
   }
   
   .mobile-form-textarea {
     min-height: 80px;
     font-size: 16px;
+    padding: 8px 12px;
   }
   
   .mobile-form-button {
-    height: 48px;
-    font-size: 16px;
+    height: 44px;
+    font-size: 15px;
+    padding: 8px 20px;
   }
   
   .mobile-form-section {
-    padding: 16px;
-    margin-bottom: 8px;
+    padding: 14px;
+    margin-bottom: 6px;
   }
   
   .mobile-form-container {
-    max-height: calc(100vh - 160px);
+    max-height: calc(100vh - 150px);
     overflow-y: auto;
   }
   
   .mobile-modal-content {
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
+  }
+
+  /* Checkbox grid for larger mobile */
+  .form-checkbox-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on larger mobile */
+    gap: 8px;
   }
 }
 

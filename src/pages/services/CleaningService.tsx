@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -199,50 +200,57 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
   };
   
   return (
-    <div className="p-4 pb-24">
+    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
       {/* Service Header with instructions */}
-     
-         <ServiceHeader 
+      <ServiceHeader 
         serviceName={serviceData?.category || t('services.cleaning', 'Cleaning')}
         serviceDetail={serviceData}
       />
 
       {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-4 sm:p-5 rounded-lg sm:rounded-2xl mb-4 sm:mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Cleaning Type Option */}
-            <OptionField
-              form={form}
-              fieldType="radio"
-              name="cleaningType"
-              label={t('services.cleaningType', 'Cleaning Type')}
-              options={cleaningTypes}
-              icon={<Home className="h-5 w-5" />}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="radio"
+                name="cleaningType"
+                label={t('services.cleaningType', 'Cleaning Type')}
+                options={cleaningTypes}
+                icon={<Home className="h-4 w-4 sm:h-5 sm:w-5" />}
+              />
+            </div>
             
             {/* Rooms Selection */}
-            <OptionField
-              form={form}
-              fieldType="checkbox"
-              name="rooms"
-              label={t('services.selectRooms', 'Select Rooms')}
-              options={roomOptions}
-              icon={<Bed className="h-5 w-5" />}
-              subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="checkbox"
+                name="rooms"
+                label={t('services.selectRooms', 'Select Rooms')}
+                options={roomOptions}
+                icon={<Bed className="h-4 w-4 sm:h-5 sm:w-5" />}
+                subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
+              />
+            </div>
             
             {/* Date and Time Selection */}
-            <DateTimePickerSection form={form} />
+            <div className="mobile-form-section">
+              <DateTimePickerSection form={form} />
+            </div>
             
             {/* Notes Field */}
-            <NoteInput form={form} />
+            <div className="mobile-form-section">
+              <NoteInput form={form} />
+            </div>
             
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isSubmitting || !isFormValid()}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 mobile-form-button h-10 sm:h-12 text-sm sm:text-base"
             >
               {isSubmitting ? t('common.submitting', 'Submitting...') : 
                 editMode ? t('services.updateRequest', 'Update Request') : t('services.sendRequest', 'Send Request')

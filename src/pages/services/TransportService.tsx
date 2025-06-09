@@ -25,7 +25,6 @@ interface FormValues {
   date: Date;
   time: string;
   note: string;
-
   driverLanguage: string;
   passengers: number;
   luggageSupport: boolean;
@@ -43,10 +42,7 @@ const TransportService: React.FC<TransportServiceProps> = ({
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
- 
-  
   const optionalFields = serviceData?.optional_fields || {};
-
   const languageOptions = optionalFields.driver_languages || ["english", "french", "arabic"];
   
   // Extract date and time from existingRequest if in edit mode
@@ -70,7 +66,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
       date: getDefaultDate(),
       time: getDefaultTime(),
       note: editMode && existingRequest?.note ? existingRequest.note : '',
-      
       driverLanguage: editMode && existingRequest?.selected_options?.driverLanguage 
         ? existingRequest.selected_options.driverLanguage 
         : 'english',
@@ -181,9 +176,8 @@ const TransportService: React.FC<TransportServiceProps> = ({
     }
   };
   
-  // Le reste du code reste inchangé
   return (
-    <div className="p-4 pb-24">
+    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
       {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category || t('services.transport')}
@@ -191,50 +185,58 @@ const TransportService: React.FC<TransportServiceProps> = ({
       />
       
       {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-4 sm:p-5 rounded-lg sm:rounded-2xl mb-4 sm:mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Vehicle Type Selection */}
-           
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Driver Language Selection */}
-            <OptionField
-              form={form}
-              fieldType="radio"
-              name="driverLanguage"
-              label={t('services.driverLanguage')}
-              options={languageOptions}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="radio"
+                name="driverLanguage"
+                label={t('services.driverLanguage')}
+                options={languageOptions}
+              />
+            </div>
             
             {/* Number of Passengers */}
-            <OptionField
-              form={form}
-              fieldType="number"
-              name="passengers"
-              label={t('services.passengers')}
-              min={1}
-              max={6}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="number"
+                name="passengers"
+                label={t('services.passengers')}
+                min={1}
+                max={6}
+              />
+            </div>
             
             {/* Luggage Support Toggle */}
-            <OptionField
-              form={form}
-              fieldType="toggle"
-              name="luggageSupport"
-              label={t('services.luggageSupport')}
-              subtitle={t('services.luggageSubtitle')}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="toggle"
+                name="luggageSupport"
+                label={t('services.luggageSupport')}
+                subtitle={t('services.luggageSubtitle')}
+              />
+            </div>
             
             {/* Date and Time Selection */}
-            <DateTimePickerSection form={form} />
+            <div className="mobile-form-section">
+              <DateTimePickerSection form={form} />
+            </div>
             
             {/* Notes Field */}
-            <NoteInput form={form} />
+            <div className="mobile-form-section">
+              <NoteInput form={form} />
+            </div>
             
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isSubmitting || !isFormValid()}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 mobile-form-button h-10 sm:h-12 text-sm sm:text-base"
             >
               {isSubmitting ? t('common.submitting') : 
                 editMode ? t('services.updateRequest') : t('services.sendRequest')}

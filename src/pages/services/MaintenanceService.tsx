@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -198,7 +199,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
   };
   
   return (
-    <div className="p-4 pb-24">
+    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
       {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category || t('services.maintenance')}
@@ -206,30 +207,34 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
       />
       
       {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-4 sm:p-5 rounded-lg sm:rounded-2xl mb-4 sm:mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Maintenance Type Option */}
-            <OptionField
-              form={form}
-              fieldType="radio"
-              name="maintenanceType"
-              label={t('services.maintenanceType')}
-              options={maintenanceTypes}
-              icon={<Wrench className="h-5 w-5" />}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="radio"
+                name="maintenanceType"
+                label={t('services.maintenanceType')}
+                options={maintenanceTypes}
+                icon={<Wrench className="h-4 w-4 sm:h-5 sm:w-5" />}
+              />
+            </div>
             
             {/* Urgency Selection */}
-            <OptionField
-              form={form}
-              fieldType="radio"
-              name="urgency"
-              label={t('services.urgency')}
-              options={urgencyLevels}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="radio"
+                name="urgency"
+                label={t('services.urgency')}
+                options={urgencyLevels}
+              />
+            </div>
             
             {/* Image Upload */}
-            <div className="space-y-3">
+            <div className="space-y-3 mobile-form-section">
               <FormSectionTitle 
                 title={t('services.uploadImage')}
                 subtitle={t('services.imageHelp')}
@@ -242,16 +247,20 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
             </div>
             
             {/* Date and Time Selection */}
-            <DateTimePickerSection form={form} />
+            <div className="mobile-form-section">
+              <DateTimePickerSection form={form} />
+            </div>
             
             {/* Notes Field */}
-            <NoteInput form={form} />
+            <div className="mobile-form-section">
+              <NoteInput form={form} />
+            </div>
             
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isSubmitting || !isFormValid()}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 mobile-form-button h-10 sm:h-12 text-sm sm:text-base"
             >
               {isSubmitting ? t('common.submitting') : 
                 editMode ? t('services.updateRequest') : t('services.sendRequest')}

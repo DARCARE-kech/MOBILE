@@ -157,135 +157,141 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
   )?.options || ['restaurant', 'activity', 'excursion', 'other'];
 
   return (
-  <div className="p-4 pb-24">
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Card className="bg-darcare-navy/50 border border-darcare-gold/20 rounded-xl p-5 space-y-6">
+    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <Card className="bg-darcare-navy/50 border border-darcare-gold/20 rounded-lg sm:rounded-xl p-4 sm:p-5 space-y-4 sm:space-y-6">
 
-          {/* Scheduling Information */}
-          <DateTimePickerSection form={form} />
+            {/* Scheduling Information */}
+            <div className="mobile-form-section">
+              <DateTimePickerSection form={form} />
+            </div>
 
-          {/* Reservation Details */}
-          <FormSectionTitle 
-            title={t('services.requestReservation')} 
-            icon={<Users className="w-5 h-5" />}
-            rawKeys={true}
-          />
+            {/* Reservation Details */}
+            <div className="mobile-form-section">
+              <FormSectionTitle 
+                title={t('services.requestReservation')} 
+                icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />}
+                rawKeys={true}
+              />
 
-          <div className="space-y-4">
-            {/* Reservation Type */}
-            <FormField
-              control={form.control}
-              name="reservationType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('services.reservationType')}</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className={cn(
-                        "w-full bg-darcare-navy/50 border-darcare-gold/30",
-                        "focus:border-darcare-gold/60 focus:ring-0"
-                      )}>
-                        <SelectValue placeholder={t('services.reservationType')} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {reservationTypes.map((type: string) => (
-                        <SelectItem key={type} value={type}>
-                          {t(`explore.categories.${type.toLowerCase()}`, type)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
+              <div className="space-y-3 sm:space-y-4">
+                {/* Reservation Type */}
+                <FormField
+                  control={form.control}
+                  name="reservationType"
+                  render={({ field }) => (
+                    <FormItem className="mobile-form-field">
+                      <FormLabel className="text-sm sm:text-base">{t('services.reservationType')}</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger className={cn(
+                            "w-full bg-darcare-navy/50 border-darcare-gold/30 mobile-form-input",
+                            "focus:border-darcare-gold/60 focus:ring-0 h-9 sm:h-10"
+                          )}>
+                            <SelectValue placeholder={t('services.reservationType')} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="z-50">
+                          {reservationTypes.map((type: string) => (
+                            <SelectItem key={type} value={type}>
+                              {t(`explore.categories.${type.toLowerCase()}`, type)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Number of People */}
+                <FormField
+                  control={form.control}
+                  name="peopleCount"
+                  render={({ field }) => (
+                    <FormItem className="mobile-form-field">
+                      <FormLabel className="text-sm sm:text-base">{t('services.peopleCount')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="50"
+                          className={cn(
+                            "bg-darcare-navy/50 border-darcare-gold/30 mobile-form-input",
+                            "focus:border-darcare-gold/60 focus:ring-0 h-9 sm:h-10 text-sm sm:text-base"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Reservation Name */}
+                <FormField
+                  control={form.control}
+                  name="reservationName"
+                  render={({ field }) => (
+                    <FormItem className="mobile-form-field">
+                      <FormLabel className="text-sm sm:text-base">{t('services.reservationName')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          className={cn(
+                            "bg-darcare-navy/50 border-darcare-gold/30 mobile-form-input",
+                            "focus:border-darcare-gold/60 focus:ring-0 h-9 sm:h-10 text-sm sm:text-base"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Special Requests */}
+            <div className="mobile-form-section">
+              <FormSectionTitle 
+                title={t('services.specialRequests')} 
+                icon={<PenLine className="w-4 h-4 sm:w-5 sm:h-5" />}
+                rawKeys={true}
+              />
+              <Textarea
+                placeholder={t('services.notesPlaceholder')}
+                className={cn(
+                  "min-h-[80px] sm:min-h-[120px] bg-darcare-navy/50 border-darcare-gold/30 mobile-form-textarea",
+                  "focus:border-darcare-gold/60 focus:ring-0 text-sm sm:text-base"
+                )}
+                {...form.register('note')}
+              />
+            </div>
+
+            {/* Submit Button */}
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif mobile-form-button h-10 sm:h-12 text-sm sm:text-lg"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center">
+                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                  {t('common.submitting')}
+                </span>
+              ) : editMode ? (
+                t('services.updateRequest')
+              ) : (
+                t('services.sendRequest')
               )}
-            />
+            </Button>
 
-            {/* Number of People */}
-            <FormField
-              control={form.control}
-              name="peopleCount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('services.peopleCount')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="1"
-                      max="50"
-                      className={cn(
-                        "bg-darcare-navy/50 border-darcare-gold/30",
-                        "focus:border-darcare-gold/60 focus:ring-0"
-                      )}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Reservation Name */}
-            <FormField
-              control={form.control}
-              name="reservationName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('services.reservationName')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      className={cn(
-                        "bg-darcare-navy/50 border-darcare-gold/30",
-                        "focus:border-darcare-gold/60 focus:ring-0"
-                      )}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* Special Requests */}
-          <FormSectionTitle 
-            title={t('services.specialRequests')} 
-            icon={<PenLine className="w-5 h-5" />}
-            rawKeys={true}
-          />
-          <Textarea
-            placeholder={t('services.notesPlaceholder')}
-            className={cn(
-              "min-h-[120px] bg-darcare-navy/50 border-darcare-gold/30",
-              "focus:border-darcare-gold/60 focus:ring-0"
-            )}
-            {...form.register('note')}
-          />
-
-          {/* Submit Button */}
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="w-full h-12 bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-lg"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center">
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                {t('common.submitting')}
-              </span>
-            ) : editMode ? (
-              t('services.updateRequest')
-            ) : (
-              t('services.sendRequest')
-            )}
-          </Button>
-
-        </Card>
-      </form>
-    </Form>
-  </div>
-);
+          </Card>
+        </form>
+      </Form>
+    </div>
+  );
 };
 
 export default ReservationService;

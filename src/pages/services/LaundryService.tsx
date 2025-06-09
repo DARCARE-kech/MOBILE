@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -223,72 +224,83 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
   };
   
   return (
-    <div className="p-4 pb-24">
+    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
       {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category ?? 'laundry'}
-
         serviceDetail={serviceData}
       />
       
       {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-4 sm:p-5 rounded-lg sm:rounded-2xl mb-4 sm:mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Laundry Services Selection */}
-            <OptionField
-              form={form}
-              fieldType="checkbox"
-              name="services"
-              label={t('services.laundryServices')}
-              options={serviceOptions}
-              icon={<WashingMachine className="h-5 w-5" />}
-              subtitle={t('services.selectAtLeastOne')}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="checkbox"
+                name="services"
+                label={t('services.laundryServices')}
+                options={serviceOptions}
+                icon={<WashingMachine className="h-4 w-4 sm:h-5 sm:w-5" />}
+                subtitle={t('services.selectAtLeastOne')}
+              />
+            </div>
             
             {/* Special Fabrics Selection */}
-            <OptionField
-              form={form}
-              fieldType="checkbox"
-              name="specialFabrics"
-              label={t('services.specialFabrics')}
-              options={fabricOptions}
-              icon={<Shirt className="h-5 w-5" />}
-              subtitle={t('services.fabricsSubtitle')}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="checkbox"
+                name="specialFabrics"
+                label={t('services.specialFabrics')}
+                options={fabricOptions}
+                icon={<Shirt className="h-4 w-4 sm:h-5 sm:w-5" />}
+                subtitle={t('services.fabricsSubtitle')}
+              />
+            </div>
             
             {/* Weight Slider */}
-            <OptionField
-              form={form}
-              fieldType="slider"
-              name="weight"
-              label={t('services.weight')}
-              min={1}
-              max={10}
-              step={0.5}
-              icon={<Shirt className="h-5 w-5" />}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="slider"
+                name="weight"
+                label={t('services.weight')}
+                min={1}
+                max={10}
+                step={0.5}
+                icon={<Shirt className="h-4 w-4 sm:h-5 sm:w-5" />}
+              />
+            </div>
             
             {/* Same Day Delivery Toggle */}
-            <OptionField
-              form={form}
-              fieldType="toggle"
-              name="sameDayDelivery"
-              label={t('services.sameDayDelivery')}
-              subtitle={t('services.premiumService')}
-            />
+            <div className="mobile-form-section">
+              <OptionField
+                form={form}
+                fieldType="toggle"
+                name="sameDayDelivery"
+                label={t('services.sameDayDelivery')}
+                subtitle={t('services.premiumService')}
+              />
+            </div>
             
             {/* Date and Time Selection */}
-            <DateTimePickerSection form={form} />
+            <div className="mobile-form-section">
+              <DateTimePickerSection form={form} />
+            </div>
             
             {/* Notes Field */}
-            <NoteInput form={form} />
+            <div className="mobile-form-section">
+              <NoteInput form={form} />
+            </div>
             
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isSubmitting || !isFormValid()}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 mobile-form-button h-10 sm:h-12 text-sm sm:text-base"
             >
               {isSubmitting ? t('common.submitting') : 
                 editMode ? t('services.updateRequest') : t('services.sendRequest')
