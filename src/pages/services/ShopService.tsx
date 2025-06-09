@@ -33,12 +33,12 @@ const ShopService = () => {
       try {
         console.log('Fetching cart count for user:', user.id);
         
-        // Get all cart orders (using "submitted" status)
+        // Get all cart orders (using "cart" status instead of "submitted")
         const { data: orders, error: orderError } = await supabase
           .from('shop_orders')
           .select('id')
           .eq('user_id', user.id)
-          .eq('status', 'submitted')
+          .eq('status', 'cart' as const)
           .order('created_at', { ascending: false });
         
         if (orderError) {
