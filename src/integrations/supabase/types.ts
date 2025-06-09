@@ -668,6 +668,34 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_space_reservations_space"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_space_reservations_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_space_reservations_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_space_reservations_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "view_all_staff"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "space_reservations_space_id_fkey"
             columns: ["space_id"]
             isOneToOne: false
@@ -1084,6 +1112,10 @@ export type Database = {
       }
     }
     Functions: {
+      assign_agent_to_shop_order: {
+        Args: { order_id: string; agent_staff_id: string }
+        Returns: string
+      }
       calculate_distance: {
         Args: { lat1: number; lon1: number; lat2: number; lon2: number }
         Returns: number

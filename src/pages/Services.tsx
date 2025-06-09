@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InternalServicesTab from "@/components/services/InternalServicesTab";
-import ExternalServicesTab from "@/components/services/ExternalServicesTab";
 
 const ServicesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("services");
@@ -25,7 +24,8 @@ const ServicesPage: React.FC = () => {
       // Map the old tab names to the new ones
       const tabMapping: Record<string, string> = {
         "invilla": "services",
-        "leisure": "external",
+        "leisure": "services", // Redirect leisure to services since external tab is removed
+        "external": "services", // Redirect external to services
         "requests": "requests"
       };
       
@@ -52,7 +52,7 @@ const ServicesPage: React.FC = () => {
             className="w-full"
           >
             <TabsList className={cn(
-              "w-full grid grid-cols-3 rounded-full p-0.5 h-9 sm:h-10", 
+              "w-full grid grid-cols-2 rounded-full p-0.5 h-9 sm:h-10", 
               isDarkMode 
                 ? "bg-white/5 backdrop-blur-sm" 
                 : "bg-white/80 border border-darcare-deepGold/10 shadow-sm"
@@ -71,21 +71,6 @@ const ServicesPage: React.FC = () => {
                 )}
               >
                 {t('services.services', 'Services')}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="external"
-                className={cn(
-                  "rounded-full text-xs font-medium transition-all duration-200 h-8 sm:h-9 px-2",
-                  activeTab === "external" 
-                    ? isDarkMode 
-                      ? "bg-darcare-gold text-darcare-navy" 
-                      : "bg-darcare-deepGold text-white"
-                    : isDarkMode
-                      ? "text-darcare-beige hover:text-darcare-gold" 
-                      : "text-darcare-charcoal hover:text-darcare-deepGold"
-                )}
-              >
-                {t('services.external', 'External')}
               </TabsTrigger>
               <TabsTrigger 
                 value="requests"
@@ -107,9 +92,6 @@ const ServicesPage: React.FC = () => {
             <div className="mt-2">
               <TabsContent value="services" className="mt-0">
                 <InternalServicesTab />
-              </TabsContent>
-              <TabsContent value="external" className="mt-0">
-                <ExternalServicesTab />
               </TabsContent>
               <TabsContent value="requests" className="mt-0">
                 <MyRequestsTab />
