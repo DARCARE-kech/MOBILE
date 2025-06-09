@@ -233,6 +233,7 @@
   "services": {
     "services": "Services",
     "external": "External",
+      "additionalNotes": "Additional Notes",
     "requests": "Requests",
     "villaServices": "Villa Services",
     "wellnessActivities": "Wellness and Activities",
