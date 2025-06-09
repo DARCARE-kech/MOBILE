@@ -23,17 +23,27 @@ export const RecommendationTabs = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className={isMobile ? "p-1 pb-12" : "p-4 pb-24"}>
-      <Tabs value={activeTab} onValueChange={onTabChange} className={isMobile ? "space-y-1" : "space-y-4"}>
-        <TabsList className="grid w-full grid-cols-2 bg-darcare-navy border border-darcare-gold/20">
-          <TabsTrigger value="info" className="text-darcare-beige data-[state=active]:text-darcare-gold">
-            {t('explore.info')}
-          </TabsTrigger>
-          <TabsTrigger value="reviews" className="text-darcare-beige data-[state=active]:text-darcare-gold">
-            {t('explore.reviews')}
-          </TabsTrigger>
-        </TabsList>
+  <div className="px-4 pb-16 max-w-screen-sm mx-auto space-y-6">
+    <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-4">
+      
+      {/* Onglets */}
+      <TabsList className="grid grid-cols-2 rounded-lg overflow-hidden border border-darcare-gold/20 bg-darcare-navy">
+        <TabsTrigger
+          value="info"
+          className="py-2 text-darcare-beige data-[state=active]:text-darcare-gold"
+        >
+          {t('explore.info')}
+        </TabsTrigger>
+        <TabsTrigger
+          value="reviews"
+          className="py-2 text-darcare-beige data-[state=active]:text-darcare-gold"
+        >
+          {t('explore.reviews')}
+        </TabsTrigger>
+      </TabsList>
 
+      {/* Contenus des onglets */}
+      <div className="space-y-4">
         <TabsContent value="info">
           <RecommendationInfo recommendation={recommendation} onReserve={onReserve} />
         </TabsContent>
@@ -41,7 +51,9 @@ export const RecommendationTabs = ({
         <TabsContent value="reviews">
           <RecommendationReviews recommendation={recommendation} />
         </TabsContent>
-      </Tabs>
-    </div>
-  );
+      </div>
+    </Tabs>
+  </div>
+);
+
 };
