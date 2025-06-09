@@ -23,24 +23,24 @@ export const RecommendationTabs = ({
   const isMobile = useIsMobile();
 
   return (
-  <div className="px-4 pb-16 max-w-screen-sm mx-auto space-y-6">
+  <div className="px-4 pb-16 max-w-screen-sm mx-auto mt-6 space-y-6">
   <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-4">
     
     {/* Onglets */}
     <TabsList className="grid grid-cols-2 rounded-md overflow-hidden border border-darcare-gold/20 bg-darcare-navy h-8">
-      <TabsTrigger
-        value="info"
-        className="text-xs h-8 px-2 text-darcare-beige data-[state=active]:text-darcare-gold"
-      >
-        {t('explore.info')}
-      </TabsTrigger>
-      <TabsTrigger
-        value="reviews"
-        className="text-xs h-8 px-2 text-darcare-beige data-[state=active]:text-darcare-gold"
-      >
-        {t('explore.reviews')}
-      </TabsTrigger>
-    </TabsList>
+  <TabsTrigger
+    value="info"
+    className="flex items-center justify-center text-xs h-8 px-2 text-darcare-beige data-[state=active]:text-darcare-gold"
+  >
+    {t('explore.info')}
+  </TabsTrigger>
+  <TabsTrigger
+    value="reviews"
+    className="flex items-center justify-center text-xs h-8 px-2 text-darcare-beige data-[state=active]:text-darcare-gold"
+  >
+    {t('explore.reviews')}
+  </TabsTrigger>
+</TabsList>
 
     {/* Contenus des onglets */}
     <div className="space-y-4">
