@@ -49,77 +49,74 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
   };
 
   return (
-    <div className="p-0">
-      {/* Section 1: Description */}
-      {recommendation.description && (
-        <section className={isMobile ? "px-2 pt-0 pb-1" : "px-6 pt-2 pb-4"}>
-          <p className={`font-serif text-darcare-beige leading-relaxed mb-0 ${isMobile ? "text-xs" : "text-lg"}`} style={{ wordBreak: 'break-word' }}>
-            {recommendation.description}
-          </p>
-        </section>
-      )}
+  <div className="px-4 pb-6 space-y-6 max-w-screen-sm mx-auto">
 
-      {/* Subtle divider */}
-      {hasContactOrLocation && <div className={`h-[1px] bg-darcare-gold/10 ${isMobile ? "mx-2 mb-1" : "mx-6 mb-3"}`} />}
+    {/* Section 1: Description */}
+    {recommendation.description && (
+      <section>
+        <p className="font-serif text-darcare-beige leading-relaxed text-sm sm:text-base break-words">
+          {recommendation.description}
+        </p>
+      </section>
+    )}
 
-      {/* Section 3: Contact & Location */}
-      {hasContactOrLocation && (
-        <section className={`pb-1 ${isMobile ? "px-2 space-y-1" : "px-6 space-y-4"}`}>
-          {recommendation.contact_phone && (
-            <button 
-              className="flex items-center gap-2 w-full text-left" 
-              onClick={handlePhoneClick}
-            >
-              <Phone size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-all underline underline-offset-2 ${isMobile ? "text-xs" : ""}`}>
-                {recommendation.contact_phone}
-              </span>
-            </button>
-          )}
-          
-          {recommendation.site && (
-            <button 
-              className="flex items-center gap-2 w-full text-left" 
-              onClick={handleSiteClick}
-            >
-              <Globe size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-all underline underline-offset-2 ${isMobile ? "text-xs" : ""}`}>
-                {recommendation.site}
-              </span>
-            </button>
-          )}
-          
-          {recommendation.address && (
-            <button 
-              className="flex items-center gap-2 w-full text-left"
-              onClick={handleAddressClick}
-              disabled={!recommendation.latitude || !recommendation.longitude}
-            >
-              <MapPin size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-words ${(recommendation.latitude && recommendation.longitude) ? "underline underline-offset-2" : ""} ${isMobile ? "text-xs" : ""}`}>
-                {recommendation.address}
-              </span>
-            </button>
-          )}
-          
-          {recommendation.opening_hours && (
-            <div className="flex items-center gap-2">
-              <Clock size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-words ${isMobile ? "text-xs" : ""}`}>
-                {recommendation.opening_hours}
-              </span>
-            </div>
-          )}
-        </section>
-      )}
+    {/* Divider */}
+    {hasContactOrLocation && (
+      <div className="h-[1px] bg-darcare-gold/10" />
+    )}
 
-      {/* Section 4: Tags */}
-      {recommendation.tags && Array.isArray(recommendation.tags) && recommendation.tags.length > 0 && (
-        <section className={isMobile ? "px-2 pb-2 pt-1" : "px-6 pb-6 pt-3"}>
-          <TagsList tags={recommendation.tags} />
-        </section>
-      )}
+    {/* Section 2: Contact & Localisation */}
+    {hasContactOrLocation && (
+      <section className="space-y-3">
+        {recommendation.contact_phone && (
+          <button onClick={handlePhoneClick} className="flex items-center gap-3 text-left w-full">
+            <Phone size={16} className="text-darcare-gold" />
+            <span className="text-darcare-beige underline underline-offset-2 break-all text-sm">
+              {recommendation.contact_phone}
+            </span>
+          </button>
+        )}
 
-    </div>
-  );
+        {recommendation.site && (
+          <button onClick={handleSiteClick} className="flex items-center gap-3 text-left w-full">
+            <Globe size={16} className="text-darcare-gold" />
+            <span className="text-darcare-beige underline underline-offset-2 break-all text-sm">
+              {recommendation.site}
+            </span>
+          </button>
+        )}
+
+        {recommendation.address && (
+          <button
+            onClick={handleAddressClick}
+            disabled={!recommendation.latitude || !recommendation.longitude}
+            className="flex items-center gap-3 text-left w-full"
+          >
+            <MapPin size={16} className="text-darcare-gold" />
+            <span className={`text-darcare-beige break-words text-sm ${recommendation.latitude && recommendation.longitude ? "underline underline-offset-2" : ""}`}>
+              {recommendation.address}
+            </span>
+          </button>
+        )}
+
+        {recommendation.opening_hours && (
+          <div className="flex items-center gap-3">
+            <Clock size={16} className="text-darcare-gold" />
+            <span className="text-darcare-beige text-sm">
+              {recommendation.opening_hours}
+            </span>
+          </div>
+        )}
+      </section>
+    )}
+
+    {/* Section 3: Tags */}
+    {recommendation.tags && recommendation.tags.length > 0 && (
+      <section>
+        <TagsList tags={recommendation.tags} />
+      </section>
+    )}
+  </div>
+);
+
 };

@@ -72,76 +72,77 @@ export const RecommendationReviews = ({ recommendation }: RecommendationReviewsP
   };
 
   return (
-    <div className={isMobile ? "space-y-2" : "space-y-6"}>
-      {/* Review Form */}
-      <div className={`bg-darcare-navy border border-darcare-gold/20 rounded-xl ${isMobile ? "p-2 space-y-1" : "p-4 space-y-4"}`}>
-        <h3 className={`text-darcare-gold font-medium ${isMobile ? "text-xs" : ""}`}>Leave a Review</h3>
-        
-        <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              onClick={() => setRating(star)}
-              className="text-darcare-gold"
-            >
-              <Star
-                size={isMobile ? 14 : 24}
-                className={rating >= star ? "fill-current" : ""}
-              />
-            </button>
-          ))}
-        </div>
-
-        <Textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Share your experience..."
-          className={`bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 ${isMobile ? "text-xs h-16" : ""}`}
-        />
-
-        <Button 
-          onClick={handleSubmitReview}
-          disabled={isSubmitting}
-          className={`w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 ${isMobile ? "text-xs h-6" : ""}`}
-        >
-          Submit Review
-        </Button>
-      </div>
-
-      {/* Reviews List */}
-      <div className={isMobile ? "space-y-1" : "space-y-4"}>
-        {recommendation.reviews?.map((review) => (
-          <div 
-            key={review.id}
-            className={`bg-darcare-navy border border-darcare-gold/20 rounded-xl ${isMobile ? "p-2 space-y-1" : "p-4 space-y-2"}`}
+  <div className="space-y-6 max-w-screen-sm mx-auto px-4 pb-10">
+    {/* Review Form */}
+    <div className="bg-darcare-navy border border-darcare-gold/20 rounded-xl p-4 space-y-4">
+      <h3 className="text-darcare-gold font-medium text-sm">Leave a Review</h3>
+      
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            onClick={() => setRating(star)}
+            className="text-darcare-gold"
           >
-            <div className="flex items-center gap-2">
-              <Avatar className={isMobile ? "h-5 w-5" : ""}>
-                <AvatarImage src={review.user_profiles?.avatar_url || undefined} />
-                <AvatarFallback className={isMobile ? "text-xs" : ""}>{review.user_profiles?.full_name?.[0] || '?'}</AvatarFallback>
-              </Avatar>
-              <div>
-                <div className={`font-medium text-darcare-white ${isMobile ? "text-xs" : ""}`}>
-                  {review.user_profiles?.full_name || 'Anonymous'}
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex text-darcare-gold">
-                    {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star key={i} size={isMobile ? 8 : 14} className="fill-current" />
-                    ))}
-                  </div>
-                  <span className={`text-darcare-beige ${isMobile ? "text-xs" : "text-sm"}`}>
-                    {new Date(review.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-            {review.comment && (
-              <p className={`text-darcare-white ${isMobile ? "text-xs" : ""}`}>{review.comment}</p>
-            )}
-          </div>
+            <Star
+              size={20}
+              className={rating >= star ? "fill-current" : ""}
+            />
+          </button>
         ))}
       </div>
+
+      <Textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Share your experience..."
+        className="bg-darcare-navy/50 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 text-sm h-20"
+      />
+
+      <Button 
+        onClick={handleSubmitReview}
+        disabled={isSubmitting}
+        className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 text-sm h-10"
+      >
+        Submit Review
+      </Button>
     </div>
-  );
+
+    {/* Reviews List */}
+    <div className="space-y-4">
+      {recommendation.reviews?.map((review) => (
+        <div 
+          key={review.id}
+          className="bg-darcare-navy border border-darcare-gold/20 rounded-xl p-4 space-y-2"
+        >
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={review.user_profiles?.avatar_url || undefined} />
+              <AvatarFallback className="text-xs">{review.user_profiles?.full_name?.[0] || '?'}</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-medium text-darcare-white text-sm">
+                {review.user_profiles?.full_name || 'Anonymous'}
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex text-darcare-gold">
+                  {Array.from({ length: review.rating }).map((_, i) => (
+                    <Star key={i} size={14} className="fill-current" />
+                  ))}
+                </div>
+                <span className="text-darcare-beige text-xs">
+                  {new Date(review.created_at).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          </div>
+          {review.comment && (
+            <p className="text-darcare-white text-sm">{review.comment}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 };
