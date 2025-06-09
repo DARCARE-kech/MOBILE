@@ -52,26 +52,26 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
     <div className="p-0">
       {/* Section 1: Description */}
       {recommendation.description && (
-        <section className={isMobile ? "px-3 pt-1 pb-2" : "px-6 pt-2 pb-4"}>
-          <p className={`font-serif text-darcare-beige leading-relaxed mb-0 ${isMobile ? "text-sm" : "text-lg"}`} style={{ wordBreak: 'break-word' }}>
+        <section className={isMobile ? "px-2 pt-0 pb-1" : "px-6 pt-2 pb-4"}>
+          <p className={`font-serif text-darcare-beige leading-relaxed mb-0 ${isMobile ? "text-xs" : "text-lg"}`} style={{ wordBreak: 'break-word' }}>
             {recommendation.description}
           </p>
         </section>
       )}
 
       {/* Subtle divider */}
-      {hasContactOrLocation && <div className={`h-[1px] bg-darcare-gold/10 ${isMobile ? "mx-3 mb-2" : "mx-6 mb-3"}`} />}
+      {hasContactOrLocation && <div className={`h-[1px] bg-darcare-gold/10 ${isMobile ? "mx-2 mb-1" : "mx-6 mb-3"}`} />}
 
       {/* Section 3: Contact & Location */}
       {hasContactOrLocation && (
-        <section className={`pb-2 ${isMobile ? "px-3 space-y-2" : "px-6 space-y-4"}`}>
+        <section className={`pb-1 ${isMobile ? "px-2 space-y-1" : "px-6 space-y-4"}`}>
           {recommendation.contact_phone && (
             <button 
-              className="flex items-center gap-3 w-full text-left" 
+              className="flex items-center gap-2 w-full text-left" 
               onClick={handlePhoneClick}
             >
-              <Phone size={isMobile ? 14 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-all underline underline-offset-2 ${isMobile ? "text-sm" : ""}`}>
+              <Phone size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
+              <span className={`text-darcare-beige break-all underline underline-offset-2 ${isMobile ? "text-xs" : ""}`}>
                 {recommendation.contact_phone}
               </span>
             </button>
@@ -79,11 +79,11 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
           
           {recommendation.site && (
             <button 
-              className="flex items-center gap-3 w-full text-left" 
+              className="flex items-center gap-2 w-full text-left" 
               onClick={handleSiteClick}
             >
-              <Globe size={isMobile ? 14 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-all underline underline-offset-2 ${isMobile ? "text-sm" : ""}`}>
+              <Globe size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
+              <span className={`text-darcare-beige break-all underline underline-offset-2 ${isMobile ? "text-xs" : ""}`}>
                 {recommendation.site}
               </span>
             </button>
@@ -91,21 +91,21 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
           
           {recommendation.address && (
             <button 
-              className="flex items-center gap-3 w-full text-left"
+              className="flex items-center gap-2 w-full text-left"
               onClick={handleAddressClick}
               disabled={!recommendation.latitude || !recommendation.longitude}
             >
-              <MapPin size={isMobile ? 14 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-words ${(recommendation.latitude && recommendation.longitude) ? "underline underline-offset-2" : ""} ${isMobile ? "text-sm" : ""}`}>
+              <MapPin size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
+              <span className={`text-darcare-beige break-words ${(recommendation.latitude && recommendation.longitude) ? "underline underline-offset-2" : ""} ${isMobile ? "text-xs" : ""}`}>
                 {recommendation.address}
               </span>
             </button>
           )}
           
           {recommendation.opening_hours && (
-            <div className="flex items-center gap-3">
-              <Clock size={isMobile ? 14 : 18} className="text-darcare-gold flex-shrink-0" />
-              <span className={`text-darcare-beige break-words ${isMobile ? "text-sm" : ""}`}>
+            <div className="flex items-center gap-2">
+              <Clock size={isMobile ? 12 : 18} className="text-darcare-gold flex-shrink-0" />
+              <span className={`text-darcare-beige break-words ${isMobile ? "text-xs" : ""}`}>
                 {recommendation.opening_hours}
               </span>
             </div>
@@ -115,7 +115,7 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
 
       {/* Section 4: Tags */}
       {recommendation.tags && Array.isArray(recommendation.tags) && recommendation.tags.length > 0 && (
-        <section className={isMobile ? "px-3 pb-4 pt-2" : "px-6 pb-6 pt-3"}>
+        <section className={isMobile ? "px-2 pb-2 pt-1" : "px-6 pb-6 pt-3"}>
           <TagsList tags={recommendation.tags} />
         </section>
       )}

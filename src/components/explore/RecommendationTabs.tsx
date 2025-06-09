@@ -23,8 +23,8 @@ export const RecommendationTabs = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className={isMobile ? "p-2 pb-16" : "p-4 pb-24"}>
-      <Tabs value={activeTab} onValueChange={onTabChange} className={isMobile ? "space-y-2" : "space-y-4"}>
+    <div className={isMobile ? "p-1 pb-12" : "p-4 pb-24"}>
+      <Tabs value={activeTab} onValueChange={onTabChange} className={isMobile ? "space-y-1" : "space-y-4"}>
         <TabsList className="grid w-full grid-cols-2 bg-darcare-navy border border-darcare-gold/20">
           <TabsTrigger value="info" className="text-darcare-beige data-[state=active]:text-darcare-gold">
             {t('explore.info')}
