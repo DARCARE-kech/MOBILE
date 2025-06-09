@@ -58,7 +58,7 @@ export const RecommendationHeader = ({
         <img
           src={imageSource}
           alt={recommendation.title}
-          className="w-full object-cover h-[240px]"
+          className="w-full object-cover h-[230px]"
           onError={() => setImageError(true)}
         />
         <Button
