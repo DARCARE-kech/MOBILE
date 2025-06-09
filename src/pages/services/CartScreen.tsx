@@ -33,12 +33,12 @@ const CartScreen = () => {
         
         console.log('Fetching cart items for user:', user.id);
         
-        // Get cart orders (using "submitted" status)
+        // Get cart orders (using "cart" status)
         const { data: orders, error: orderError } = await supabase
           .from('shop_orders')
           .select('id')
           .eq('user_id', user.id)
-          .eq('status', 'submitted')
+          .eq('status', 'cart')
           .order('created_at', { ascending: false });
 
         if (orderError) {
@@ -107,29 +107,30 @@ const CartScreen = () => {
     try {
       console.log('Placing order for cart items:', cartItems.length);
       
-      // Get the current cart orders (using "submitted" status)
+      // Get the current cart orders (using "cart" status)
       const { data: orders } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
-        .eq('status', 'submitted')
+        .eq('status', 'cart')
         .order('created_at', { ascending: false });
       
       if (orders && orders.length > 0) {
         const cartOrderId = orders[0].id;
-        console.log('Order placed, keeping as submitted:', cartOrderId);
+        console.log('Changing order status from cart to submitted:', cartOrderId);
         
-        // Create a new empty cart order for future items
+        // Change the cart status to submitted instead of creating a new order
         await supabase
           .from('shop_orders')
-          .insert({ user_id: user.id, status: 'submitted' });
+          .update({ status: 'submitted' })
+          .eq('id', cartOrderId);
         
         // Invalidate cart queries to update UI immediately
         await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
         await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
         await queryClient.invalidateQueries({ queryKey: ['shop-orders'] });
         
-        console.log('Order placed successfully and new cart created');
+        console.log('Order placed successfully');
       }
       
       toast({

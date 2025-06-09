@@ -23,12 +23,12 @@ export const useShopCart = () => {
     try {
       console.log('Adding product to cart:', product.name);
       
-      // Get or create cart order (using "submitted" status for active cart)
+      // Get or create cart order (using "cart" status for active cart)
       let { data: orders, error: orderError } = await supabase
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
-        .eq('status', 'submitted')
+        .eq('status', 'cart')
         .order('created_at', { ascending: false });
 
       if (orderError) {
@@ -42,7 +42,7 @@ export const useShopCart = () => {
         console.log('Creating new cart order');
         const { data: newOrder, error: createError } = await supabase
           .from('shop_orders')
-          .insert({ user_id: user.id, status: 'submitted' })
+          .insert({ user_id: user.id, status: 'cart' })
           .select()
           .single();
 
@@ -104,11 +104,7 @@ export const useShopCart = () => {
       await queryClient.invalidateQueries({ queryKey: ['cart-count'] });
       await queryClient.invalidateQueries({ queryKey: ['cart-items'] });
 
-      toast({
-        title: "Added to Cart",
-        description: `${product.name} has been added to your cart`,
-      });
-      
+      // Removed the "Added to Cart" toast as requested
       console.log('Product added to cart successfully');
     } catch (error) {
       console.error('Error adding to cart:', error);

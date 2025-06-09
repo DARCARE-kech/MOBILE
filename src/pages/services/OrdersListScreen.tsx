@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -37,7 +36,7 @@ const OrdersListScreen = () => {
           )
         `)
         .eq('user_id', user.id)
-        .in('status', ['submitted', 'confirmed', 'preparing', 'delivered', 'cancelled'])
+        .in('status', ['submitted', 'confirmed', 'preparing', 'delivered', 'cancelled']) // Removed 'cart' status from the list
         .order('created_at', { ascending: false });
 
       if (error) throw error;
