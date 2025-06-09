@@ -93,7 +93,15 @@
     "noActivitiesScheduled": "Aucune activité programmée",
     "noRequestsYet": "Pas encore de demandes? Laissez-nous prendre soin de vous.",
     "requestService": "Demander un service",
-    "shop": "Boutique"
+    "shop": "Boutique",
+    "status": {
+      "pending": "En attente",
+      "in_progress": "En cours",
+      "active": "Actif",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "confirmed": "Confirmé"
+    }
   },
   "shop": {
     "title": "Boutique",

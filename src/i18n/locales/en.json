@@ -93,7 +93,15 @@
     "noActivitiesScheduled": "No Activities Scheduled",
     "noRequestsYet": "No requests yet? Let us take care of you.",
     "requestService": "Request a Service",
-    "shop": "Shop"
+    "shop": "Shop",
+    "status": {
+      "pending": "Pending",
+      "in_progress": "In Progress",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "confirmed": "Confirmed"
+    }
   },
   "shop": {
     "title": "Shop",

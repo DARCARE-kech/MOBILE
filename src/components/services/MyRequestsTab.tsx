@@ -54,7 +54,7 @@ const MyRequestsTab: React.FC = () => {
         : ['pending', 'in_progress', 'confirmed'];
 
       try {
-        // Fetch services with proper staff assignments join
+        // Fetch services with proper staff assignments join - excluding Shop services
         const { data: services, error: serviceError } = await supabase
           .from('service_requests')
           .select(`
@@ -63,7 +63,7 @@ const MyRequestsTab: React.FC = () => {
             preferred_time,
             status,
             created_at,
-            services(name),
+            services!inner(name),
             staff_assignments(
               id,
               staff_id,
@@ -71,6 +71,7 @@ const MyRequestsTab: React.FC = () => {
             )
           `)
           .eq('user_id', user.id)
+          .neq('services.name', 'Shop')
           .in('status', statusFilter)
           .order('created_at', { ascending: false });
 
