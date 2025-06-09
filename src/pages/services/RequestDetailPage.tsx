@@ -179,7 +179,7 @@ const RequestDetailPage = () => {
             preferredTime={request.preferred_time}
             createdAt={request.created_at}
             staffName={staffName}
-            hideStatusBar={request.type === 'space'}
+            hideStatusBar={true}
           />
           
           <RequestDetailsContent
