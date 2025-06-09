@@ -32,16 +32,17 @@ export const ContactInfoBlock = ({ recommendation }: ContactInfoBlockProps) => {
     }
   };
   
+  // Handle map opening - now using Google Maps
   const handleOpenMap = () => {
     if (recommendation.latitude && recommendation.longitude) {
       window.open(
-        `https://www.openstreetmap.org/?mlat=${recommendation.latitude}&mlon=${recommendation.longitude}`,
+        `https://www.google.com/maps?q=${recommendation.latitude},${recommendation.longitude}`,
         '_blank'
       );
     } else if (recommendation.address) {
-      // If no coordinates, try to search by address
+      // If no coordinates, try to search by address using Google Maps
       window.open(
-        `https://www.openstreetmap.org/search?query=${encodeURIComponent(recommendation.address)}`,
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(recommendation.address)}`,
         '_blank'
       );
     }

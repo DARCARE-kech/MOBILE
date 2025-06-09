@@ -41,10 +41,10 @@ export const RecommendationInfo = ({ recommendation, onReserve }: Recommendation
     }
   };
 
-  // Handle map opening
+  // Handle map opening - now using Google Maps
   const handleAddressClick = () => {
     if (recommendation.latitude && recommendation.longitude) {
-      window.open(`https://www.openstreetmap.org/?mlat=${recommendation.latitude}&mlon=${recommendation.longitude}`, '_blank');
+      window.open(`https://www.google.com/maps?q=${recommendation.latitude},${recommendation.longitude}`, '_blank');
     }
   };
 
