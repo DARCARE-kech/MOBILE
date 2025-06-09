@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -40,9 +41,9 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log('Hair Salon Service Data:', serviceData);
-  console.log('Optional Fields:', serviceData?.optional_fields);
-  console.log('Existing Request:', existingRequest);
+  console.log('HairSalonService: Service Data:', serviceData);
+  console.log('HairSalonService: Optional Fields:', serviceData?.optional_fields);
+  console.log('HairSalonService: Existing Request:', existingRequest);
 
   const optionalFields = serviceData?.optional_fields || {};
   const clientGenders = optionalFields.client_gender || ['Man', 'Woman'];
@@ -69,11 +70,17 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
 
   const onSubmit = async (data: FormValues) => {
     if (!user) {
+      console.error('HairSalonService: No user found');
       toast.error(t('common.error', 'Error'), {
         description: t('services.loginRequired', 'You must be logged in to submit a request.'),
       });
       return;
     }
+
+    console.log('HairSalonService: Starting submission');
+    console.log('HairSalonService: User:', user);
+    console.log('HairSalonService: ServiceData:', serviceData);
+    console.log('HairSalonService: Form data:', data);
 
     setIsSubmitting(true);
 
@@ -87,10 +94,20 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
         parseInt(data.time.split(':')[1])
       ).toISOString();
 
+      // Verify service_id exists
+      if (!serviceData?.service_id) {
+        console.error('HairSalonService: No service ID found in serviceData');
+        console.error('ServiceData:', serviceData);
+        toast.error(t('common.error', 'Error'), {
+          description: 'Service ID is missing. Please try again.',
+        });
+        return;
+      }
+
       // Properly structure the request data
       const requestData = {
         // Root level fields
-        service_id: serviceData?.service_id,
+        service_id: serviceData.service_id,
         user_id: user.id,
         profile_id: user.id,
         preferred_time: dateTime,
@@ -103,7 +120,7 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
         },
       };
 
-      console.log('Submitting Hair Salon request:', requestData);
+      console.log('HairSalonService: Submitting request:', requestData);
 
       let error;
 
@@ -117,6 +134,7 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
         error = updateError;
 
         if (!updateError) {
+          console.log('HairSalonService: Request updated successfully');
           toast.success(t('services.requestUpdated', 'Request Updated'), {
             description: t('services.requestUpdatedDesc', 'Your hair salon appointment has been updated successfully.'),
           });
@@ -130,17 +148,21 @@ const HairSalonService: React.FC<HairSalonServiceProps> = ({
         error = insertError;
 
         if (!insertError) {
+          console.log('HairSalonService: Request submitted successfully');
           toast.success(t('services.requestSubmitted', 'Request Submitted'), {
             description: t('services.requestSubmittedDesc', 'Your hair salon appointment has been submitted successfully.'),
           });
         }
       }
 
-      if (error) throw error;
+      if (error) {
+        console.error('HairSalonService: Database error:', error);
+        throw error;
+      }
 
       navigate('/services');
     } catch (err) {
-      console.error('Request error:', err);
+      console.error('HairSalonService: Request error:', err);
       toast.error(t('common.error', 'Error'), {
         description: t('services.requestErrorDesc', 'An error occurred while processing your request. Please try again.'),
       });

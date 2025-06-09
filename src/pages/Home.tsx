@@ -56,13 +56,13 @@ const Home: React.FC = () => {
       const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
       const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-      // Fetch service requests (excluding Shop services) for today only
+      // Fetch service requests (excluding Shop services) for today only with LEFT JOIN
       const { data: services, error: serviceError } = await supabase
         .from('service_requests')
         .select(`
           *,
           services!inner (name, category),
-          staff_assignments!inner (
+          staff_assignments (
             id,
             staff_id,
             staff_services (staff_name)
@@ -88,10 +88,15 @@ const Home: React.FC = () => {
         .lte('preferred_time', endOfDay.toISOString())
         .order('preferred_time', { ascending: true });
 
-      if (serviceError || spaceError) {
-        console.error("Error fetching schedule:", serviceError || spaceError);
-        throw serviceError || spaceError;
+      if (serviceError) {
+        console.error("Error fetching service requests:", serviceError);
       }
+      if (spaceError) {
+        console.error("Error fetching space reservations:", spaceError);
+      }
+
+      console.log("Raw service requests fetched:", services);
+      console.log("Raw space reservations fetched:", spaces);
 
       // Transform services
       const transformedServices: UnifiedRequest[] = (services || []).map(item => {
@@ -147,6 +152,9 @@ const Home: React.FC = () => {
       const limitedRequests = sortedRequests.slice(0, 3);
       
       console.log("Today's schedule data fetched for home page (today only, excluding Shop):", limitedRequests);
+      console.log("Transformed services:", transformedServices);
+      console.log("Transformed spaces:", transformedSpaces);
+      
       return limitedRequests;
     },
     enabled: !!user?.id,
