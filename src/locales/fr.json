@@ -127,7 +127,8 @@
     "or": "ou",
     "and": "et",
     "retry": "Réessayer",
-    "notSpecified": "Non spécifié"
+    "notSpecified": "Non spécifié",
+    "enter": "Entrer"
   },
   "auth": {
     "login": "Se Connecter",
@@ -210,7 +211,7 @@
     "services": "Services",
     "external": "Externe",
     "requests": "Demandes",
-      "additionalNotes": "Notes supplémentaires",
+    "additionalNotes": "Notes supplémentaires",
     "villaServices": "Services Villa",
     "wellnessActivities": "Bien-être et Activités",
     "onDemandServices": "Services à la Demande",
@@ -233,6 +234,7 @@
     "preferredTime": "Heure préférée",
     "spaceName": "Espace",
     "numberOfPeople": "Nombre de personnes",
+    "numberofpeople": "Nombre de personnes",
     "person": "Personne",
     "people": "Personnes",
     "yourPreferences": "Vos préférences",
@@ -307,6 +309,15 @@
     "fillAllFields": "Veuillez remplir tous les champs requis",
     "sendRequest": "Envoyer la demande",
     "updateRequest": "Mettre à jour la demande",
+    "date": "Date",
+    "time": "Heure",
+    "selectDate": "Sélectionner la date",
+    "selectTime": "Sélectionner l'heure",
+    "serviceDetails": "Détails du service",
+    "specialRequestsPlaceholder": "Des demandes spéciales ou des notes...",
+    "submitting": "Soumission...",
+    "updateReservation": "Mettre à jour la réservation",
+    "confirmReservation": "Confirmer la réservation",
     "status": {
       "pending": "En attente",
       "in_progress": "En cours",

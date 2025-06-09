@@ -18,6 +18,10 @@ interface RequestDetailsContentProps {
   spaceId?: string | null;
   status: string | null;
   requestType: 'space' | 'service';
+  reservationData?: {
+    number_of_people?: number;
+    custom_fields?: Record<string, any>;
+  };
 }
 
 const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
@@ -31,6 +35,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   spaceId,
   status,
   requestType,
+  reservationData,
 }) => {
   const { t } = useTranslation();
   
@@ -62,6 +67,28 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
   const formattedTime = preferredTime 
     ? format(new Date(preferredTime), 'p') 
     : null;
+
+  // Get number of people from various sources
+  const getNumberOfPeople = () => {
+    // For space reservations, check reservationData first
+    if (requestType === 'space' && reservationData?.number_of_people) {
+      return reservationData.number_of_people;
+    }
+    
+    // Check custom fields for number_of_people
+    if (reservationData?.custom_fields?.number_of_people) {
+      return reservationData.custom_fields.number_of_people;
+    }
+    
+    // Fallback to parsedNote
+    if (parsedNote?.people) {
+      return parsedNote.people;
+    }
+    
+    return null;
+  };
+
+  const numberOfPeople = getNumberOfPeople();
 
   return (
     <div className="space-y-6 mt-4">
@@ -98,7 +125,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       </div>
       
       {/* For space bookings, show space details */}
-      {(finalSpaceId || parsedNote?.people) && (
+      {(finalSpaceId || numberOfPeople) && (
         <div className="space-y-2">
           {finalSpaceId && (
             <div className="flex justify-between">
@@ -109,11 +136,11 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
             </div>
           )}
           
-          {parsedNote?.people && (
+          {numberOfPeople && (
             <div className="flex justify-between">
               <span className="text-darcare-beige/80">{t('services.numberOfPeople', 'Number of People')}</span>
               <span className="text-darcare-beige font-medium">
-                {parsedNote.people} {parsedNote.people === 1 
+                {numberOfPeople} {numberOfPeople === 1 
                   ? t('services.person', 'Person') 
                   : t('services.people', 'People')}
               </span>
@@ -143,6 +170,35 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
               </span>
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Custom Fields for Space Reservations */}
+      {requestType === 'space' && reservationData?.custom_fields && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-darcare-gold uppercase">
+            {t('services.yourPreferences', 'Your Preferences')}
+          </h3>
+          
+          {Object.entries(reservationData.custom_fields).map(([key, value]) => {
+            // Skip number_of_people as it's already displayed above
+            if (key === 'number_of_people') return null;
+            
+            return (
+              <div key={key} className="flex justify-between">
+                <span className="text-darcare-beige/80">{formatFieldKey(key)}</span>
+                <span className="text-darcare-beige font-medium">
+                  {Array.isArray(value) 
+                    ? value.join(', ') 
+                    : typeof value === 'boolean'
+                      ? (value ? t('common.yes') : t('common.no'))
+                      : typeof value === 'object' 
+                        ? JSON.stringify(value)
+                        : String(value)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       )}
       

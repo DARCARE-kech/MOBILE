@@ -18,6 +18,7 @@ interface SpaceFormField {
 interface SpaceReservationFormData {
   preferred_time: Date;
   note: string;
+  number_of_people?: number;
   [key: string]: any; // For custom fields
 }
 
@@ -59,19 +60,18 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
         return [];
       }
       return (data || []).map((field) => {
-  let parsedOptions = null;
-  if (Array.isArray(field.options)) {
-    // Auto-wrap flat array into { choices: [...] }
-    parsedOptions = { choices: field.options };
-  } else if (typeof field.options === 'object') {
-    parsedOptions = field.options;
-  }
-  return {
-    ...field,
-    options: parsedOptions
-  };
-}) as SpaceFormField[];
-
+        let parsedOptions = null;
+        if (Array.isArray(field.options)) {
+          // Auto-wrap flat array into { choices: [...] }
+          parsedOptions = { choices: field.options };
+        } else if (typeof field.options === 'object') {
+          parsedOptions = field.options;
+        }
+        return {
+          ...field,
+          options: parsedOptions
+        };
+      }) as SpaceFormField[];
     },
     enabled: !!spaceId
   });
@@ -107,21 +107,20 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
     // Add defaults for custom fields
     if (formFields) {
       formFields.forEach(field => {
-  switch (field.input_type) {
-    case 'checkbox':
-      defaults[field.field_name] = false;
-      break;
-    case 'number':
-      defaults[field.field_name] = field.options?.min || 0;
-      break;
-    case 'multiselect':
-      defaults[field.field_name] = [];
-      break;
-    default:
-      defaults[field.field_name] = '';
-  }
-});
-
+        switch (field.input_type) {
+          case 'checkbox':
+            defaults[field.field_name] = false;
+            break;
+          case 'number':
+            defaults[field.field_name] = field.options?.min || 0;
+            break;
+          case 'multiselect':
+            defaults[field.field_name] = [];
+            break;
+          default:
+            defaults[field.field_name] = '';
+        }
+      });
     }
 
     return defaults;
@@ -164,23 +163,24 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
         formFields.forEach(field => {
           const fieldValue = values[field.field_name];
           const isValid =
-  field.input_type === 'multiselect'
-    ? Array.isArray(fieldValue) && fieldValue.length > 0
-    : fieldValue !== undefined && fieldValue !== '' && fieldValue !== null;
+            field.input_type === 'multiselect'
+              ? Array.isArray(fieldValue) && fieldValue.length > 0
+              : fieldValue !== undefined && fieldValue !== '' && fieldValue !== null;
 
-if (isValid) {
-  customFields[field.field_name] = fieldValue;
-}
-
+          if (isValid) {
+            customFields[field.field_name] = fieldValue;
+          }
         });
       }
 
+      // Build reservation data with number_of_people from custom fields
       const reservationData = {
         user_id: user.user.id,
         space_id: spaceId,
         preferred_time: values.preferred_time.toISOString(),
         note: values.note || null,
         custom_fields: Object.keys(customFields).length > 0 ? customFields : null,
+        number_of_people: customFields.number_of_people || 1, // Set from custom field or default to 1
         status: 'pending'
       };
 

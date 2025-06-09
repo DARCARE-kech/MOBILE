@@ -127,7 +127,8 @@
     "or": "or",
     "and": "and",
     "retry": "Retry",
-    "notSpecified": "Not specified"
+    "notSpecified": "Not specified",
+    "enter": "Enter"
   },
   "auth": {
     "login": "Log In",
@@ -233,7 +234,7 @@
   "services": {
     "services": "Services",
     "external": "External",
-      "additionalNotes": "Additional Notes",
+    "additionalNotes": "Additional Notes",
     "requests": "Requests",
     "villaServices": "Villa Services",
     "wellnessActivities": "Wellness and Activities",
@@ -257,6 +258,7 @@
     "preferredTime": "Preferred Time",
     "spaceName": "Space",
     "numberOfPeople": "Number of People",
+    "numberofpeople": "Number of People",
     "person": "Person",
     "people": "People",
     "yourPreferences": "Your Preferences",
@@ -330,6 +332,15 @@
     "fillAllFields": "Please fill in all required fields",
     "sendRequest": "Send Request",
     "updateRequest": "Update Request",
+    "date": "Date",
+    "time": "Time",
+    "selectDate": "Select date",
+    "selectTime": "Select time",
+    "serviceDetails": "Service Details",
+    "specialRequestsPlaceholder": "Any special requests or notes...",
+    "submitting": "Submitting...",
+    "updateReservation": "Update Reservation",
+    "confirmReservation": "Confirm Reservation",
     "status": {
       "pending": "Pending",
       "in_progress": "In Progress",

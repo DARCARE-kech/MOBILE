@@ -467,6 +467,7 @@ export type Database = {
       }
       services: {
         Row: {
+          active: boolean | null
           category: string | null
           description: string | null
           estimated_duration: string | null
@@ -475,6 +476,7 @@ export type Database = {
           name: string
         }
         Insert: {
+          active?: boolean | null
           category?: string | null
           description?: string | null
           estimated_duration?: string | null
@@ -483,6 +485,7 @@ export type Database = {
           name: string
         }
         Update: {
+          active?: boolean | null
           category?: string | null
           description?: string | null
           estimated_duration?: string | null
@@ -641,6 +644,7 @@ export type Database = {
           custom_fields: Json | null
           id: string
           note: string | null
+          number_of_people: number
           preferred_time: string
           space_id: string | null
           status: string | null
@@ -651,6 +655,7 @@ export type Database = {
           custom_fields?: Json | null
           id?: string
           note?: string | null
+          number_of_people?: number
           preferred_time: string
           space_id?: string | null
           status?: string | null
@@ -661,6 +666,7 @@ export type Database = {
           custom_fields?: Json | null
           id?: string
           note?: string | null
+          number_of_people?: number
           preferred_time?: string
           space_id?: string | null
           status?: string | null
