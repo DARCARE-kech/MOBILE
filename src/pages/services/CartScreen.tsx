@@ -38,7 +38,7 @@ const CartScreen = () => {
           .from('shop_orders')
           .select('id')
           .eq('user_id', user.id)
-          .eq('status', 'cart')
+          .eq('status', 'cart' as const)
           .order('created_at', { ascending: false });
 
         if (orderError) {
@@ -112,7 +112,7 @@ const CartScreen = () => {
         .from('shop_orders')
         .select('id')
         .eq('user_id', user.id)
-        .eq('status', 'cart')
+        .eq('status', 'cart' as const)
         .order('created_at', { ascending: false });
       
       if (orders && orders.length > 0) {
@@ -122,7 +122,7 @@ const CartScreen = () => {
         // Change the cart status to submitted instead of creating a new order
         await supabase
           .from('shop_orders')
-          .update({ status: 'submitted' })
+          .update({ status: 'submitted' as const })
           .eq('id', cartOrderId);
         
         // Invalidate cart queries to update UI immediately

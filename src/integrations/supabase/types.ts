@@ -1193,6 +1193,7 @@ export type Database = {
         | "delivering"
         | "delivered"
         | "cancelled"
+        | "cart"
       sender_type: "user" | "bot" | "admin"
     }
     CompositeTypes: {
@@ -1327,6 +1328,7 @@ export const Constants = {
         "delivering",
         "delivered",
         "cancelled",
+        "cart",
       ],
       sender_type: ["user", "bot", "admin"],
     },
