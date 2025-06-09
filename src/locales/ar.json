@@ -1,4 +1,3 @@
-
 {
   "common": {
     "loading": "جاري التحميل...",
@@ -350,7 +349,9 @@
       "approved": "تمت الموافقة",
       "in_progress": "قيد التنفيذ",
       "completed": "مكتمل",
-      "cancelled": "ملغى"
+      "cancelled": "ملغى",
+      "active": "نشط",
+      "confirmed": "مؤكد"
     },
     "noServicesMessage": "لا توجد خدمات مجدولة",
     "scheduleServiceHelp": "هل ترغب في جدولة خدمة؟",
@@ -389,7 +390,12 @@
     "noHistoryRequests": "لا توجد طلبات مكتملة أو ملغاة",
     "todaySchedule": "جدول اليوم",
     "noActivitiesScheduled": "لا توجد أنشطة مجدولة",
-    "noRequestsYet": "لا توجد طلبات بعد؟ دعنا نهتم بك."
+    "noRequestsYet": "لا توجد طلبات بعد؟ دعنا نهتم بك.",
+    "requestReservation": "طلب حجز",
+    "reservationType": "نوع الحجز",
+    "peopleCount": "عدد الأشخاص",
+    "reservationName": "اسم الحجز",
+    "fillAllFields": "يرجى ملء جميع الحقول المطلوبة"
   },
   "explore": {
     "searchPlaceholder": "البحث عن أماكن وتجارب...",
@@ -474,12 +480,20 @@
     "orderItems": "عناصر الطلب",
     "orderNotFound": "الطلب غير موجود",
     "lastUpdated": "آخر تحديث",
+    "cancelOrder": "إلغاء الطلب",
+    "orderCancelled": "تم إلغاء الطلب",
+    "orderCancelledDesc": "تم إلغاء طلبك بنجاح",
+    "cancelErrorDesc": "تعذر إلغاء الطلب. يرجى المحاولة مرة أخرى.",
+    "confirmCancelOrder": "إلغاء الطلب؟",
+    "cancelOrderWarning": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
     "orderStatus": {
       "title": "حالة الطلب",
       "confirmed": "مؤكد",
       "preparing": "قيد التحضير",
       "delivered": "تم التسليم",
-      "cancelled": "ملغى"
+      "cancelled": "ملغى",
+      "submitted": "مقدم",
+      "pending": "في الانتظار"
     }
   },
   "chatbot": {
