@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -13,6 +12,7 @@ import { useRequestMutations } from "@/hooks/useRequestMutations";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTranslation } from "react-i18next";
 import { useRequestStatusNotification } from "@/hooks/useRequestStatusNotification";
+import { shouldShowRequestActions } from "@/utils/reservationUtils";
 
 const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -125,17 +125,19 @@ const RequestDetailPage = () => {
   const isCompleted = request.status === 'completed';
   const isCancelled = request.status === 'cancelled';
   
+  // Use the new utility function to determine if actions should be shown
+  const canModify = shouldShowRequestActions(
+    request.type,
+    request.status,
+    request.preferred_time
+  );
+  
   // New logic for canModify based on request type
-  let canModify = false;
-  if (request.type === 'service') {
-    // For services: visible except if in_progress, completed, or cancelled
-    canModify = request.status !== 'in_progress' && 
-                request.status !== 'completed' && 
-                request.status !== 'cancelled';
-  } else if (request.type === 'space') {
-    // For spaces: visible only if pending
-    canModify = request.status === 'pending';
-  }
+  // For services: visible except if in_progress, completed, or cancelled
+  // For spaces: visible only if pending
+  // canModify = request.status !== 'in_progress' && 
+  //             request.status !== 'completed' && 
+  //             request.status !== 'cancelled';
   
   const existingRating = request.service_ratings && request.service_ratings.length > 0 
     ? request.service_ratings[0] 
@@ -204,6 +206,7 @@ const RequestDetailPage = () => {
               isSubmitting={isCancelling}
               requestType={request.type}
               requestStatus={request.status}
+              preferredTime={request.preferred_time}
             />
           </div>
         )}

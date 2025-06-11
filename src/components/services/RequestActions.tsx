@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { Pencil, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { shouldShowRequestActions } from '@/utils/reservationUtils';
 
 interface RequestActionsProps {
   onEdit?: () => void;
@@ -13,6 +14,7 @@ interface RequestActionsProps {
   serviceId?: string;
   requestType?: 'service' | 'space';
   requestStatus?: string | null;
+  preferredTime?: string | null;
 }
 
 const RequestActions: React.FC<RequestActionsProps> = ({
@@ -22,7 +24,8 @@ const RequestActions: React.FC<RequestActionsProps> = ({
   request,
   serviceId,
   requestType,
-  requestStatus
+  requestStatus,
+  preferredTime
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -41,17 +44,12 @@ const RequestActions: React.FC<RequestActionsProps> = ({
     }
   };
 
-  // Determine if Modify button should be shown based on type and status
-  let showModifyButton = true;
-  if (requestType === 'service') {
-    // For services: hide if in_progress, completed, or cancelled
-    showModifyButton = requestStatus !== 'in_progress' && 
-                     requestStatus !== 'completed' && 
-                     requestStatus !== 'cancelled';
-  } else if (requestType === 'space') {
-    // For spaces: show only if pending
-    showModifyButton = requestStatus === 'pending';
-  }
+  // Use the new utility function to determine if actions should be shown
+  const showModifyButton = shouldShowRequestActions(
+    requestType || 'service',
+    requestStatus,
+    preferredTime
+  );
   
   return (
     <div className="grid grid-cols-2 gap-3">
