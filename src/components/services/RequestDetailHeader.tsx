@@ -65,7 +65,7 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
           <div className="flex items-center gap-2 text-darcare-beige/80">
             <User size={14} className="text-darcare-gold flex-shrink-0" />
             <div>
-              <span className="block text-xs text-darcare-beige/60">{t('services.assignedStaff', 'Assigned Staff')}</span>
+              <span className="block text-xs text-darcare-beige/60">{t('services.assignedStaff', 'Assigned Agent')}</span>
               <span className="text-darcare-beige text-xs sm:text-sm">{staffName}</span>
             </div>
           </div>
