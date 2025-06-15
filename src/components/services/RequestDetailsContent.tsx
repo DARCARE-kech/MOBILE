@@ -233,7 +233,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
               ))}
             </div>
           ) : (
-            <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No staff assigned yet.')}</p>
+            <p className="text-darcare-beige/70">{t('services.noStaffAssigned', 'No Agent assigned yet.')}</p>
           )}
         </div>
       )}
