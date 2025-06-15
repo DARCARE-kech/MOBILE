@@ -129,7 +129,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
         <div className="space-y-2">
           {finalSpaceId && (
             <div className="flex justify-between">
-              <span className="text-darcare-beige/80">{t('services.spaceName', 'Space')}</span>
+
               <span className="text-darcare-beige font-medium">
                 {spaceData?.name || t('common.loading')}
               </span>
@@ -218,7 +218,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {requestType === 'service' && (
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-darcare-gold uppercase">
-            {t('services.assignedStaff', 'Assigned Staff')}
+            {t('services.assignedStaff', 'Assigned Agent')}
           </h3>
           
           {staffAssignments && staffAssignments.length > 0 && 
