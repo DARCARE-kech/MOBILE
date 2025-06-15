@@ -239,8 +239,8 @@
     "people": "Personnes",
     "yourPreferences": "Vos préférences",
     "notesTitle": "Notes",
-    "assignedStaff": "Personnel assigné",
-    "noStaffAssigned": "Aucun personnel assigné pour le moment.",
+    "assignedStaff": "Agent assigné",
+    "noStaffAssigned": "Aucun agent assigné pour le moment.",
     "serviceRating": "Évaluation du service",
     "editReservation": "Modifier la réservation",
     "newReservation": "Nouvelle réservation",
@@ -529,6 +529,7 @@
     "en": "Anglais",
     "fr": "Français",
     "ar": "Arabe",
+    "chat": "Dordogne",
     "settings": "Paramètres",
     "notifications": "Notifications"
   },
