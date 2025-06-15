@@ -127,14 +127,7 @@ const RequestDetailsContent: React.FC<RequestDetailsContentProps> = ({
       {/* For space bookings, show space details */}
       {(finalSpaceId || numberOfPeople) && (
         <div className="space-y-2">
-          {finalSpaceId && (
-            <div className="flex justify-between">
-
-              <span className="text-darcare-beige font-medium">
-                {spaceData?.name || t('common.loading')}
-              </span>
-            </div>
-          )}
+          
           
           {numberOfPeople && (
             <div className="flex justify-between">
