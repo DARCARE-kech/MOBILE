@@ -82,7 +82,7 @@ const StayDetailsPage: React.FC = () => {
           <h2 className={cn(
             "text-2xl font-serif mb-4",
             isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}> {currentStay.villa_number}</h2>
+          )}> Villa {currentStay.villa_number}</h2>
           
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -93,13 +93,7 @@ const StayDetailsPage: React.FC = () => {
               <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>Marrakech, Morocco</span>
             </div>
             
-            <div className="flex items-center gap-3">
-              <Building className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>Premium Suite</span>
-            </div>
+            
             
             <Separator className={cn(
               "my-3",
@@ -143,28 +137,6 @@ const StayDetailsPage: React.FC = () => {
           </div>
         </Card>
         
-        <Card className={cn(
-          "p-6",
-          isDarkMode 
-            ? "bg-darcare-navy/50 border-darcare-gold/20" 
-            : "bg-white border-secondary/20"
-        )}>
-          <h3 className={cn(
-            "text-lg font-serif mb-3",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>Amenities</h3>
-          <ul className={cn(
-            "space-y-2",
-            isDarkMode ? "text-darcare-beige" : "text-foreground"
-          )}>
-            <li>• Private Pool</li>
-            <li>• 24/7 Concierge</li>
-            <li>• Daily Housekeeping</li>
-            
-            <li>• High-Speed WiFi</li>
-          
-          </ul>
-        </Card>
         
         <div className="mt-6">
           <Button 
