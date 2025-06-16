@@ -110,7 +110,7 @@ const Home: React.FC = () => {
           type: 'service' as const,
           name: item.services?.name || 'Service',
           preferred_time: item.preferred_time,
-          status: item.status === "pending" || item.status === "active" || 
+          status: item.status === "pending" || item.status === "active" || item.status === "in_progress" || 
                  item.status === "completed" || item.status === "cancelled" 
                  ? item.status : "pending",
           created_at: item.created_at,
