@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Star, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useTranslation } from 'react-i18next';
 
 interface RequestRatingProps {
   onSubmit: (rating: number, comment: string) => void;
@@ -19,6 +20,7 @@ const RequestRating: React.FC<RequestRatingProps> = ({
   isSubmitting = false,
   existingRating = null 
 }) => {
+  const { t } = useTranslation();
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
 
@@ -45,7 +47,7 @@ const RequestRating: React.FC<RequestRatingProps> = ({
         
         {existingRating.comment && (
           <div className="mt-2 sm:mt-3">
-            <p className="text-darcare-beige/80 text-xs sm:text-sm mb-1">Votre commentaire :</p>
+            <p className="text-darcare-beige/80 text-xs sm:text-sm mb-1">{t('services.yourComment')}:</p>
             <p className="text-darcare-beige bg-darcare-navy/40 p-2 sm:p-3 rounded-md text-xs sm:text-sm">
               {existingRating.comment}
             </p>
@@ -54,7 +56,7 @@ const RequestRating: React.FC<RequestRatingProps> = ({
         
         {existingRating.created_at && (
           <p className="text-darcare-beige/60 text-xs mt-2">
-            Noté le {new Date(existingRating.created_at).toLocaleDateString('fr-FR')}
+            {t('services.ratedOn')} {new Date(existingRating.created_at).toLocaleDateString('fr-FR')}
           </p>
         )}
       </div>
@@ -65,7 +67,7 @@ const RequestRating: React.FC<RequestRatingProps> = ({
   return (
     <div className="space-y-3 sm:space-y-4">
       <p className="text-darcare-beige/80 mb-2 sm:mb-3 text-sm sm:text-base">
-        Comment évalueriez-vous le service fourni ?
+        {t('services.rateServiceQuestion')}
       </p>
       
       <div className="flex items-center gap-2">
@@ -91,7 +93,7 @@ const RequestRating: React.FC<RequestRatingProps> = ({
       
       <div className="mt-2 sm:mt-3">
         <Textarea
-          placeholder="Ajoutez des commentaires sur le service (optionnel)"
+          placeholder={t('services.addCommentsPlaceholder')}
           className="resize-none bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige text-sm sm:text-base"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -108,10 +110,10 @@ const RequestRating: React.FC<RequestRatingProps> = ({
         {isSubmitting ? (
           <>
             <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-2 animate-spin" />
-            Soumission...
+            {t('common.submitting')}
           </>
         ) : (
-          'Soumettre la note'
+          t('services.submitRating')
         )}
       </Button>
     </div>

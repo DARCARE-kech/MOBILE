@@ -2,9 +2,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export const useRequestMutations = (requestId: string) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const submitRatingMutation = useMutation({
@@ -22,15 +24,15 @@ export const useRequestMutations = (requestId: string) => {
       if (error) {
         // Handle unique constraint violation specifically
         if (error.code === '23505' && error.message.includes('unique_user_request_rating')) {
-          throw new Error('Vous avez déjà soumis une note pour cette demande');
+          throw new Error(t('services.alreadyRated'));
         }
         throw error;
       }
     },
     onSuccess: () => {
       toast({
-        title: "Note soumise",
-        description: "Merci pour votre retour",
+        title: t('services.ratingSubmitted'),
+        description: t('services.thankYouForFeedback'),
       });
       
       // Invalidate both unified queries to refresh the data
@@ -43,8 +45,8 @@ export const useRequestMutations = (requestId: string) => {
     },
     onError: (error: any) => {
       toast({
-        title: "Erreur lors de la soumission",
-        description: error.message || "Veuillez réessayer plus tard",
+        title: t('common.submissionError'),
+        description: error.message || t('common.tryAgain'),
         variant: "destructive",
       });
     }
@@ -82,12 +84,12 @@ export const useRequestMutations = (requestId: string) => {
     },
     onSuccess: (result) => {
       const message = result?.type === 'space' 
-        ? "Réservation d'espace annulée"
-        : "Demande de service annulée";
+        ? t('services.spaceReservationCancelled')
+        : t('services.serviceRequestCancelled');
       
       const description = result?.type === 'space'
-        ? "Votre réservation d'espace a été annulée"
-        : "Votre demande de service a été annulée";
+        ? t('services.spaceReservationCancelledDesc')
+        : t('services.serviceRequestCancelledDesc');
       
       toast({
         title: message,
@@ -104,8 +106,8 @@ export const useRequestMutations = (requestId: string) => {
     },
     onError: (error: any) => {
       toast({
-        title: "Erreur lors de l'annulation",
-        description: error.message || "Veuillez réessayer plus tard",
+        title: t('services.cancellationError'),
+        description: error.message || t('common.tryAgain'),
         variant: "destructive",
       });
     }

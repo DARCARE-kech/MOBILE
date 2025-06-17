@@ -50,7 +50,8 @@
     "previous": "Précédent",
     "required": "Requis",
     "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?",
-    "logoutConfirmation": "Confirmation de déconnexion"
+    "logoutConfirmation": "Confirmation de déconnexion",
+    "submissionError": "Erreur lors de la soumission"
   },
   "services": {
     "todaysSchedule": "Planning d'Aujourd'hui",
@@ -134,6 +135,19 @@
     "fillAllFields": "Veuillez remplir tous les champs requis",
     "sendRequest": "Envoyer la demande",
     "updateRequest": "Mettre à jour la demande",
+    "yourComment": "Votre commentaire",
+    "ratedOn": "Noté le",
+    "rateServiceQuestion": "Comment évalueriez-vous le service fourni ?",
+    "addCommentsPlaceholder": "Ajoutez des commentaires sur le service (optionnel)",
+    "submitRating": "Soumettre la note",
+    "ratingSubmitted": "Note soumise",
+    "thankYouForFeedback": "Merci pour votre retour",
+    "alreadyRated": "Vous avez déjà soumis une note pour cette demande",
+    "serviceRequestCancelled": "Demande de service annulée",
+    "serviceRequestCancelledDesc": "Votre demande de service a été annulée",
+    "spaceReservationCancelled": "Réservation d'espace annulée",
+    "spaceReservationCancelledDesc": "Votre réservation d'espace a été annulée",
+    "cancellationError": "Erreur lors de l'annulation",
     "status": {
       "pending": "En attente",
       "in_progress": "En cours",

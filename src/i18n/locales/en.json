@@ -50,7 +50,8 @@
     "previous": "Previous",
     "required": "Required",
     "confirmLogout": "Are you sure you want to log out?",
-    "logoutConfirmation": "Logout Confirmation"
+    "logoutConfirmation": "Logout Confirmation",
+    "submissionError": "Submission Error"
   },
   "services": {
     "todaysSchedule": "Today's Schedule",
@@ -134,6 +135,19 @@
     "fillAllFields": "Please fill in all required fields",
     "sendRequest": "Send Request",
     "updateRequest": "Update Request",
+    "yourComment": "Your comment",
+    "ratedOn": "Rated on",
+    "rateServiceQuestion": "How would you rate the service provided?",
+    "addCommentsPlaceholder": "Add comments about the service (optional)",
+    "submitRating": "Submit Rating",
+    "ratingSubmitted": "Rating Submitted",
+    "thankYouForFeedback": "Thank you for your feedback",
+    "alreadyRated": "You have already submitted a rating for this request",
+    "serviceRequestCancelled": "Service Request Cancelled",
+    "serviceRequestCancelledDesc": "Your service request has been cancelled",
+    "spaceReservationCancelled": "Space Reservation Cancelled", 
+    "spaceReservationCancelledDesc": "Your space reservation has been cancelled",
+    "cancellationError": "Cancellation Error",
     "status": {
       "pending": "Pending",
       "in_progress": "In Progress",
