@@ -169,7 +169,7 @@ const Home: React.FC = () => {
         showFavorite={true}
       />
       
-      <div className="pt-4 pb-24 px-2 overflow-hidden">
+      <div className="pt-16 pb-24 px-2 overflow-hidden">
         <CurrentStay 
           currentStay={currentStay} 
           userId={user?.id} 

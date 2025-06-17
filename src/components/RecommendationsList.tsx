@@ -68,7 +68,7 @@ const RecommendationsList = () => {
   if (isLoading) {
     return (
       <div className="space-y-3">
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center mb-2">
           <div className="h-6 w-48 bg-darcare-gold/20 animate-pulse rounded" />
           <div className="h-6 w-20 bg-darcare-gold/20 animate-pulse rounded" />
         </div>
@@ -84,16 +84,16 @@ const RecommendationsList = () => {
   }
 
   return (
-    <div className="p-3">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-serif text-darcare-gold">
+    <div className="p-2">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="font-serif text-primary text-base sm:text-lg">
           {t("recommendations.title", "Marrakech Highlights")}
         </h2>
         <button 
-          className="text-darcare-gold text-sm flex items-center"
+          className="text-primary text-xs sm:text-sm flex items-center gap-1 h-8 px-2"
           onClick={() => navigate('/explore')}
         >
-          {t("recommendations.viewAll", "View All")} <ChevronRight size={16} />
+          {t("recommendations.viewAll", "View All")} <ChevronRight size={14} />
         </button>
       </div>
 
