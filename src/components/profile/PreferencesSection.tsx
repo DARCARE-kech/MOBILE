@@ -37,9 +37,9 @@ export const PreferencesSection = ({
   };
 
   return (
-    <Card className={`p-6 shadow-sm bg-card border-darcare-gold/20 ${className}`}>
-      <h3 className="text-lg font-serif mb-4 text-darcare-gold">{t('profile.preferences')}</h3>
-      <div className="space-y-6">
+    <Card className={`p-4 shadow-sm bg-card border-darcare-gold/20 ${className}`}>
+      <h3 className="text-base font-serif mb-3 text-darcare-gold">{t('profile.preferences')}</h3>
+      <div className="space-y-4">
         <PreferenceItem
           icon={<Globe className="h-5 w-5 text-darcare-gold" />}
           label={t('profile.language')}

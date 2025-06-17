@@ -30,19 +30,19 @@ export const UserInfoBlock = ({
   const { t } = useTranslation();
   
   return (
-    <Card className="p-5 bg-card border-darcare-gold/20 shadow-md">
-      <div className="flex items-center gap-4">
-  <Avatar className="h-20 w-20 border-2 border-darcare-gold/20 shadow-sm">
+    <Card className="p-4 bg-card border-darcare-gold/20 shadow-md">
+      <div className="flex items-center gap-3">
+  <Avatar className="h-16 w-16 border-2 border-darcare-gold/20 shadow-sm">
     <AvatarImage src={avatarUrl ?? undefined} alt={fullName} />
     <AvatarFallback className="bg-darcare-gold/10">
-      <UserRound className="h-10 w-10 text-darcare-gold/70" />
+      <UserRound className="h-8 w-8 text-darcare-gold/70" />
     </AvatarFallback>
   </Avatar>
 
   <div className="flex-1">
     <div className="flex items-center justify-between">
-  <div className="flex items-center gap-4">
-    <h2 className="text-xl font-serif text-darcare-gold">{fullName}</h2>
+  <div className="flex items-center gap-3">
+    <h2 className="text-lg font-serif text-darcare-gold">{fullName}</h2>
     {onEditProfile && (
       <button
         onClick={onEditProfile}
@@ -59,7 +59,7 @@ export const UserInfoBlock = ({
     {villaNumber && checkIn && checkOut && onViewStay && (
       <Button
         variant="ghost"
-        className="mt-3 px-3 py-2 border border-darcare-gold/10 bg-darcare-navy/40 text-darcare-beige hover:bg-darcare-gold/10 flex items-center justify-start gap-2 rounded-md"
+        className="mt-2 px-3 py-2 border border-darcare-gold/10 bg-darcare-navy/40 text-darcare-beige hover:bg-darcare-gold/10 flex items-center justify-start gap-2 rounded-md"
         onClick={onViewStay}
       >
         <Calendar className="h-4 w-4 text-darcare-gold" />

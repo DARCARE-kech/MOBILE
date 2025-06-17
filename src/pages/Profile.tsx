@@ -49,7 +49,7 @@ const ProfilePage: React.FC = () => {
       />
       
       <div className="pt-16 pb-24">
-        <div className="p-4 space-y-6">
+        <div className="p-3 space-y-4">
           {/* User Info Section */}
           <UserInfoBlock
             fullName={profile?.full_name || ''}
@@ -69,12 +69,12 @@ const ProfilePage: React.FC = () => {
           />
 
           {/* Links Section */}
-          <Card className="p-6 bg-card border-darcare-gold/20 shadow-sm">
-            <h3 className="text-lg font-serif mb-4 text-darcare-gold">{t('profile.accountSettings')}</h3>
+          <Card className="p-4 bg-card border-darcare-gold/20 shadow-sm">
+            <h3 className="text-base font-serif mb-3 text-darcare-gold">{t('profile.accountSettings')}</h3>
             
           
             <div 
-              className="flex items-center justify-between gap-3 py-3 cursor-pointer group" 
+              className="flex items-center justify-between gap-3 py-2 cursor-pointer group" 
               onClick={() => navigate('/profile/change-password')}
             >
               <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ const ProfilePage: React.FC = () => {
             <Separator className="my-2 bg-darcare-gold/10" />
             
             <div 
-              className="flex items-center justify-between gap-3 py-3 cursor-pointer group" 
+              className="flex items-center justify-between gap-3 py-2 cursor-pointer group" 
               onClick={() => navigate('/profile/help')}
             >
               <div className="flex items-center gap-3">
@@ -101,7 +101,7 @@ const ProfilePage: React.FC = () => {
             <Separator className="my-2 bg-darcare-gold/10" />
             
             <div 
-              className="flex items-center justify-between gap-3 py-3 cursor-pointer group" 
+              className="flex items-center justify-between gap-3 py-2 cursor-pointer group" 
               onClick={() => navigate('/profile/about')}
             >
               <div className="flex items-center gap-3">
