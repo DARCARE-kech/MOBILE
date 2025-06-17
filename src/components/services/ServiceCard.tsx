@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Club, Car, Scissors, Bath } from 'lucide-react';
@@ -19,6 +20,16 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
+
+  // Function to capitalize service names properly
+  const capitalizeServiceName = (name: string) => {
+    // Handle specific service names that need capitalization
+    const lowerName = name.toLowerCase();
+    if (['cleaning', 'laundry', 'transport', 'maintenance', 'reservation'].includes(lowerName)) {
+      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+    return name;
+  };
 
   const getServiceIcon = () => {
     const serviceName = service.name.toLowerCase();
@@ -75,7 +86,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onSelect }) => {
 
         <div className="absolute bottom-0 left-0 w-full p-2 backdrop-blur-md bg-black/40 text-white">
           <h3 className="text-xs font-semibold truncate">
-            {t(`services.${service.name}`, service.name)}
+            {t(`services.${service.name}`, capitalizeServiceName(service.name))}
           </h3>
           {service.description && (
             <p className="text-[10px] opacity-80 leading-snug line-clamp-2">
