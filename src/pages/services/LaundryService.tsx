@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -168,9 +168,9 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
       const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
+        profile_id: user.id,
         preferred_time: isoDateTime,
-        note: data.note || null, // Make sure note is included
+        note: data.note || null,
         selected_options: {
           selectedServices,
           selectedFabrics,
@@ -182,7 +182,6 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
       let error;
       
       if (editMode && existingRequest?.id) {
-        // Update existing request
         const { error: updateError } = await supabase
           .from('service_requests')
           .update(requestData)
@@ -196,7 +195,6 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
           });
         }
       } else {
-        // Create new request
         const { error: insertError } = await supabase
           .from('service_requests')
           .insert(requestData);
@@ -224,83 +222,62 @@ const LaundryService: React.FC<LaundryServiceProps> = ({
   };
   
   return (
-    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
-      {/* Service Header with instructions */}
+    <div className="p-4 pb-24">
       <ServiceHeader 
         serviceName={serviceData?.category ?? 'laundry'}
         serviceDetail={serviceData}
       />
       
-      {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-4 sm:p-5 rounded-lg sm:rounded-2xl mb-4 sm:mb-6">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
-            {/* Laundry Services Selection */}
-            <div className="mobile-form-section">
-              <OptionField
-                form={form}
-                fieldType="checkbox"
-                name="services"
-                label={t('services.laundryServices')}
-                options={serviceOptions}
-                icon={<WashingMachine className="h-4 w-4 sm:h-5 sm:w-5" />}
-                subtitle={t('services.selectAtLeastOne')}
-              />
-            </div>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <OptionField
+              form={form}
+              fieldType="checkbox"
+              name="services"
+              label={t('services.laundryServices')}
+              options={serviceOptions}
+              icon={<WashingMachine className="h-4 w-4 sm:h-5 sm:w-5" />}
+              subtitle={t('services.selectAtLeastOne')}
+            />
             
-            {/* Special Fabrics Selection */}
-            <div className="mobile-form-section">
-              <OptionField
-                form={form}
-                fieldType="checkbox"
-                name="specialFabrics"
-                label={t('services.specialFabrics')}
-                options={fabricOptions}
-                icon={<Shirt className="h-4 w-4 sm:h-5 sm:w-5" />}
-                subtitle={t('services.fabricsSubtitle')}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="checkbox"
+              name="specialFabrics"
+              label={t('services.specialFabrics')}
+              options={fabricOptions}
+              icon={<Shirt className="h-4 w-4 sm:h-5 sm:w-5" />}
+              subtitle={t('services.fabricsSubtitle')}
+            />
             
-            {/* Weight Slider */}
-            <div className="mobile-form-section">
-              <OptionField
-                form={form}
-                fieldType="slider"
-                name="weight"
-                label={t('services.weight')}
-                min={1}
-                max={10}
-                step={0.5}
-                icon={<Shirt className="h-4 w-4 sm:h-5 sm:w-5" />}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="slider"
+              name="weight"
+              label={t('services.weight')}
+              min={1}
+              max={10}
+              step={0.5}
+              icon={<Shirt className="h-4 w-4 sm:h-5 sm:w-5" />}
+            />
             
-            {/* Same Day Delivery Toggle */}
-            <div className="mobile-form-section">
-              <OptionField
-                form={form}
-                fieldType="toggle"
-                name="sameDayDelivery"
-                label={t('services.sameDayDelivery')}
-                subtitle={t('services.premiumService')}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="toggle"
+              name="sameDayDelivery"
+              label={t('services.sameDayDelivery')}
+              subtitle={t('services.premiumService')}
+            />
             
-            {/* Date and Time Selection */}
-            <div className="mobile-form-section">
-              <DateTimePickerSection form={form} />
-            </div>
+            <DateTimePickerSection form={form} />
             
-            {/* Notes Field */}
-            <div className="mobile-form-section">
-              <NoteInput form={form} />
-            </div>
+            <NoteInput form={form} />
             
-            {/* Submit Button */}
             <Button
               type="submit"
               disabled={isSubmitting || !isFormValid()}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 mobile-form-button h-10 sm:h-12 text-sm sm:text-base"
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting ? t('common.submitting') : 
                 editMode ? t('services.updateRequest') : t('services.sendRequest')

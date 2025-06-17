@@ -12,12 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import FormSectionTitle from '@/components/services/FormSectionTitle';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useServiceSubmitter } from '@/components/services/ServiceRequestSubmitter';
 import { ServiceDetail } from '@/hooks/services/types';
-import { Loader2, CalendarClock, Users, PenLine } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { LuxuryCard } from '@/components/ui/luxury-card';
+import { Loader2, Users, PenLine } from 'lucide-react';
 import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
 import { Card } from "@/components/ui/card";
 
@@ -44,7 +41,6 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -157,38 +153,29 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
   )?.options || ['restaurant', 'activity', 'excursion', 'other'];
 
   return (
-    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
+    <div className="p-4 pb-24">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
-          <Card className="bg-darcare-navy/50 border border-darcare-gold/20 rounded-lg sm:rounded-xl p-4 sm:p-5 space-y-4 sm:space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
+            <DateTimePickerSection form={form} />
 
-            {/* Scheduling Information */}
-            <div className="mobile-form-section">
-              <DateTimePickerSection form={form} />
-            </div>
-
-            {/* Reservation Details */}
-            <div className="mobile-form-section">
+            <div className="space-y-6">
               <FormSectionTitle 
                 title={t('services.requestReservation')} 
                 icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />}
                 rawKeys={true}
               />
 
-              <div className="space-y-3 sm:space-y-4">
-                {/* Reservation Type */}
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
                   name="reservationType"
                   render={({ field }) => (
-                    <FormItem className="mobile-form-field">
-                      <FormLabel className="text-sm sm:text-base">{t('services.reservationType')}</FormLabel>
+                    <FormItem>
+                      <FormLabel>{t('services.reservationType')}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className={cn(
-                            "w-full bg-darcare-navy/50 border-darcare-gold/30 mobile-form-input",
-                            "focus:border-darcare-gold/60 focus:ring-0 h-9 sm:h-10"
-                          )}>
+                          <SelectTrigger className="w-full bg-darcare-navy/50 border-darcare-gold/30 focus:border-darcare-gold/60 focus:ring-0">
                             <SelectValue placeholder={t('services.reservationType')} />
                           </SelectTrigger>
                         </FormControl>
@@ -205,22 +192,18 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
                   )}
                 />
 
-                {/* Number of People */}
                 <FormField
                   control={form.control}
                   name="peopleCount"
                   render={({ field }) => (
-                    <FormItem className="mobile-form-field">
-                      <FormLabel className="text-sm sm:text-base">{t('services.peopleCount')}</FormLabel>
+                    <FormItem>
+                      <FormLabel>{t('services.peopleCount')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           min="1"
                           max="50"
-                          className={cn(
-                            "bg-darcare-navy/50 border-darcare-gold/30 mobile-form-input",
-                            "focus:border-darcare-gold/60 focus:ring-0 h-9 sm:h-10 text-sm sm:text-base"
-                          )}
+                          className="bg-darcare-navy/50 border-darcare-gold/30 focus:border-darcare-gold/60 focus:ring-0"
                           {...field}
                         />
                       </FormControl>
@@ -229,19 +212,15 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
                   )}
                 />
 
-                {/* Reservation Name */}
                 <FormField
                   control={form.control}
                   name="reservationName"
                   render={({ field }) => (
-                    <FormItem className="mobile-form-field">
-                      <FormLabel className="text-sm sm:text-base">{t('services.reservationName')}</FormLabel>
+                    <FormItem>
+                      <FormLabel>{t('services.reservationName')}</FormLabel>
                       <FormControl>
                         <Input
-                          className={cn(
-                            "bg-darcare-navy/50 border-darcare-gold/30 mobile-form-input",
-                            "focus:border-darcare-gold/60 focus:ring-0 h-9 sm:h-10 text-sm sm:text-base"
-                          )}
+                          className="bg-darcare-navy/50 border-darcare-gold/30 focus:border-darcare-gold/60 focus:ring-0"
                           {...field}
                         />
                       </FormControl>
@@ -252,8 +231,7 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
               </div>
             </div>
 
-            {/* Special Requests */}
-            <div className="mobile-form-section">
+            <div className="space-y-3">
               <FormSectionTitle 
                 title={t('services.specialRequests')} 
                 icon={<PenLine className="w-4 h-4 sm:w-5 sm:h-5" />}
@@ -261,23 +239,19 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
               />
               <Textarea
                 placeholder={t('services.notesPlaceholder')}
-                className={cn(
-                  "min-h-[80px] sm:min-h-[120px] bg-darcare-navy/50 border-darcare-gold/30 mobile-form-textarea",
-                  "focus:border-darcare-gold/60 focus:ring-0 text-sm sm:text-base"
-                )}
+                className="min-h-[80px] bg-darcare-navy/50 border-darcare-gold/30 focus:border-darcare-gold/60 focus:ring-0"
                 {...form.register('note')}
               />
             </div>
 
-            {/* Submit Button */}
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif mobile-form-button h-10 sm:h-12 text-sm sm:text-lg"
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
             >
               {isSubmitting ? (
                 <span className="flex items-center">
-                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   {t('common.submitting')}
                 </span>
               ) : editMode ? (
@@ -286,7 +260,6 @@ const ReservationService: React.FC<ReservationServiceProps> = ({
                 t('services.sendRequest')
               )}
             </Button>
-
           </Card>
         </form>
       </Form>

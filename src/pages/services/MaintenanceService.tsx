@@ -14,11 +14,9 @@ import DateTimePickerSection from '@/components/services/form/DateTimePickerSect
 import NoteInput from '@/components/services/form/NoteInput';
 import FileUpload from '@/components/services/form/FileUpload';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { ServiceDetail } from '@/hooks/services/types';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
 import { Wrench } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface MaintenanceServiceProps {
   serviceData?: ServiceDetail;
@@ -42,7 +40,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDarkMode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   
@@ -89,7 +86,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
   
   const uploadImage = async (): Promise<string | null> => {
     if (!imageFile) {
-      // If we're editing and there was an existing image, return that
       if (editMode && existingRequest?.image_url) {
         return existingRequest.image_url;
       }
@@ -101,7 +97,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `maintenance/${fileName}`;
       
-      // Upload to storage
       const { error: uploadError } = await supabase.storage
         .from('service_images')
         .upload(filePath, imageFile);
@@ -110,7 +105,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
         throw uploadError;
       }
       
-      // Get the public URL
       const { data } = supabase.storage
         .from('service_images')
         .getPublicUrl(filePath);
@@ -133,7 +127,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
     setIsSubmitting(true);
     
     try {
-      // Upload image if present
       let imageUrl = await uploadImage();
       
       const isoDateTime = new Date(
@@ -147,9 +140,9 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
       const requestData = {
         service_id: serviceData?.service_id,
         user_id: user.id,
-        profile_id: user.id, // Set profile_id equal to user_id
+        profile_id: user.id,
         preferred_time: isoDateTime,
-        note: data.note || null, // Make sure note is included
+        note: data.note || null,
         image_url: imageUrl,
         selected_options: {
           maintenanceType: data.maintenanceType,
@@ -160,7 +153,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
       let error;
       
       if (editMode && existingRequest?.id) {
-        // Update existing request
         const { error: updateError } = await supabase
           .from('service_requests')
           .update(requestData)
@@ -174,7 +166,6 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
           });
         }
       } else {
-        // Create new request
         const { error: insertError } = await supabase
           .from('service_requests')
           .insert(requestData);
@@ -203,49 +194,31 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
   
   return (
     <div className="p-4 pb-24">
-      {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category || t('services.maintenance')}
         serviceDetail={serviceData}
       />
       
-      {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
-        <div className="mb-6">
-          <h2 className={cn(
-            "text-xl font-serif mb-2",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>
-            {editMode ? t('services.updateRequest', 'Update Request') : t('services.requestMaintenance', 'Request Maintenance')}
-          </h2>
-        </div>
-
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Maintenance Type Option */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="radio"
-                name="maintenanceType"
-                label={t('services.maintenanceType')}
-                options={maintenanceTypes}
-                icon={<Wrench className="h-4 w-4 sm:h-5 sm:w-5" />}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="radio"
+              name="maintenanceType"
+              label={t('services.maintenanceType')}
+              options={maintenanceTypes}
+              icon={<Wrench className="h-4 w-4 sm:h-5 sm:w-5" />}
+            />
             
-            {/* Urgency Selection */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="radio"
-                name="urgency"
-                label={t('services.urgency')}
-                options={urgencyLevels}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="radio"
+              name="urgency"
+              label={t('services.urgency')}
+              options={urgencyLevels}
+            />
             
-            {/* Image Upload */}
             <div className="space-y-3">
               <FormSectionTitle 
                 title={t('services.uploadImage')}
@@ -258,29 +231,18 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
               />
             </div>
             
-            {/* Date and Time Selection */}
-            <div>
-              <DateTimePickerSection form={form} />
-            </div>
+            <DateTimePickerSection form={form} />
             
-            {/* Notes Field */}
-            <div>
-              <NoteInput form={form} />
-            </div>
+            <NoteInput form={form} />
             
-            {/* Submit Button */}
-            <div className="pt-2">
-              <Button
-                type="submit"
-                disabled={isSubmitting || !isFormValid()}
-                className={cn(
-                  "w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-base"
-                )}
-              >
-                {isSubmitting ? t('common.submitting') : 
-                  editMode ? t('services.updateRequest') : t('services.sendRequest')}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !isFormValid()}
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            >
+              {isSubmitting ? t('common.submitting') : 
+                editMode ? t('services.updateRequest') : t('services.sendRequest')}
+            </Button>
           </form>
         </Form>
       </Card>

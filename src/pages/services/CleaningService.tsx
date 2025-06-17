@@ -13,10 +13,8 @@ import OptionField from '@/components/services/form/OptionField';
 import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
 import NoteInput from '@/components/services/form/NoteInput';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { ServiceDetail } from '@/hooks/services/types';
-import { Home, Bed, ShowerHead } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Home, Bed } from 'lucide-react';
 
 interface CleaningServiceProps {
   serviceData?: ServiceDetail;
@@ -46,7 +44,6 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDarkMode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const optionalFields = serviceData?.optional_fields || {};
@@ -204,74 +201,46 @@ const CleaningService: React.FC<CleaningServiceProps> = ({
   
   return (
     <div className="p-4 pb-24">
-      {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category || t('services.cleaning', 'Cleaning')}
         serviceDetail={serviceData}
       />
 
-      {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
-        <div className="mb-6">
-          <h2 className={cn(
-            "text-xl font-serif mb-2",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>
-            {editMode ? t('services.updateRequest', 'Update Request') : t('services.requestCleaning', 'Request Cleaning')}
-          </h2>
-        </div>
-
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Cleaning Type Option */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="radio"
-                name="cleaningType"
-                label={t('services.cleaningType', 'Cleaning Type')}
-                options={cleaningTypes}
-                icon={<Home className="h-4 w-4 sm:h-5 sm:w-5" />}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="radio"
+              name="cleaningType"
+              label={t('services.cleaningType', 'Cleaning Type')}
+              options={cleaningTypes}
+              icon={<Home className="h-4 w-4 sm:h-5 sm:w-5" />}
+            />
             
-            {/* Rooms Selection */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="checkbox"
-                name="rooms"
-                label={t('services.selectRooms', 'Select Rooms')}
-                options={roomOptions}
-                icon={<Bed className="h-4 w-4 sm:h-5 sm:w-5" />}
-                subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="checkbox"
+              name="rooms"
+              label={t('services.selectRooms', 'Select Rooms')}
+              options={roomOptions}
+              icon={<Bed className="h-4 w-4 sm:h-5 sm:w-5" />}
+              subtitle={t('services.roomsSubtitle', 'Choose which areas need cleaning')}
+            />
             
-            {/* Date and Time Selection */}
-            <div>
-              <DateTimePickerSection form={form} />
-            </div>
+            <DateTimePickerSection form={form} />
             
-            {/* Notes Field */}
-            <div>
-              <NoteInput form={form} />
-            </div>
+            <NoteInput form={form} />
             
-            {/* Submit Button */}
-            <div className="pt-2">
-              <Button
-                type="submit"
-                disabled={isSubmitting || !isFormValid()}
-                className={cn(
-                  "w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-base"
-                )}
-              >
-                {isSubmitting ? t('common.submitting', 'Submitting...') : 
-                  editMode ? t('services.updateRequest', 'Update Request') : t('services.sendRequest', 'Send Request')
-                }
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !isFormValid()}
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            >
+              {isSubmitting ? t('common.submitting', 'Submitting...') : 
+                editMode ? t('services.updateRequest', 'Update Request') : t('services.sendRequest', 'Send Request')
+              }
+            </Button>
           </form>
         </Form>
       </Card>

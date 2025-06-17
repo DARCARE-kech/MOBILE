@@ -13,9 +13,7 @@ import OptionField from '@/components/services/form/OptionField';
 import DateTimePickerSection from '@/components/services/form/DateTimePickerSection';
 import NoteInput from '@/components/services/form/NoteInput';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { ServiceDetail } from '@/hooks/services/types';
-import { cn } from '@/lib/utils';
 
 interface TransportServiceProps {
   serviceData?: ServiceDetail;
@@ -30,7 +28,6 @@ interface FormValues {
   driverLanguage: string;
   passengers: number;
   luggageSupport: boolean;
-  // Adding vehicleType with an empty string as default value
   vehicleType: string;
 }
 
@@ -42,7 +39,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isDarkMode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const optionalFields = serviceData?.optional_fields || {};
@@ -78,7 +74,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
       luggageSupport: editMode && existingRequest?.selected_options?.luggageSupport 
         ? existingRequest.selected_options.luggageSupport 
         : false,
-      // Initialize vehicleType with an existing value or empty string
       vehicleType: editMode && existingRequest?.selected_options?.vehicleType
         ? existingRequest.selected_options.vehicleType
         : ''
@@ -88,8 +83,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
   
   // Check if form is valid for enabling submit button
   const isFormValid = () => {
-    // Since vehicleType isn't actually used in the UI currently,
-    // we can modify this validation to check other fields or always return true
     return true;
   };
   
@@ -112,7 +105,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
         parseInt(data.time.split(':')[1])
       ).toISOString();
 
-      // Vérification et log du service_id utilisé
       console.log('Using service_id:', serviceData?.service_id);
       
       if (!serviceData?.service_id) {
@@ -120,16 +112,15 @@ const TransportService: React.FC<TransportServiceProps> = ({
       }
       
       const requestData = {
-        service_id: serviceData?.service_id, // S'assurer que service_id est toujours inclus
+        service_id: serviceData?.service_id,
         user_id: user.id,
-        profile_id: user.id, // Définir profile_id égal à user_id
+        profile_id: user.id,
         preferred_time: isoDateTime,
-        note: data.note || null, // S'assurer que note est toujours incluse
+        note: data.note || null,
         selected_options: {
           driverLanguage: data.driverLanguage,
           passengers: data.passengers,
           luggageSupport: data.luggageSupport
-          // We don't include vehicleType in the submitted data since it's not actually used
         }
       };
 
@@ -138,7 +129,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
       let error;
       
       if (editMode && existingRequest?.id) {
-        // Update existing request
         const { error: updateError } = await supabase
           .from('service_requests')
           .update(requestData)
@@ -152,7 +142,6 @@ const TransportService: React.FC<TransportServiceProps> = ({
           });
         }
       } else {
-        // Create new request
         const { error: insertError } = await supabase
           .from('service_requests')
           .insert(requestData);
@@ -181,82 +170,51 @@ const TransportService: React.FC<TransportServiceProps> = ({
   
   return (
     <div className="p-4 pb-24">
-      {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category || t('services.transport')}
         serviceDetail={serviceData}
       />
       
-      {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
-        <div className="mb-6">
-          <h2 className={cn(
-            "text-xl font-serif mb-2",
-            isDarkMode ? "text-darcare-gold" : "text-primary"
-          )}>
-            {editMode ? t('services.updateRequest', 'Update Request') : t('services.requestTransport', 'Request Transport')}
-          </h2>
-        </div>
-
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg mb-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Driver Language Selection */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="radio"
-                name="driverLanguage"
-                label={t('services.driverLanguage')}
-                options={languageOptions}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="radio"
+              name="driverLanguage"
+              label={t('services.driverLanguage')}
+              options={languageOptions}
+            />
             
-            {/* Number of Passengers */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="number"
-                name="passengers"
-                label={t('services.passengers')}
-                min={1}
-                max={6}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="number"
+              name="passengers"
+              label={t('services.passengers')}
+              min={1}
+              max={6}
+            />
             
-            {/* Luggage Support Toggle */}
-            <div>
-              <OptionField
-                form={form}
-                fieldType="toggle"
-                name="luggageSupport"
-                label={t('services.luggageSupport')}
-                subtitle={t('services.luggageSubtitle')}
-              />
-            </div>
+            <OptionField
+              form={form}
+              fieldType="toggle"
+              name="luggageSupport"
+              label={t('services.luggageSupport')}
+              subtitle={t('services.luggageSubtitle')}
+            />
             
-            {/* Date and Time Selection */}
-            <div>
-              <DateTimePickerSection form={form} />
-            </div>
+            <DateTimePickerSection form={form} />
             
-            {/* Notes Field */}
-            <div>
-              <NoteInput form={form} />
-            </div>
+            <NoteInput form={form} />
             
-            {/* Submit Button */}
-            <div className="pt-2">
-              <Button
-                type="submit"
-                disabled={isSubmitting || !isFormValid()}
-                className={cn(
-                  "w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-base"
-                )}
-              >
-                {isSubmitting ? t('common.submitting') : 
-                  editMode ? t('services.updateRequest') : t('services.sendRequest')}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !isFormValid()}
+              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
+            >
+              {isSubmitting ? t('common.submitting') : 
+                editMode ? t('services.updateRequest') : t('services.sendRequest')}
+            </Button>
           </form>
         </Form>
       </Card>
