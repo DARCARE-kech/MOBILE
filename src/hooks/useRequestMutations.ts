@@ -9,30 +9,42 @@ export const useRequestMutations = (requestId: string) => {
 
   const submitRatingMutation = useMutation({
     mutationFn: async ({ rating, comment }: { rating: number; comment: string }) => {
+      // Ensure user_id is set automatically by the trigger, but we can also set it explicitly
       const { error } = await supabase
         .from('service_ratings')
         .insert({
           request_id: requestId,
           rating,
-          comment: comment.trim() || null
+          comment: comment.trim() || null,
+          user_id: (await supabase.auth.getUser()).data.user?.id
         });
       
-      if (error) throw error;
+      if (error) {
+        // Handle unique constraint violation specifically
+        if (error.code === '23505' && error.message.includes('unique_user_request_rating')) {
+          throw new Error('Vous avez déjà soumis une note pour cette demande');
+        }
+        throw error;
+      }
     },
     onSuccess: () => {
       toast({
-        title: "Rating submitted",
-        description: "Thank you for your feedback",
+        title: "Note soumise",
+        description: "Merci pour votre retour",
       });
       
+      // Invalidate both unified queries to refresh the data
       queryClient.invalidateQueries({
         queryKey: ['unified-request', requestId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['service-request', requestId],
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Error submitting rating",
-        description: error.message || "Please try again later",
+        title: "Erreur lors de la soumission",
+        description: error.message || "Veuillez réessayer plus tard",
         variant: "destructive",
       });
     }
@@ -70,12 +82,12 @@ export const useRequestMutations = (requestId: string) => {
     },
     onSuccess: (result) => {
       const message = result?.type === 'space' 
-        ? "Space reservation cancelled"
-        : "Service request cancelled";
+        ? "Réservation d'espace annulée"
+        : "Demande de service annulée";
       
       const description = result?.type === 'space'
-        ? "Your space reservation has been cancelled"
-        : "Your service request has been cancelled";
+        ? "Votre réservation d'espace a été annulée"
+        : "Votre demande de service a été annulée";
       
       toast({
         title: message,
@@ -92,8 +104,8 @@ export const useRequestMutations = (requestId: string) => {
     },
     onError: (error: any) => {
       toast({
-        title: "Error cancelling request",
-        description: error.message || "Please try again later",
+        title: "Erreur lors de l'annulation",
+        description: error.message || "Veuillez réessayer plus tard",
         variant: "destructive",
       });
     }

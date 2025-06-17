@@ -348,7 +348,7 @@ export type Database = {
           request_id: string
           staff_id: string | null
           staff_rating: number | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           comment?: string | null
@@ -358,7 +358,7 @@ export type Database = {
           request_id: string
           staff_id?: string | null
           staff_rating?: number | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           comment?: string | null
@@ -368,7 +368,7 @@ export type Database = {
           request_id?: string
           staff_id?: string | null
           staff_rating?: number | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {

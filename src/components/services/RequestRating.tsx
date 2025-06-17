@@ -21,88 +21,51 @@ const RequestRating: React.FC<RequestRatingProps> = ({
 }) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
-  const [submittedRating, setSubmittedRating] = useState<{
-    rating: number;
-    comment?: string;
-    created_at?: string;
-  } | null>(null);
 
-  if (submittedRating) {
-    return (
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="flex">
-            {[1, 2, 3, 4, 5].map((value) => (
-              <Star
-                key={value}
-                className={value <= submittedRating.rating 
-                  ? 'fill-darcare-gold text-darcare-gold w-5 h-5' 
-                  : 'text-darcare-gold/40 w-5 h-5'
-                }
-              />
-            ))}
-          </div>
-          <span className="text-darcare-white ml-2">{submittedRating.rating}/5</span>
-        </div>
-
-        {submittedRating.comment && (
-          <div className="mt-3">
-            <p className="text-darcare-beige/80 text-sm mb-1">Your comment:</p>
-            <p className="text-darcare-beige bg-darcare-navy/40 p-3 rounded-md">
-              {submittedRating.comment}
-            </p>
-          </div>
-        )}
-
-        {submittedRating.created_at && (
-          <p className="text-darcare-beige/60 text-sm mt-2">
-            Rated on {new Date(submittedRating.created_at).toLocaleDateString()}
-          </p>
-        )}
-      </div>
-    );
-  }
-
+  // If there's an existing rating, show it (read-only)
   if (existingRating) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         <div className="flex items-center gap-2">
           <div className="flex">
             {[1, 2, 3, 4, 5].map((value) => (
               <Star
                 key={value}
-                className={value <= existingRating.rating 
-                  ? 'fill-darcare-gold text-darcare-gold w-5 h-5' 
-                  : 'text-darcare-gold/40 w-5 h-5'
-                }
+                className={`${value <= existingRating.rating 
+                  ? 'fill-darcare-gold text-darcare-gold' 
+                  : 'text-darcare-gold/40'
+                } w-4 h-4 sm:w-5 sm:h-5`}
               />
             ))}
           </div>
-          <span className="text-darcare-white ml-2">{existingRating.rating}/5</span>
+          <span className="text-darcare-white ml-2 text-sm sm:text-base">
+            {existingRating.rating}/5
+          </span>
         </div>
         
         {existingRating.comment && (
-          <div className="mt-3">
-            <p className="text-darcare-beige/80 text-sm mb-1">Your comment:</p>
-            <p className="text-darcare-beige bg-darcare-navy/40 p-3 rounded-md">
+          <div className="mt-2 sm:mt-3">
+            <p className="text-darcare-beige/80 text-xs sm:text-sm mb-1">Votre commentaire :</p>
+            <p className="text-darcare-beige bg-darcare-navy/40 p-2 sm:p-3 rounded-md text-xs sm:text-sm">
               {existingRating.comment}
             </p>
           </div>
         )}
         
         {existingRating.created_at && (
-          <p className="text-darcare-beige/60 text-sm mt-2">
-            Rated on {new Date(existingRating.created_at).toLocaleDateString()}
+          <p className="text-darcare-beige/60 text-xs mt-2">
+            Noté le {new Date(existingRating.created_at).toLocaleDateString('fr-FR')}
           </p>
         )}
       </div>
     );
   }
 
+  // Show rating form if no existing rating
   return (
-    <div className="space-y-4">
-      <p className="text-darcare-beige/80 mb-3">
-        How would you rate the service provided?
+    <div className="space-y-3 sm:space-y-4">
+      <p className="text-darcare-beige/80 mb-2 sm:mb-3 text-sm sm:text-base">
+        Comment évalueriez-vous le service fourni ?
       </p>
       
       <div className="flex items-center gap-2">
@@ -114,43 +77,41 @@ const RequestRating: React.FC<RequestRatingProps> = ({
             disabled={isSubmitting}
           >
             <Star
-              size={28}
-              className={value <= rating ? 'fill-darcare-gold text-darcare-gold' : 'text-darcare-gold/40'}
+              className={`${value <= rating 
+                ? 'fill-darcare-gold text-darcare-gold' 
+                : 'text-darcare-gold/40'
+              } w-6 h-6 sm:w-7 sm:h-7`}
             />
           </button>
         ))}
-        <span className="text-darcare-white ml-2">{rating > 0 ? `${rating}/5` : ''}</span>
+        <span className="text-darcare-white ml-2 text-sm sm:text-base">
+          {rating > 0 ? `${rating}/5` : ''}
+        </span>
       </div>
       
-      <div className="mt-3">
+      <div className="mt-2 sm:mt-3">
         <Textarea
-          placeholder="Add any additional comments about the service (optional)"
-          className="resize-none bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige"
+          placeholder="Ajoutez des commentaires sur le service (optionnel)"
+          className="resize-none bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige text-sm sm:text-base"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           disabled={isSubmitting}
+          rows={3}
         />
       </div>
       
       <Button 
-        className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90"
-        onClick={() => {
-          onSubmit(rating, comment);
-          setSubmittedRating({
-            rating,
-            comment,
-            created_at: new Date().toISOString()
-          });
-        }}
+        className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 text-sm sm:text-base py-2 sm:py-3"
+        onClick={() => onSubmit(rating, comment)}
         disabled={rating === 0 || isSubmitting}
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Submitting...
+            <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-2 animate-spin" />
+            Soumission...
           </>
         ) : (
-          'Submit Rating'
+          'Soumettre la note'
         )}
       </Button>
     </div>

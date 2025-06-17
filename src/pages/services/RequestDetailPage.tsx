@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -132,13 +133,6 @@ const RequestDetailPage = () => {
     request.preferred_time
   );
   
-  // New logic for canModify based on request type
-  // For services: visible except if in_progress, completed, or cancelled
-  // For spaces: visible only if pending
-  // canModify = request.status !== 'in_progress' && 
-  //             request.status !== 'completed' && 
-  //             request.status !== 'cancelled';
-  
   const existingRating = request.service_ratings && request.service_ratings.length > 0 
     ? request.service_ratings[0] 
     : null;
@@ -173,8 +167,8 @@ const RequestDetailPage = () => {
         rightContent={<div />}
       />
       
-      <div className="p-3 sm:p-4 space-y-4 sm:space-y-6 pt-20 sm:pt-24">
-        <div className="luxury-card p-3 sm:p-4">
+      <div className="p-2 sm:p-4 space-y-3 sm:space-y-6 pt-20 sm:pt-24">
+        <div className="luxury-card p-2 sm:p-4">
           <RequestDetailHeader
             serviceName={itemName}
             status={request.status}
@@ -199,7 +193,7 @@ const RequestDetailPage = () => {
         </div>
         
         {canModify && (
-          <div className="mt-3 sm:mt-4">
+          <div className="mt-2 sm:mt-4">
             <RequestActions
               onEdit={handleEdit}
               onCancel={() => cancelRequest()}
@@ -212,8 +206,10 @@ const RequestDetailPage = () => {
         )}
         
         {isCompleted && request.type === 'service' && (
-          <div className="luxury-card p-3 sm:p-4">
-            <h3 className="text-darcare-gold font-serif text-base sm:text-lg mb-3 sm:mb-4">{t('services.serviceRating', 'Service Rating')}</h3>
+          <div className="luxury-card p-2 sm:p-4">
+            <h3 className="text-darcare-gold font-serif text-sm sm:text-lg mb-2 sm:mb-4">
+              {t('services.serviceRating', 'Service Rating')}
+            </h3>
             <RequestRating
               onSubmit={submitRating}
               isSubmitting={isSubmittingRating}
