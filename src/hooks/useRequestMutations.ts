@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -10,8 +11,6 @@ export const useRequestMutations = (requestId: string) => {
 
   const submitRatingMutation = useMutation({
     mutationFn: async ({ rating, comment }: { rating: number; comment: string }) => {
-      console.log("🎯 Submitting rating for request:", requestId, { rating, comment });
-      
       // Ensure user_id is set automatically by the trigger, but we can also set it explicitly
       const { error, data } = await supabase
         .from('service_ratings')
@@ -24,7 +23,6 @@ export const useRequestMutations = (requestId: string) => {
         .select();
       
       if (error) {
-        console.error("❌ Rating submission error:", error);
         // Handle unique constraint violation specifically
         if (error.code === '23505' && error.message.includes('unique_user_request_rating')) {
           throw new Error(t('services.alreadyRated'));
@@ -32,12 +30,9 @@ export const useRequestMutations = (requestId: string) => {
         throw error;
       }
       
-      console.log("✅ Rating submitted successfully:", data);
       return data;
     },
     onSuccess: (data) => {
-      console.log("🎉 Rating submission success, invalidating queries...");
-      
       toast({
         title: t('services.ratingSubmitted'),
         description: t('services.thankYouForFeedback'),
@@ -50,11 +45,8 @@ export const useRequestMutations = (requestId: string) => {
       queryClient.invalidateQueries({
         queryKey: ['service-request', requestId],
       });
-      
-      console.log("🔄 Queries invalidated for request:", requestId);
     },
     onError: (error: any) => {
-      console.error("💥 Rating submission failed:", error);
       toast({
         title: t('common.submissionError'),
         description: error.message || t('common.tryAgain'),

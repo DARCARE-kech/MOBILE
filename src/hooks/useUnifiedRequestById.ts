@@ -12,8 +12,6 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
     queryFn: async () => {
       if (!id) throw new Error("Request ID is required");
       
-      console.log("🔍 Fetching unified request data for ID:", id);
-      
       // Déterminer le type automatiquement si non fourni
       let requestType = type;
       if (!requestType) {
@@ -31,8 +29,6 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
         }
       }
       
-      console.log("📝 Request type determined:", requestType);
-      
       if (requestType === 'service') {
         const { data, error } = await supabase
           .from('service_requests')
@@ -49,9 +45,6 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
         const staffAssignments = await getStaffAssignmentsForRequest(id);
         const serviceRatings = await getServiceRatingsForRequest(id);
         
-        console.log("📊 Service ratings fetched:", serviceRatings);
-        console.log("👨‍💼 Staff assignments fetched:", staffAssignments);
-        
         const result = {
           ...data,
           type: 'service' as const,
@@ -60,7 +53,6 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
           name: data.services?.name || 'Service'
         };
         
-        console.log("🎯 Final unified request data for service:", result);
         return result;
       } else {
         const { data, error } = await supabase
@@ -87,7 +79,6 @@ export const useUnifiedRequestById = (id: string | undefined, type?: 'service' |
           image_url: null // Ajouter image_url pour les espaces
         };
         
-        console.log("🏢 Final unified request data for space:", result);
         return result;
       }
     },
