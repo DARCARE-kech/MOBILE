@@ -24,8 +24,11 @@ const RequestRating: React.FC<RequestRatingProps> = ({
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
 
+  console.log("⭐ RequestRating component props:", { existingRating, isSubmitting });
+
   // If there's an existing rating, show it (read-only)
   if (existingRating) {
+    console.log("✅ Showing existing rating in read-only mode:", existingRating);
     return (
       <div className="space-y-2 sm:space-y-3">
         <div className="flex items-center gap-2">
@@ -64,6 +67,7 @@ const RequestRating: React.FC<RequestRatingProps> = ({
   }
 
   // Show rating form if no existing rating
+  console.log("📝 Showing rating form (no existing rating found)");
   return (
     <div className="space-y-3 sm:space-y-4">
       <p className="text-darcare-beige/80 mb-2 sm:mb-3 text-sm sm:text-base">

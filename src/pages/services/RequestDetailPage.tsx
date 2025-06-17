@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -19,6 +18,8 @@ const RequestDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
+  console.log("🏠 RequestDetailPage rendering for ID:", id);
   
   // Initialize the status notification hook
   useRequestStatusNotification(id);
@@ -108,6 +109,8 @@ const RequestDetailPage = () => {
     );
   }
   
+  console.log("📋 Request data loaded:", request);
+  
   // Parse request note if it's in JSON format
   let parsedNote = null;
   try {
@@ -136,6 +139,14 @@ const RequestDetailPage = () => {
   const existingRating = request.service_ratings && request.service_ratings.length > 0 
     ? request.service_ratings[0] 
     : null;
+  
+  console.log("⭐ Existing rating check:", { 
+    hasServiceRatings: !!request.service_ratings, 
+    ratingsLength: request.service_ratings?.length || 0,
+    existingRating,
+    isCompleted,
+    requestType: request.type
+  });
   
   // Determine service/space name
   const itemName = request.name || t('services.clubAccess', 'Club Access');
