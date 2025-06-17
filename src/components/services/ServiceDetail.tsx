@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -53,6 +52,16 @@ const ServiceDetail: React.FC = () => {
   
   console.log("Current service ID from URL:", id);
   console.log("Location state:", location.state);
+  
+  // Function to capitalize service names properly
+  const capitalizeServiceName = (name: string) => {
+    // Handle specific service names that need capitalization
+    const lowerName = name.toLowerCase();
+    if (['cleaning', 'laundry', 'transport', 'maintenance', 'reservation'].includes(lowerName)) {
+      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+    return name;
+  };
   
   // Check if we're in edit mode based on location state
   useEffect(() => {
@@ -230,7 +239,7 @@ const ServiceDetail: React.FC = () => {
   }
   
   const serviceNameLower = service?.name.toLowerCase();
-  const pageTitle = editMode ? t('services.editRequest') : service.name;
+  const pageTitle = editMode ? t('services.editRequest') : capitalizeServiceName(service.name);
 
   // Log service_id before passing to component
   console.log("Service ID passing to component:", service.id);
