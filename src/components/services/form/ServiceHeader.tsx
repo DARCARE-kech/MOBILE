@@ -19,6 +19,15 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
   const instructions = serviceDetail?.instructions || '';
   const estimatedDuration = serviceDetail?.default_duration || '';
 
+  // Function to capitalize service names properly
+  const capitalizeServiceName = (name: string) => {
+    // Handle specific service names that need capitalization
+    const lowerName = name.toLowerCase();
+    if (['cleaning', 'laundry', 'transport', 'maintenance', 'reservation'].includes(lowerName)) {
+      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+    return formatFieldKey(name);
+  };
   
   // Format duration from interval to readable format if needed
   const formatDuration = (duration: string) => {
@@ -55,17 +64,16 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ serviceName, serviceDetai
   return (
     <div className="mb-6">
       <h1 className="text-2xl font-serif text-darcare-gold mb-4">
-  {t(`services.labels.${serviceName}`, formatFieldKey(serviceName))}
-</h1>
+        {t(`services.labels.${serviceName}`, capitalizeServiceName(serviceName))}
+      </h1>
       
       {instructions && (
         <Card className={cn(
           "mb-4 border-darcare-gold/20 bg-gradient-to-r from-darcare-navy to-darcare-navy/80 p-4 text-darcare-beige",
         )}>
           <p className="text-sm">
-  {t(`services.instructions.${serviceName}`, instructions)}
-</p>
-
+            {t(`services.instructions.${serviceName}`, instructions)}
+          </p>
         </Card>
       )}
       

@@ -59,6 +59,11 @@ const HouseholdTab: React.FC = () => {
     navigate(`/services/${id}`);
   };
 
+  // Function to capitalize service names
+  const capitalizeServiceName = (name: string) => {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -102,7 +107,7 @@ const HouseholdTab: React.FC = () => {
                   "font-serif text-sm line-clamp-1", // Smaller font
                   isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
                 )}>
-                  {service.name}
+                  {capitalizeServiceName(service.name)}
                 </h3>
               </div>
               
