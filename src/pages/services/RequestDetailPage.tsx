@@ -172,9 +172,7 @@ const RequestDetailPage = () => {
           <RequestDetailHeader
             serviceName={itemName}
             status={request.status}
-            preferredTime={request.preferred_time}
             createdAt={request.created_at}
-            staffName={staffName}
             hideStatusBar={true}
           />
           
