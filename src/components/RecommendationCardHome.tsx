@@ -38,10 +38,10 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
 
   return (
     <div 
-      className="w-[280px] rounded-xl overflow-hidden flex-shrink-0 cursor-pointer transition-all hover:shadow-lg border border-darcare-gold/10 hover:border-darcare-gold/30 bg-darcare-navy"
+      className="w-[240px] rounded-xl overflow-hidden flex-shrink-0 cursor-pointer transition-all hover:shadow-lg border border-darcare-gold/10 hover:border-darcare-gold/30 bg-darcare-navy"
       onClick={() => onSelect(item.id)}
     >
-      <div className="w-full h-32 relative overflow-hidden">
+      <div className="w-full h-28 relative overflow-hidden">
         <img 
           src={imageUrl} 
           alt={item.title}
@@ -55,11 +55,11 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-2 rounded-full bg-darcare-navy/60 hover:bg-darcare-navy/80 w-8 h-8"
+            className="absolute top-2 right-2 rounded-full bg-darcare-navy/60 hover:bg-darcare-navy/80 w-7 h-7"
             onClick={handleToggleFavorite}
           >
             <Heart
-              size={16}
+              size={14}
               className={cn(
                 "transition-colors",
                 isFavorite ? "fill-darcare-gold text-darcare-gold" : "text-darcare-beige"
@@ -69,17 +69,17 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
         )}
       </div>
       
-      <div className="p-4 space-y-2">
-        <h3 className="font-serif font-medium text-darcare-gold line-clamp-1">{item.title}</h3>
+      <div className="p-3 space-y-1">
+        <h3 className="font-serif font-medium text-darcare-gold line-clamp-1 text-sm">{item.title}</h3>
         
-        <p className="text-sm text-darcare-beige/80 line-clamp-2">
+        <p className="text-xs text-darcare-beige/80 line-clamp-2">
           {item.description || "Discover this amazing place in Marrakech"}
         </p>
         
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-1">
-            <Star size={16} className="fill-darcare-gold text-darcare-gold" />
-            <span className="text-sm text-darcare-beige">{item.rating?.toFixed(1) || "N/A"}</span>
+            <Star size={14} className="fill-darcare-gold text-darcare-gold" />
+            <span className="text-xs text-darcare-beige">{item.rating?.toFixed(1) || "N/A"}</span>
           </div>
           
           <Button
@@ -91,7 +91,7 @@ export const RecommendationCardHome = ({ item, onSelect, onToggleFavorite }: Rec
               onSelect(item.id);
             }}
           >
-            <ArrowRight size={16} />
+            <ArrowRight size={14} />
           </Button>
         </div>
       </div>

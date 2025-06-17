@@ -169,7 +169,7 @@ const Home: React.FC = () => {
         showFavorite={true}
       />
       
-      <div className="mobile-content-padding overflow-hidden">
+      <div className="pt-4 pb-24 px-2 overflow-hidden">
         <CurrentStay 
           currentStay={currentStay} 
           userId={user?.id} 
@@ -177,14 +177,14 @@ const Home: React.FC = () => {
           isLoading={isStayLoading}
         />
         
-        <div className="px-4 py-2">
+        <div className="px-1 py-1">
           <ServicesList 
             services={todaysSchedule || []} 
             isLoading={isScheduleLoading} 
           />
         </div>
         
-        <div className="mt-4">
+        <div className="mt-2">
           <RecommendationsList />
         </div>
       </div>

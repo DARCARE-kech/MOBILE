@@ -67,15 +67,15 @@ const RecommendationsList = () => {
   
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center mb-4">
-          <div className="h-8 w-48 bg-darcare-gold/20 animate-pulse rounded" />
-          <div className="h-8 w-24 bg-darcare-gold/20 animate-pulse rounded" />
+      <div className="space-y-3">
+        <div className="flex justify-between items-center mb-3">
+          <div className="h-6 w-48 bg-darcare-gold/20 animate-pulse rounded" />
+          <div className="h-6 w-20 bg-darcare-gold/20 animate-pulse rounded" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-xl overflow-hidden">
-              <div className="h-[220px] bg-darcare-gold/20 animate-pulse" />
+              <div className="h-[180px] bg-darcare-gold/20 animate-pulse" />
             </div>
           ))}
         </div>
@@ -84,9 +84,9 @@ const RecommendationsList = () => {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-serif text-darcare-gold">
+    <div className="p-3">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg font-serif text-darcare-gold">
           {t("recommendations.title", "Marrakech Highlights")}
         </h2>
         <button 
@@ -98,9 +98,9 @@ const RecommendationsList = () => {
       </div>
 
        <div className="scroll-wrapper">
-          <div className="flex gap-6 pb-4 pr-4 snap-x snap-mandatory overflow-x-auto">
+          <div className="flex gap-4 pb-3 pr-3 snap-x snap-mandatory overflow-x-auto">
             {recommendations?.map((item) => (
-              <div key={item.id} className="snap-center min-w-[260px] w-[260px] first:ml-1">
+              <div key={item.id} className="snap-center min-w-[240px] w-[240px] first:ml-1">
                 <RecommendationCardHome
                   item={item}
                   onSelect={() => navigate(`/explore/recommendations/${item.id}`)}

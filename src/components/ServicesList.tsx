@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ChevronRight, User, Plus, Loader2, Clock } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
@@ -39,21 +38,20 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
   
   if (isLoading) {
     return (
-      <div className="p-2 sm:p-4">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="font-serif text-primary text-lg sm:text-xl">{t('services.todaysSchedule')}</h2>
+      <div className="p-2">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-serif text-primary text-base sm:text-lg">{t('services.todaysSchedule')}</h2>
           <Button 
             variant="ghost" 
             className="text-primary text-xs sm:text-sm flex items-center gap-1 h-8 px-2"
             onClick={() => navigate('/services')}
           >
             {t('services.viewAll')} <ChevronRight size={14} />
-            console.log(t('services.viewAll'));
           </Button>
         </div>
-        <div className="luxury-card p-6 sm:p-8 flex flex-col items-center justify-center text-center">
-          <Loader2 className="text-primary mb-3 h-6 w-6 sm:h-8 sm:w-8 animate-spin" />
-          <h3 className="text-foreground font-medium mb-2 text-sm sm:text-base">{t('services.loading')}</h3>
+        <div className="luxury-card p-4 sm:p-6 flex flex-col items-center justify-center text-center">
+          <Loader2 className="text-primary mb-2 h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
+          <h3 className="text-foreground font-medium mb-1 text-sm sm:text-base">{t('services.loading')}</h3>
           <p className="text-foreground/70 text-xs sm:text-sm">{t('services.loadingDescription')}</p>
         </div>
       </div>
@@ -61,9 +59,9 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
   }
 
   return (
-    <div className="p-2 sm:p-4">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="font-serif text-primary text-lg sm:text-xl">{t('services.todaysSchedule')}</h2>
+    <div className="p-2">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="font-serif text-primary text-base sm:text-lg">{t('services.todaysSchedule')}</h2>
         <Button 
           variant="ghost" 
           className="text-primary text-xs sm:text-sm flex items-center gap-1 h-8 px-2"
@@ -75,7 +73,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
 
       {!services || services.length === 0 ? (
         <div className={cn(
-          "relative overflow-hidden rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center text-center",
+          "relative overflow-hidden rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center text-center",
           isDarkMode 
             ? "bg-gradient-to-b from-darcare-navy/80 to-[#1C1F2A] border border-darcare-gold/10" 
             : "bg-white border border-darcare-deepGold/10 shadow-sm"
@@ -86,14 +84,14 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           )} />
           
           <h3 className={cn(
-            "font-serif text-base sm:text-lg mb-2",
+            "font-serif text-sm sm:text-base mb-1 sm:mb-2",
             isDarkMode ? "text-darcare-gold" : "text-darcare-deepGold"
           )}>
             {t('services.noScheduledActivityToday')}
           </h3>
           
           <p className={cn(
-            "text-xs sm:text-sm mb-3 sm:mb-4 max-w-md",
+            "text-xs sm:text-sm mb-2 sm:mb-3 max-w-md",
             isDarkMode ? "text-darcare-beige/70" : "text-foreground/70"
           )}>
             {t('services.bookServiceOrSpace')}
@@ -101,7 +99,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           
           <Button 
             className={cn(
-              "flex items-center gap-2 h-9 px-4 text-sm",
+              "flex items-center gap-2 h-8 px-3 text-sm",
               isDarkMode 
                 ? "bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90" 
                 : "bg-darcare-deepGold text-white hover:bg-darcare-deepGold/90"
@@ -113,7 +111,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           </Button>
         </div>
       ) : (
-        <div className="space-y-2 sm:space-y-3">
+        <div className="space-y-1 sm:space-y-2">
           {services.map((service) => {
             // Get service name
             let serviceName = '';
@@ -147,7 +145,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
               <div 
                 key={service.id}
                 className={cn(
-                  "rounded-xl sm:rounded-2xl border transition-all duration-200 cursor-pointer p-3 hover:shadow-md",
+                  "rounded-xl sm:rounded-2xl border transition-all duration-200 cursor-pointer p-2 hover:shadow-md",
                   isDarkMode 
                     ? "bg-[#1C1F2A] border-darcare-gold/10 hover:border-darcare-gold/20" 
                     : "bg-white border-darcare-deepGold/10 hover:border-darcare-deepGold/20"
@@ -172,7 +170,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
                 
                 {service.type === 'service' && (
                   <div className={cn(
-                    "mt-2 pt-2 border-t",
+                    "mt-1 pt-1 border-t",
                     isDarkMode ? "border-darcare-gold/10" : "border-darcare-deepGold/10"
                   )}>
                     <div className="flex items-center gap-2 text-xs text-foreground/70">

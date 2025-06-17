@@ -38,7 +38,7 @@ const CurrentStay: React.FC<CurrentStayProps> = ({
 
   if (isLoading) {
     return (
-      <div className="p-4">
+      <div className="p-3">
         <div className="luxury-card">
           <Skeleton className="h-6 w-2/3 mb-2" />
           <Skeleton className="h-4 w-1/3 mb-4" />
@@ -51,7 +51,7 @@ const CurrentStay: React.FC<CurrentStayProps> = ({
   // If no stay is found, show the reservation link form
   if (!currentStay) {
     return (
-      <div className="p-4">
+      <div className="p-3">
         <ReservationLinkForm 
           userId={userId} 
           refetchStay={() => {
@@ -65,7 +65,7 @@ const CurrentStay: React.FC<CurrentStayProps> = ({
 
   // If a stay is found, show the stay details
   return (
-    <div className="p-4">
+    <div className="p-3">
       <StayDetails currentStay={currentStay} />
     </div>
   );

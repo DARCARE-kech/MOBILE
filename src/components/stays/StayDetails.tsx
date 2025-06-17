@@ -29,12 +29,12 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
 
   return (
     <div className={cn(
-      "luxury-card p-3 sm:p-4",
+      "luxury-card p-2 sm:p-3",
       isDarkMode && "bg-gradient-to-br from-darcare-navy/90 to-darcare-navy"
     )}>
-      <div className="flex justify-between items-start mb-3 sm:mb-4">
+      <div className="flex justify-between items-start mb-2 sm:mb-3">
         <div className="min-w-0 flex-1 mr-2">
-          <h2 className="font-serif text-primary text-lg sm:text-xl mb-1">Villa {currentStay.villa_number}</h2>
+          <h2 className="font-serif text-primary text-base sm:text-lg mb-1">Villa {currentStay.villa_number}</h2>
           <p className="text-foreground/80 text-xs sm:text-sm truncate">{currentStay.city}</p>
         </div>
         <div className={cn(
@@ -52,9 +52,9 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
         </div>
       </div>
       
-      <div className="flex flex-col space-y-2 sm:space-y-3">
+      <div className="flex flex-col space-y-1 sm:space-y-2">
         <div className={cn(
-          "flex items-center justify-between text-xs sm:text-sm border-t pt-2 sm:pt-3",
+          "flex items-center justify-between text-xs sm:text-sm border-t pt-1 sm:pt-2",
           isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
         )}>
           <div className="flex items-center gap-2 text-foreground min-w-0 flex-1 mr-2">
@@ -69,7 +69,7 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
         </div>
         
         <div className={cn(
-          "flex items-center justify-between text-xs sm:text-sm border-t pt-2 sm:pt-3",
+          "flex items-center justify-between text-xs sm:text-sm border-t pt-1 sm:pt-2",
           isDarkMode ? "border-darcare-gold/10" : "border-primary/10"
         )}>
           <div className="flex items-center gap-2 text-foreground min-w-0 flex-1 mr-2">
