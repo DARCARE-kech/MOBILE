@@ -14,9 +14,11 @@ import DateTimePickerSection from '@/components/services/form/DateTimePickerSect
 import NoteInput from '@/components/services/form/NoteInput';
 import FileUpload from '@/components/services/form/FileUpload';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { ServiceDetail } from '@/hooks/services/types';
 import FormSectionTitle from '@/components/services/FormSectionTitle';
 import { Wrench } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface MaintenanceServiceProps {
   serviceData?: ServiceDetail;
@@ -40,6 +42,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isDarkMode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   
@@ -199,7 +202,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
   };
   
   return (
-    <div className="p-3 sm:p-4 pb-20 sm:pb-24 mobile-form-container">
+    <div className="p-4 pb-24">
       {/* Service Header with instructions */}
       <ServiceHeader 
         serviceName={serviceData?.category || t('services.maintenance')}
@@ -207,11 +210,20 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
       />
       
       {/* Form Card */}
-      <Card className="bg-darcare-navy border-darcare-gold/20 p-4 sm:p-5 rounded-lg sm:rounded-2xl mb-4 sm:mb-6">
+      <Card className="bg-darcare-navy border-darcare-gold/20 p-5 rounded-lg">
+        <div className="mb-6">
+          <h2 className={cn(
+            "text-xl font-serif mb-2",
+            isDarkMode ? "text-darcare-gold" : "text-primary"
+          )}>
+            {editMode ? t('services.updateRequest', 'Update Request') : t('services.requestMaintenance', 'Request Maintenance')}
+          </h2>
+        </div>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Maintenance Type Option */}
-            <div className="mobile-form-section">
+            <div>
               <OptionField
                 form={form}
                 fieldType="radio"
@@ -223,7 +235,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
             </div>
             
             {/* Urgency Selection */}
-            <div className="mobile-form-section">
+            <div>
               <OptionField
                 form={form}
                 fieldType="radio"
@@ -234,7 +246,7 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
             </div>
             
             {/* Image Upload */}
-            <div className="space-y-3 mobile-form-section">
+            <div className="space-y-3">
               <FormSectionTitle 
                 title={t('services.uploadImage')}
                 subtitle={t('services.imageHelp')}
@@ -247,24 +259,28 @@ const MaintenanceService: React.FC<MaintenanceServiceProps> = ({
             </div>
             
             {/* Date and Time Selection */}
-            <div className="mobile-form-section">
+            <div>
               <DateTimePickerSection form={form} />
             </div>
             
             {/* Notes Field */}
-            <div className="mobile-form-section">
+            <div>
               <NoteInput form={form} />
             </div>
             
             {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isSubmitting || !isFormValid()}
-              className="w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 mobile-form-button h-10 sm:h-12 text-sm sm:text-base"
-            >
-              {isSubmitting ? t('common.submitting') : 
-                editMode ? t('services.updateRequest') : t('services.sendRequest')}
-            </Button>
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={isSubmitting || !isFormValid()}
+                className={cn(
+                  "w-full bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-serif text-base"
+                )}
+              >
+                {isSubmitting ? t('common.submitting') : 
+                  editMode ? t('services.updateRequest') : t('services.sendRequest')}
+              </Button>
+            </div>
           </form>
         </Form>
       </Card>
