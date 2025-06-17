@@ -24,16 +24,16 @@ const ShopButton: React.FC = () => {
   if (!shouldShow) return null;
 
   return (
-    <div className="fixed right-6 bottom-40 z-40">
+    <div className="fixed right-4 bottom-40 z-40">
       <Popover>
         <PopoverTrigger asChild>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/services/shop")}
-            className="w-10 h-10 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
+            className="w-9 h-9 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
           >
-            <ShoppingBag size={18} />
+            <ShoppingBag size={16} />
           </motion.button>
         </PopoverTrigger>
         <PopoverContent 

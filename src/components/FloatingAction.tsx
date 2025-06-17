@@ -28,13 +28,13 @@ const FloatingAction: React.FC = () => {
     {
       id: "whatsapp",
       label: t('navigation.chatWithUs'),
-      icon: <MessageCircle size={18} />,
+      icon: <MessageCircle size={16} />,
       action: openWhatsApp,
     },
     {
       id: "contact-admin",
       label: t('navigation.contactAdmin', 'Contact Admin'),
-      icon: <User size={18} />,
+      icon: <User size={16} />,
       action: () => navigate("/contact-admin"),
     },
   ];
@@ -43,23 +43,23 @@ const FloatingAction: React.FC = () => {
     <div className="fixed right-4 bottom-28 z-40">
       <AnimatePresence>
         {isOpen && (
-          <div className="absolute bottom-0 right-12 flex items-center space-x-2">
+          <div className="absolute bottom-12 right-0 flex flex-col items-end space-y-2">
             {quickActions.map((action, index) => (
               <motion.div
                 key={action.id}
-                initial={{ opacity: 0, x: 20, scale: 0.8 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 10, scale: 0.8 }}
+                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
                 transition={{ 
                   duration: 0.2,
                   delay: index * 0.05
                 }}
-                className="flex flex-col items-center gap-1 transition-all"
+                className="flex items-center gap-2 transition-all"
               >
                 <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
                   transition={{ duration: 0.2 }}
                   className="bg-darcare-navy border border-darcare-gold/30 text-darcare-white rounded-full py-1 px-2 text-xs shadow-lg whitespace-nowrap"
                 >
@@ -72,7 +72,7 @@ const FloatingAction: React.FC = () => {
                     action.action();
                     setIsOpen(false);
                   }}
-                  className="w-10 h-10 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
+                  className="w-9 h-9 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
                 >
                   {action.icon}
                 </motion.button>
@@ -86,9 +86,9 @@ const FloatingAction: React.FC = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
+        className="w-9 h-9 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
       >
-        {isOpen ? <X size={18} /> : <Plus size={18} />}
+        {isOpen ? <X size={16} /> : <Plus size={16} />}
       </motion.button>
     </div>
   );
