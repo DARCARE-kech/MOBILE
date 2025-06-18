@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ShoppingBag } from "lucide-react";
+import { Store } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -33,7 +33,7 @@ const ShopButton: React.FC = () => {
             onClick={() => navigate("/services/shop")}
             className="w-9 h-9 rounded-full bg-darcare-gold text-darcare-navy flex items-center justify-center shadow-lg hover:opacity-90 transition-all"
           >
-            <ShoppingBag size={16} />
+            <Store size={16} />
           </motion.button>
         </PopoverTrigger>
         <PopoverContent 
