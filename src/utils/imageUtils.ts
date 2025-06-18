@@ -16,25 +16,23 @@ export const optimizeImageForMobile = (
   imageUrl: string | null | undefined,
   options: {
     width?: number;
+    height?: number;
     quality?: number;
     format?: 'webp' | 'jpeg' | 'png';
   } = {}
 ): string => {
   if (!imageUrl) return '';
-
-  const width = options.width || 320;
-  const height = Math.round((width * 9) / 16);  // Calcul du 16/9
-  const quality = options.quality || 80;
-  const format = options.format || 'webp';
-
+  
+  const { width = 300, height = 300, quality = 75, format = 'webp' } = options;
+  
   // Vérifier si c'est une image Supabase Storage
   if (imageUrl.includes('supabase.co/storage/v1/object/public/')) {
     const separator = imageUrl.includes('?') ? '&' : '?';
-    const transformations = `width=${width}&height=${height}&resize=fill&fit=crop&format=${format}&quality=${quality}`;
+    const transformations = `width=${width}&height=${height}&resize=cover&format=${format}&quality=${quality}`;
     return `${imageUrl}${separator}${transformations}`;
   }
-
-  // Pour les images Unsplash
+  
+  // Pour les images Unsplash, appliquer des paramètres d'optimisation
   if (imageUrl.includes('unsplash.com')) {
     const url = new URL(imageUrl);
     url.searchParams.set('w', width.toString());
@@ -44,10 +42,9 @@ export const optimizeImageForMobile = (
     url.searchParams.set('fm', format);
     return url.toString();
   }
-
+  
   return imageUrl;
 };
-
 
 export const getFallbackImage = (title: string, index: number) => {
   // Create a deterministic hash from the product name
@@ -57,6 +54,5 @@ export const getFallbackImage = (title: string, index: number) => {
   const baseImage = PLACEHOLDER_IMAGES[hash % PLACEHOLDER_IMAGES.length] || PLACEHOLDER_IMAGES[index % PLACEHOLDER_IMAGES.length];
   
   // Optimiser l'image de fallback pour mobile
-  return optimizeImageForMobile(baseImage, { width: 320, quality: 80 });
-
+  return optimizeImageForMobile(baseImage, { width: 300, height: 300, quality: 75 });
 };
