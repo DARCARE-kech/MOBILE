@@ -28,7 +28,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
 
   return (
     <Card className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden h-full transition-transform hover:translate-y-[-2px] duration-200">
-      <AspectRatio ratio={isMobile ? 1 : 4/3}>
+      <AspectRatio ratio={1}>
         <img 
           src={product.image_url || getFallbackImage(product.name, index)} 
           alt={product.name} 
@@ -37,25 +37,25 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
           loading="lazy"
         />
       </AspectRatio>
-      <CardContent className="p-2 sm:p-3">
-        <div className="flex justify-between mb-1 sm:mb-1.5">
-          <h3 className="text-darcare-white text-base sm:text-lg font-serif font-medium line-clamp-1 flex-1 min-w-0">
+      <CardContent className="p-2">
+        <div className="mb-2">
+          <h3 className="text-darcare-white text-sm font-serif font-medium line-clamp-1 mb-1">
             {product.name}
           </h3>
-          <span className="text-darcare-gold font-medium ml-2 text-sm sm:text-base whitespace-nowrap flex-shrink-0">
-            ${product.price.toFixed(2)}
-          </span>
+          <p className="text-darcare-beige text-xs line-clamp-2 mb-2 min-h-[2rem]">
+            {product.description || t('shop.noDescription')}
+          </p>
         </div>
-        <p className="text-darcare-beige text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
-          {product.description || t('shop.noDescription')}
-        </p>
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <span className="text-darcare-gold font-medium text-sm whitespace-nowrap">
+            {product.price.toFixed(2)} MAD
+          </span>
           <IconButton
-            icon={<Plus className={`${isMobile ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} />}
+            icon={<Plus className="w-3 h-3" />}
             variant="primary"
-            size={isMobile ? "sm" : "sm"}
+            size="sm"
             onClick={() => onAddToCart(product)}
-            className="shadow-md hover:bg-darcare-gold/90 transition-colors"
+            className="shadow-md hover:bg-darcare-gold/90 transition-colors flex-shrink-0"
             aria-label={t('shop.addToCart')}
           />
         </div>

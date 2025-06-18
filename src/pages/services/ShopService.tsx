@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShopCart } from '@/hooks/useShopCart';
@@ -144,7 +143,7 @@ const ShopService = () => {
       />
       
       <div className="pt-14 sm:pt-16 pb-24">
-        <div className="p-2 sm:p-3">
+        <div className="px-4 py-3">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-darcare-beige/50" />
             <Input
@@ -169,7 +168,7 @@ const ShopService = () => {
       </div>
       
       {cartItemsCount > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 flex justify-center px-3 z-40">
+        <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4 z-40">
           <Button 
             className={`bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium rounded-full shadow-lg flex items-center gap-2 ${
               isMobile ? 'py-2.5 px-5 text-sm' : 'py-3 px-6 text-sm'
