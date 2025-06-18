@@ -23,6 +23,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
   // Optimiser l'image principale et le fallback pour mobile
   const optimizedImageUrl = optimizeImageForMobile(product.image_url, {
     width: 300,
+    fit: 'cover',
     quality: 75,
     format: 'webp'
   });
