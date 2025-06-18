@@ -5,8 +5,8 @@ import IconButton from '@/components/services/IconButton';
 import { Plus } from 'lucide-react';
 import type { ShopProduct } from '@/integrations/supabase/rpc';
 import { useTranslation } from 'react-i18next';
-import { getFallbackImage, optimizeImageForMobile } from '@/utils/imageUtils';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { getFallbackImage } from '@/utils/imageUtils';
+import { optimizeImageForMobile } from '@/utils/imageOptimization';
 
 interface ProductCardProps {
   product: ShopProduct;
@@ -16,14 +16,13 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   
   // Optimiser l'image principale et le fallback pour mobile
   const optimizedImageUrl = optimizeImageForMobile(product.image_url, {
     width: 300,
-    fit: 'cover',
+    height: 300,
     quality: 75,
     format: 'webp'
   });
@@ -41,11 +40,11 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
 
   return (
     <Card className="bg-darcare-navy border border-darcare-gold/20 rounded-xl overflow-hidden flex flex-col h-full">
-      <div className="relative w-full aspect-[16/9]">
+      <div className="relative w-full aspect-square">
         {/* Placeholder pendant le chargement */}
         {!imageLoaded && (
           <div className="absolute inset-0 bg-darcare-navy/50 animate-pulse flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-darcare-gold/30 border-t-darcare-gold rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-darcare-gold/30 border-t-darcare-gold rounded-full animate-spin"></div>
           </div>
         )}
         
@@ -63,26 +62,26 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
         />
       </div>
       
-      <CardContent className="p-3 flex flex-col justify-between flex-grow">
+      <CardContent className="p-2 flex flex-col justify-between flex-grow">
         <div>
-          <h3 className="text-darcare-white text-sm font-serif font-semibold leading-tight mb-1 line-clamp-2">
+          <h3 className="text-darcare-white text-xs font-serif font-semibold leading-tight mb-1 line-clamp-2">
             {product.name}
           </h3>
-          <p className="text-darcare-beige text-xs line-clamp-2 mb-2">
+          <p className="text-darcare-beige text-[10px] line-clamp-2 mb-2">
             {product.description || t('shop.noDescription')}
           </p>
         </div>
         
-        <div className="flex justify-between items-center mt-auto pt-2 border-t border-darcare-gold/10">
-          <span className="text-darcare-gold text-sm font-semibold">
+        <div className="flex justify-between items-center mt-auto pt-1 border-t border-darcare-gold/10">
+          <span className="text-darcare-gold text-xs font-semibold">
             {product.price.toFixed(2)} MAD
           </span>
           <IconButton
-            icon={<Plus className="w-4 h-4" />}
+            icon={<Plus className="w-3 h-3" />}
             variant="primary"
             size="sm"
             onClick={() => onAddToCart(product)}
-            className="shadow hover:bg-darcare-gold/90 transition-colors flex-shrink-0"
+            className="shadow hover:bg-darcare-gold/90 transition-colors flex-shrink-0 h-6 w-6"
             aria-label={t('shop.addToCart')}
           />
         </div>
