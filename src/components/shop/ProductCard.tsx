@@ -7,6 +7,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import type { ShopProduct } from '@/integrations/supabase/rpc';
 import { useTranslation } from 'react-i18next';
 import { getFallbackImage } from '@/utils/imageUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProductCardProps {
   product: ShopProduct;
@@ -16,6 +17,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   
   // Handle image error fallback
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -26,7 +28,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
 
   return (
     <Card className="bg-darcare-navy border border-darcare-gold/20 overflow-hidden h-full transition-transform hover:translate-y-[-2px] duration-200">
-      <AspectRatio ratio={4/3}>
+      <AspectRatio ratio={isMobile ? 1 : 4/3}>
         <img 
           src={product.image_url || getFallbackImage(product.name, index)} 
           alt={product.name} 
@@ -35,23 +37,23 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
           loading="lazy"
         />
       </AspectRatio>
-      <CardContent className="p-3">
-        <div className="flex justify-between mb-1.5">
-          <h3 className="text-darcare-white text-lg font-serif font-medium line-clamp-1">
+      <CardContent className="p-2 sm:p-3">
+        <div className="flex justify-between mb-1 sm:mb-1.5">
+          <h3 className="text-darcare-white text-base sm:text-lg font-serif font-medium line-clamp-1 flex-1 min-w-0">
             {product.name}
           </h3>
-          <span className="text-darcare-gold font-medium ml-2 whitespace-nowrap">
+          <span className="text-darcare-gold font-medium ml-2 text-sm sm:text-base whitespace-nowrap flex-shrink-0">
             ${product.price.toFixed(2)}
           </span>
         </div>
-        <p className="text-darcare-beige text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
+        <p className="text-darcare-beige text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
           {product.description || t('shop.noDescription')}
         </p>
         <div className="flex justify-end">
           <IconButton
-            icon={<Plus className="w-3.5 h-3.5" />}
+            icon={<Plus className={`${isMobile ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} />}
             variant="primary"
-            size="sm"
+            size={isMobile ? "sm" : "sm"}
             onClick={() => onAddToCart(product)}
             className="shadow-md hover:bg-darcare-gold/90 transition-colors"
             aria-label={t('shop.addToCart')}

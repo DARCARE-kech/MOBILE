@@ -15,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import CategoryFilter from '@/components/shop/CategoryFilter';
 import FloatingAction from '@/components/FloatingAction';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ShopService = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const ShopService = () => {
   const { addToCart } = useShopCart();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
 
   // Query to get cart items count
   const { data: cartItemsCount = 0 } = useQuery({
@@ -120,17 +122,17 @@ const ShopService = () => {
               variant="ghost"
               size="icon"
               onClick={() => navigate('/services/shop/orders')}
-              className="text-darcare-beige hover:text-darcare-gold p-2"
+              className="text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <Package size={20} />
+              <Package size={isMobile ? 18 : 20} />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate('/services/cart')}
-              className="relative text-darcare-beige hover:text-darcare-gold p-2"
+              className="relative text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={isMobile ? 18 : 20} />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-darcare-gold text-darcare-navy text-xs font-medium w-4 h-4 flex items-center justify-center rounded-full text-[10px]">
                   {cartItemsCount}
@@ -141,13 +143,13 @@ const ShopService = () => {
         }
       />
       
-      <div className="pt-16 pb-24">
-        <div className="p-3">
+      <div className="pt-14 sm:pt-16 pb-24">
+        <div className="p-2 sm:p-3">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-darcare-beige/50" />
             <Input
               placeholder={t('shop.searchProducts')}
-              className="pl-9 bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 h-10"
+              className="pl-9 bg-darcare-navy/60 border-darcare-gold/20 text-darcare-beige placeholder:text-darcare-beige/50 h-9 sm:h-10"
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
@@ -169,11 +171,13 @@ const ShopService = () => {
       {cartItemsCount > 0 && (
         <div className="fixed bottom-20 left-0 right-0 flex justify-center px-3 z-40">
           <Button 
-            className="bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium py-3 px-6 rounded-full shadow-lg flex items-center gap-2 text-sm"
+            className={`bg-darcare-gold text-darcare-navy hover:bg-darcare-gold/90 font-medium rounded-full shadow-lg flex items-center gap-2 ${
+              isMobile ? 'py-2.5 px-5 text-sm' : 'py-3 px-6 text-sm'
+            }`}
             onClick={() => navigate('/services/cart')}
           >
             Go to Cart ({cartItemsCount})
-            <ArrowRight size={16} />
+            <ArrowRight size={isMobile ? 14 : 16} />
           </Button>
         </div>
       )}
