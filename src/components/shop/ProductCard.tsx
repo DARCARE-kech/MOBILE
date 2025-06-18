@@ -23,7 +23,6 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
   // Optimiser l'image principale et le fallback pour mobile
   const optimizedImageUrl = optimizeImageForMobile(product.image_url, {
     width: 300,
-    height: 300,
     quality: 75,
     format: 'webp'
   });
@@ -40,7 +39,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
   };
 
   return (
-    <Card className="bg-darcare-navy border border-darcare-gold/20 rounded-xl overflow-hidden flex flex-colmin-h-[220px] max-h-[220px]">
+    <Card className="bg-darcare-navy border border-darcare-gold/20 rounded-xl overflow-hidden flex flex-col h-full">
       <div className="relative w-full aspect-[16/9]">
         {/* Placeholder pendant le chargement */}
         {!imageLoaded && (
