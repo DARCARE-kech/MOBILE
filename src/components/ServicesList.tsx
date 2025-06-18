@@ -44,7 +44,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
           <Button 
             variant="ghost" 
             className="text-primary text-xs sm:text-sm flex items-center gap-1 h-8 px-2"
-            onClick={() => navigate('/services')}
+            onClick={() => navigate('/services', { state: { activeTab: 'requests' } })
           >
             {t('services.viewAll')} <ChevronRight size={14} />
           </Button>
@@ -65,7 +65,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
         <Button 
           variant="ghost" 
           className="text-primary text-xs sm:text-sm flex items-center gap-1 h-8 px-2"
-          onClick={() => navigate('/services')}
+          onClick={() => navigate('/services', { state: { activeTab: 'requests' } })
         >
           {t('services.viewAll')} <ChevronRight size={14} />
         </Button>
