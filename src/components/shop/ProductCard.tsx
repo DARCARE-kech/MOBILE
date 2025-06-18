@@ -34,7 +34,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
       alt={product.name}
       className="absolute top-0 left-0 w-full h-full object-cover"
       onError={handleImageError}
-      loading="lazy"
+      
     />
   </div>
   <CardContent className="p-2 flex flex-col justify-between flex-grow">
