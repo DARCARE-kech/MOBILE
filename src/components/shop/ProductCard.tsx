@@ -20,11 +20,11 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   
-  // Optimiser l'image principale et le fallback pour mobile
+  // Forcer le format 16:9 avec des dimensions précises
   const optimizedImageUrl = optimizeImageForMobile(product.image_url, {
-    width: 300,
-    height=225,
-    quality: 75,
+    width: 320,
+    height: 180,
+    quality: 80,
     format: 'webp'
   });
   
@@ -52,7 +52,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
         <img
           src={imageError ? fallbackImageUrl : optimizedImageUrl || fallbackImageUrl}
           alt={product.name}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
+          className={`w-full h-full object-cover object-center transition-opacity duration-300 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           onLoad={handleImageLoad}
