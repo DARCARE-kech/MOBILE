@@ -163,10 +163,15 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-background mobile-safe-area">
       <MainHeader 
-        title="The View"
-        showWeather={true}
-        showNotifications={true}
-        showFavorite={true}
+         renderTitle={() => (
+    <div className="flex flex-col leading-tight">
+      <span className="text-darcare-gold text-base font-serif font-bold tracking-wide">
+        DARCARE
+      </span>
+      <span className="text-darcare-beige text-[11px] font-light">
+        by The View
+      </span>
+    </div>
       />
       
       <div className="pt-16 pb-24 px-2 overflow-hidden">
