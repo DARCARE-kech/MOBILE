@@ -24,8 +24,8 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     queryKey: ['shop-products', searchQuery, categoryFilter],
     queryFn: async () => {
       let query = supabase.from('shop_products')
-    .select('*')
-    .eq('active', true);
+        .select('*')
+        .eq('active', true);
       
       if (searchQuery) {
         query = query.ilike('name', `%${searchQuery}%`);
@@ -40,6 +40,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       if (error) throw error;
       return data || [];
     },
+    staleTime: 5 * 60 * 1000, // Cache pendant 5 minutes pour réduire les requêtes
   });
 
   if (isLoading) {
@@ -61,7 +62,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 px-4 py-3">
+    <div className="grid grid-cols-2 gap-3 px-3 py-3">
       {products.map((product, index) => (
         <ProductCard
           key={product.id}
