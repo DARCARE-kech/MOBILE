@@ -11,6 +11,7 @@ import Logo from "./Logo";
 
 export interface AppHeaderProps {
   title?: string;
+  renderTitle?: React.ReactNode; 
   showBack?: boolean;
   onBack?: () => void;
   showLogo?: boolean;
