@@ -5,7 +5,7 @@ import { ProductsGrid } from '@/components/shop/ProductsGrid';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Input } from '@/components/ui/input';
-import { Search, ShoppingCart, ArrowRight, Package } from 'lucide-react';
+import { Search, ShoppingCart, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ShopProduct } from '@/types/shop';
 import { Button } from '@/components/ui/button';
@@ -123,7 +123,7 @@ const ShopService = () => {
               onClick={() => navigate('/services/shop/orders')}
               className="text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <Package size={isMobile ? 18 : 20} />
+              <ShoppingBag size={isMobile ? 18 : 20} />
             </Button>
             <Button
               variant="ghost"
