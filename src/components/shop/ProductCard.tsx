@@ -41,7 +41,7 @@ const ProductCard = ({ product, onAddToCart, index }: ProductCardProps) => {
 
   return (
     <Card className="bg-darcare-navy border border-darcare-gold/20 rounded-xl overflow-hidden flex flex-col h-full">
-      <div className="relative w-full aspect-square">
+      <div className="relative w-full aspect-[16/9]">
         {/* Placeholder pendant le chargement */}
         {!imageLoaded && (
           <div className="absolute inset-0 bg-darcare-navy/50 animate-pulse flex items-center justify-center">
