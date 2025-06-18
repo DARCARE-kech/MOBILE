@@ -5,7 +5,7 @@ import { ProductsGrid } from '@/components/shop/ProductsGrid';
 import MainHeader from '@/components/MainHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Input } from '@/components/ui/input';
-import { Search, ShoppingCart, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Search, ShoppingCart, ArrowRight, Package } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ShopProduct } from '@/types/shop';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import CategoryFilter from '@/components/shop/CategoryFilter';
 import FloatingAction from '@/components/FloatingAction';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { BsBagCheck } from "react-icons/bs";
 
 const ShopService = () => {
   const navigate = useNavigate();
@@ -123,7 +124,7 @@ const ShopService = () => {
               onClick={() => navigate('/services/shop/orders')}
               className="text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <ShoppingBag size={isMobile ? 18 : 20} />
+              <Package size={isMobile ? 18 : 20} />
             </Button>
             <Button
               variant="ghost"
@@ -131,7 +132,7 @@ const ShopService = () => {
               onClick={() => navigate('/services/cart')}
               className="relative text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <ShoppingCart size={isMobile ? 18 : 20} />
+              <BsBagCheck size={isMobile ? 18 : 20} />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-darcare-gold text-darcare-navy text-xs font-medium w-4 h-4 flex items-center justify-center rounded-full text-[10px]">
                   {cartItemsCount}
