@@ -123,7 +123,7 @@ const ShopService = () => {
               onClick={() => navigate('/services/shop/orders')}
               className="text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <Package size={isMobile ? 18 : 20} />
+              <ShoppingBag size={isMobile ? 18 : 20} />
             </Button>
             <Button
               variant="ghost"
@@ -131,7 +131,7 @@ const ShopService = () => {
               onClick={() => navigate('/services/cart')}
               className="relative text-darcare-beige hover:text-darcare-gold p-1.5 sm:p-2"
             >
-              <ShoppingBag size={isMobile ? 18 : 20} />
+              <ShoppingCart size={isMobile ? 18 : 20} />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-darcare-gold text-darcare-navy text-xs font-medium w-4 h-4 flex items-center justify-center rounded-full text-[10px]">
                   {cartItemsCount}
