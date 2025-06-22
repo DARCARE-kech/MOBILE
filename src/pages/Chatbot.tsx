@@ -1,12 +1,10 @@
-
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { History, Mail, Loader2, MessageSquare, User} from 'lucide-react';
+import { History, Loader2, MessageSquare, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MainHeader from '@/components/MainHeader';
 import ChatInput from '@/components/chat/ChatInput';
 import ChatMessageComponent from '@/components/chat/ChatMessage';
-
 import { ScrollArea } from '@/components/ui/scroll-area';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useTranslation } from 'react-i18next';
@@ -15,37 +13,26 @@ import { useToast } from '@/components/ui/use-toast';
 import useChatbot from '@/hooks/useChatbot';
 
 const ChatbotPage: React.FC = () => {
-  console.log("Rendering ChatbotPage component");
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  console.log("Current user:", user);
   
   const { t } = useTranslation();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // Parse thread ID from URL if present
   const queryParams = new URLSearchParams(location.search);
   const threadParam = queryParams.get('thread');
-  console.log("Thread param from URL:", threadParam);
   
   const { 
     messages, 
     isLoading, 
     sendMessage, 
-    initializeThread, 
-    setMessages,
     currentThread
   } = useChatbot(threadParam || undefined);
-  
-  console.log("Current messages:", messages);
-  console.log("isLoading:", isLoading);
-  console.log("currentThread:", currentThread);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
-    console.log("Messages changed, scrolling to bottom. Messages count:", messages?.length);
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -53,34 +40,17 @@ const ChatbotPage: React.FC = () => {
 
   // Redirect to auth if not logged in
   useEffect(() => {
-    console.log("Checking if user is logged in");
     if (!user) {
-      console.log("No user found, redirecting to auth");
       navigate('/auth');
     }
   }, [user, navigate]);
 
-  // Add default assistant message only if no existing thread and no messages
-  useEffect(() => {
-    if (!isLoading && messages.length === 0 && !currentThread?.thread_id && !threadParam) {
-      setMessages([{
-        id: 'default-message',
-        sender: 'assistant',
-        content: t('chatbot.defaultMessage', 'Hi! How can I help you today?'),
-        created_at: new Date().toISOString()
-      }]);
-    }
-  }, [isLoading, messages.length, currentThread?.thread_id, threadParam, setMessages, t]);
-
   const handleSend = async (content: string) => {
-    console.log(`handleSend called with content: ${content.substring(0, 50)}${content.length > 50 ? '...' : ''}`);
     if (!content.trim()) {
-      console.log("Content is empty, not sending");
       return;
     }
     
     try {
-      console.log("Sending message");
       await sendMessage(content);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -122,44 +92,51 @@ const ChatbotPage: React.FC = () => {
       />
       
       <ScrollArea className="flex-1 p-4 pt-20 pb-36">
-  <div className="space-y-4">
-    {/* Fixed welcome message */}
-    <div className="bg-darcare-navy text-darcare-gold p-3 rounded-lg border border-darcare-gold/20 text-center text-base">
-      {t('chatbot.defaultMessage', 'Hi! How can I help you today?')}
-    </div>
+        <div className="space-y-4">
+          {/* Fixed welcome message as assistant message */}
+          <ChatMessageComponent
+            key="welcome-message"
+            message={{
+              id: 'welcome-message',
+              sender: 'assistant',
+              content: t('chatbot.defaultMessage', 'Hi! How can I help you today?'),
+              created_at: new Date().toISOString()
+            }}
+          />
 
-    {/* Loader when loading first message */}
-    {isLoading && messages?.length === 0 ? (
-      <div className="flex items-center justify-center h-40">
-        <Loader2 className="h-6 w-6 animate-spin text-darcare-gold" />
-      </div>
-    ) : null}
+          {/* Loader when loading first message */}
+          {isLoading && messages?.length === 0 ? (
+            <div className="flex items-center justify-center h-40">
+              <Loader2 className="h-6 w-6 animate-spin text-darcare-gold" />
+            </div>
+          ) : null}
 
-    {/* Conversation messages */}
-    {messages && messages.length > 0 ? (
-      messages.map((message) => (
-        <ChatMessageComponent
-          key={message.id}
-          message={message}
-        />
-      ))
-    ) : (
-      <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
-        <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-        <p>{t('chatbot.startConversation')}</p>
-      </div>
-    )}
+          {/* Conversation messages */}
+          {messages && messages.length > 0 ? (
+            messages.map((message) => (
+              <ChatMessageComponent
+                key={message.id}
+                message={message}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
+              <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
+              <p>{t('chatbot.startConversation')}</p>
+            </div>
+          )}
 
-    {/* Loader when thinking */}
-    {isLoading && messages?.length > 0 && (
-      <div className="flex items-center gap-2 text-darcare-beige/70">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        <span>{t('chatbot.thinking')}</span>
-      </div>
-    )}
-    <div ref={messagesEndRef} />
-  </div>
-</ScrollArea>
+          {/* Loader when thinking */}
+          {isLoading && messages?.length > 0 && (
+            <div className="flex items-center gap-2 text-darcare-beige/70">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>{t('chatbot.thinking')}</span>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
 
       <div className="fixed bottom-20 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20 z-20">
         <ChatInput
