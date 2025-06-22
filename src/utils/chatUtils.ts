@@ -1,5 +1,16 @@
+
 import { ChatMessage } from "@/types/chat";
 import { supabase } from "@/integrations/supabase/client";
+
+/**
+ * Supprime les citations OpenAI du texte
+ * @param text Texte contenant potentiellement des citations
+ * @returns Texte nettoyé sans citations
+ */
+export const removeOpenAICitations = (text: string): string => {
+  // Supprime les références au format 【numéro:numéro†fichier.extension】
+  return text.replace(/【\d+:\d+†[^】]+】/g, '');
+};
 
 /**
  * Extrait le contenu textuel d'un message OpenAI
@@ -64,19 +75,19 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
     }
     console.log("🧩 Extracted contentBlock:", contentBlock);
 
+    let cleanedContent = '';
+
     // Handle both formats
     if (typeof contentBlock.text === 'string') {
       console.log("✅ Assistant message (plain string):", contentBlock.text);
-      
-      return contentBlock.text;
-    }
-
-    if (contentBlock.text?.value) {
+      cleanedContent = removeOpenAICitations(contentBlock.text);
+    } else if (contentBlock.text?.value) {
       console.log("✅ Assistant message (rich object):", contentBlock.text.value);
-      return contentBlock.text.value;
+      cleanedContent = removeOpenAICitations(contentBlock.text.value);
     }
 
-    return '';
+    console.log("🧹 Cleaned content after removing citations:", cleanedContent);
+    return cleanedContent;
   } catch (error) {
     console.error("Error extracting assistant output:", error);
     return '';
