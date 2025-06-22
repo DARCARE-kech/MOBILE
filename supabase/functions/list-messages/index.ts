@@ -24,8 +24,8 @@ serve(async (req) => {
 
     console.log(`Listing messages for thread ${thread_id}`);
 
-    // Fetch messages from the thread using v2 API
-    const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/messages?limit=100`, {
+    // Fetch messages from the thread using v2 API with include_citations=false
+    const response = await fetch(`https://api.openai.com/v1/threads/${thread_id}/messages?limit=100&include_citations=false`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
@@ -44,13 +44,12 @@ serve(async (req) => {
     console.log(`Successfully retrieved ${data.length} messages`);
 
     if (data?.length) {
-  const latest = data.find((msg) => msg.role === 'assistant');
-  if (latest) {
-    console.log("Dernier message assistant brut :", JSON.stringify(latest, null, 2));
-  }
-}
+      const latest = data.find((msg) => msg.role === 'assistant');
+      if (latest) {
+        console.log("Dernier message assistant brut :", JSON.stringify(latest, null, 2));
+      }
+    }
 
-    
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -38,11 +38,11 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
     }
 
     if (!threadId || !messageId) {
-  console.error("❌ Problème : threadId ou messageId manquant", { threadId, messageId });
-  return '';
-}
+      console.error("❌ Problème : threadId ou messageId manquant", { threadId, messageId });
+      return '';
+    }
 
-    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}`, {
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages/${messageId}?include_citations=false`, {
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
 
     const data = await response.json();
     console.log("Message content response:", data);
-     console.log("📩 Full message response from OpenAI:", JSON.stringify(data, null, 2));
+    console.log("📩 Full message response from OpenAI:", JSON.stringify(data, null, 2));
 
     const contentBlock = data.content?.find(
       (c: any) => c.type === "text" || c.type === "output_text"
@@ -81,9 +81,7 @@ export const extractAssistantOutput = async (output: any, threadId: string): Pro
     console.error("Error extracting assistant output:", error);
     return '';
   }
-  
 };
-
 
 /**
  * Enregistre un message dans la base de données Supabase

@@ -1,4 +1,3 @@
-
 // Configuration du client OpenAI pour interagir avec l'API Assistant
 const OPENAI_API_KEY = 'sk-proj-AKfihkIbBcjeXHTTiq83T3BlbkFJcrUxEJK09t4xmjVWUERx';
 const OPENAI_ASSISTANT_ID = 'asst_Yh87yZ3mNeMJS6W5TeVobQ1S';
@@ -125,7 +124,7 @@ export const getThreadMessages = async (threadId: string) => {
   console.log(`Getting messages for thread ${threadId}`);
   try {
     const response = await fetch(
-      `${OPENAI_API_URL}/threads/${threadId}/messages`, 
+      `${OPENAI_API_URL}/threads/${threadId}/messages?include_citations=false`, 
       getOpenAIOptions()
     );
     
