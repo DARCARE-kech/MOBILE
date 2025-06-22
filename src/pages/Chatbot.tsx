@@ -121,39 +121,45 @@ const ChatbotPage: React.FC = () => {
         }
       />
       
-      <ScrollArea 
-        className="flex-1 p-4 pt-20 pb-36"
-      >
-        {isLoading && messages?.length === 0 ? (
-          <div className="flex items-center justify-center h-40">
-            <Loader2 className="h-6 w-6 animate-spin text-darcare-gold" />
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {messages && messages.length > 0 ? (
-              messages.map((message) => (
-                <ChatMessageComponent
-                  key={message.id}
-                  message={message}
-                />
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
-                <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
-                <p>{t('chatbot.startConversation')}</p>
-              </div>
-            )}
-            
-            {isLoading && messages?.length > 0 && (
-              <div className="flex items-center gap-2 text-darcare-beige/70">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>{t('chatbot.thinking')}</span>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </ScrollArea>
+      <ScrollArea className="flex-1 p-4 pt-20 pb-36">
+  <div className="space-y-4">
+    {/* Fixed welcome message */}
+    <div className="bg-darcare-navy text-darcare-gold p-3 rounded-lg border border-darcare-gold/20 text-center text-base">
+      {t('chatbot.defaultMessage', 'Hi! How can I help you today?')}
+    </div>
+
+    {/* Loader when loading first message */}
+    {isLoading && messages?.length === 0 ? (
+      <div className="flex items-center justify-center h-40">
+        <Loader2 className="h-6 w-6 animate-spin text-darcare-gold" />
+      </div>
+    ) : null}
+
+    {/* Conversation messages */}
+    {messages && messages.length > 0 ? (
+      messages.map((message) => (
+        <ChatMessageComponent
+          key={message.id}
+          message={message}
+        />
+      ))
+    ) : (
+      <div className="flex flex-col items-center justify-center h-60 text-darcare-beige/50">
+        <MessageSquare className="h-16 w-16 mb-4 opacity-30" />
+        <p>{t('chatbot.startConversation')}</p>
+      </div>
+    )}
+
+    {/* Loader when thinking */}
+    {isLoading && messages?.length > 0 && (
+      <div className="flex items-center gap-2 text-darcare-beige/70">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span>{t('chatbot.thinking')}</span>
+      </div>
+    )}
+    <div ref={messagesEndRef} />
+  </div>
+</ScrollArea>
 
       <div className="fixed bottom-20 left-0 right-0 px-4 py-2 bg-gradient-to-b from-darcare-navy/70 to-darcare-navy border-t border-darcare-gold/20 z-20">
         <ChatInput
