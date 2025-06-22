@@ -32,6 +32,11 @@ interface ServicesListProps {
   isLoading?: boolean;
 }
 
+const capitalizeFirstLetter = (str: string) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = false }) => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
@@ -117,16 +122,17 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
             // Get service name
             let serviceName = '';
             if (service.services?.name) {
-              serviceName = t(`services.${service.services.name}`, service.services.name);
+              serviceName = capitalizeFirstLetter(t(`services.${service.services.name}`, service.services.name));
+
             } else if (service.name) {
-              serviceName = t(`services.${service.name}`, service.name);
+              serviceName = capitalizeFirstLetter(t(`services.${service.name}`, service.name));
             } else if (service.title) {
-              serviceName = t(`services.${service.title}`, service.title);
+              serviceName = capitalizeFirstLetter(t(`services.${service.title}`, service.title));
             } else {
               serviceName = t('services.untitled');
             }
             
-            console.log("Rendering unified request:", service.id, "Name:", serviceName, "Type:", service.type);
+           
             
             // Format time or use placeholder
             const formattedTime = service.preferred_time 
