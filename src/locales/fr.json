@@ -217,6 +217,7 @@
     "onDemandServices": "Services à la Demande",
     "noServicesAvailable": "Aucun service disponible",
     "todaysSchedule": "Planning d'aujourd'hui",
+      "booking": "Réservation",
     "viewAll": "Voir tout",
     "loading": "Chargement des services...",
     "loadingDescription": "Veuillez patienter pendant que nous récupérons vos services programmés",
