@@ -35,7 +35,7 @@ const StayDetails: React.FC<StayDetailsProps> = ({ currentStay }) => {
       <div className="flex justify-between items-start mb-2 sm:mb-3">
         <div className="min-w-0 flex-1 mr-2">
           <h2 className="font-serif text-primary text-base sm:text-lg mb-1">Villa {currentStay.villa_number}</h2>
-          <p className="text-foreground/80 text-xs sm:text-sm truncate">{currentStay.city}</p>
+          
         </div>
         <div className={cn(
           "flex items-center gap-1 text-xs rounded-full px-2 py-1 whitespace-nowrap",
