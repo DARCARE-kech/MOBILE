@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -136,10 +137,11 @@ const MyRequestsTab: React.FC = () => {
     enabled: !!user?.id,
     retry: 1,
   });
+
   const capitalizeFirstLetter = (str: string) => {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
 
   const deleteMutation = useMutation({
     mutationFn: async (req: UnifiedRequest) => {
@@ -201,48 +203,54 @@ const MyRequestsTab: React.FC = () => {
             {showHistory ? t('services.noHistoryRequests') : t('services.noActiveRequests')}
           </div>
         ) : (
-          requests?.map((r) => (
-            <div
-              key={r.id}
-              onClick={() => handleClick(r)}
-              className={cn(
-                "rounded-lg p-3 border cursor-pointer transition-colors",
-                isDarkMode ? "bg-[#181a23] border-darcare-gold/10 hover:bg-[#1e2028]" : "bg-white border-gray-200 hover:bg-gray-50"
-              )}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <h3 className={cn("font-semibold text-sm", isDarkMode ? "text-darcare-gold" : "text-primary")}>
-  {capitalizeFirstLetter(r.name)}
-</h3>
-                <StatusBadge status={r.status || 'pending'} />
-              </div>
+          requests?.map((r) => {
+            // Get service name with proper translation and capitalization
+            const translatedName = t(`services.${r.name}`, { defaultValue: '' });
+            const displayName = translatedName || capitalizeFirstLetter(r.name);
 
-              <div className="text-xs text-foreground/70 flex items-center gap-1 mb-1">
-                <Clock size={12} className="opacity-60" />
-                {r.preferred_time
-                  ? format(new Date(r.preferred_time), 'MMM d, hh:mm a')
-                  : t('services.unscheduled')}
-              </div>
-
-              {r.type === 'service' && (
-                <div className="text-xs text-foreground/60 flex items-center gap-1 mb-2">
-                  <User size={12} className="opacity-60" />
-                  {r.staff_name || t('services.unassigned')}
+            return (
+              <div
+                key={r.id}
+                onClick={() => handleClick(r)}
+                className={cn(
+                  "rounded-lg p-3 border cursor-pointer transition-colors",
+                  isDarkMode ? "bg-[#181a23] border-darcare-gold/10 hover:bg-[#1e2028]" : "bg-white border-gray-200 hover:bg-gray-50"
+                )}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className={cn("font-semibold text-sm", isDarkMode ? "text-darcare-gold" : "text-primary")}>
+                    {displayName}
+                  </h3>
+                  <StatusBadge status={r.status || 'pending'} />
                 </div>
-              )}
 
-              {(r.status === 'pending' || r.status === 'in_progress' || r.status === 'confirmed') && (
-                <div className="flex gap-1 justify-end mt-1">
-                  <Button variant="ghost" size="icon" onClick={(e) => handleEdit(r, e)} className="h-7 w-7">
-                    <Pencil className="w-3 h-3" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={(e) => handleDelete(r, e)} className="h-7 w-7">
-                    <Trash2 className="w-3 h-3 text-red-500" />
-                  </Button>
+                <div className="text-xs text-foreground/70 flex items-center gap-1 mb-1">
+                  <Clock size={12} className="opacity-60" />
+                  {r.preferred_time
+                    ? format(new Date(r.preferred_time), 'MMM d, hh:mm a')
+                    : t('services.unscheduled')}
                 </div>
-              )}
-            </div>
-          ))
+
+                {r.type === 'service' && (
+                  <div className="text-xs text-foreground/60 flex items-center gap-1 mb-2">
+                    <User size={12} className="opacity-60" />
+                    {r.staff_name || t('services.unassigned')}
+                  </div>
+                )}
+
+                {(r.status === 'pending' || r.status === 'in_progress' || r.status === 'confirmed') && (
+                  <div className="flex gap-1 justify-end mt-1">
+                    <Button variant="ghost" size="icon" onClick={(e) => handleEdit(r, e)} className="h-7 w-7">
+                      <Pencil className="w-3 h-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={(e) => handleDelete(r, e)} className="h-7 w-7">
+                      <Trash2 className="w-3 h-3 text-red-500" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
 

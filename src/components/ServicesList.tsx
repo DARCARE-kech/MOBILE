@@ -119,20 +119,20 @@ const ServicesList: React.FC<ServicesListProps> = ({ services = [], isLoading = 
       ) : (
         <div className="space-y-1 sm:space-y-2">
           {services.map((service) => {
-            // Get service name
+            // Get service name with proper translation and capitalization
             let serviceName = '';
             if (service.services?.name) {
-              serviceName = capitalizeFirstLetter(t(`services.${service.services.name}`, service.services.name));
-
+              const translatedName = t(`services.${service.services.name}`, { defaultValue: '' });
+              serviceName = translatedName || capitalizeFirstLetter(service.services.name);
             } else if (service.name) {
-              serviceName = capitalizeFirstLetter(t(`services.${service.name}`, service.name));
+              const translatedName = t(`services.${service.name}`, { defaultValue: '' });
+              serviceName = translatedName || capitalizeFirstLetter(service.name);
             } else if (service.title) {
-              serviceName = capitalizeFirstLetter(t(`services.${service.title}`, service.title));
+              const translatedName = t(`services.${service.title}`, { defaultValue: '' });
+              serviceName = translatedName || capitalizeFirstLetter(service.title);
             } else {
               serviceName = t('services.untitled');
             }
-            
-           
             
             // Format time or use placeholder
             const formattedTime = service.preferred_time 
