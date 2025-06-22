@@ -148,7 +148,6 @@
     "spaceReservationCancelled": "Réservation d'espace annulée",
     "spaceReservationCancelledDesc": "Votre réservation d'espace a été annulée",
     "cancellationError": "Erreur lors de l'annulation",
-    "booking": "Réservation",
     "status": {
       "pending": "En attente",
       "in_progress": "En cours",
