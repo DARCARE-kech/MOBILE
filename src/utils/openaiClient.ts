@@ -71,8 +71,7 @@ export const runAssistant = async (threadId: string) => {
   console.log(`Running assistant on thread ${threadId} with assistant ID ${OPENAI_ASSISTANT_ID}`);
   try {
     const requestBody = {
-      assistant_id: OPENAI_ASSISTANT_ID,
-      stream: true,  // activer le streaming de la réponse
+      assistant_id: OPENAI_ASSISTANT_ID,  // activer le streaming de la réponse
   include_citations: false
     };
     console.log("Request body:", requestBody);
