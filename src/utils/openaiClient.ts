@@ -72,7 +72,7 @@ export const runAssistant = async (threadId: string) => {
   try {
     const requestBody = {
       assistant_id: OPENAI_ASSISTANT_ID,  // activer le streaming de la réponse
-  include_citations: false
+  
     };
     console.log("Request body:", requestBody);
     
