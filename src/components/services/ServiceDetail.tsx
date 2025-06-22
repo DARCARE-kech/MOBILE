@@ -343,7 +343,7 @@ const ServiceDetail: React.FC = () => {
         <BottomNavigation activeTab="services" />
       </div>
     );
-  } else if (serviceNameLower?.includes('reservation')) {
+  } else if (serviceNameLower?.includes('booking')) {
     return (
       <div className="min-h-screen bg-darcare-navy">
         <MainHeader title={pageTitle} showBack={true}  onBack={() => navigate(-1)} />
