@@ -136,6 +136,10 @@ const MyRequestsTab: React.FC = () => {
     enabled: !!user?.id,
     retry: 1,
   });
+  const capitalizeFirstLetter = (str: string) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
   const deleteMutation = useMutation({
     mutationFn: async (req: UnifiedRequest) => {
@@ -208,8 +212,8 @@ const MyRequestsTab: React.FC = () => {
             >
               <div className="flex justify-between items-start mb-2">
                 <h3 className={cn("font-semibold text-sm", isDarkMode ? "text-darcare-gold" : "text-primary")}>
-                  {r.name}
-                </h3>
+  {capitalizeFirstLetter(r.name)}
+</h3>
                 <StatusBadge status={r.status || 'pending'} />
               </div>
 
