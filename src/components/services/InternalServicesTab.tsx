@@ -125,7 +125,7 @@ const InternalServicesTab: React.FC = () => {
   // Filter services for On-Demand Services (reservation, transport)
   const onDemandServices = allServices.filter(service => {
     const serviceName = service.name.toLowerCase();
-    return serviceName.includes('reservation') || 
+    return serviceName.includes('booking') || 
            serviceName.includes('transport');
   });
 
