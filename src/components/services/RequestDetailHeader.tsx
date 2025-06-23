@@ -43,13 +43,6 @@ const RequestDetailHeader: React.FC<RequestDetailHeaderProps> = ({
       )}
       
       <div className="grid grid-cols-1 gap-2 sm:gap-3 text-xs sm:text-sm">
-        <div className="flex items-center gap-2 text-darcare-beige/80">
-          <Clock size={14} className="text-darcare-gold flex-shrink-0" />
-          <div>
-            <span className="block text-xs text-darcare-beige/60">{t('services.scheduledFor', 'Scheduled for')}</span>
-            <span className="text-darcare-beige text-xs sm:text-sm">{formatDateTime(preferredTime)}</span>
-          </div>
-        </div>
         
         {createdAt && (
           <div className="flex items-center gap-2 text-darcare-beige/80">
