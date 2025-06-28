@@ -33,7 +33,7 @@ const FloatingAction: React.FC = () => {
     },
     {
       id: "contact-admin",
-      label: t('navigation.contactAdmin', 'Contact Admin'),
+      label: t('navigation.contactAdmin', 'Special Request'),
       icon: <User size={16} />,
       action: () => navigate("/contact-admin"),
     },
