@@ -85,13 +85,7 @@ const StayDetailsPage: React.FC = () => {
           )}> Villa {currentStay.villa_number}</h2>
           
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <MapPin className={cn(
-                "h-5 w-5",
-                isDarkMode ? "text-darcare-gold" : "text-secondary"
-              )} />
-              <span className={isDarkMode ? "text-darcare-beige" : "text-foreground"}>Marrakech, Morocco</span>
-            </div>
+            
             
             
             
