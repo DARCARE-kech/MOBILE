@@ -162,7 +162,7 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
                 )}>
                   <SelectValue placeholder={t('services.selectTime', 'Select time')} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-48 overflow-y-auto">
                   {Array.from({ length: 14 }, (_, i) => {
                     const hour = i + 8;
                     return ['00', '30'].map(minute => {
