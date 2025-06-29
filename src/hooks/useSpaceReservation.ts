@@ -218,10 +218,7 @@ export const useSpaceReservation = (spaceId: string, existingReservationId?: str
         }
         result = data;
         
-        toast({
-          title: t('services.reservationConfirmed', 'Reservation Confirmed'),
-          description: t('services.spaceReservationConfirmed', 'Your space has been successfully reserved'),
-        });
+        
       }
 
       console.log('Reservation operation result:', result);
