@@ -4,6 +4,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, Loader2 } from 'lucide-react';
@@ -14,7 +15,6 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import DynamicFormFields from './DynamicFormFields';
 import { Card } from '@/components/ui/card';
-import { TimeSelector } from '@/components/space-booking/TimeSelector';
 
 interface SpaceReservationFormProps {
   spaceId: string;
@@ -145,7 +145,7 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
               </Popover>
             </FormItem>
 
-            {/* Time Selection - Now using TimeSelector */}
+            {/* Time Selection */}
             <FormItem>
               <FormLabel className={cn(
                 "text-sm font-medium",
@@ -153,10 +153,29 @@ const SpaceReservationForm: React.FC<SpaceReservationFormProps> = ({
               )}>
                 {t('services.time', 'Time')} *
               </FormLabel>
-              <TimeSelector
-                selectedTime={selectedTime}
-                onTimeSelect={setSelectedTime}
-              />
+              <Select onValueChange={setSelectedTime} value={selectedTime}>
+                <SelectTrigger className={cn(
+                  "mobile-form-input h-10",
+                  isDarkMode 
+                    ? "border-darcare-gold/30 focus:border-darcare-gold/60 bg-darcare-navy" 
+                    : "border-primary/30 focus:border-primary/60 bg-background"
+                )}>
+                  <SelectValue placeholder={t('services.selectTime', 'Select time')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 14 }, (_, i) => {
+                    const hour = i + 8;
+                    return ['00', '30'].map(minute => {
+                      const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+                      return (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      );
+                    });
+                  }).flat()}
+                </SelectContent>
+              </Select>
             </FormItem>
 
             {/* Dynamic Form Fields */}
